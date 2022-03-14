@@ -1,0 +1,485 @@
+/* **********     Reset CSS     ********** */
+:root {
+  --main-font: sans-serif;
+  --font-size: 16px;
+  --main-color: #f7df1e;
+  --second-color: #222;
+  --main-modal-color: rgba(247, 222, 30, 0.85);
+  --second-modal-color: rgba(34, 34, 34, 0.85);
+  --container-width: 1200px;
+}
+html {
+  box-sizing: border-box;
+  font-family: var(--main-font);
+  font-size: var(--font-size);
+  scroll-behavior: smooth; /*efecto de transision para mover el scroll sin necesidad de javascript, en el video se hace referencia a otro video con el tip */
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit; /* todos los elementos del document hereden el tipo de box-sizing */
+}
+
+/* Quitar el margen de 8px y ocultar todo lo que en ancho exceda el ancho maximo de pantalla*/
+body {
+  margin: 0; /*resetear el margin de 8px por defecto de los navegadores */
+  overflow-x: hidden; /*todo lo que desborde en horizontal que se oculte y no aparezca el scroll */
+}
+
+/* Las imagenes y videos se ajustan al ancho maximo de su contenedor*/
+img,
+video {
+  max-width: 100%; /* se adaptan a la maxima anchura de su contenedor*/
+  height: auto;
+}
+/* **********     menu-hamburguesa     ********** */
+
+.header {
+  position: sticky; /* mantiene la posicion del header cuando alcanza la posicion top:0, le hace tener un comportamiento fijo */
+  z-index: 997;
+  top: 0;
+  padding: 1rem;
+  background-color: var(--main-color);
+  color: var(--second-color);
+}
+/* Quitar el margen automatico superior/inferior y centrar el texto*/
+.header h1 {
+  margin: 0 auto; /*resetear el margin por defecto de los navegadores */
+  text-align: center;
+}
+
+.section {
+  /* Asigna que el contenido de cada seccion ocupe el 100% del viewport*/
+  padding: 2rem;
+  padding-top: 4rem; /*evita que se oculte debajo del header*/
+  margin-left: auto; /* para centrar el contenido */
+  margin-right: auto; /* para centrar el contenido */
+  width: 100%;
+  /** Hacer que ocupen el ancho maximo disponible del viewport */
+  max-width: var(--container-width);
+
+  min-height: 100vh; /* Hace que cada seccion ocupe el 100% del alto del viewport. */
+  text-align: center;
+}
+
+.panel {
+  position: fixed; /**posicion fija*/
+  z-index: 998; /*la profundidad sera uno menor del boton del menu hamburguesa para que no le oculte*/
+  top: 0; /*permite extender el espacio del elemento a los cuatro esquinas, permite ocupar el 100%*/
+  bottom: 0; /*permite extender el espacio del elemento a los cuatro esquinas, permite ocupar el 100%*/
+  left: 0; /*permite extender el espacio del elemento a los cuatro esquinas, permite ocupar el 100%*/
+  right: 0; /*permite extender el espacio del elemento a los cuatro esquinas, permite ocupar el 100%*/
+  width: 100%; /*resetea el comportamiento por omision, cuando un elemento se coloca position: fixed el ancho corresponde solo al contenido*/
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-y: auto;
+  background-color: var(--second-modal-color);
+  opacity: 0;
+  /* visibility: hidden; */ /* funciona en conjunto con opacity para ocultar realmente el elemento, caso contrario solo se hace invisible pero interactua*/
+  transition: transform 0.3s ease, opacity 0.5s ease; /*aplica una transicion a la propiedad transform y opacity*/
+  /* De arriba indica que aparezca el efecto desde arriba*/
+  /* transform: translate(0, -100%); */
+  /* De abajo */
+  /* transform: translate(0, 100%); */
+  /* De la derecha */
+  transform: translate(100%, 0);
+  /* De la izquierda */
+  /* transform: translate(-100%, 0); */
+}
+/*Significa cuando el panel tenga la clase panel y is-active*/
+.panel.is-active {
+  transform: translate(0, 0); /*traslada el origen a la esquina 0,0*/
+  opacity: 1;
+  /* visibility: visible; */
+}
+
+.panel-btn {
+  position: fixed; /* se va a colocar en una posicion fija  a 1vh y 1vw */
+  z-index: 999; /* Nivel de profundidad, Mientras el numero es mas alto se evita que otro codigo html posterior cubra el elemento. Funciona cuando se cambia el valor por omision de 'position'*/
+  bottom: 1vh; /* se va a colocar en una posicion fija  a 1vh y 1vw */
+  right: 1vw; /* se va a colocar en una posicion fija  a 1vh y 1vw */
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%; /* boton redondeado */
+  padding: 0;
+  display: flex; /* Utilizando caracteristicas de flex box, ver video curso */
+  justify-content: center; /* Utilizando caracteristicas de flex box, ver video curso */
+  align-items: center; /* Utilizando caracteristicas de flex box, ver video curso */
+  background-color: var(--main-color) !important;
+}
+
+.menu {
+  width: inherit;
+  display: flex; /* display flex en direccion columna */
+  flex-direction: column; /* display flex en direccion columna */
+  justify-content: space-evenly; /* espaciado proporcional entre los elementos y las orillas (vertical)*/
+  align-items: center; /*cuando flex-direction: column, indica como alinear en x*/
+  text-align: center;
+}
+
+.menu a {
+  padding: 2rem;
+  width: inherit;
+  display: block; /* cambia el display de los enlaces a bloque en lugar de contenido*/
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: var(--main-color);
+  transition: all 0.3s ease;
+}
+
+.menu a:hover {
+  font-weight: bold;
+  color: var(--second-color);
+  background-color: var(--main-modal-color);
+}
+
+/* **********     Eventos del Teclado     ********** */
+
+/* se coloca un display flex con una altura minima de la itad del viewporte*/
+.stage {
+  display: flex;
+  min-height: 50vh;
+  background-color: var(--second-color);
+}
+
+/* Un espacio cuadrado de misma altura y anchura con bordes redondeados*/
+.ball {
+  margin: auto;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background-color: var(--main-color);
+}
+
+/* **********     ScrollTopButton     ********** */
+.scroll-top-btn {
+  position: fixed;
+  z-index: 999;
+  bottom: 1vh;
+  right: calc(
+    4.25rem + 1vw
+  ); /* la anchura del boton hamburguesa + 0.25 para separacion y se coloca en bottom por 1vh */
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  font-size: 2rem;
+  font-weight: bold;
+  background-color: var(--main-color);
+  color: var(--second-color);
+  cursor: pointer; /* colocar icono de puntero sobre el area*/
+  outline: 0;
+  border: 0;
+  transition: all 0.3s ease-out; /* transicion para el hover */
+}
+
+.scroll-top-btn:hover {
+  background-color: var(--second-color);
+  color: var(--main-color);
+}
+
+/* Ocultar el boton con opacity y visibility para que no solo aplique la transparencia OJO: la propiedad display no es animable*/
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+}
+
+/* **********     DarkThemeButton     ********** */
+.dark-theme-btn {
+  position: fixed;
+  z-index: 999;
+  bottom: 1vh;
+  left: 1vw;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  font-size: 2rem;
+  font-weight: bold;
+  background-color: var(--main-color);
+  color: var(--second-color);
+  cursor: pointer;
+  outline: 0;
+  border: 0;
+  transition: all 0.3s ease-out;
+}
+
+.dark-theme-btn:hover {
+  background-color: var(--second-color);
+  color: var(--main-color);
+}
+
+.dark-mode {
+  background-color: var(--second-color);
+  color: var(--main-color);
+}
+
+/* **********     Network Status     ********** */
+.online,
+.offline {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+  background-color: #1b5e20;
+  color: #fff;
+}
+
+.offline {
+  background-color: #b71c1c;
+}
+
+/* **********     SearchFilters     ********** */
+.cards {
+  display: grid;
+  /**  grid-template-columns=define las columnas y permite hacer un responsive automatico*/
+  /**  repeat=permite repetir varias columnas, donde el primer parametro numero de columnas
+        o en su defecto auto-fit se ajusta automaticamente al grid e indica como se van apilando las columnas
+        y el segundo hacer un responsive automatico del ancho de cada columna, aqui se utiliza
+        una funcion minmax entre un min=250px y un max=1fr; fr es una medida de flex-grid REVISAR*/
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.card {
+  background-color: var(--second-color);
+  color: var(--main-color);
+  transition: all 0.3s ease-out;
+}
+
+.card img {
+  width: 100%;
+  height: auto; /* Automatica para que no se deforme */
+}
+
+.card figcaption {
+  padding: 1rem;
+}
+
+.filter {
+  /* display: none; */ /* solo oculta el contenido, se cambia para mejorar trancisiones*/
+  visibility: hidden; /* con esta propiedad no se elimina, solo se oculta y por eso no se redimensiona las imagenes a lo definido grid-template-columns: minmax()*/
+  opacity: 0;
+  order: 1; /* todas las tarjetas que se oculten se colocan al final*/
+}
+
+/* **********     Responsive Slider     ********** */
+.slider {
+  position: relative;
+  width: 80%;
+  margin: 1rem auto;
+  border: thin solid black;
+  text-align: center;
+}
+
+.slider-slides {
+  position: relative;
+  height: 400px; /*El contenedor de los slides debe tener un alto definido, para que los hijos ocupen al 100%*/
+}
+
+.slider-slide {
+  position: absolute; /*se posiciona respecto del primer elemento padre que encuentre en el arboldel DOM que tenga position: relative, pero si no encuentra uno se va a posicionar respecto del body, por eso se coloca en slider-slides position:relative*/
+  top: 0; /* respecto a su contenedor slider-slides*/
+  left: 0;
+  width: 100%;
+  height: 100%; /* respecto a su contenedor slider-slides 400px*/
+  opacity: 0; /*empiezan con 0*/
+  visibility: hidden; /* como opacity:0 solo lo oculta, se agrega visibility: hidden para remover el contenido por omision mientras no este activo*/
+  transition: opacity 1s ease; /*transition con la propiedad opacity*/
+}
+
+.slider-slide img {
+  height: inherit; /* Se coloca que las imagenes hereden este valor para permitir que tenga comportamiento responsive*/
+  width: inherit; /* Se coloca que las imagenes hereden este valor para permitir que tenga comportamiento responsive*/
+  object-fit: cover; /* ajustar la proporcion respecto de su contenedor, para evitar que se deforme con el comportamiento responsive height: inherit; y  width: inherit;*/
+  object-position: 50% 0%; /* valor por defecto 50 para x y 50 para y* , esto mueve la imagen para visualizar la mejor parte del contenedro cuando cambia el ancho  del dispositivo*/
+}
+
+.slider-slide.active {
+  opacity: 1;
+  visibility: visible; /* como opacity:1 la visualiza, se agrega visibility: visible para ver el contenido cuando este activo*/
+}
+
+.slider-btns {
+  position: absolute; /* el contenedor de botones se posiciona respecto del primer elemento relativo/padre que contenga la propieda position: absolute;, en este caso '.slider '*/
+  width: 100%; /* Cuando position: absolute pierde su dimensionamiento de ancho por defecto y requiere ser definido para ocupar el ancho maximo del contenedor y que no este un boton junto a otro cuando se utilice la propiedad justify-content: space-between*/
+  top: 50%; /* se desplaza relativo al tope a la mitad*/
+  display: flex; /* se utiliza para alinear los botones en una fila*/
+  justify-content: space-between; /* el espacio sobrante lo reparte entre los botones y los botones se van a los extremos del ancho disponible*/
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.slider a {
+  display: block;
+  width: 4rem; /* apariencia cuadrada*/
+  height: 4rem; /* apariencia cuadrada*/
+  border-radius: 50%; /* hacer circulo*/
+  border: thin solid #000;
+  text-decoration: none;
+  background-color: #fff;
+  color: #000;
+  transition: all 0.3s ease;
+}
+
+.slider a:hover {
+  color: #4d4d4d;
+}
+
+/* **********     ScrollSpy     ********** */
+@media screen and (min-width: 1024px) {
+  body {
+    display: grid;
+    grid-template-columns: 80% 20%; /* 2 columnas*/
+    grid-template-rows: 4rem auto; /*1ra cabecera alto de 4rem, 2da automatica*/
+    grid-template-areas:
+      "header header" /*cada entrecomillado es una fila*/
+      "main panel"; /* distribucion de las areas*/
+  }
+
+  /*no se utiliza la clase debido a que la etiqueta main solo debe existir una por documento*/
+  main {
+    grid-area: main; /*mapear con lo definido en body > grid-template-areas*/
+  }
+
+  .header {
+    grid-area: header; /*mapear con lo definido en body > grid-template-areas*/
+  }
+
+  .panel {
+    grid-area: panel; /*mapear con lo definido en body > grid-template-areas*/
+    align-self: start; /* para que el contenido se alinee al inicio de la celda, funciona junto a 'justify-content'*/
+    position: sticky; /* se coloca una posicion que se ajuste al alto de 4rem del header */
+    top: 4rem; /* se coloca una posicion que se ajuste al alto de 4rem del header */
+    justify-content: flex-start; /*esta propiedad no solo aplica para flex-box, sino para grid para que en lugar de centrar como en la version movil, se coloque desde el inicio del bloque*/
+    background-color: var(
+      --second-color
+    ); /*el color definido arriba por omision tiene transparencia, en este caso se coloca el color solido*/
+    /* debido a que por omision el 'panel' definido arriba esta oculto opacity:0, visibility: hidden
+        y solo aparece cuando se aplica el estilo panel.is-active, se copia los mismos estilos para que se visualice siempre*/
+    transform: translate(0, 0);
+    opacity: 1;
+    visibility: visible;
+    overflow-y: auto;
+  }
+
+  /*ocultar el boton del menu hamburguesa*/
+  .panel-btn {
+    display: none;
+  }
+
+  .menu {
+    /*cambiar tambien la alineacion del contenido*/
+    justify-content: start;
+    text-align: right;
+  }
+
+  .menu a {
+    /*cambiar tamanio de fuente y padding para evitar espacios desperdiciados*/
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .menu a:hover,
+  .menu a.active {
+    /* quitar la opacidad de la version movil cuando se pasa el mouse y tambien cuando la seccion se encuentre 'active'*/
+    color: var(--second-color);
+    background-color: var(--main-color);
+  }
+
+  /* Cambiar a la izquierda el btn qu retorna al top*/
+  .scroll-top-btn {
+    right: initial; /**resetea al valor por defecto en lugar de lo definido en la version movil que lo ajustaba a la derecha, asi evita colocarse en el menu*/
+    left: calc(4.25rem + 1vw); /* desplazamiento del btn dark-theme*/
+  }
+}
+
+/* **********     ContactForm Validations     ********** */
+.contact-form {
+  --form-ok-color: #4caf50;
+  --form-error-color: #f44336;
+  margin-left: auto;
+  margin-right: auto;
+  width: 80%;
+}
+
+/* * significa todos los elementos hijos de contact-form*/
+.contact-form > * {
+  padding: 0.5rem; /* paddinf letra a borde*/
+  margin: 1rem auto;
+  display: block; /* Cambiar el display de los elementos por omision:inline-block;*/
+  width: 100%;
+}
+
+/* No permitir cambio de tamanio del textarea*/
+.contact-form textarea {
+  resize: none;
+}
+
+.contact-form legend,
+.contact-form-response {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.contact-form input,
+.contact-form textarea {
+  font-size: 1rem;
+  font-family: sans-serif;
+}
+
+.contact-form input[type="submit"] {
+  width: 50%;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* aplica a todos los elementos del formulario con el atributo placeholder. */
+.contact-form *::placeholder {
+  color: #000;
+}
+
+/* aplica a todos los elementos del formulario con el atributo required cuyo valor sea valido */
+.contact-form [required]:valid {
+  border: thin solid var(--form-ok-color);
+}
+
+/* aplica a todos los elementos del formulario con el atributo required cuyo valor sea invalido */
+.contact-form [required]:invalid {
+  border: thin solid var(--form-error-color); /**coloca el color con variable*/
+}
+
+.contact-form-error {
+  margin-top: -1rem;
+  font-size: 80%;
+  background-color: var(--form-error-color);
+  color: #fff;
+  transition: all 800ms ease;
+}
+
+.contact-form-error.is-active {
+  display: block; /*animacion en la transicion*/
+  animation: show-message 1s 1 normal 0s ease-out both;
+  /* transision es atravez de una animacion llamada 'show-message', dura 1segundo, se ejecuta 1 vez, normal,
+     sin retardo, efecto   animation: show-message 1s 1 normal 0s ease-out boths, va conservar los estilos con la que termina la animacion*/
+}
+
+.none {
+  display: none;
+}
+
+@keyframes show-message {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  100% {
+    visibility: visible;
+    opacity: 1;
+  }
+}

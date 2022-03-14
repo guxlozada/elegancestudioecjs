@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elegance Studio EC</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    .content table td,
+    .content table th {
+      padding: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <iframe src="./templates/navbar.html"
+      onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+  </header>
+  <main>
+    <section id="sales-summary" class="section is-medium">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-store"></i>
+              </span>
+              <span>Resumen Ventas por Día</span>
+            </span>
+          </p>
+        </header>
+        <div class="card-content has-background-info-light p-2">
+          <div class="content">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Fecha:</th>
+                  <th><input id="cart-header-fecha" class="input is-small" type="date" name="cartHeaderDate"
+                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha de venta: 31/12/2022..." />
+                    </td>
+                </tr>
+                <tr>
+                  <th>Responsable:</td>
+                  <th>
+                    <div class="control is-size-7">
+                      <label class="radio">
+                        <input type="radio" name="vendedor" value="ESTIBERSON">
+                        Estiberson
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="vendedor" value="OSCAR">
+                        Oscar
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="vendedor" value="LOCAL">
+                        Local
+                      </label>
+                    </div>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <thead class="has-background-link">
+                <tr>
+                  <th style="width:80px;"></th>
+                  <th style="text-align:center;color:white;">Vendedor</th>
+                  <th style="text-align:center;color:white;width:12%"">Hora</th>
+                  <th class=" has-text-right has-text-white" style="width:12%">Descuentos</th>
+                  <th class="has-text-right has-text-white" style="width:12%"">Base Imponible</th>
+                  <th class=" has-text-right has-text-white" style="width:12%"">Impuestos IVA</th>
+                  <th class=" has-text-right has-text-white" style="width:12%"">Valor Venta</th>
+                </tr>
+              </thead>
+              <thead class=" has-background-grey-lighter">
+                <tr>
+                  <th style="font-size:14px;font-weight:bold">Servicios</th>
+                  <td colspan="6"></td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td style="text-align:left;padding-left:10px;">Estiberson</td>
+                  <td style="text-align:left;">10:12</td>
+                  <th>0.00</th>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td>2</td>
+                  <td style="text-align:left;padding-left:10px;">Oscar</td>
+                  <td style="text-align:left;">10:12</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td>3</td>
+                  <td style="text-align:left;padding-left:10px;">Oscar</td>
+                  <td style="text-align:left;">10:12</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td>4</td>
+                  <td style="text-align:left;padding-left:10px;">Estiberson</td>
+                  <td style="text-align:left;">10:12</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+              </tbody>
+              <thead class=" has-background-grey-lighter">
+                <tr>
+                  <th style="font-size:14px;font-weight:bold">Productos</th>
+                  <td colspan="5"></td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="text-align:right">
+                  <td>1</td>
+                  <td style="text-align:left;padding-left:10px;">Estiberson</td>
+                  <td>0.00</td>
+                  <td>7.14</td>
+                  <td>0.86</td>
+                  <td>8.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td>2</td>
+                  <td style="text-align:left;padding-left:10px;">Oscar</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+              </tbody>
+              <tfoot id="cart-summary">
+                <tr class="has-background-grey-lighter">
+                  <th>Venta Total</th>
+                  <th class="cart-summary-totalsale has-text-right" colspan="4">0.00</th>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>Base imponible</th>
+                  <td class="cart-summary-taxableincome has-text-right" colspan="4">0.00</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <th>Impuestos (IVA, etc.)</th>
+                  <td class="cart-summary-taxes has-text-right" colspan="4">0.00</td>
+                  <td></td>
+                </tr>
+                <!--tr>
+                  <th>Descuento</th>
+                  <td class="cart-summary-discounts has-text-right" colspan="4">0.00</td>
+                  <td></td>
+                </tr-->
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <footer class="card-footer">
+          <!--a href="#" class="card-footer-item trigger-servicios-modal has-text-white has-background-link"
+            data-target="servicios-modal">
+            <span class="icon">
+              <i class="fa-solid fa-scissors"></i>
+            </span>
+            <span class="is-hidden-touch">Servicio</span>
+          </a>
+          <a href="#" class="card-footer-item trigger-productos-modal has-text-white has-background-info"
+            data-target="productos-modal">
+            <span class="icon">
+              <i class="fa-solid fa-wine-bottle"></i>
+            </span>
+            <span class="is-hidden-touch">Producto</span>
+          </a>
+          <a href="#" class="card-footer-item has-text-white has-background-primary">
+            <span class="icon">
+              <i class="fa-solid fa-check"></i>
+            </span>
+            Guardar
+          </a>
+          <a href="#" class="card-footer-item has-text-white has-background-danger">
+            <span class="icon">
+              <i class="fa-solid fa-xmark"></i>
+            </span>
+            Cancelar
+          </a-->
+          <div class="buttons is-right" style="width: 100%;">
+            <button class="cart-save card-footer-item button is-primary" href="#clientes">
+              <span class="icon">
+                <i class="fa-solid fa-check"></i>
+              </span>
+              <span>Guardar</span>
+            </button>
+            <button class="cart-cancel card-footer-item button is-danger" href="#clientes">
+              <span class="icon">
+                <i class="fa-solid fa-xmark"></i>
+              </span>
+              <span>Cancelar</span>
+            </button>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </main>
+
+</body>
+
+</html>

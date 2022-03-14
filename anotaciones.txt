@@ -1,0 +1,103 @@
+Curso JavaScript: 61. DOM: Introducción
+
+- Hacer hablar un texto
+- Inicio del curso del DOM
+- Capturar texto seleccionado en la pagina
+
+Curso JavaScript: 62. DOM: Nodos, Elementos y Selectores
+- Tipos de nodos del documento: Node.ELEMENT_NODE, Node.TEXT_NODE
+- Como obtener elementos por id y selectores IMPORTANTE
+
+Curso JavaScript: 63. DOM: Atributos y Data-Attributes
+- Crear atributos data-* IMPORTANTE
+- Obtener valores de los atributos de las etiquetas IMPORTANTE
+
+Curso JavaScript: 64. DOM: Estilos y Variables CSS
+- Operaciones con estilos asignados a los elementos
+- Asignar estilos dinamicamente
+- Utilizar variables CSS para asignar estilos dinamicamente
+
+Curso JavaScript: 65. DOM: Clases CSS
+- Agregar / quitar estilos uno a uno, varios
+- Uso de toggle
+
+Curso JavaScript: 66. DOM: Texto y HTML
+- Reemplazar/anidar contenido de etiquetas IMPORTANTE
+
+Curso JavaScript: 67. DOM Traversing: Recorriendo el DOM
+- Como recorrer el dom padre/hijos/hermanos/ancestros IMPORTANTE
+
+Curso JavaScript: 68. DOM: Creando Elementos y Fragmentos 
+- Crear elementos dinamicamente
+
+Curso JavaScript: 69. DOM: Templates HTML
+- Utilizar la etiqueta template HTML que se coloca en el archivo HTML pero no se visualiza, para generar contenido dinamico
+   <template id="template-card">
+    <figure class="card">
+      <img>
+      <figcaption></figcaption>
+    </figure>
+  </template>
+
+Curso JavaScript: 70. DOM: Modificando Elementos (Old Style) 
+- Permite agregar el contenido en una posicion mas especifica, al antes/despues/hijos
+
+Curso JavaScript: 71. DOM: Modificando Elementos (Cool Style) 
+- Permite agregar el contenido en una posicion mas especifica,antes/despues/primer hijo/ultimo hijo IMPORTANTE
+
+Curso JavaScript: 72. DOM: Manejadores de Eventos
+- Manejo de eventos referenciados desde atributos de elementos HTML, no es lo mas recomendable hacerlo en la página HTML
+- Ejemplo de eventos semanticos donde se asigna mediante programacion las funciones a los eventos IMPORTANTE
+- Uso de manejador de eventos IMPORTANTE
+
+Curso JavaScript: 73. DOM: Eventos con Parámetros y Remover Eventos
+- Utilizar un manejador de eventos multiple que permite ejecutar funciones con parametros IMPORTANTE minuto 5:30
+
+Curso JavaScript: 74. DOM: Flujo de Eventos (Burbuja y Captura)
+- Se propagan los eventos entre elementos jerarquivos anidados IMPORTANTE
+
+Curso JavaScript: 75. DOM: stopPropagation & preventDefault
+- Indica como evitar que un click dentro de un elemento anidado, no dispare el elemento que lo contiene IMPORTANTE 
+
+Curso JavaScript: 76. DOM: Delegación de Eventos
+- COmo mejorar la asignacion dinamica de listeners para los eventos, 
+  delegar el manejo de eventos a un nodo agrupador como 'document'  y luego identificar el componente que lo dispara con 'target' IMPORTANTE
+  - Es importante el manejo de un unico listener en 'document' con el fin de manejar eventos sobre elementos que se cagran dinamicamente, aya
+    que no es posible asignar listeners inicialmente de elementos que no existen IMPORTANTE
+
+Curso JavaScript: 77. BOM: Propiedades y Eventos
+- Calculo de ancho y alto del viewport, tanto de ventana del navegador (window) como de vista disponible dentro de la ventana del navegador (viewport)
+- Mejora el uso de propgramacion a la carga utilizando elevento DOMCOntentLoaded en lugar de Load que tarda mas IMPORTANTE
+
+Curso JavaScript: 78. BOM: Métodos
+- ejemplo de como mantener la referencia a una ventana que se abre por programacion
+- Ejemplo de boton para mandar a imprimir el document HTML, y se puede dar formato para la impresion con estilos css @media print
+  diferente de @media screen para manejo de viewports de dispositivos
+
+Curso JavaScript: 79. BOM: Objetos: URL, Historial y Navegador 
+- Ejemplos de manejo de Objetos que cuelgan directamente de windows (objetos que no deben referenciarse con window.)
+
+Curso JavaScript: 81. DOM: Ejercicios Prácticos | Menú de Hamburguesa 
+- Creacion de la plantilla de la SPA con menu hamburguesa minuto 6:00
+- Minuto 35 agregar extenciones react
+
+Curso JavaScript: 89. DOM: Ejercicios Prácticos | API localStorage
+- Como crear una variable en el local storage para manejar el tema oscuro de la app tema_oscuro.JavaScript
+
+Curso JavaScript: 90. DOM: Ejercicios Prácticos | Responsive con JavaScript
+- Evalua mediaQuery de un componente referenciado por su ID, para modificar su contenido objeto_responsive.js
+
+Curso JavaScript: 92. DOM: Ejercicios Prácticos | Detección de Dispositivos User Agent
+
+Curso JavaScript: 96. DOM: Ejercicios Prácticos | Filtros de Búsqueda
+- Aplica distribucion de tarjetas utilizando display:grid (responsive), aplicandole estilos minuto 8:00
+
+Curso JavaScript: 99. DOM: Ejercicios Prácticos | ScrollSpy con Intersection Observer
+- Despliega un menu para dispositivos que no son moviles y hamburguesa para moviles
+- Uso del API Intersection Observer para observar cuando un evento como el despliegue de un compornente en la interfaz visual
+  esta presente (o en un %), desencadenar una programacion como enlazar links del menu con secciones del contenido de la pagina
+
+Curso JavaScript: 101. DOM: Ejercicios Prácticos | Validación de Formularios con HTML5 
+- Validaciones a formulario
+- dar estilos a un formulario para darles formato de bloque
+- Dar estilos al pseudo elemento 'placeholder'

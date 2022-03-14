@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elegance Studio EC</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    .content table td,
+    .content table th {
+      padding: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <iframe src="./templates/navbar.html"
+      onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+  </header>
+  <main>
+    <section class="section">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-store"></i>
+              </span>
+              <span>Resumen diario de ventas</span>
+            </span>
+          </p>
+        </header>
+        <div class="card-content has-background-info-light p-2">
+          <div class="content">
+            <table>
+              <tbody>
+                <tr>
+                  <th style="width:100px;vertical-align:middle">Fecha:</th>
+                  <th><input id="cart-header-fecha" class="input is-small" type="date" name="cartHeaderDate"
+                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha de venta: 31/12/2022..." />
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <thead class="has-background-link">
+                <tr>
+                  <th style="text-align:center;color:white;width:50px">Nro.</th>
+                  <th style="text-align:center;color:white;width:50px">Hora</th>
+                  <th style=" text-align:center;color:white;">Vendedor</th>
+                  <th class=" has-text-right has-text-white" style="width:10%">Descuentos</th>
+                  <th class="has-text-right has-text-white" style="width:10%">Base Imponible</th>
+                  <th class=" has-text-right has-text-white" style="width:10%">Impuestos IVA</th>
+                  <th class=" has-text-right has-text-white" style="width:10%">Valor Venta</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style=" text-align:right">
+                  <td>1</td>
+                  <td style="text-align:center;">10:12</td>
+                  <td style=" text-align:left;padding-left:10px;">Estiberson</td>
+                  <th>0.00</th>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td>2</td>
+                  <td style="text-align:center;">10:45</td>
+                  <td style="text-align:left;padding-left:10px;">Oscar</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td>3</td>
+                  <td style="text-align:center;">12:30</td>
+                  <td style="text-align:left;padding-left:10px;">Oscar</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td>4</td>
+                  <td style="text-align:center;">15:10</td>
+                  <td style="text-align:left;padding-left:10px;">Estiberson</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td>5</td>
+                  <td style="text-align:center;">17:00</td>
+                  <td style="text-align:left;padding-left:10px;">Estiberson</td>
+                  <td>2.00</td>
+                  <td>5.14</td>
+                  <td>0.86</td>
+                  <td>6.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td>6</td>
+                  <td style="text-align:center;">19:00</td>
+                  <td style="text-align:left;padding-left:10px;">Local</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+              </tbody>
+              <tfoot id="cart-summary">
+                <tr class="has-background-grey">
+                  <th class="has-text-right has-text-white" colspan="3">Totales</th>
+                  <th class="has-text-right has-text-white">2.00</th>
+                  <th class="has-text-right has-text-white">49.79</th>
+                  <th class="has-text-right has-text-white">6.21</th>
+                  <th class="has-text-right has-text-white">56.00</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-store"></i>
+              </span>
+              <span>Resumen diario de ventas por vendedor</span>
+            </span>
+          </p>
+        </header>
+        <div class="card-content has-background-info-light p-2">
+          <div class="content">
+            <table>
+              <tbody>
+                <tr>
+                  <th style="width:100px;vertical-align:middle">Fecha:</th>
+                  <th><input id="cart-header-fecha" class="input is-small" type="date" name="cartHeaderDate"
+                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha de venta: 31/12/2022..." />
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <thead class="has-background-link">
+                <tr>
+                  <th style=" text-align:center;color:white;">Vendedor</th>
+                  <th style="text-align:center;color:white;width:50px">Nro.</th>
+                  <th style="text-align:center;color:white;width:50px">Hora</th>
+                  <th class=" has-text-right has-text-white" style="width:10%">Descuentos</th>
+                  <th class="has-text-right has-text-white" style="width:10%">Base Imponible</th>
+                  <th class=" has-text-right has-text-white" style="width:10%">Impuestos IVA</th>
+                  <th class=" has-text-right has-text-white" style="width:10%">Valor Venta</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style=" text-align:right">
+                  <td colspan="2">1</td>
+                  <td style="text-align:center;">10:12</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td colspan="2">2</td>
+                  <td style="text-align:center;">15:10</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td colspan="2">3</td>
+                  <td style="text-align:center;">17:00</td>
+                  <td>2.00</td>
+                  <td>5.14</td>
+                  <td>0.86</td>
+                  <td>6.00</td>
+                </tr>
+                <tr class="has-background-grey-lighter has-text-weight-semibold">
+                  <th>Estiberson</th>
+                  <th class="has-text-right" colspan="2"></th>
+                  <th class="has-text-right">2.00</th>
+                  <th class="has-text-right">23.00</th>
+                  <th class="has-text-right">3.00</th>
+                  <th class="has-text-right">26.00</th>
+                </tr>
+                <tr style="text-align:right">
+                  <td colspan="2">1</td>
+                  <td style="text-align:center;">10:45</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr style="text-align:right">
+                  <td colspan="2">2</td>
+                  <td style="text-align:center;">12:30</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr class="has-background-grey-lighter has-text-weight-semibold">
+                  <th>Oscar</th>
+                  <th class="has-text-right" colspan="2"></th>
+                  <th class="has-text-right">0.00</th>
+                  <th class="has-text-right">17.86</th>
+                  <th class="has-text-right">2.14</th>
+                  <th class="has-text-right">20.00</th>
+                </tr>
+                <tr style="text-align:right">
+                  <td colspan="2">1</td>
+                  <td style="text-align:center;">19:00</td>
+                  <td>0.00</td>
+                  <td>8.93</td>
+                  <td>1.07</td>
+                  <td>10.00</td>
+                </tr>
+                <tr class="has-background-grey-lighter has-text-weight-semibold">
+                  <th>Local</th>
+                  <th class="has-text-right" colspan="2"></th>
+                  <th class="has-text-right">0.00</th>
+                  <th class="has-text-right">8.93</th>
+                  <th class="has-text-right">1.07</th>
+                  <th class="has-text-right">10.00</th>
+                </tr>
+              <tfoot>
+                <tr class="has-background-grey" style="font-size:0.8rem">
+                  <th class="has-text-right has-text-white" colspan="3">Totales</th>
+                  <th class="has-text-right has-text-white">2.00</th>
+                  <th class="has-text-right has-text-white">49.79</th>
+                  <th class="has-text-right has-text-white">6.21</th>
+                  <th class="has-text-right has-text-white">56.00</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-store"></i>
+              </span>
+              <span>Resumen diario de compras, gastos y depositos</span>
+            </span>
+          </p>
+        </header>
+        <div class="card-content has-background-info-light p-2">
+          <div class="content">
+            <table>
+              <tbody>
+                <tr>
+                  <th style="width:100px;vertical-align:middle">Fecha:</th>
+                  <th><input id="cart-header-fecha" class="input is-small" type="date" name="cartHeaderDate"
+                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha de venta: 31/12/2022..." />
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <thead class="has-background-link">
+                <tr>
+                  <th class="has-text-white" style="width:50px">Nro.</th>
+                  <th class="has-text-white" style="width:100px;">Tipo</th>
+                  <th class="has-text-white" style="width:150px">Responsable</th>
+                  <th class="has-text-white" style="width:200px">Nro. Comprobante/Factura</th>
+                  <th class="has-text-white">Detalles</th>
+                  <th class="has-text-white has-text-right" style="width:100px">Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td style="padding-left:5px;">COMPRA</td>
+                  <td>Estiberson</td>
+                  <td>12450000560002333</td>
+                  <td>Articulos limpieza</td>
+                  <td class="has-text-right">12.25</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td style="padding-left:5px;">COMPRA</td>
+                  <td>Estiberson</td>
+                  <td>18560000230001401</td>
+                  <td>Bebidas para clientes</td>
+                  <td class="has-text-right">21.40</td>
+                </tr>
+                <tr class="has-background-grey-lighter has-text-weight-semibold">
+                  <th class="has-text-right" colspan="5">Total compras</th>
+                  <th class="has-text-right">33.65</th>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td style="padding-left:5px;">GASTO</td>
+                  <td>Estiberson</td>
+                  <td>12356666600080009</td>
+                  <td>Lavado de toallas</td>
+                  <td class="has-text-right">15.00</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td style="padding-left:5px;">ADELANTO</td>
+                  <td>Oscar</td>
+                  <td></td>
+                  <td>Adelanto 06/03/2022</td>
+                  <td class="has-text-right">30.00</td>
+                </tr>
+                <tr class="has-background-grey-lighter has-text-weight-semibold">
+                  <th class="has-text-right" colspan="5">Total gastos</th>
+                  <th class="has-text-right">45.00</th>
+                </tr>
+                <tr>
+                  <td>1</td>
+                  <td style="padding-left:5px;">DEPOSITO</td>
+                  <td>Oscar</td>
+                  <td>4564651123123213123</td>
+                  <td>Deposito banco produbanco cta 112231132655656</td>
+                  <td class="has-text-right">100.00</td>
+                </tr>
+                <tr class="has-background-grey-lighter has-text-weight-semibold">
+                  <th class="has-text-right" colspan="5">Total depositos</th>
+                  <th class="has-text-right">100.00</th>
+                </tr>
+                <tr class="has-background-grey">
+                  <th class="has-text-white has-text-right" colspan="5">Total</th>
+                  <th class="has-text-white has-text-right">178.65</th>
+                </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-store"></i>
+              </span>
+              <span>Cierre diario de caja</span>
+            </span>
+          </p>
+        </header>
+        <div class="card-content has-background-info-light p-2">
+          <div class="content" style="max-width: 40%;">
+            <table style="padding:5px !important">
+              <tbody>
+                <tr>
+                  <th style="width:100px;vertical-align:middle;">Fecha:</th>
+                  <th><input id="cart-header-fecha" class="input is-small" type="date" name="cartHeaderDate"
+                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha de venta: 31/12/2022..." />
+                    </td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <thead class="has-background-link">
+                <tr>
+                  <th class="has-text-white">Concepto</th>
+                  <th class="has-text-white has-text-right" style="width:10px"></th>
+                  <th class="has-text-white has-text-right" style="width:50px">Valor</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Saldo caja día anterio</td>
+                  <td>+</td>
+                  <td class="has-text-right">50.75</td>
+                </tr>
+                <tr>
+                  <td>Ventas</td>
+                  <td>+</td>
+                  <td class="has-text-right">149.25</td>
+                </tr>
+                <tr>
+                  <td>Compras</td>
+                  <td>-</td>
+                  <td class="has-text-right">33.65</td>
+                </tr>
+                <tr>
+                  <td>Gastos</td>
+                  <td>-</td>
+                  <td class="has-text-right">45.00</td>
+                </tr>
+                <tr>
+                  <td>Depositos</td>
+                  <td>-</td>
+                  <td class="has-text-right">100.00</td>
+                </tr>
+                <tr class="has-background-grey-lighter has-text-weight-semibold">
+                  <th colspan="2">Saldo en caja</th>
+                  <th class="has-text-right">21.35</th>
+                </tr>
+            </table>
+          </div>
+          <footer class="card-footer">
+            <div class="buttons is-right" style="width: 100%;">
+              <button class="cart-save card-footer-item button is-primary" href="#clientes">
+                <span class="icon">
+                  <i class="fa-solid fa-check"></i>
+                </span>
+                <span>Guardar</span>
+              </button>
+              <button class="cart-cancel card-footer-item button is-success" href="#clientes">
+                <span class="icon">
+                  <i class="fa-solid fa-pen-to-square"></i>
+                </span>
+                <span>Update</span>
+              </button>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+
+</html>

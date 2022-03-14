@@ -72,35 +72,3 @@ export default class NotificationBulma {
     this.nodoContenedor.classList.remove("note-visible");
   }
 }
-
-a = {
-  "data": [
-    {
-      "codigoEmpresa": "string",
-      "codigoProducto": "string",
-      "codigoAgencia": "string",
-      "nombre": "string",
-      "codigoIdentificacion": "string",
-      "identificacion": "string",
-      "codigoMoneda": "string",
-      "codigoTipo": "string",
-      "nombreTipo": "string",
-      "codigoSubtipo": "string",
-      "codigoClase": "string",
-      "fechaCreacion": "string",
-      "codigoEstado": "string",
-      "tipoEstado": "string"
-    }
-  ],
-  "links": {
-    "self": "string",
-    "first": "string",
-    "prev": "string",
-    "next": "string",
-    "last": "string"
-  },
-  "meta": {
-    "totalPages": 0,
-    "totalElements": 0
-  }
-}

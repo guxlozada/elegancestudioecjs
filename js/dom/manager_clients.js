@@ -1,10 +1,12 @@
 import { changeCartClient, ntf } from "../app.js";
-import { ahoraTimestamp } from "./fecha-util.js";
-import { db } from "./firebase_conexion.js";
+import { ahoraTimestamp, hoyString } from "./fecha-util.js";
+import { db, dbRef } from "./firebase_conexion.js";
 
 const d = document,
   w = window,
-  n = navigator
+  n = navigator,
+  clientsColletion = 'clientes-test',
+  clientesRef = db.ref(clientsColletion)
 
 const searchById = async (vsSearch) => {
   console.log("vsSearch", vsSearch)
@@ -52,17 +54,71 @@ const searchById = async (vsSearch) => {
         A continuación el detalle del error: ${error}`, "danger", 30000)
       })
   }
-
   renderClientes(clientsData)
 }
 
+const updateReferidosById = async (idNumero) => {
+  let txtSearch = idNumero.trim()
+  const clientsData = [];
+  console.log("vsSearch por id")
+  await clientesRef.orderByChild("idNumero").startAt(txtSearch).endAt(txtSearch + '\uf8ff')
+    .limitToFirst(1)
+    .once('value')
+    .then((snap) => {
+      snap.forEach((child) => {
+        clientsData.push({
+          uid: child.key,
+          ...child.val()
+        });
+      })
+    })
+    .catch((error) => {
+      console.log("error finding clients", error);
+      ntf.show("Búsqueda de cliente",
+        `Se produjo un error inesperado, consulte con el técnico. 
+      A continuación el detalle del error: ${error}`, "danger", 30000)
+    })
 
-//------------------------------------------------------------------------------------------------
-// Delegacion de eventos
-//------------------------------------------------------------------------------------------------
+  if (clientsData.length == 0) {
+    console.log("vsSearch por name")
+    await clientesRef
+      .orderByChild("nombres")
+      .startAt(txtSearch).endAt(txtSearch + '\uf8ff')
+      .limitToFirst(10)
+      .once('value')
+      .then((snap) => {
+        snap.forEach((child) => {
+          clientsData.push({
+            uid: child.key,
+            ...child.val()
+          });
+        })
 
-const clientesRef = db.ref('clients-test'),
-  $clientsContainer = d.querySelector(".clients-container")
+      })
+      .catch((error) => {
+        console.log("error finding clients", error);
+        ntf.show("Búsqueda de cliente",
+          `Se produjo un error inesperado, consulte con el técnico. 
+        A continuación el detalle del error: ${error}`, "danger", 30000)
+      })
+  }
+  renderClientes(clientsData)
+}
+
+// TODO: Verificar si se utiliza
+export const updateClientBySale = async (uid, clientData, callbackOk, callbackError) => {
+  await db.ref(`${clientsColletion}/${uid}`)
+    .set(clientData)
+    .then(res => { if (callbackOk) callbackOk(res) })
+    .catch(error => { if (callbackError) callbackError(error) });
+}
+
+
+// ------------------------------------------------------------------------------------------------
+// Delegation of events
+// ------------------------------------------------------------------------------------------------
+
+const $clientsContainer = d.querySelector(".clients-container")
 
 export default function handlerClients() {
 
@@ -118,24 +174,23 @@ export default function handlerClients() {
         usuario: localStorage.getItem("USER") || "LOCAL"
       }]
     }
-    insertarClienteDB(clienteData)
+    insertClientDB(clienteData)
     d.getElementById("client-edit-form").reset()
   })
 }
 
 // --------------------------
-// Agregar
+// Database operations
 // --------------------------
 
-function insertarClienteDB(clienteData) {
-  /*  const newClient = clientesRef.push()
-    clienteData = {
-      ...clienteData,
-      uid: newClient.path.pieces_[1]
-    }
-    newClient.set(clienteData) */
-  clientesRef.push(clienteData)
+function insertClientDB(clienteData) {
+  const registerClient = clientesRef.push();
+  registerClient.set(clienteData)
     .then(res => {
+      clienteData = {
+        ...clienteData,
+        uid: registerClient.path.pieces_[1]
+      }
       renderClientes([clienteData])
       ntf.show("Cliente registrado", `Se guardó correctamente la información del nuevo cliente: ${clienteData.nombres}`)
     })
@@ -149,6 +204,14 @@ function insertarClienteDB(clienteData) {
     })
 }
 
+//TODO: Validar si se usa
+export function updateClientBySaleDB(uid, clientData, callbackOk, callbackError) {
+  db.ref(`${clientsColletion}/${uid}`)
+    .set(clientData)
+    .then(res => { if (callbackOk) callbackOk(res) })
+    .catch(error => { if (callbackError) callbackError(error) });
+}
+
 function renderClientes(clientsDB) {
   $clientsContainer.innerHTML = "";
   d.querySelector(".client-search-zero ").classList.add("is-hidden")
@@ -160,8 +223,8 @@ function renderClientes(clientsDB) {
       $clienteSelected.dataset.uid = c.uid || "NULO"
       $clienteSelected.dataset.idtipo = c.idTipo || "NULO"
       $clienteSelected.dataset.idnumero = c.idNumero || "NULO"
-      $clienteSelected.dataset.ultimo = c.ultimoServicio || ahoraTimestamp()
-      $clienteSelected.dataset.refer = c.referidos || 0
+      $clienteSelected.dataset.ultserv = c.ultimoServicio || hoyString()
+      $clienteSelected.dataset.referidos = c.referidos || 0
       $template.querySelector(".item-details").textContent = `${c.nombres} [${c.idTipo} Nro.${c.idNumero}]`
       $template.querySelector(".trigger-client-edit").dataset.uid = c.uid || "NULO"
 

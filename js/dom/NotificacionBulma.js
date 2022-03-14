@@ -51,15 +51,19 @@ export default class NotificationBulma {
       this.nodoMensaje.textContent = mensaje;
 
     // Aplica los estilos/tema de Bulma
-    if (context) {
-      this.nodoContenedor.classList.add(`is-${context}`);
-    } else {
-      this.nodoContenedor.classList.add('is-info');
-    }
+    if (!context)
+      context = "info"
+    this.nodoContenedor.classList.remove(`is-danger`);
+    this.nodoContenedor.classList.remove(`is-primary`);
+    this.nodoContenedor.classList.remove(`is-link`);
+    this.nodoContenedor.classList.remove(`is-info`);
+    this.nodoContenedor.classList.remove(`is-warning`);
+    this.nodoContenedor.classList.add(`is-${context}`);
+
 
     // tiempo de visualizacion de la notificacion antes de ocultarlo automaticamente
     if (duracion == undefined || duracion <= 1000)
-      duracion = context === 'danger' ? 15000 : 10000
+      duracion = context === 'danger' ? 15000 : 8000
     // Tiempo de espera para cerrar automaticamente la notificacion
     this.timeoutOcultar = setTimeout(() => {
       this.close();

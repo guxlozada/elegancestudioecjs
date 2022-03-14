@@ -4,12 +4,20 @@ import NotificationBulma from './dom/NotificacionBulma.js';
 import { productos } from "./dom/catalogo_productos.js";
 import { servicios } from "./dom/catalogo_servicios.js";
 import { ahoraString, ahoraTimestamp, dateLocalTimezoneString, hoyString, timestampInputDateToDateEc } from "./dom/fecha-util.js";
-import handlerClients from "./dom/form_cliente.js";
+import handlerClients from "./dom/manager_clients.js";
+import { insertSalesDB } from "./dom/manager_sales.js";
 
 const d = document,
   w = window
 
 export const ntf = new NotificationBulma()
+
+const resetCart = () => {
+  localStorage.removeItem("CART")
+  cart = JSON.parse(JSON.stringify(cartIni))
+  cart.fecha = ahoraTimestamp()
+  updateSale()
+}
 
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
@@ -47,7 +55,7 @@ d.querySelector("#productos-modal .items-container").addEventListener("click", e
 })
 
 // EVENTO=click RAIZ=section<servicios> ACCION=Eliminar detalles
-d.getElementById("servicios").addEventListener("click", e => {
+d.getElementById("ventas").addEventListener("click", e => {
   let $el = e.target
   console.log(`evento click target=${$el.classList}`, $el.value)
   // Elemento a eliminar 
@@ -64,6 +72,9 @@ d.getElementById("servicios").addEventListener("click", e => {
       ntf.show("Información requerida", "Seleccione la forma de pago", "danger")
     } else if (cart.fecha > ahoraTimestamp()) {
       ntf.show("Información erronea", `La fecha no puede ser mayor a hoy: ${hoyString()} `, "danger")
+    } else {
+      // Insertar la venta en la base de datos
+      insertSalesDB(cart, resetCart)
     }
   }
 
@@ -73,17 +84,14 @@ d.getElementById("servicios").addEventListener("click", e => {
       eliminar = confirm("Esta seguró que desea descartar la información de la venta? ")
     }
     if (eliminar) {
-      localStorage.removeItem("CART")
-      cart = JSON.parse(JSON.stringify(cartIni))
-      cart.fecha = ahoraTimestamp()
-      updateSale();
-      ntf.show("Venta descartada", `Se elimino la venta sin guardar.`, "info")
+      resetCart()
+      ntf.show("Venta descartada", `Se elimino la venta sin guardar.`)
     }
   }
 })
 
 // EVENTO=change RAIZ=section<servicios> ACCION=detectar cambios en inputs 
-d.getElementById("servicios").addEventListener("change", e => {
+d.getElementById("ventas").addEventListener("change", e => {
   let $input = e.target
   console.log(`evento change target = ${$input.classList} `, $input.value)
   if ($input.matches(".cart-item-amount")) {
@@ -105,7 +113,7 @@ d.getElementById("servicios").addEventListener("change", e => {
 })
 
 // EVENTO=focusout RAIZ=section<servicios> ACCION=detectar cambios en inputs que deben refrescarv la pagina
-d.getElementById("servicios").addEventListener("focusout", e => {
+d.getElementById("ventas").addEventListener("focusout", e => {
   // Si existe cambios en cantidad o descuento de items, se actualiza el carrito 
   if (cart.update) {
     cart.update = false
@@ -182,7 +190,7 @@ Date.prototype.addHours = function (h) {
   return this;
 }
 let cart = localStorage.getItem("CART") ? JSON.parse(localStorage.getItem("CART")) : JSON.parse(JSON.stringify(cartIni))
-updateSale();
+updateSale()
 
 export function changeCartClient($clienteItem) {
   let descartar = true
@@ -195,16 +203,18 @@ export function changeCartClient($clienteItem) {
     localStorage.removeItem("CART")
     cart = JSON.parse(JSON.stringify(cartIni))
     cart.cliente.uid = $clienteItem.dataset.uid
+    cart.cliente.identificacion = $clienteItem.dataset.idnumero
     cart.cliente.descripcion = $clienteItem.querySelector(".item-details").innerText
-    cart.cliente.referidos = $clienteItem.dataset.refer
+    cart.cliente.referidos = $clienteItem.dataset.referidos
+    cart.cliente.ultimoServicio = $clienteItem.dataset.ultserv
     cart.fecha = ahoraTimestamp()
     cart.searchDate = hoyString()
     cart.searchDateTime = ahoraString()
     cart.valido = true
-    updateSale();
+    updateSale()
   } else {
     ntf.show("Venta pendiente de guardar", `Recuerde registrar la venta con el botón "Guardar" o 
-    descartarla definitivamente con el botón "Cancelar"`, "info")
+    descartarla definitivamente con el botón "Cancelar"`)
   }
 }
 
@@ -230,7 +240,7 @@ function addToCart(vsCode) {
 
 // Eliminar item de la venta
 function removeFromCart(vsCode) {
-  cart.items = cart.items.filter(item => item.codigo !== vsCode)//.map(item)
+  cart.items = cart.items.filter(item => item.codigo !== vsCode)
   updateSaleCart()
 }
 
@@ -252,12 +262,10 @@ function updateSaleCart() {
 function renderSaleHeader() {
   const cli = cart.cliente
   d.getElementById("cart-header-cli").innerText = cli.descripcion
-  d.getElementById("cart-header-cli-ultimo").innerText = cli.ultimoCorte ? dateLocalTimezoneString(cart.fecha) : "No existe"
+  d.getElementById("cart-header-cli-ultimo").innerText = cli.ultimoServicio ? cli.ultimoServicio : "No existe"
   d.getElementById("cart-header-cli-referidos").innerText = cli.referidos
   d.getElementById("cart-header-fecha").valueAsDate = new Date(cart.fecha)// TODO: pediente probar a las 10pm .addHours(-5)
-  if (cart.vendedor) {
-    d.getElementsByName("vendedor").forEach($el => $el.checked = $el.value === cart.vendedor)
-  }
+  d.getElementsByName("vendedor").forEach($el => $el.checked = $el.value === cart.vendedor)
   d.getElementsByName("formaPago").forEach($el => $el.checked = $el.value === cart.formaPago)
 }
 

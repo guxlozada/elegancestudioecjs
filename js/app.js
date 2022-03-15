@@ -6,6 +6,7 @@ import { servicios } from "./dom/catalogo_servicios.js";
 import { ahoraString, ahoraTimestamp, dateLocalTimezoneString, hoyString, timestampInputDateToDateEc } from "./dom/fecha-util.js";
 import handlerClients from "./dom/manager_clients.js";
 import { insertSalesDB } from "./dom/manager_sales.js";
+import handlerExpenses from "./dom/manager_expenses.js";
 
 const d = document,
   w = window
@@ -30,6 +31,7 @@ d.addEventListener("DOMContentLoaded", e => {
   modalToggle(".trigger-productos-modal", loadProductos)
   modalToggle(".trigger-client-edit")
   handlerClients()
+  handlerExpenses()
 })
 
 // EVENTO=click RAIZ=servicios-modal ACCION=cerrar modal y ejecutar callback

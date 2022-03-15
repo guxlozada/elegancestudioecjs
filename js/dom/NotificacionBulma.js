@@ -6,6 +6,7 @@ export default class NotificationBulma {
 
   init() {
     this.timeoutOcultar = null;
+    this.enabled = false;
 
     // Creacion del contenedor de la notificacion div
     this.nodoContenedor = document.createElement("div");
@@ -37,8 +38,8 @@ export default class NotificationBulma {
 
   // Visualiza las notificaciones al usuario
   show(titulo, mensaje, context, duracion) {
+    this.enabled = true;
     clearTimeout(this.timeoutOcultar);
-    this.nodoContenedor.classList.add("note-visible");
 
     // Asignar un titulo a la notificacion
     if (titulo != undefined)
@@ -53,17 +54,14 @@ export default class NotificationBulma {
     // Aplica los estilos/tema de Bulma
     if (!context)
       context = "info"
-    this.nodoContenedor.classList.remove(`is-danger`);
-    this.nodoContenedor.classList.remove(`is-primary`);
-    this.nodoContenedor.classList.remove(`is-link`);
-    this.nodoContenedor.classList.remove(`is-info`);
-    this.nodoContenedor.classList.remove(`is-warning`);
-    this.nodoContenedor.classList.add(`is-${context}`);
 
+    // Visualizar el mensaje
+    this.nodoContenedor.classList.add(`is-${context}`);
+    this.nodoContenedor.classList.add("note-visible");
 
     // tiempo de visualizacion de la notificacion antes de ocultarlo automaticamente
     if (duracion == undefined || duracion <= 1000)
-      duracion = context === 'danger' ? 15000 : 8000
+      duracion = context === 'danger' ? 10000 : 8000
     // Tiempo de espera para cerrar automaticamente la notificacion
     this.timeoutOcultar = setTimeout(() => {
       this.close();
@@ -73,6 +71,12 @@ export default class NotificationBulma {
 
   // Ocultar notificacion
   close() {
+    this.enabled = false;
     this.nodoContenedor.classList.remove("note-visible");
+    this.nodoContenedor.classList.remove(`is-danger`);
+    this.nodoContenedor.classList.remove(`is-primary`);
+    this.nodoContenedor.classList.remove(`is-link`);
+    this.nodoContenedor.classList.remove(`is-info`);
+    this.nodoContenedor.classList.remove(`is-warning`);
   }
 }

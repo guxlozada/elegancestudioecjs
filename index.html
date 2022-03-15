@@ -14,6 +14,7 @@
       padding: 2px;
     }
 
+    input.expense-amount[type="number"],
     input.cart-item-amount[type="number"],
     input.cart-item-discount[type="number"] {
       width: 2.2rem;
@@ -24,6 +25,10 @@
 
     input.cart-item-discount[type="number"] {
       width: 3rem;
+    }
+
+    input.expense-amount[type="number"] {
+      width: 5rem;
     }
   </style>
 </head>
@@ -248,8 +253,7 @@
     </section>
 
 
-
-    <section id="gastos" class="section is-medium" style="max-width: 1000px !important; margin:auto;">
+    <section id="expenses" class="section is-large" style="max-width: 1000px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -267,24 +271,22 @@
               <tbody>
                 <tr>
                   <th>Fecha:</th>
-                  <th><input class="input is-small" type="date" name="cartHeaderDate1"
-                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha : 31/12/2022..." />
-                    </td>
+                  <th><span id="expense-date">No existe</span></th>
                 </tr>
                 <tr>
                   <th>Responsable:</td>
                   <th>
                     <div class="control is-size-7">
                       <label class="radio">
-                        <input type="radio" name="responsab" value="ESTIBERSON">
+                        <input type="radio" name="responsable" value="ESTIBERSON">
                         Estiberson
                       </label>
                       <label class="radio">
-                        <input type="radio" name="responsab" value="OSCAR">
+                        <input type="radio" name="responsable" value="OSCAR">
                         Oscar
                       </label>
                       <label class="radio">
-                        <input type="radio" name="responsab" value="LOCAL">
+                        <input type="radio" name="responsable" value="LOCAL">
                         Local
                       </label>
                     </div>
@@ -295,23 +297,23 @@
                   <th>
                     <div class="control is-size-7">
                       <label class="radio">
-                        <input type="radio" name="tipog" value="comp" checked>
+                        <input type="radio" name="expenseType" value="COMPRA" checked>
                         Compra
                       </label>
                       <label class="radio">
-                        <input type="radio" name="tipog" value="gast">
+                        <input type="radio" name="expenseType" value="GASTO">
                         Gasto
                       </label>
                       <label class="radio">
-                        <input type="radio" name="tipog" value="depo">
+                        <input type="radio" name="expenseType" value="DEPOSITO">
                         Deposito
                       </label>
                       <label class="radio">
-                        <input type="radio" name="tipog" value="Adelanto">
+                        <input type="radio" name="expenseType" value="ADELANTO">
                         Adelanto barbero
                       </label>
                       <label class="radio">
-                        <input type="radio" name="tipog" value="Ajuste">
+                        <input type="radio" name="expenseType" value="AJUSTE">
                         Ajuste
                       </label>
                     </div>
@@ -319,19 +321,24 @@
                 </tr>
                 <tr>
                   <th>Valor:</th>
-                  <th><input class="input is-small" type="number" name="cartHeaderDate12"
-                      style="max-width: 140px; margin: 0;" />
-                    </td>
+                  <th><input class="input is-small" id="expense-amount" name="expenseAmount" type="number"
+                      style="max-width: 140px; margin: 0;" value="0.00" step="0.1" min="0.01" placeholder="00.00" />
+                  </th>
                 </tr>
                 <tr>
                   <th>Nro.Comprobante/Factura:</th>
-                  <th><input class="input is-small" type="text" name="cartHeaderDate13" />
-                    </td>
+                  <th><input class="input is-small" id="expense-voucher" name="expenseVoucher" type="text"
+                      placeholder="Ingrese el número de comprobante o factura..." />
+                  </th>
                 </tr>
                 <tr>
                   <th>Detalles:</th>
-                  <th><textarea class="input" name="w3review" rows="4"></textarea>
-                    </td>
+                  <th><input class="input is-small" id="expense-details" name="expenseDetails" type="text"
+                      placeholder="Detalle motivo del gasto o compra, o el banco donde se realizó el deposito..." />
+
+                    <!--textarea class="input" id="expense-details" name="expenseDetails" rows="4"
+                      placeholder="Detalle motivo del gasto o compra, o el banco donde se realizó el deposito..."></textarea-->
+                  </th>
                 </tr>
               </tbody>
             </table>
@@ -339,13 +346,13 @@
         </div>
         <footer class="card-footer">
           <div class="buttons is-right" style="width: 100%;">
-            <button class="cart-save card-footer-item button is-primary" href="#clientes">
+            <button class="expense-save card-footer-item button is-primary" href="#clientes">
               <span class="icon">
                 <i class="fa-solid fa-check"></i>
               </span>
               <span>Guardar</span>
             </button>
-            <button class="cart-cancel card-footer-item button is-danger" href="#clientes">
+            <button class="expense-cancel card-footer-item button is-danger" href="#clientes">
               <span class="icon">
                 <i class="fa-solid fa-xmark"></i>
               </span>

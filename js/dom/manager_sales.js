@@ -2,8 +2,6 @@ import { ntf } from "../app.js";
 import { dbRef } from "./firebase_conexion.js";
 
 const d = document,
-  w = window,
-  n = navigator,
   collectionSales = 'ventas-test',
   collectionSalesDetails = 'ventas-detalles-test',
   collectionClients = 'clientes-test'
@@ -32,6 +30,7 @@ export function insertSalesDB(cart, callback) {
   delete salesHeader.items
   delete salesHeader.cliente
   delete salesHeader.valido
+  delete salesHeader.update
 
   // Obtener la clave de la nueva venta
   const newSaleKey = dbRef.child(collectionSales).push().key;

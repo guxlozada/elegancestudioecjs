@@ -3,8 +3,6 @@ import { ahoraTimestamp, hoyString } from "./fecha-util.js";
 import { db, dbRef } from "./firebase_conexion.js";
 
 const d = document,
-  w = window,
-  n = navigator,
   clientsColletion = 'clientes-test',
   clientesRef = db.ref(clientsColletion)
 
@@ -60,7 +58,7 @@ const searchById = async (vsSearch) => {
 const updateReferidosById = async (idNumero) => {
   let txtSearch = idNumero.trim()
   const clientsData = [];
-  console.log("vsSearch por id")
+  console.log("update Referidos por id")
   await clientesRef.orderByChild("idNumero").startAt(txtSearch).endAt(txtSearch + '\uf8ff')
     .limitToFirst(1)
     .once('value')
@@ -73,7 +71,7 @@ const updateReferidosById = async (idNumero) => {
       })
     })
     .catch((error) => {
-      console.log("error finding clients", error);
+      console.log("error buscando cliente por id para referidos0", error);
       ntf.show("Búsqueda de cliente",
         `Se produjo un error inesperado, consulte con el técnico. 
       A continuación el detalle del error: ${error}`, "danger", 30000)

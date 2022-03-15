@@ -150,6 +150,7 @@ export default function handlerExpenses() {
 // --------------------------
 
 function insertExpenseDB() {
+  delete expense.valid
   expensesRef.push(expense)
     .then(res => {
       ntf.show(`${expense.type} registrado`, `Se guardó correctamente la información: ${expense.type} Nro.${expense.date}`)

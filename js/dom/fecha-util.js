@@ -4,7 +4,7 @@ const locale = "es-EC",
 
 export function ahoraString() {
   const hoy = new Date()
-  return hoy.toLocaleString(locale, { timeZone: "America/Guayaquil" });
+  return hoy.toLocaleString(locale, { timeZone: timezone });
 }
 
 export function ahoraTimestamp() {

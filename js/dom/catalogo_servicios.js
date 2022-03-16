@@ -4,7 +4,16 @@ export const servicios = [
     descripcion: "Fibra capilar",
     unitValue: 2.68,
     impuestoIVA: 0.32,
-    valor: 3.00
+    valor: 3.00,
+    taxIVA: true,
+    category: "PROD",
+    sellerCommission: 40,
+    promo: {
+      sixthHaircut: 100,
+      tuesday: 20,
+      referrals: 20,
+      cash: 12
+    }
   },
   {
     codigo: "SPERFIL",

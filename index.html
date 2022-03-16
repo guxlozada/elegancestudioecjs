@@ -9,12 +9,17 @@
   <link rel="stylesheet" href="/css/main.css" />
   <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
   <style>
+    @media screen and (max-width: 768px) {
+      ::placeholder {
+        color: #47b6af !important;
+      }
+    }
+
     .content table td,
     .content table th {
       padding: 2px;
     }
 
-    input.expense-amount[type="number"],
     input.cart-item-amount[type="number"],
     input.cart-item-discount[type="number"] {
       width: 2.2rem;
@@ -25,10 +30,6 @@
 
     input.cart-item-discount[type="number"] {
       width: 3rem;
-    }
-
-    input.expense-amount[type="number"] {
-      width: 5rem;
     }
   </style>
 </head>
@@ -49,14 +50,14 @@
         </p>
         <div class="panel-block">
           <p class="control has-icons-left">
-            <input class="client-search-text input is-primary" type="text"
-              placeholder="Ingrese identificación o el nombre apellido">
+            <input class="client-search-text input is-small is-primary" type="text"
+              placeholder="Ingrese identificación o apellido">
             <span class="icon is-left">
               <i class="fas fa-search"></i>
             </span>
           </p>
           <div class="control" style="width:fit-content;">
-            <input class="trigger-client-search button is-primary" type="button" value="Buscar">
+            <input class="trigger-client-search button is-small is-primary" type="button" value="Buscar">
           </div>
         </div>
 
@@ -64,27 +65,28 @@
           <!-- render clientes-->
         </div>
 
-        <div class="panel-block">
+        <div class="panel-block" style="width: 100%;">
           <a class="client-search-zero panel-block has-background-warning m-2 is-hidden" id="clientes-busqueda-cero">
             <span class="panel-icon has-text-danger-dark">
               <i class="fa-solid fa-user-slash"></i>
             </span>
-            Búsqueda finalizada con 0 resultados. Intente nuevamente cambiando el texto de búsqueda
+            Búsqueda finalizada con 0 resultados. Ingrese correctamente la identificación o apellido del cliente
+            <br>RECUERDE: Si el cliente no se encuentra registrado de clic en el botón Agregar Cliente
           </a>
         </div>
 
         <div class="buttons is-right p-2" style="width: 100%;">
-          <button class="trigger-client-edit button is-small is-link is-rounded" data-target="client-edit">
+          <a class="button is-small is-link is-rounded" href="#client-edit">
             <span class="icon">
               <i class="fa-solid fa-user-plus"></i>
             </span>
             <span>Agregar Cliente</span>
-          </button>
+          </a>
         </div>
       </article>
     </section>
 
-    <section id="ventas" class="section is-medium" style="max-width: 1000px !important; margin:auto;">
+    <section id="sales" class="section is-large" style="max-width: 1000px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -97,42 +99,54 @@
           </p>
         </header>
         <div class="card-content has-background-info-light p-2">
-          <div class="content">
-            <table>
+          <div class="content" id="sale-content">
+            <table id="sale-header">
               <tbody>
                 <tr>
                   <th>Cliente:</th>
-                  <th><span id="cart-header-cli">CLIENTE [CEDULA]</span>
+                  <th><span id="cart-header-client">CLIENTE [CEDULA]</span>
                   </th>
                 </tr>
                 <tr class="has-background-warning">
                   <th>Último servicio:</th>
-                  <th><span id="cart-header-cli-ultimo">No existe</span></td>
+                  <th><span id="cart-header-cli-lastserv">No existe</span></td>
                 </tr>
                 <tr class="has-background-warning">
                   <th>Referidos:</th>
-                  <th><span id="cart-header-cli-referidos">0</span></th>
+                  <th><span id="cart-header-cli-referrals">0</span></th>
                 </tr>
                 <tr>
                   <th>Fecha:</th>
-                  <th><input id="cart-header-fecha" class="input is-small" type="date" name="cartHeaderDate"
-                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha de venta: 31/12/2022..." />
-                    </td>
+                  <th>
+                    <div class="field">
+                      <p class="control has-icons-left">
+                        <input class="input is-small" id="cart-header-date" type="text"
+                          style="max-width: 150px; margin: 0;" readonly>
+                        <span class="icon is-small is-left">
+                          <i class="fa-solid fa-calendar-days"></i>
+                        </span>
+                      </p>
+                    </div>
+
                 </tr>
                 <tr>
                   <th>Vendedor:</td>
                   <th>
                     <div class="control is-size-7">
                       <label class="radio">
-                        <input type="radio" name="vendedor" value="ESTIBERSON">
+                        <input type="radio" name="seller" value="ESTIBERSON">
                         Estiberson
                       </label>
                       <label class="radio">
-                        <input type="radio" name="vendedor" value="OSCAR">
+                        <input type="radio" name="seller" value="OSCAR">
                         Oscar
                       </label>
                       <label class="radio">
-                        <input type="radio" name="vendedor" value="LOCAL">
+                        <input type="radio" name="seller" value="ENEGLIMAR">
+                        Eneglimar
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="seller" value="LOCAL">
                         Local
                       </label>
                     </div>
@@ -143,15 +157,15 @@
                   <th>
                     <div class="control is-size-7">
                       <label class="radio">
-                        <input type="radio" name="formaPago" value="EFECTIVO" checked>
+                        <input type="radio" name="payment" value="EFECTIVO" checked>
                         Efectivo
                       </label>
                       <label class="radio">
-                        <input type="radio" name="formaPago" value="CREDITO">
+                        <input type="radio" name="payment" value="CREDITO">
                         Tarjeta Crédito
                       </label>
                       <label class="radio">
-                        <input type="radio" name="formaPago" value="DEBITO">
+                        <input type="radio" name="payment" value="DEBITO">
                         Tarjeta Débito
                       </label>
                     </div>
@@ -167,7 +181,7 @@
                       <span class="icon">
                         <i class="fa-solid fa-scissors"></i>
                       </span>
-                      <span>Agregar Servicio</span>
+                      <span class="is-hidden-mobile">Agregar Servicio</span>
                     </button></th>
                   <th style="width:1rem"><span title="Cantidad">Cant.</span></th>
                   <th class="has-text-right" style="width:2.5rem"><span title="Valor por unidad">Val./U</span></th>
@@ -176,7 +190,7 @@
                   <th style="width:1rem"></th>
                 </tr>
               </thead>
-              <tbody id="cart-details-servicios">
+              <tbody id="cart-details-services">
                 <!-- Agregar detalles de servicios-->
 
               </tbody>
@@ -187,26 +201,13 @@
                       <span class="icon">
                         <i class="fa-solid fa-basket-shopping"></i>
                       </span>
-                      <span>Agregar Producto</span>
+                      <span class="is-hidden-mobile">Agregar Producto</span>
                     </button></th>
                   <th colspan="5"></th>
                 </tr>
               </thead>
-              <tbody id="cart-details-productos">
+              <tbody id="cart-details-products">
                 <!-- Agregar detalles de productos-->
-                <!--tr>
-                  <td>[PGEL] Gel</td>
-                  <td><input type="number" class="cart-producto-amount" value="2" min="1" max="99" data-key="UID">
-                  </td>
-                  <td class="cart-producto-unit-value has-text-right">7.50</td>
-                  <td class="cart-producto-discount has-text-right">0.00</td>
-                  <td class="cart-producto-value has-text-right">15.00</td>
-                  <td><a class="cart-producto-delete" href="#ventas" title="X Eliminar Producto" data-key="UID">
-                      <span class="icon is-small has-text-danger">
-                        <i class="fa-solid fa-trash-can"></i>
-                      </span>
-                    </a></td>
-                </tr-->
               </tbody>
               <tfoot id="cart-summary">
                 <tr class="has-background-grey-lighter">
@@ -252,6 +253,147 @@
       </div>
     </section>
 
+    <section id="client-edit" class="section is-large" style="max-width: 1000px !important; margin:auto;">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-user-pen"></i>
+              </span>
+              <span>Cliente</span>
+            </span>
+          </p>
+        </header>
+        <form id="client-edit-form">
+          <div class="card-content has-background-info-light">
+            <div class="content px-7">
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Primer nombre y primer apellido</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-name" type="text" data-key="name"
+                    style="max-width: 500px; margin: 0;" placeholder="Primer nombre y apellido..." />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-signature"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control is-size-7">
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="idType" value="CEDULA" data-key="idType" checked>
+                    Cédula
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="idType" value="PASAPORTE" data-key="idType">
+                    Pasaporte
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="idType" value="OTRO" data-key="idType"> Otro</label>
+                </div>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-idnumber" type="text" data-key="idNumber"
+                    style="max-width: 250px; margin: 0;" placeholder="Número de identificación..." />
+                  <span class="icon is-small is-left">
+                    <i class="far fa-id-card"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Correo electrónico</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-email" type="email" data-key="email"
+                    style="max-width: 500px; margin: 0;" placeholder="Correo electrónico...">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Ciudad donde vive</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-city" type="text" data-key="city"
+                    style="max-width: 250px; margin: 0;" placeholder="Ciudad donde vive..." value="Manta" />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-map-marker-alt"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Fecha de nacimiento :</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-birthdate" type="date" data-key="birthdate"
+                    style="max-width: 250px; margin: 0;" placeholder="Fecha de nacimiento..." />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-birthday-cake"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Teléfono celular</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-cellphone" type="tel" data-key="cellphone"
+                    style="max-width: 250px; margin: 0;" placeholder="Teléfono celular..." />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-phone"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Presentado / Referido por :</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-referred" type="text" data-key="referred"
+                    style="max-width: 250px; margin: 0;" placeholder="Identificación de quien referencia..." />
+                  <span class="icon is-small is-left">
+                    <i class="far fa-id-card"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Registrado por</label>
+                <div class="control is-size-7">
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="registeredBy" value="ESTIBERSON"
+                      data-key="registeredBy">
+                    Estiberson
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="registeredBy" value="OSCAR" data-key="registeredBy">
+                    Oscar
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="registeredBy" value="ENEGLIMAR"
+                      data-key="registeredBy">
+                    Eneglimar
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="registeredBy" value="ADMIN" data-key="registeredBy">
+                    Admin
+                  </label>
+                </div>
+              </div>
+              <input class="input" id="client-uid" type="hidden" name="uid" data-key="uid" />
+            </div>
+            <footer class="card-footer">
+              <div class="buttons is-right" style="width: 100%;">
+                <button class="client-save card-footer-item button is-primary" type="submit" href="#clientes">
+                  <span class="icon">
+                    <i class="fa-solid fa-check"></i>
+                  </span>
+                  <span>Guardar</span>
+                </button>
+                <button class="client-cancel card-footer-item button is-danger" type="reset" href="#clientes">
+                  <span class="icon">
+                    <i class="fa-solid fa-xmark"></i>
+                  </span>
+                  <span>Cancelar</span>
+                </button>
+              </div>
+            </footer>
+          </div>
+        </form>
+      </div>
+    </section>
 
     <section id="expenses" class="section is-large" style="max-width: 1000px !important; margin:auto;">
       <div class="card is-size-7">
@@ -261,105 +403,118 @@
               <span class="icon">
                 <i class="fa-solid fa-store"></i>
               </span>
-              <span>Compras / Gastos</span>
+              <span>Compra / Gasto</span>
             </span>
           </p>
         </header>
-        <div class="card-content has-background-info-light p-2">
-          <div class="content">
-            <table>
-              <tbody>
-                <tr>
-                  <th>Fecha:</th>
-                  <th><span id="expense-date">No existe</span></th>
-                </tr>
-                <tr>
-                  <th>Responsable:</td>
-                  <th>
-                    <div class="control is-size-7">
-                      <label class="radio">
-                        <input type="radio" name="responsable" value="ESTIBERSON">
-                        Estiberson
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="responsable" value="OSCAR">
-                        Oscar
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="responsable" value="LOCAL">
-                        Local
-                      </label>
-                    </div>
-                  </th>
-                </tr>
-                <tr>
-                  <th>Tipo:</th>
-                  <th>
-                    <div class="control is-size-7">
-                      <label class="radio">
-                        <input type="radio" name="expenseType" value="COMPRA" checked>
-                        Compra
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="expenseType" value="GASTO">
-                        Gasto
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="expenseType" value="DEPOSITO">
-                        Deposito
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="expenseType" value="ADELANTO">
-                        Adelanto barbero
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="expenseType" value="AJUSTE">
-                        Ajuste
-                      </label>
-                    </div>
-                  </th>
-                </tr>
-                <tr>
-                  <th>Valor:</th>
-                  <th><input class="input is-small" id="expense-amount" name="expenseAmount" type="number"
-                      style="max-width: 140px; margin: 0;" value="0.00" step="0.1" min="0.01" placeholder="00.00" />
-                  </th>
-                </tr>
-                <tr>
-                  <th>Nro.Comprobante/Factura:</th>
-                  <th><input class="input is-small" id="expense-voucher" name="expenseVoucher" type="text"
-                      placeholder="Ingrese el número de comprobante o factura..." />
-                  </th>
-                </tr>
-                <tr>
-                  <th>Detalles:</th>
-                  <th><input class="input is-small" id="expense-details" name="expenseDetails" type="text"
-                      placeholder="Detalle motivo del gasto o compra, o el banco donde se realizó el deposito..." />
-
-                    <!--textarea class="input" id="expense-details" name="expenseDetails" rows="4"
-                      placeholder="Detalle motivo del gasto o compra, o el banco donde se realizó el deposito..."></textarea-->
-                  </th>
-                </tr>
-              </tbody>
-            </table>
+        <form>
+          <div class="card-content has-background-info-light">
+            <div class="content px-7">
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Fecha</label>
+                <p class="control has-icons-left">
+                  <input class="input is-small" id="expense-date" type="text" style="max-width: 250px; margin: 0;"
+                    placeholder="Fecha de registro..." readonly>
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-calendar-days"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Responsable</label>
+                <div class="control is-size-7">
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="responsable" value="ESTIBERSON"
+                      data-key="responsable">
+                    Estiberson
+                  </label>
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="responsable" value="OSCAR" data-key="responsable">
+                    Oscar
+                  </label>
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="responsable" value="ENEGLIMAR"
+                      data-key="responsable">
+                    Eneglimar
+                  </label>
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="responsable" value="ADMIN" data-key="responsable">
+                    Admin
+                  </label>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Tipo</label>
+                <div class="control is-size-7">
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="expenseType" value="GASTO" data-key="type">
+                    Gasto
+                  </label>
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="expenseType" value="COMPRA" data-key="type">
+                    Compra
+                  </label>
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="expenseType" value="DEPOSITO" data-key="type">
+                    Deposito
+                  </label>
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="expenseType" value="ADELANTO" data-key="type">
+                    Adelanto
+                  </label>
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="expenseType" value="AJUSTE" data-key="type">
+                    Ajuste
+                  </label>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Valor</label>
+                <p class="control has-icons-left">
+                  <input class="expense-input input is-small" id="expense-value" name="expenseAmount" type="number"
+                    data-key="value" style="max-width: 250px; margin: 0;" step="0.01" min="0.01" placeholder="00.00" />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-money-check-dollar"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Nro.Comprobante /
+                  Factura</label>
+                <p class="control has-icons-left">
+                  <input class="expense-input input is-small" id="expense-voucher" name="expenseVoucher" type="text"
+                    data-key="voucher" style="max-width: 250px; margin: 0;" placeholder="# Comprobante o Factura..." />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-receipt"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Detalles</label>
+                <div class="control">
+                  <textarea class="expense-input textarea is-small" id="expense-details" name="expenseDetails" rows="2"
+                    data-key="details" placeholder="Detalle motivo del gasto o compra..."></textarea>
+                </div>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <div class="buttons is-right" style="width: 100%;">
+                <button class="expense-save card-footer-item button is-primary" type="submit" href="#">
+                  <span class="icon">
+                    <i class="fa-solid fa-check"></i>
+                  </span>
+                  <span>Guardar</span>
+                </button>
+                <button class="expense-cancel card-footer-item button is-danger" type="reset" href="#">
+                  <span class="icon">
+                    <i class="fa-solid fa-xmark"></i>
+                  </span>
+                  <span>Cancelar</span>
+                </button>
+              </div>
+            </footer>
           </div>
-        </div>
-        <footer class="card-footer">
-          <div class="buttons is-right" style="width: 100%;">
-            <button class="expense-save card-footer-item button is-primary" href="#clientes">
-              <span class="icon">
-                <i class="fa-solid fa-check"></i>
-              </span>
-              <span>Guardar</span>
-            </button>
-            <button class="expense-cancel card-footer-item button is-danger" href="#clientes">
-              <span class="icon">
-                <i class="fa-solid fa-xmark"></i>
-              </span>
-              <span>Cancelar</span>
-            </button>
-          </div>
-        </footer>
+        </form>
       </div>
     </section>
   </main>
@@ -374,7 +529,7 @@
           </span>
           Servicios
         </p>
-        <a class="delete" href="#ventas"></a>
+        <a class="delete" href="#sales"></a>
       </header>
       <section class="modal-card-body">
         <article class="items-container panel is-info is-size-7">
@@ -394,7 +549,7 @@
           </span>
           Productos
         </p>
-        <button class="delete" href="#ventas"></button>
+        <button class="delete" href="#sales"></button>
       </header>
       <section class="modal-card-body">
         <article class="items-container panel is-info is-size-7">
@@ -404,138 +559,30 @@
     </div>
   </div>
 
-  <div class="modal" id="client-edit">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head has-background-link p-2">
-        <p class="modal-card-title has-text-white is-size-6">
-          <span class="icon">
-            <i class="fa-solid fa-user-pen"></i>
-          </span>
-          Cliente
-        </p>
-        <button class="delete" href="#clientes"></button>
-      </header>
-      <form id="client-edit-form">
-        <section class="modal-card-body">
-          <div class="field">
-            <label class="label is-small">Primer nombre y primer apellido:</label>
-            <div class="control">
-              <input class="cliente-input input is-small" type="text" data-key="nombres"
-                placeholder="Primer nombre y apellido: José Perez..." />
-            </div>
-          </div>
-          <div class="field">
-            <div class="control is-size-7">
-              <label class="radio">
-                <input class="cliente-input" data-key='idTipo' type="radio" name="idTipo" value="CEDULA" checked> Cédula
-              </label>
-              <label class="radio">
-                <input class="cliente-input" data-key='idTipo' type="radio" name="idTipo" value="PASAPORTE"> Pasaporte
-              </label>
-              <label class="radio">
-                <input class="cliente-input" data-key='idTipo' type="radio" name="idTipo" value="OTRO"> Otro</label>
-            </div>
-            <div class="control has-icons-left">
-              <input class="cliente-input input is-small" type="text" data-key="idNumero"
-                placeholder="Número de identificación: 1711012023..." />
-              <span class="icon is-small is-left">
-                <i class="far fa-id-card"></i>
-              </span>
-            </div>
-          </div>
-
-          <div class="field">
-            <label class="label is-small">Ciudad donde vive :</label>
-            <div class="control has-icons-left">
-              <input class="cliente-input input is-small" type="text" data-key="ciudad"
-                placeholder="Manta, Portoviejo..." value="Manta" />
-              <span class="icon is-small is-left">
-                <i class="fas fa-map-marker-alt"></i>
-              </span>
-            </div>
-          </div>
-          <div class="field">
-            <label class="label is-small">Fecha de nacimiento :</label>
-            <div class="control has-icons-left">
-              <input class="cliente-input input is-small" type="date" data-key="fechaNacimiento"
-                placeholder="31/12/2000..." />
-              <span class="icon is-small is-left">
-                <i class="fas fa-birthday-cake"></i>
-              </span>
-            </div>
-          </div>
-          <div class="field">
-            <label class="label is-small">Teléfono/Celular :</label>
-            <div class="control has-icons-left">
-              <input class="cliente-input input is-small" type="tel" data-key="telefono" placeholder="0912345678..." />
-              <span class="icon is-small is-left">
-                <i class="fas fa-phone"></i>
-              </span>
-            </div>
-          </div>
-          <div class="field">
-            <label class="label is-small">Correo electrónico :</label>
-            <div class="control has-icons-left">
-              <input class="cliente-input input is-small" type="email" data-key="correo"
-                placeholder="juanperez@gmail.com...">
-              <span class="icon is-small is-left">
-                <i class="fas fa-envelope"></i>
-              </span>
-            </div>
-          </div>
-          <div class="field">
-            <label class="label is-small">Presentado/Referido por :</label>
-            <div class="control has-icons-left">
-              <input class="cliente-input input is-small" type="text" data-key="referidoPor"
-                placeholder="Número de identificación: 1711012023..." />
-              <span class="icon is-small is-left">
-                <i class="far fa-id-card"></i>
-              </span>
-            </div>
-          </div>
-          <input class="input" type="hidden" name="uid" />
-        </section>
-        <footer class="modal-card-foot">
-          <div class="buttons is-right are-small" style="width: 100%;">
-            <button type="submit" class="button is-primary">
-              <span class="icon is-small">
-                <i class="fa-solid fa-check"></i>
-              </span>
-              <span>Guardar</span>
-            </button>
-            <button type="reset" class="button is-danger">
-              <span class="icon is-small">
-                <i class="fa-solid fa-xmark"></i>
-              </span>
-              <span>Cancelar</span>
-            </button>
-          </div>
-        </footer>
-      </form>
-    </div>
-  </div>
-
   <template id="cliente-template">
-    <div class="panel-block">
-      <button class="trigger-client-edit button is-small is-rounded is-link py-0" data-uid="NULO"
-        data-target="client-edit" title="Actualizar información">
+    <div class="panel-block px-1">
+      <a class="trigger-client-edit button is-small is-rounded is-link py-0" href="#client-edit" data-uid="NULO"
+        title="Actualizar información de cliente">
         <span class="icon is-small">
           <i class="fa-solid fa-pen-to-square"></i>
         </span>
-      </button>
-      <a class="cliente-selected panel-block" href="#ventas" data-toggle="collapse" data-target="#">
-        <span class="panel-icon">
-          <i class="fa-solid fa-user-tie"></i>
-        </span>
-        <span class="item-details"> NOMBRE APELLIDO [IDTIPO: IDNUMERO]</span>
       </a>
+      &nbsp;
+      <a class="trigger-cart-client button is-small is-rounded is-primary py-0" href="#sales" data-uid="NULO"
+        title="Nuevo servicio / venta">
+        <span class="icon is-small">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </span>
+      </a>
+      <div class="cliente-selected panel-block">
+        <span class="client-description"> NOMBRE APELLIDO [IDTIPO: IDNUMERO]</span>
+      </div>
 
     </div>
   </template>
 
   <template id="servicio-template">
-    <a class="servicio-selected panel-block" href="#ventas">
+    <a class="servicio-selected panel-block" href="#sales">
       <span class="panel-icon">
         <i class="fa-solid fa-plus"></i>
       </span>
@@ -544,7 +591,7 @@
   </template>
 
   <template id="producto-template">
-    <a class="producto-selected panel-block" href="#ventas">
+    <a class="producto-selected panel-block" href="#sales">
       <span class="panel-icon">
         <i class="fa-solid fa-plus"></i>
       </span>
@@ -563,7 +610,7 @@
         <input type="number" class="cart-item-discount" value="0" step="0.1" min="0" data-key="UID">
       </td>
       <td class="cart-item-value has-text-right" style="vertical-align: bottom;">0.00</td>
-      <td><a class="cart-item-delete" href="#ventas" title="X Remover" data-key="UID">
+      <td><a class="cart-item-delete" href="#sales" title="X Remover" data-key="UID">
           <span class="icon is-small has-text-danger">
             <i class="fa-solid fa-trash-can"></i>
           </span>

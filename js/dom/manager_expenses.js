@@ -1,33 +1,35 @@
-import { changeCartClient, ntf } from "../app.js";
-import { ahoraString, ahoraTimestamp, dateLocalTimezoneString, hoyString, timestampLocalTimezoneString } from "./fecha-util.js";
-import { db, dbRef } from "./firebase_conexion.js";
+import { ntf } from "../app.js";
+import { ahoraTimestamp, hoyString, timestampLocalTimezoneString } from "./fecha-util.js";
+import { db } from "./firebase_conexion.js";
 
 const d = document,
-  expensesColletion = 'gastos-test',
-  depositsColletion = 'depositos-test',
+  expensesColletion = 'expenses-test',
+  depositsColletion = 'deposits-test',
   expensesRef = db.ref(expensesColletion),
-  depositsRef = db.ref(depositsColletion)
+  depositsRef = db.ref(depositsColletion),
+  $container = d.getElementById("expenses")
 
 const expenseIni = {
   date: null,
   responsable: null,
-  type: null,
-  amount: 0,
+  type: "GASTO",
+  value: null,
   voucher: null,
   details: null,
   valid: false
 }
 
 let expense = localStorage.getItem("EXPENSE") ? JSON.parse(localStorage.getItem("EXPENSE")) : JSON.parse(JSON.stringify(expenseIni))
+changeExpense(false)
 
 export function changeExpense(reset) {
-  let descartar = true
+  let discart = true
   if (!reset && expense.valid) {
-    descartar = confirm(`Existe un(a) ${expense.type} pendiente de registrar. Que desea hacer: 
+    discart = confirm(`${expense.type} pendiente de registrar. Que desea hacer: 
     ACEPTAR: descartar la anterior y crear una nueva; o, 
-    CANCELAR: regresar a ${expense.type} anterior`)
+    CANCELAR: regresar a la anterior`)
   }
-  if (descartar) {
+  if (discart) {
     localStorage.removeItem("EXPENSE")
     expense = JSON.parse(JSON.stringify(expenseIni))
     expense.date = ahoraTimestamp()
@@ -40,109 +42,96 @@ export function changeExpense(reset) {
   }
 }
 
-// Actualizar la compra/gasto
+// Actualizar el formulario de la compra/gasto
 function updateExpense() {
-  d.getElementById("expense-date").innerText = expense.searchDate
+  d.getElementById("expense-date").value = expense.searchDate
   d.getElementsByName("responsable").forEach($el => $el.checked = $el.value === expense.responsable)
   d.getElementsByName("expenseType").forEach($el => $el.checked = $el.value === expense.type)
-  d.getElementById("expense-amount").value = expense.amount
+  d.getElementById("expense-value").value = expense.value
   d.getElementById("expense-voucher").value = expense.voucher
   d.getElementById("expense-details").value = expense.details
+  // Almacenar el gastoen el local storage
+  localStorage.setItem("EXPENSE", JSON.stringify(expense))
 }
 
 // ------------------------------------------------------------------------------------------------
 // Delegation of events
 // ------------------------------------------------------------------------------------------------
 
-const $expenseContainer = d.getElementById("expenses")
-
 export default function handlerExpenses() {
 
-  // EVENTO=click RAIZ=section<expenses> ACCION=Eliminar detalles
-  $expenseContainer.addEventListener("click", e => {
-    let $el = e.target
-    console.log(`evento click target=${$el.classList}`, $el.value)
+  // EVENTO=submit RAIZ=section<expenses> ACCION=crear compra/gasto 
+  $container.addEventListener("submit", e => {
+    //Prevenir la accion predeterminada que procesa los datos del formulario
+    e.preventDefault()
 
-    if ($el.matches(".expense-save") || $el.closest(".expense-save")) {
-      let error = false
-      if (!expense.responsable) {
-        ntf.show("Información requerida", "Seleccione el responsable", "danger")
-      } else if (!expense.type) {
-        ntf.show("Información requerida", "Seleccione el tipo", "danger")
-      } else if (!expense.amount || expense.amount <= 0) {
-        ntf.show("Información requerida", "Ingrese un valor mayor a cero", "danger")
-      }
-      if (!ntf.enabled) {
-        switch (expense.type) {
-          case "DEPOSITO":
-            if (!expense.voucher) {
-              ntf.show("Información requerida", "Ingrese el número del comprobante de depósito", "danger")
-            } else if (!expense.details) {
-              ntf.show("Información requerida", "Ingrese en detalles solo el nombre del banco", "danger")
-            }
-            break;
-          case "COMPRA":
-            if (!expense.details) {
-              ntf.show("Información requerida", "Detalle brevemente lo que se compró", "danger")
-            }
-            break;
-          case "GASTO":
-            if (!expense.details) {
-              ntf.show("Información requerida", "Detalle brevemente el gasto", "danger")
-            }
-            break;
-          default:
-            break;
-        }
-      }
-
-      if (!ntf.enabled) {
-        // Insertar la venta en la base de datos
-        insertExpenseDB()
-      }
-    }
-
-    if ($el.matches(".expense-cancel") || $el.closest(".expense-cancel")) {
-      let eliminar = confirm(`Esta seguró que desea descartar la información de esta(e) ${expense.type}?`)
-      if (eliminar) {
-        ntf.show(`${expense.type} descartada`, `Se elimino la/el ${expense.type} sin guardar.`)
-        changeExpense(true)
-      }
-    }
-  })
-
-  // EVENTO=change RAIZ=section<expenses> ACCION=detectar cambios en inputs 
-  $expenseContainer.addEventListener("change", e => {
-    let $input = e.target
-    console.log(`evento change target = ${$input.classList} `, $input.value)
-    if ($input.name === "responsable") {
-      expense.responsable = $input.value
-    } else if ($input.name === "expenseType") {
-      expense.type = $input.value
-    } else if ($input.name === "expenseAmount") {
-      expense.amount = parseFloat($input.value)
-    } else if ($input.name === "expenseVoucher") {
-      expense.voucher = $input.value
-    } else if ($input.name === "expenseDetails") {
-      expense.details = $input.value
-      // } else if ($input.name === "expenseDate") {
-      //   // console.log("cart.fecha=", new Date(cart.fecha))
-      //   expense.date = timestampInputDateToDateEc($input.value)
-      //   console.log("despues expense.date=", new Date(expense.date))
-    }
+    // Almacenar la compra/gasto en el local storage
     localStorage.setItem("EXPENSE", JSON.stringify(expense))
+
+    // Obtiene los campos que contienen la informacion de la compra/gasto
+    const $expenseInput = d.getElementsByClassName("expense-input")
+    for (let i = 0, len = $expenseInput.length; i < len; i++) {
+      let $input = $expenseInput[i]
+      switch ($input.type) {
+        case "radio":
+          if (!$input.checked) break;
+        default:
+          if ($input.value) {
+            let key = $input.getAttribute("data-key");
+            let value = $input.value;
+            expense[key] = value;
+          }
+      }
+    }
+    // Ya se realizo al menos primer volcado de data
+    expense.valid = true
+    if (!expense.responsable) {
+      ntf.show("Información requerida", "Seleccione el responsable", "danger")
+    } else if (!expense.type) {
+      ntf.show("Información requerida", "Seleccione el tipo de documento", "danger")
+    } else if (!expense.value || expense.value <= 0) {
+      ntf.show("Información requerida", "Ingrese un valor mayor a cero", "danger")
+    }
+    if (!ntf.enabled) {
+      switch (expense.type) {
+        case "DEPOSITO":
+          if (!expense.voucher) {
+            ntf.show("Información requerida", "Ingrese el número del comprobante de depósito", "danger")
+          }
+          break;
+        case "COMPRA":
+          if (!expense.details) {
+            ntf.show("Información requerida", "Detalle brevemente lo que se compró", "danger")
+          }
+          break;
+        case "GASTO":
+          if (!expense.details) {
+            ntf.show("Información requerida", "Detalle brevemente el gasto", "danger")
+          }
+          break;
+        default:
+          break;
+      }
+    }
+    if (!ntf.enabled) {
+      let expenseData = JSON.parse(JSON.stringify(expense))
+      if (expense.type === "DEPOSITO")
+        insertDepositsDB(expenseData)
+      else
+        insertExpenseDB(expenseData)
+    }
   })
 
-  // EVENTO=focusout RAIZ=section<servicios> ACCION=detectar cambios en inputs que deben refrescarv la pagina
-  /**$expenseContainer.addEventListener("focusout", e => {
-     // Si existe cambios en cantidad o descuento de items, se actualiza el carrito 
-     if (expense.update) {
-       expense.update = false
-       updateExpense()
-     }
-   }) */
+  // EVENTO=reset RAIZ=section<expenses> ACCION=Reset form
+  $container.addEventListener("reset", e => {
+    //Prevenir la accion predeterminada que procesa los datos del formulario
+    e.preventDefault()
 
-  changeExpense(false)
+    let eliminar = confirm(`Esta seguró que desea descartar la información del ${expense.type}?`)
+    if (eliminar) {
+      changeExpense(true)
+    }
+  })
 }
 
 // --------------------------
@@ -150,18 +139,39 @@ export default function handlerExpenses() {
 // --------------------------
 
 function insertExpenseDB() {
+  //Complementar informacion por omision
   delete expense.valid
+
+  // insertar en la DB
   expensesRef.push(expense)
     .then(res => {
-      ntf.show(`${expense.type} registrado`, `Se guardó correctamente la información: ${expense.type} Nro.${expense.date}`)
+      let idExpense = expense.voucher ? expense.voucher : expense.date
+      ntf.show(`Registro de ${expense.type}`, `Se guardó correctamente la información: ${expense.type} Nro.${idExpense}`)
       changeExpense(true)
     })
     .catch(error => {
-      ntf.show("${expense.type} no registrado",
+      ntf.showTecnicalError(`${expense.type} no registrado`,
         `No se pudo guardar la información. A continuación el detalle del error: 
-        ${error} `,
-        "danger")
-      console.log(`Error en el registro de: ${expense.type} Nro.${expense.date}`)
+        ${error} `)
+      console.log(`Error en el registro de: ${expense.type} Nro.${idExpense}`)
+    })
+}
+
+function insertDepositsDB() {
+  //Complementar informacion por omision
+  delete expense.valid
+
+  // insertar en la DB
+  depositsRef.push(expense)
+    .then(res => {
+      ntf.show(`Registro de depósito`, `Se guardó correctamente la información del depósito Nro.${expense.voucher}`)
+      changeExpense(true)
+    })
+    .catch(error => {
+      ntf.showTecnicalError(`${expense.type} no registrado`,
+        `No se pudo guardar la información. A continuación el detalle del error: 
+        ${error} `)
+      console.log(`Error en el registro del depósito Nro.${expense.voucher}`)
     })
 }
 

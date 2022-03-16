@@ -36,6 +36,10 @@ export default class NotificationBulma {
     document.body.appendChild(this.nodoContenedor);
   }
 
+  showTecnicalError(titulo, mensaje) {
+    this.show(titulo, mensaje, "danger", 20000)
+  }
+
   // Visualiza las notificaciones al usuario
   show(titulo, mensaje, context, duracion) {
     this.enabled = true;
@@ -61,7 +65,7 @@ export default class NotificationBulma {
 
     // tiempo de visualizacion de la notificacion antes de ocultarlo automaticamente
     if (duracion == undefined || duracion <= 1000)
-      duracion = context === 'danger' ? 10000 : 8000
+      duracion = 5000
     // Tiempo de espera para cerrar automaticamente la notificacion
     this.timeoutOcultar = setTimeout(() => {
       this.close();
@@ -73,10 +77,10 @@ export default class NotificationBulma {
   close() {
     this.enabled = false;
     this.nodoContenedor.classList.remove("note-visible");
-    this.nodoContenedor.classList.remove(`is-danger`);
-    this.nodoContenedor.classList.remove(`is-primary`);
-    this.nodoContenedor.classList.remove(`is-link`);
-    this.nodoContenedor.classList.remove(`is-info`);
-    this.nodoContenedor.classList.remove(`is-warning`);
+    this.nodoContenedor.classList.remove("is-primary");
+    this.nodoContenedor.classList.remove("is-link");
+    this.nodoContenedor.classList.remove("is-danger");
+    this.nodoContenedor.classList.remove("is-warning");
+    this.nodoContenedor.classList.add("is-info");
   }
 }

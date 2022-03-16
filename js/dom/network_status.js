@@ -1,4 +1,3 @@
-/* ********** 93 Deteccion del estado de la red ********** */
 const d = document,
   w = window,
   n = navigator

@@ -36,8 +36,17 @@ export default class NotificationBulma {
     document.body.appendChild(this.nodoContenedor);
   }
 
-  showTecnicalError(titulo, mensaje) {
-    this.show(titulo, mensaje, "danger", 20000)
+  showTecnicalError(title, error, message) {
+    let msg = message || "Se produjo un error inesperado, consulte con el administrador."
+    if (error) {
+      msg = `${msg}
+      A continuación el detalle del error: 
+      ${error}`
+      console.log(`Error [${titulo}]`, error)
+    }
+    // TODO: Guardar error en tabla con fecha, json y error
+    this.show(title, msg, "danger", 20000)
+
   }
 
   // Visualiza las notificaciones al usuario

@@ -40,7 +40,7 @@
       onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
   </header>
   <main>
-    <section id="clientes" class="section is-medium" style="max-width: 1000px !important; margin:auto;">
+    <section id="clients" class="section is-large" style="max-width: 1000px !important; margin:auto;">
       <article class="panel is-info is-size-7 has-background-info-light">
         <p class="panel-heading  is-size-6">
           <span class="panel-icon has-text-white">
@@ -173,11 +173,11 @@
                 </tr>
               </tbody>
             </table>
-            <table id="cart-details">
+            <table id="sale-details">
               <thead class="has-background-grey-lighter">
                 <tr>
-                  <th><button class="trigger-servicios-modal button is-small is-link is-rounded"
-                      data-target="servicios-modal">
+                  <th><button class="trigger-services-modal button is-small is-link is-rounded"
+                      data-target="services-modal">
                       <span class="icon">
                         <i class="fa-solid fa-scissors"></i>
                       </span>
@@ -196,8 +196,8 @@
               </tbody>
               <thead class="has-background-grey-lighter">
                 <tr>
-                  <th><button href="#" class="trigger-productos-modal button is-small is-link is-rounded"
-                      data-target="productos-modal">
+                  <th><button href="#" class="trigger-products-modal button is-small is-link is-rounded"
+                      data-target="products-modal">
                       <span class="icon">
                         <i class="fa-solid fa-basket-shopping"></i>
                       </span>
@@ -376,18 +376,18 @@
             </div>
             <footer class="card-footer">
               <div class="buttons is-right" style="width: 100%;">
-                <button class="client-save card-footer-item button is-primary" type="submit" href="#clientes">
+                <a class="client-save card-footer-item button is-primary" href="#clients">
                   <span class="icon">
                     <i class="fa-solid fa-check"></i>
                   </span>
                   <span>Guardar</span>
-                </button>
-                <button class="client-cancel card-footer-item button is-danger" type="reset" href="#clientes">
+                </a>
+                <a class="client-cancel card-footer-item button is-danger" href="#clients">
                   <span class="icon">
                     <i class="fa-solid fa-xmark"></i>
                   </span>
                   <span>Cancelar</span>
-                </button>
+                </a>
               </div>
             </footer>
           </div>
@@ -499,13 +499,13 @@
             </div>
             <footer class="card-footer">
               <div class="buttons is-right" style="width: 100%;">
-                <button class="expense-save card-footer-item button is-primary" type="submit" href="#">
+                <button class="expense-save card-footer-item button is-primary" type="submit">
                   <span class="icon">
                     <i class="fa-solid fa-check"></i>
                   </span>
                   <span>Guardar</span>
                 </button>
-                <button class="expense-cancel card-footer-item button is-danger" type="reset" href="#">
+                <button class="expense-cancel card-footer-item button is-danger" type="reset">
                   <span class="icon">
                     <i class="fa-solid fa-xmark"></i>
                   </span>
@@ -519,7 +519,7 @@
     </section>
   </main>
 
-  <div class="modal" id="servicios-modal">
+  <div class="modal" id="services-modal">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head has-background-link  p-2">
@@ -539,7 +539,7 @@
     </div>
   </div>
 
-  <div class="modal" id="productos-modal">
+  <div class="modal" id="products-modal">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head has-background-info p-2">
@@ -561,8 +561,8 @@
 
   <template id="cliente-template">
     <div class="panel-block px-1">
-      <a class="trigger-client-edit button is-small is-rounded is-link py-0" href="#client-edit" data-uid="NULO"
-        title="Actualizar información de cliente">
+      <a class="trigger-client-edit button is-small is-rounded is-link py-0" data-href="#client-edit" data-uid="NULO"
+        title="Actualizar información de cliente" disabled>
         <span class="icon is-small">
           <i class="fa-solid fa-pen-to-square"></i>
         </span>

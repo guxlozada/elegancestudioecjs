@@ -22,6 +22,10 @@ const expenseIni = {
 let expense = localStorage.getItem("EXPENSE") ? JSON.parse(localStorage.getItem("EXPENSE")) : JSON.parse(JSON.stringify(expenseIni))
 changeExpense(false)
 
+//------------------------------------------------------------------------------------------------
+// Funcionalidad
+//------------------------------------------------------------------------------------------------
+
 export function changeExpense(reset) {
   let discart = true
   if (!reset && expense.valid) {
@@ -150,10 +154,7 @@ function insertExpenseDB() {
       changeExpense(true)
     })
     .catch(error => {
-      ntf.showTecnicalError(`${expense.type} no registrado`,
-        `No se pudo guardar la información. A continuación el detalle del error: 
-        ${error} `)
-      console.log(`Error en el registro de: ${expense.type} Nro.${idExpense}`)
+      ntf.showTecnicalError(`${expense.type} no registrado`, error)
     })
 }
 
@@ -168,10 +169,7 @@ function insertDepositsDB() {
       changeExpense(true)
     })
     .catch(error => {
-      ntf.showTecnicalError(`${expense.type} no registrado`,
-        `No se pudo guardar la información. A continuación el detalle del error: 
-        ${error} `)
-      console.log(`Error en el registro del depósito Nro.${expense.voucher}`)
+      ntf.showTecnicalError("Deposito no registrado", error)
     })
 }
 

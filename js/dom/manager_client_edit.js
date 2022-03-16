@@ -1,6 +1,7 @@
 import { ntf } from "../app.js";
 import { hoyString } from "./fecha-util.js";
 import { db } from "./firebase_conexion.js";
+import { renderClients } from "./manager_clients.js";
 
 const d = document,
   clientsColletion = 'clients-test',
@@ -61,9 +62,8 @@ function updateClient() {
 export default function handlerClientEdit() {
 
   // EVENTO=submit RAIZ=section<client-edit> ACCION=crear y actualizar clientes 
-  $container.addEventListener("submit", e => {
-    //Prevenir la accion predeterminada que procesa los datos del formulario
-    e.preventDefault()
+  d.querySelector(".client-save").addEventListener("click", e => {
+    ////console.log(`client-save click target=${e.target.classList}`, e.target.value)
 
     // Almacenar el cliente en el local storage
     localStorage.setItem("CLIENT", JSON.stringify(client))
@@ -98,16 +98,14 @@ export default function handlerClientEdit() {
   })
 
   // EVENTO=reset RAIZ=section<client-edit> ACCION=Reset form
-  $container.addEventListener("reset", e => {
-    //Prevenir la accion predeterminada que procesa los datos del formulario
-    e.preventDefault()
+  d.querySelector(".client-cancel").addEventListener("click", e => {
+    ////console.log(`client-cancel click target=${e.target.classList}`, e.target.value)
 
     let eliminar = confirm("Esta seguró que desea descartar la información de este cliente?")
     if (eliminar) {
       changeClient(true)
     }
   })
-
 }
 
 // --------------------------
@@ -123,8 +121,7 @@ function insertClientDB(clientData) {
   //Complementar informacion por omision
   clientData = {
     ...clientData,
-    status: "A",
-    lastService: hoyString(),
+    active: true,
     referrals: 0,
     aud: [{
       date: firebase.database.ServerValue.TIMESTAMP,
@@ -139,13 +136,13 @@ function insertClientDB(clientData) {
   clientsRef.push(clientData)
     .then(res => {
       ntf.show("Registro de cliente", `Se guardó correctamente la información del cliente: ${client.name}`)
+      console.log("new cli", res, res.key)
       changeClient(true)
+      clientData.uid = res.key
+      renderClients([clientData])
     })
     .catch(error => {
-      ntf.showTecnicalError("Cliente no registrado",
-        `No se pudo guardar la información. A continuación el detalle del error: 
-        ${error} `)
-      console.log(`Error en el registro del cliente: ${client.name}`)
+      ntf.showTecnicalError("Cliente no registrado", error)
     })
 }
 

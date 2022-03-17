@@ -1,10 +1,10 @@
 import { ntf } from "../app.js";
 import { dbRef } from "./firebase_conexion.js";
 
-const d = document,
-  collectionSales = 'sales-test',
-  collectionSalesDetails = 'sales-details-test',
-  collectionClients = 'clients-test'
+const d = document
+/* collectionSales = 'sales-test',
+collectionSalesDetails = 'sales-details-test',
+collectionClients = 'clients-test' */
 
 //------------------------------------------------------------------------------------------------
 // Delegation of events

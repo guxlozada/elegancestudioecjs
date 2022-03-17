@@ -1,11 +1,10 @@
 import { ntf } from "../app.js";
-import { hoyString } from "./fecha-util.js";
+import { sellerDB } from "./firebase_collections.js";
 import { db } from "./firebase_conexion.js";
-import { changeCartClient } from "./manager_sales.js";
+import { changeSaleClient } from "./manager_sales.js";
 
 const d = document,
-  clientsColletion = 'clients-test',
-  clientsRef = db.ref(clientsColletion),
+  clientsRef = db.ref(sellerDB.clients),
   $container = d.querySelector(".clients-container")
 
 //------------------------------------------------------------------------------------------------
@@ -20,7 +19,7 @@ export function renderClients(clientsDB) {
       $fragment = d.createDocumentFragment();
     clientsDB.forEach(c => {
       $template.querySelector(".trigger-client-edit").dataset.uid = c.uid || "NULO"
-      let $trigger = $template.querySelector(".trigger-cart-client")
+      let $trigger = $template.querySelector(".trigger-sale")
       $trigger.dataset.uid = c.uid || "NULO"
       $trigger.dataset.name = c.name || "NULO"
       $trigger.dataset.idtype = c.idType || "NULO"
@@ -58,9 +57,9 @@ export default function handlerClients() {
   $container.addEventListener("click", e => {
     ////console.log(`clientes .addEventListener click elemento ${e.target}, el click se origino en ${e.target.className}`)
     // Cliente seleccionado 
-    if (e.target.matches(".trigger-cart-client") || e.target.closest(".trigger-cart-client")) {
-      const $clientItem = e.target.closest(".trigger-cart-client")
-      changeCartClient($clientItem)// Cambiar de venta al seleccionar un cliente
+    if (e.target.matches(".trigger-sale") || e.target.closest(".trigger-sale")) {
+      const $clientItem = e.target.closest(".trigger-sale")
+      changeSaleClient($clientItem)// Cambiar de venta al seleccionar un cliente
     }
   })
 }

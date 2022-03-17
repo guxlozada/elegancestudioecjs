@@ -1,61 +1,71 @@
 import modalToggle from "./dom/modal_toggle.js";
 import navbarBurgers from "./dom/navbar_burgers.js";
 import NotificationBulma from './dom/NotificacionBulma.js';
-import { productos } from "./dom/catalogo_productos.js";
-import { servicios } from "./dom/catalogo_servicios.js";
 import handlerClients from "./dom/manager_clients.js";
 import handlerExpenses from "./dom/manager_expenses.js";
 import handlerClientEdit from "./dom/manager_client_edit.js";
-import handlerSales, { addToCart } from "./dom/manager_sales.js";
+import handlerSales, { addToSale } from "./dom/manager_sales.js";
+import { services } from "./dom/catalog_services.js";
+import { products } from "./dom/catalog_products.js";
 
 const d = document,
-  w = window
+  w = window,
+  $productsModalContainer = d.querySelector("#products-modal .items-container"),
+  $servicesModalContainer = d.querySelector("#services-modal .items-container")
 
 export const ntf = new NotificationBulma()
-
-Date.prototype.addHours = function (h) {
-  this.setTime(this.getTime() + (h * 60 * 60 * 1000));
-  return this;
-}
 
 //------------------------------------------------------------------------------------------------
 // Funcionalidad
 //------------------------------------------------------------------------------------------------
 
 const loadServices = () => {
-  let $container = d.querySelector("#services-modal .items-container")
-  // console.log($container, $container.childElementCount)
-  if ($container.childElementCount == 0) {
-    console.log("Cargando servicios al modal")
+  ////console.log($servicesModalContainer, $servicesModalContainer.childElementCount)
+  if ($servicesModalContainer.childElementCount == 0) {
+    ////console.log("Cargando servicios al modal")
     let $fragment = d.createDocumentFragment(),
-      $template = d.getElementById("servicio-template").content
+      $template = d.getElementById("catalog-template").content
 
-    servicios.forEach((s) => {
-      $template.querySelector(".servicio-selected").dataset.key = s.codigo
-      $template.querySelector(".item-details").textContent = `[$${(Math.round(s.valor * 100) / 100).toFixed(2)}] ${s.descripcion}`
+    services.forEach((s) => {
+      let $catalogItem = $template.querySelector(".catalog-item")
+      $catalogItem.dataset.key = s.code
+      $catalogItem.dataset.type = "SERVICE"
+      $template.querySelector(".catalog-item-details").textContent = `[$${(Math.round(s.finalValue * 100) / 100).toFixed(2)}] ${s.description}`
+      $template.querySelector(".wholesale-item-details").textContent = ""
       let $clone = d.importNode($template, true)
       $fragment.appendChild($clone)
     })
-    $container.appendChild($fragment)
+    $servicesModalContainer.appendChild($fragment)
   }
 }
 
 const loadProducts = () => {
-  let $container = d.querySelector("#products-modal .items-container")
-  // console.log($container, $container.childElementCount)
-  if ($container.childElementCount == 0) {
-    console.log("Cargando productos al modal")
+  // console.log($productsModalContainer, $productsModalContainer.childElementCount)
+  if ($productsModalContainer.childElementCount == 0) {
+    ////console.log("Cargando productos al modal")
     let $fragment = d.createDocumentFragment(),
-      $template = d.getElementById("producto-template").content
+      $template = d.getElementById("catalog-template").content
 
-    productos.forEach((s) => {
-      $template.querySelector(".producto-selected").dataset.key = s.codigo
-      $template.querySelector(".item-details").textContent = `[$${(Math.round(s.valor * 100) / 100).toFixed(2)}] ${s.descripcion}`
-      let $clone = d.importNode($template, true)
-      $fragment.appendChild($clone)
-    })
-    $container.appendChild($fragment)
+    products
+      .filter((p) => p.active)
+      .forEach((p) => {
+        let $catalogItem = $template.querySelector(".catalog-item")
+        $catalogItem.dataset.key = p.code
+        $catalogItem.dataset.type = "PRODUCT"
+        $template.querySelector(".catalog-item-details").textContent = `[$${(Math.round(p.finalValue * 100) / 100).toFixed(2)}] ${p.description}`
+        $template.querySelector(".wholesale-item-details").textContent = `[$${(Math.round(p.wholesaleFinalValue * 100) / 100).toFixed(2)}] ${p.description}`
+        let $clone = d.importNode($template, true)
+        $fragment.appendChild($clone)
+      })
+    $productsModalContainer.appendChild($fragment)
   }
+}
+
+export function changeProductsModalTypeSale(vbWholesale) {
+  $productsModalContainer.querySelectorAll(".catalog-item-details")
+    .forEach(($el) => vbWholesale ? $el.classList.add("is-hidden") : $el.classList.remove("is-hidden"))
+  $productsModalContainer.querySelectorAll(".wholesale-item-details")
+    .forEach(($el) => vbWholesale ? $el.classList.remove("is-hidden") : $el.classList.add("is-hidden"))
 }
 
 //------------------------------------------------------------------------------------------------
@@ -77,10 +87,10 @@ d.addEventListener("DOMContentLoaded", e => {
 d.querySelector("#services-modal .items-container").addEventListener("click", e => {
   //console.log(`elemento ${this.className}, el click se origino en ${e.target.className}`)
   // Servicio seleccionado 
-  if (e.target.matches(".servicio-selected") || e.target.closest(".servicio-selected")) {
+  if (e.target.matches(".catalog-item") || e.target.closest(".catalog-item")) {
     e.target.closest(".modal").classList.remove("is-active") // Cerrar modal
-    const $item = e.target.closest(".servicio-selected")
-    addToCart($item.dataset.key)// Ejecutar accion al seleccionar el servicio
+    const $item = e.target.closest(".catalog-item")
+    addToSale($item.dataset.key, $item.dataset.type)// Ejecutar accion al seleccionar el servicio
   }
 })
 
@@ -88,10 +98,10 @@ d.querySelector("#services-modal .items-container").addEventListener("click", e 
 d.querySelector("#products-modal .items-container").addEventListener("click", e => {
   //console.log(`elemento ${this.className}, el click se origino en ${e.target.className}`)
   // Producto seleccionado 
-  if (e.target.matches(".producto-selected") || e.target.closest(".producto-selected")) {
+  if (e.target.matches(".catalog-item") || e.target.closest(".catalog-item")) {
     e.target.closest(".modal").classList.remove("is-active")// Cerrar modal
-    const $item = e.target.closest(".producto-selected")
-    addToCart($item.dataset.key)// Ejecutar accion al seleccionar el producto
+    const $item = e.target.closest(".catalog-item")
+    addToSale($item.dataset.key, $item.dataset.type)// Ejecutar accion al seleccionar el producto
   }
 })
 

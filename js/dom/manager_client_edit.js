@@ -1,14 +1,12 @@
 import { ntf } from "../app.js";
-import { hoyString } from "./fecha-util.js";
+import { sellerDB } from "./firebase_collections.js";
 import { db } from "./firebase_conexion.js";
 import { renderClients } from "./manager_clients.js";
 
 const d = document,
-  clientsColletion = 'clients-test',
-  clientsRef = db.ref(clientsColletion),
-  $container = d.getElementById("client-edit")
+  clientsRef = db.ref(sellerDB.clients)
 
-const clientIni = {
+const clientInit = {
   name: null,
   idType: "CEDULA",
   idNumber: null,
@@ -20,7 +18,7 @@ const clientIni = {
   valid: false
 }
 
-let client = localStorage.getItem("CLIENT") ? JSON.parse(localStorage.getItem("CLIENT")) : JSON.parse(JSON.stringify(clientIni))
+let client = localStorage.getItem("CLIENT") ? JSON.parse(localStorage.getItem("CLIENT")) : JSON.parse(JSON.stringify(clientInit))
 changeClient(false)
 
 export function changeClient(reset) {
@@ -32,7 +30,7 @@ export function changeClient(reset) {
   }
   if (discard) {
     localStorage.removeItem("CLIENT")
-    client = JSON.parse(JSON.stringify(clientIni))
+    client = JSON.parse(JSON.stringify(clientInit))
     updateClient()
   } else {
     ntf.show("Cliente pendiente de guardar", `Recuerde registrar con el botón "Guardar" o 
@@ -61,7 +59,7 @@ function updateClient() {
 
 export default function handlerClientEdit() {
 
-  // EVENTO=submit RAIZ=section<client-edit> ACCION=crear y actualizar clientes 
+  // EVENTO=click RAIZ=button<client-save> ACCION=crear y actualizar clientes 
   d.querySelector(".client-save").addEventListener("click", e => {
     ////console.log(`client-save click target=${e.target.classList}`, e.target.value)
 
@@ -97,7 +95,7 @@ export default function handlerClientEdit() {
     }
   })
 
-  // EVENTO=reset RAIZ=section<client-edit> ACCION=Reset form
+  // EVENTO=click RAIZ=button<client-cancel> ACCION=Reset form
   d.querySelector(".client-cancel").addEventListener("click", e => {
     ////console.log(`client-cancel click target=${e.target.classList}`, e.target.value)
 

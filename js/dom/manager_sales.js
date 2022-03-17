@@ -1,19 +1,17 @@
-import { ntf } from "../app.js";
+import { changeProductsModalTypeSale, ntf } from "../app.js";
 import { dbRef } from "./firebase_conexion.js";
-import { productos } from "./catalogo_productos.js";
-import { servicios } from "./catalogo_servicios.js";
-import { ahoraTimestamp, hoyString, timestampLocalTimezoneString } from "./fecha-util.js";
+import { nowEc, timestampEc, todayEc, todayEcToString, timestampInputDateToDateEc, timestampLocalTimezoneString, nowEcToString } from "./fecha-util.js";
+import { sellerDB } from "./firebase_collections.js";
+import { services } from "./catalog_services.js";
+import { products } from "./catalog_products.js";
 
 
 const d = document,
-  collectionSales = 'sales-test',
-  collectionSalesDetails = 'sales-details-test',
-  collectionClients = 'clients-test',
   $salesContainer = d.getElementById("sale-content"),
-  $salesHeaderContainer = d.getElementById("sale-header"),
+  $salesHeaderContainer = d.getElementById("sale"),
   $salesDetailsContainer = d.getElementById("sale-details")
 
-const cartIni = {
+const saleInit = {
   client: {
     uid: "",
     description: "DEBE BUSCAR Y SELECCIONAR UN CLIENTE",
@@ -21,7 +19,8 @@ const cartIni = {
     referrals: 0//TODO: Cuando se registra clientes, se debe actualizar el num referidos buscando por identificacion
   },
   seller: null,
-  payment: null,
+  typePayment: "EFECTIVO",//[EFECTIVO,CREDITO,DEBITO]
+  type: "CLIENTE",//[CLIENTE, PORMAYOR]
   items: [],
   taxableIncome: 0,
   discounts: 0,
@@ -30,40 +29,43 @@ const cartIni = {
   valid: false
 }
 
-let cart = localStorage.getItem("CART") ? JSON.parse(localStorage.getItem("CART")) : JSON.parse(JSON.stringify(cartIni))
+let sale = localStorage.getItem("SALE") ? JSON.parse(localStorage.getItem("SALE")) : JSON.parse(JSON.stringify(saleInit))
 updateSale()
 
 //------------------------------------------------------------------------------------------------
 // Funcionalidad
 //------------------------------------------------------------------------------------------------
 
-const resetCart = () => {
-  localStorage.removeItem("CART")
-  cart = JSON.parse(JSON.stringify(cartIni))
-  cart.date = ahoraTimestamp()
+const resetSale = () => {
+  localStorage.removeItem("SALE")
+  sale = JSON.parse(JSON.stringify(saleInit))
+  sale.date = timestampEc()
   updateSale()
 }
 
-export function changeCartClient($clienteItem) {
+export function changeSaleClient($client) {
   let discart = true
-  if (cart.valid) {
+  if (sale.valid) {
     discart = confirm(`Existe una venta pendiente de registrar. Que desea hacer: 
       ACEPTAR: descartar la venta anterior y crear nueva venta; o, 
       CANCELAR: regresar a la venta anterior`)
   }
   if (discart) {
-    localStorage.removeItem("CART")
-    cart = JSON.parse(JSON.stringify(cartIni))
-    cart.client.uid = $clienteItem.dataset.uid
-    cart.client.idNumber = $clienteItem.dataset.idnumber
-    cart.client.description = `${$clienteItem.dataset.name} _ ${$clienteItem.dataset.idtype}: ${$clienteItem.dataset.idnumber}`
-    cart.client.lastService = $clienteItem.dataset.lastserv
-    cart.client.referrals = $clienteItem.dataset.referrals
-    cart.date = ahoraTimestamp()
-    cart.searchDate = hoyString()
-    cart.searchDateTime = timestampLocalTimezoneString(cart.date)
-    cart.valid = true
+    localStorage.removeItem("SALE")
+    sale = JSON.parse(JSON.stringify(saleInit))
+    sale.client.uid = $client.dataset.uid
+    sale.client.idNumber = $client.dataset.idnumber
+    sale.client.description = `${$client.dataset.name} _ ${$client.dataset.idtype}: ${$client.dataset.idnumber}`
+    sale.client.lastService = $client.dataset.lastserv
+    sale.client.referrals = $client.dataset.referrals
+    sale.date = timestampEc()
+    sale.searchDate = todayEcToString()
+    sale.searchDateTime = new Date(sale.date).toLocaleString()
+    sale.valid = true
     updateSale()
+
+    // Setear valores a consumidor final en el catalogo de productos
+    changeProductsModalTypeSale(sale.type === "PORMAYOR")
   } else {
     ntf.show("Venta pendiente de guardar", `Recuerde registrar la venta con el botón "Guardar" o 
       descartarla definitivamente con el botón "Cancelar"`)
@@ -71,83 +73,86 @@ export function changeCartClient($clienteItem) {
 }
 
 // Agregar item a la venta
-export function addToCart(vsCode) {
-  //console.log(`agregando carrito=`, vsCode)
+export function addToSale(vsCode, vsType) {
+  console.log(`agregando a la venta=`, vsCode)
 
   // Verificar si el producto existe en la venta
-  if (cart.items.some((item) => item.codigo === vsCode)) {
-    changeItemNumberOfUnits(vsCode, "plus", 1);
+  if (sale.items.some((item) => item.codigo === vsCode)) {
+    changeItemNumberOfUnits(vsCode, "plus", 1)
   } else {
-    const item = vsCode.startsWith("S") ?
-      servicios.find((s) => s.codigo === vsCode) :
-      productos.find((p) => p.codigo === vsCode)
+    const item = vsType === "SERVICE" ?
+      services.find((s) => s.code === vsCode) :
+      products.find((p) => p.code === vsCode)
 
-    cart.items.push({
+    sale.items.push({
       ...item,
       numberOfUnits: 1,
     })
   }
-  updateSaleCart()
+  updateSaleDetails()
 }
 
 // Eliminar item de la venta
-function removeFromCart(vsCode) {
-  cart.items = cart.items.filter(item => item.codigo !== vsCode)
-  updateSaleCart()
+function removeFromSale(vsCode) {
+  sale.items = sale.items.filter(item => item.codigo !== vsCode)
+  updateSaleDetails()
 }
 
 // Actualizar la venta
 function updateSale() {
   renderSaleHeader()
-  updateSaleCart()
+  updateSaleDetails()
 }
 
 // Actualizar el carrito de compras
-function updateSaleCart() {
-  renderCartItems()
-  renderCartSummary()
+function updateSaleDetails() {
+  renderSaleItems()
+  renderSaleSummary()
   // Almacenar la venta en el local storage
-  localStorage.setItem("CART", JSON.stringify(cart))
+  localStorage.setItem("SALE", JSON.stringify(sale))
 }
 
 // Actualizar cabecera de la venta
 function renderSaleHeader() {
-  const cli = cart.client
-  d.getElementById("cart-header-client").innerText = cli.description
-  d.getElementById("cart-header-cli-lastserv").innerText = cli.lastService
-  d.getElementById("cart-header-cli-referrals").innerText = cli.referrals
-  d.getElementById("cart-header-date").value = cart.searchDate
-  d.getElementsByName("seller").forEach($el => $el.checked = $el.value === cart.seller)
-  d.getElementsByName("payment").forEach($el => $el.checked = $el.value === cart.payment)
+  const cli = sale.client
+  d.getElementById("sale-client").innerText = cli.description
+  d.getElementById("sale-client-lastserv").innerText = cli.lastService
+  d.getElementById("sale-client-referrals").innerText = cli.referrals
+  d.getElementById("sale-date").value = sale.searchDate
+  d.getElementsByName("seller").forEach($el => $el.checked = $el.value === sale.seller)
+  d.getElementsByName("typePayment").forEach($el => $el.checked = $el.value === sale.typePayment)
+  d.getElementsByName("typeSale").forEach($el => $el.checked = $el.value === sale.type)
 }
-
+////////////////////////////////////////////////
+// CONTINUAR AQUI
+///////////////////////////////////////////////
 // Actualizar los productso/servicios de la venta
-function renderCartItems() {
-  const $productsContainer = d.getElementById("cart-details-products"),
-    $servicesContainer = d.getElementById("cart-details-services"),
+function renderSaleItems() {
+  const $productsContainer = d.getElementById("sale-details-products"),
+    $servicesContainer = d.getElementById("sale-details-services"),
     $productsFragment = d.createDocumentFragment(),
     $servicesFragment = d.createDocumentFragment(),
     $btnServicios = d.querySelector(".trigger-services-modal"),
     $btnProductos = d.querySelector(".trigger-products-modal"),
-    $btnCancel = d.querySelector(".cart-cancel")
+    $btnCancel = d.querySelector(".sale-cancel")
 
   let vnCountProducts = 0,
     vnCountServices = 0
 
   // setear valores del carrito
-  cart.taxableIncome = 0
-  cart.discounts = 0
-  cart.taxes = 0
-  cart.totalSale = 0
+  sale.taxableIncome = 0
+  sale.discounts = 0
+  sale.taxes = 0
+  sale.totalSale = 0
 
-  if (cart.valid) {
-    const $template = d.getElementById("cart-item-template").content,
-      $desc = $template.querySelector(".cart-item-description"),
-      $amount = $template.querySelector(".cart-item-amount"),
-      $unitValue = $template.querySelector(".cart-item-unit-value"),
-      $discount = $template.querySelector(".cart-item-discount"),
-      $value = $template.querySelector(".cart-item-value"),
-      $delete = $template.querySelector(".cart-item-delete")
+  if (sale.valid) {
+    const $template = d.getElementById("sale-item-template").content,
+      $desc = $template.querySelector(".sale-item-description"),
+      $amount = $template.querySelector(".sale-item-amount"),
+      $unitValue = $template.querySelector(".sale-item-unit-value"),
+      $unitDiscount = $template.querySelector(".sale-item-unit-discount"),
+      $value = $template.querySelector(".sale-item-value"),
+      $delete = $template.querySelector(".sale-item-delete")
 
     let vnUnitDiscount,
       vnBaseDiscount,
@@ -156,49 +161,80 @@ function renderCartItems() {
       vnTaxes,
       vnTaxableIncome = 0
 
-    cart.items.forEach(item => {
-      console.log("Agregando servicio=", item.codigo)
+    sale.items.forEach(item => {
+      console.log("Agregando item a la venta=", item.codigo)
 
       // Calculos para totalizadores
       vnBaseDiscount = 0
       vnTaxDiscount = 0
-      vnUnitDiscount = item.unitDiscount || 0
-      if (item.unitDiscount && vnUnitDiscount > 0) {
-        // Se considera que todos los servicios y productos estan gravados solo con IVA
-        vnBaseDiscount = Math.round(vnUnitDiscount / 112 * 100 * 100) / 100
-        vnTaxDiscount = vnUnitDiscount - vnBaseDiscount
+      // El descuento puede haberse igresado/modificado manualmente al registro, null la primera vez
+      vnUnitDiscount = item.unitDiscount
+
+      // SOLO para servicios, se aplica los descuentos automaticos la primera vez
+      if (!item.unitDiscount) {
+        if (item.type === "S") {
+          vnUnitDiscount = 0
+          if (item.promo.cash && sale.typePayment === "EFECTIVO")// IVA solo pagos en efectivo
+            vnUnitDiscount += item.promo.cash * item.finalValue / 112 // debe ser igual a item.taxIVA
+          ////////////////////////////////////////////////////
+          // TODO: TEMPORALMENTE JUEVES (4) CAMBIAR a MARTES (2)
+          ////////////////////////////////////////////////////
+          console.log("todayEc()", todayEc(), todayEcToString(), nowEcToString(), nowEc().to)
+          if (item.promo.discountDay && todayEc().getDay() === 4)// Dia de descuento martes
+            vnUnitDiscount += item.promo.discountDay * item.baseValue / 100
+        } else {
+          vnUnitDiscount = 0
+        }
       }
-      vnTaxableIncome = (item.unitValue - vnBaseDiscount) * item.numberOfUnits
-      vnTaxes = ((item.impuestoIVA || 0) - vnTaxDiscount) * item.numberOfUnits
-      vnDiscounts = vnUnitDiscount * item.numberOfUnits
 
-      item.taxableIncome = Math.round(vnTaxableIncome * 100) / 100
-      item.taxes = Math.round(vnTaxes * 100) / 100
-      item.total = item.taxableIncome + item.taxes
-      item.discounts = vnDiscounts
+      // Recalculo de impuestos por descuentos
+      if (vnUnitDiscount > 0) {////ANTESif (item.unitDiscount && vnUnitDiscount > 0) {
+        // Se considera que todos los servicios y productos  estan gravados solo con IVA
+        vnBaseDiscount = Math.round(vnUnitDiscount / 1.12 * 100) / 100 // 2.85// tecnica para utilizar solo dos decimales del calculo sin redondeo
+        vnTaxDiscount = vnUnitDiscount - vnBaseDiscount //0.35
+      }
+      let baseValue = item.baseValue,
+        finalValue = item.finalValue,
+        taxIVA = item.taxIVA
+      // Cambio de valores para productos al por mayor
+      if (item.type === "P" && sale.type === "PORMAYOR") {
+        baseValue = item.wholesaleValue
+        finalValue = item.wholesaleFinalValue
+        taxIVA = item.wholesaleTaxIVA
+      }
 
-      cart.taxableIncome += item.taxableIncome
-      cart.taxes += item.taxes
-      cart.totalSale += item.total
-      cart.discounts += item.discounts
+      vnTaxableIncome = (baseValue - vnBaseDiscount) * item.numberOfUnits //7.15
+      vnTaxes = ((taxIVA || 0) - vnTaxDiscount) * item.numberOfUnits //1.20
+      vnDiscounts = vnUnitDiscount * item.numberOfUnits //3.20
+
+      item.taxableIncome = Math.round(vnTaxableIncome * 100) / 100 // 7.15
+      item.taxes = Math.round(vnTaxes * 100) / 100 // 0.85
+      item.total = item.taxableIncome + item.taxes // 8
+      item.discounts = vnDiscounts // 3.20
+
+      sale.taxableIncome += item.taxableIncome
+      sale.taxes += item.taxes
+      sale.totalSale += item.total
+      sale.discounts += item.discounts
 
       // crear detalle de carrito (fila de tabla)
-      $desc.innerText = item.descripcion
+      $desc.innerText = item.description
       $amount.value = item.numberOfUnits
-      $amount.dataset.key = item.codigo
-      $unitValue.innerText = item.valor.toFixed(2)
-      $discount.value = vnUnitDiscount.toFixed(2)
-      $discount.dataset.key = item.codigo
-      $value.innerText = ((item.valor - vnUnitDiscount) * item.numberOfUnits).toFixed(2)
-      $delete.dataset.key = item.codigo
+      $amount.dataset.key = item.code
+      $unitValue.innerText = finalValue.toFixed(2)
+      $unitDiscount.value = vnUnitDiscount.toFixed(2)
+      $unitDiscount.dataset.key = item.code
+      $value.innerText = ((finalValue - vnUnitDiscount) * item.numberOfUnits).toFixed(2)
+      $delete.dataset.key = item.code
       let $clone = d.importNode($template, true)
-      if (item.codigo.startsWith("S")) {
+      if (item.type === "S") {
         $servicesFragment.appendChild($clone)
         vnCountServices++
       } else {
         $productsFragment.appendChild($clone)
         vnCountProducts++
       }
+
     })
 
     // Habilitar los botones de catalogos
@@ -228,23 +264,23 @@ function renderCartItems() {
 }
 
 // Calcular descuentos, impuestos y total de venta
-function renderCartSummary() {
-  d.querySelector(".cart-summary-totalsale").innerText = cart.totalSale.toFixed(2)
-  d.querySelector(".cart-summary-taxableincome").innerText = cart.taxableIncome.toFixed(2)
-  d.querySelector(".cart-summary-taxes").innerText = cart.taxes.toFixed(2)
-  //d.querySelector(".cart-summary-discounts").innerText = cart.discounts.toFixed(2)
+function renderSaleSummary() {
+  d.querySelector(".sale-summary-totalsale").innerText = sale.totalSale.toFixed(2)
+  d.querySelector(".sale-summary-taxableincome").innerText = sale.taxableIncome.toFixed(2)
+  d.querySelector(".sale-summary-taxes").innerText = sale.taxes.toFixed(2)
+  //d.querySelector(".sale-summary-discounts").innerText = sale.discounts.toFixed(2)
 
   // Deshabilitar el boton Guardar cuando la venta es cero
-  if (cart.valid && cart.items.length > 0) {
-    d.querySelector(".cart-save").removeAttribute("disabled")
+  if (sale.valid && sale.items.length > 0) {
+    d.querySelector(".sale-save").removeAttribute("disabled")
   } else {
-    d.querySelector(".cart-save").setAttribute("disabled", false)
+    d.querySelector(".sale-save").setAttribute("disabled", false)
   }
 }
 
 // Cambiar la cantidad de un producto/servicio
 function changeItemNumberOfUnits(vsCode, vsAction, vnValue) {
-  cart.items = cart.items.map((item) => {
+  sale.items = sale.items.map((item) => {
     let numberOfUnits = item.numberOfUnits;
 
     if (item.codigo === vsCode) {
@@ -269,7 +305,7 @@ function changeItemNumberOfUnits(vsCode, vsAction, vnValue) {
 
 // Cambiar el descuento de un producto/servicio
 function changeItemDiscount(vsCode, vnUnitDiscount) {
-  cart.items = cart.items.map((item) => {
+  sale.items = sale.items.map((item) => {
     let unitDiscount = item.unitDiscount
     if (item.codigo === vsCode) {
       unitDiscount = parseFloat(vnUnitDiscount)
@@ -292,31 +328,31 @@ export default function handlerSales() {
     let $el = e.target
     console.log(`evento click target=${$el.classList}`, $el.value)
     // Elemento a eliminar 
-    if ($el.matches(".cart-item-delete") || $el.closest(".cart-item-delete")) {
-      const $cartItem = e.target.closest(".cart-item-delete")
-      removeFromCart($cartItem.dataset.key)
+    if ($el.matches(".sale-item-delete") || $el.closest(".sale-item-delete")) {
+      const $saleItem = e.target.closest(".sale-item-delete")
+      removeFromSale($saleItem.dataset.key)
     }
 
-    if ($el.matches(".cart-save") || $el.closest(".cart-save")) {
-      if (!cart.seller) {
+    if ($el.matches(".sale-save") || $el.closest(".sale-save")) {
+      if (!sale.seller) {
         ntf.show("Información requerida", "Seleccione el vendedor", "danger")
-      } else if (!cart.payment) {
+      } else if (!sale.typePayment) {
         ntf.show("Información requerida", "Seleccione la forma de pago", "danger")
-      } else if (cart.date > ahoraTimestamp()) {
-        ntf.show("Información erronea", `La fecha no puede ser mayor a hoy: ${hoyString()} `, "danger")
+      } else if (sale.date > timestampEc()) {
+        ntf.show("Información erronea", `La fecha no puede ser mayor a hoy: ${todayEcToString()} `, "danger")
       } else {
         // Insertar la venta en la base de datos
-        insertSalesDB(cart, resetCart)
+        insertSalesDB(resetSale)
       }
     }
 
-    if ($el.matches(".cart-cancel") || $el.closest(".cart-cancel")) {
+    if ($el.matches(".sale-cancel") || $el.closest(".sale-cancel")) {
       let eliminar = true
-      if (cart.items.length > 0) {
+      if (sale.items.length > 0) {
         eliminar = confirm("Esta seguró que desea descartar la información de la venta? ")
       }
       if (eliminar) {
-        resetCart()
+        resetSale()
         ntf.show("Venta descartada", `Se elimino la venta sin guardar.`)
       }
     }
@@ -326,33 +362,36 @@ export default function handlerSales() {
   d.getElementById("sales").addEventListener("change", e => {
     let $input = e.target
     console.log(`evento change target = ${$input.classList} `, $input.value)
-    if ($input.matches(".cart-item-amount")) {
+    if ($input.matches(".sale-item-amount")) {
       changeItemNumberOfUnits($input.dataset.key, "replace", parseInt($input.value));
-      cart.update = true
-    } else if ($input.matches(".cart-item-discount")) {
+      sale.update = true
+    } else if ($input.matches(".sale-item-discount")) {
       changeItemDiscount($input.dataset.key, $input.value)
-      cart.update = true
-    } else if ($input.name === "payment") {
-      cart.payment = $input.value
+      sale.update = true
+    } else if ($input.name === "typePayment") {
+      sale.typePayment = $input.value
     } else if ($input.name === "seller") {
-      cart.seller = $input.value
-
+      sale.seller = $input.value
+    } else if ($input.name === "typeSale") {
+      sale.type = $input.value
+      // Setear valores a consumidor final en el catalogo de productos
+      changeProductsModalTypeSale(sale.type === "PORMAYOR")
       //TODO Agregar validacion de al menos un servicio o producto
 
-      //} else if ($input.name === "cartHeaderDate") {
-      // console.log("cart.date=", new Date(cart.date))
-      //   cart.date = timestampInputDateToDateEc($input.value)
-      //   console.log("despues cart.date=", new Date(cart.date))
+      //} else if ($input.name === "saleHeaderDate") {
+      // console.log("sale.date=", new Date(sale.date))
+      //   sale.date = timestampInputDateToDateEc($input.value)
+      //   console.log("despues sale.date=", new Date(sale.date))
     }
-    localStorage.setItem("CART", JSON.stringify(cart))
+    localStorage.setItem("SALE", JSON.stringify(sale))
   })
 
   // EVENTO=focusout RAIZ=section<servicios> ACCION=detectar cambios en inputs que deben refrescarv la pagina
   d.getElementById("sales").addEventListener("focusout", e => {
     // Si existe cambios en cantidad o descuento de items, se actualiza el carrito 
-    if (cart.update) {
-      cart.update = false
-      updateSaleCart()
+    if (sale.update) {
+      sale.update = false
+      updateSaleDetails()
     }
   })
 }
@@ -360,12 +399,12 @@ export default function handlerSales() {
 // Database operations
 // --------------------------
 
-function insertSalesDB(cart, callback) {
+function insertSalesDB(callback) {
   // Cabecera de la venta
   let salesHeader = {
-    ...JSON.parse(JSON.stringify(cart)),
-    clientId: cart.client.idNumber,
-    clientUid: cart.client.uid
+    ...JSON.parse(JSON.stringify(sale)),
+    clientId: sale.client.idNumber,
+    clientUid: sale.client.uid
   }
   let items = salesHeader.items
   delete salesHeader.items
@@ -374,7 +413,7 @@ function insertSalesDB(cart, callback) {
   delete salesHeader.update
 
   // Obtener la clave de la nueva venta
-  const newSaleKey = dbRef.child(collectionSales).push().key;
+  const newSaleKey = dbRef.child(sellerDB.sales).push().key;
   let i = 1
   // Detalles de la venta
   items = items.map((item) => {
@@ -391,22 +430,22 @@ function insertSalesDB(cart, callback) {
 
   // Generar bloque de transaccion
   let updates = {}
-  updates[`${collectionSales}/${newSaleKey}`] = salesHeader
+  updates[`${sellerDB.sales}/${newSaleKey}`] = salesHeader
   let existService
   // Registrar Detalles
   items.forEach(item => {
-    let newDetailKey = dbRef.child(collectionSalesDetails).push().key;
-    updates[`${collectionSalesDetails}/${newDetailKey}`] = item
+    let newDetailKey = dbRef.child(sellerDB.salesDetails).push().key;
+    updates[`${sellerDB.salesDetails}/${newDetailKey}`] = item
   })
   // Actualizar datos del cliente
-  updates[`${collectionClients}/${salesHeader.clientUid}/lastService`] = salesHeader.searchDate
+  updates[`${sellerDB.clients}/${salesHeader.clientUid}/lastService`] = salesHeader.searchDate
 
   // Registrar la venta en la BD
   dbRef.update(updates, (error) => {
     if (error) {
       ntf.showTecnicalError("Venta no registrada", error)
     } else {
-      ntf.show("Venta registrada", `Se guardó correctamente la información de la venta Nro. ${cart.date}`)
+      ntf.show("Venta registrada", `Se guardó correctamente la información de la venta Nro. ${sale.date}`)
       callback()
     }
   })

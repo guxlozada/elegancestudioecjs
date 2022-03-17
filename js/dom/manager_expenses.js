@@ -1,12 +1,11 @@
 import { ntf } from "../app.js";
-import { ahoraTimestamp, hoyString, timestampLocalTimezoneString } from "./fecha-util.js";
+import { timestampEc, todayEcToString, timestampLocalTimezoneString } from "./fecha-util.js";
+import { sellerDB } from "./firebase_collections.js";
 import { db } from "./firebase_conexion.js";
 
 const d = document,
-  expensesColletion = 'expenses-test',
-  depositsColletion = 'deposits-test',
-  expensesRef = db.ref(expensesColletion),
-  depositsRef = db.ref(depositsColletion),
+  expensesRef = db.ref(sellerDB.expenses),
+  depositsRef = db.ref(sellerDB.deposits),
   $container = d.getElementById("expenses")
 
 const expenseIni = {
@@ -36,8 +35,8 @@ export function changeExpense(reset) {
   if (discart) {
     localStorage.removeItem("EXPENSE")
     expense = JSON.parse(JSON.stringify(expenseIni))
-    expense.date = ahoraTimestamp()
-    expense.searchDate = hoyString()
+    expense.date = timestampEc()
+    expense.searchDate = todayEcToString()
     expense.searchDateTime = timestampLocalTimezoneString(expense.date)
     updateExpense()
   } else {

@@ -1,7 +1,7 @@
 export const sellerDB = {
-  clients: "clients",
-  deposits: "deposits",
-  expenses: "expenses",
-  sales: "sales",
-  salesDetails: "sales-details"
+  clients: "prodseller-clients",
+  deposits: "prodseller-deposits",
+  expenses: "prodseller-expenses",
+  sales: "prodseller-sales",
+  salesDetails: "prodseller-sales-details"
 }

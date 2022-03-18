@@ -6,6 +6,19 @@ import { renderClients } from "./manager_clients.js";
 
 const d = document
 
+/* 
+  Esto es como los metodos son definido en el prototipo 
+  de cualquier Objecto incorporado 
+*/
+Object.defineProperty(String.prototype, 'capitalizarPrimeraLetra', {
+  value: function () {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+  },
+  writable: true, // Asi, puede sobreescribirse más tarde
+  configurable: true // Asi, puede borrarse más tarde
+});
+
+
 const clientInit = {
   name: null,
   idType: "CEDULA",
@@ -15,6 +28,7 @@ const clientInit = {
   birthdate: null,
   cellphone: null,
   referred: null,
+  registeredBy: "ADMIN",
   valid: false
 }
 
@@ -61,7 +75,6 @@ export default function handlerClientEdit() {
 
   // EVENTO=click RAIZ=button<client-save> ACCION=crear y actualizar clientes 
   d.querySelector(".client-save").addEventListener("click", e => {
-    e.preventDefault()
     ////console.log(`client-save click target=${e.target.classList}`, e.target.value)
 
     // Almacenar el cliente en el local storage
@@ -114,13 +127,12 @@ export default function handlerClientEdit() {
 
 function insertClientDB(clientData) {
   let names = clientData.name.toLowerCase().split(/\s+/)
-  if (names.length > 1) {
-    clientData.searchLastname = names[1]
-  }
 
   //Complementar informacion por omision
   clientData = {
     ...clientData,
+    searchLastname: names.length > 1 ? names[1] : names[0],
+    name: names.map((el) => el.capitalizarPrimeraLetra()).join(" "),
     active: true,
     referrals: 0,
     aud: [{
@@ -132,7 +144,7 @@ function insertClientDB(clientData) {
   delete clientData.registeredBy
 
   // Obtener la clave del cliente
-  const key = clientData.idNumber + '-' + (clientData.searchLastname || nowEc().getSeconds())
+  const key = clientData.idNumber + '-' + (clientData.searchLastname.toUpperCase() || nowEc().getSeconds())
   clientData.uid = key
 
   let updates = {}

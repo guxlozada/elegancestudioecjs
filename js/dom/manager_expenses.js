@@ -89,27 +89,27 @@ export default function handlerExpenses() {
     // Ya se realizo al menos primer volcado de data
     expense.valid = true
     if (!expense.responsable) {
-      ntf.show("Información requerida", "Seleccione el responsable", "danger")
+      ntf.error("Información requerida", "Seleccione el responsable")
     } else if (!expense.type) {
-      ntf.show("Información requerida", "Seleccione el tipo de documento", "danger")
+      ntf.error("Información requerida", "Seleccione el tipo de documento")
     } else if (!expense.value || expense.value <= 0) {
-      ntf.show("Información requerida", "Ingrese un valor mayor a cero", "danger")
+      ntf.error("Información requerida", "Ingrese un valor mayor a cero")
     }
     if (!ntf.enabled) {
       switch (expense.type) {
         case "DEPOSITO":
           if (!expense.voucher) {
-            ntf.show("Información requerida", "Ingrese el número del comprobante de depósito", "danger")
+            ntf.error("Información requerida", "Ingrese el número del comprobante de depósito")
           }
           break;
         case "COMPRA":
           if (!expense.details) {
-            ntf.show("Información requerida", "Detalle brevemente lo que se compró", "danger")
+            ntf.error("Información requerida", "Detalle brevemente lo que se compró")
           }
           break;
         case "GASTO":
           if (!expense.details) {
-            ntf.show("Información requerida", "Detalle brevemente el gasto", "danger")
+            ntf.error("Información requerida", "Detalle brevemente el gasto")
           }
           break;
         default:
@@ -153,7 +153,7 @@ function insertExpenseDB() {
       changeExpense(true)
     })
     .catch(error => {
-      ntf.showTecnicalError(`${expense.type} no registrado`, error)
+      ntf.tecnicalError(`${expense.type} no registrado`, error)
     })
 }
 
@@ -168,7 +168,7 @@ function insertDepositsDB() {
       changeExpense(true)
     })
     .catch(error => {
-      ntf.showTecnicalError("Deposito no registrado", error)
+      ntf.tecnicalError("Deposito no registrado", error)
     })
 }
 

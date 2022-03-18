@@ -84,11 +84,11 @@ export default function handlerClientEdit() {
     // Ya se realizo al menos primer volcado de data
     client.valid = true
     if (!client.name) {
-      ntf.show("Información requerida", "Ingrese el nombre y apellido del cliente", "danger")
+      ntf.error("Información requerida", "Ingrese el nombre y apellido del cliente")
     } else if (!client.idNumber) {
-      ntf.show("Información requerida", "Ingrese la identificación del cliente", "danger")
+      ntf.error("Información requerida", "Ingrese la identificación del cliente")
     } else if (!client.registeredBy) {
-      ntf.show("Información requerida", "Seleccione quien registra al cliente", "danger")
+      ntf.error("Información requerida", "Seleccione quien registra al cliente")
     }
     if (!ntf.enabled) {
       insertClientDB(JSON.parse(JSON.stringify(client)))
@@ -140,7 +140,7 @@ function insertClientDB(clientData) {
       renderClients([clientData])
     })
     .catch(error => {
-      ntf.showTecnicalError("Cliente no registrado", error)
+      ntf.tecnicalError("Cliente no registrado", error)
     })
 }
 

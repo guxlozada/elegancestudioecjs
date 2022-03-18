@@ -77,7 +77,7 @@ export function addToSale(vsCode, vsType) {
   console.log(`agregando a la venta=`, vsCode)
 
   // Verificar si el producto existe en la venta
-  if (sale.items.some((item) => item.codigo === vsCode)) {
+  if (sale.items.some((item) => item.code === vsCode)) {
     changeItemNumberOfUnits(vsCode, "plus", 1)
   } else {
     const item = vsType === "SERVICE" ?
@@ -94,7 +94,7 @@ export function addToSale(vsCode, vsType) {
 
 // Eliminar item de la venta
 function removeFromSale(vsCode) {
-  sale.items = sale.items.filter(item => item.codigo !== vsCode)
+  sale.items = sale.items.filter(item => item.code !== vsCode)
   updateSaleDetails()
 }
 
@@ -162,7 +162,7 @@ function renderSaleItems() {
       vnTaxableIncome = 0
 
     sale.items.forEach(item => {
-      console.log("Agregando item a la venta=", item.codigo)
+      console.log("Agregando item a la venta=", item.code)
 
       // Calculos para totalizadores
       vnBaseDiscount = 0
@@ -223,6 +223,7 @@ function renderSaleItems() {
       $amount.dataset.key = item.code
       $unitValue.innerText = finalValue.toFixed(2)
       $unitDiscount.value = vnUnitDiscount.toFixed(2)
+      $unitDiscount.max = finalValue.toFixed(2)
       $unitDiscount.dataset.key = item.code
       $value.innerText = ((finalValue - vnUnitDiscount) * item.numberOfUnits).toFixed(2)
       $delete.dataset.key = item.code
@@ -283,7 +284,7 @@ function changeItemNumberOfUnits(vsCode, vsAction, vnValue) {
   sale.items = sale.items.map((item) => {
     let numberOfUnits = item.numberOfUnits;
 
-    if (item.codigo === vsCode) {
+    if (item.code === vsCode) {
       switch (vsAction) {
         case "plus":
           numberOfUnits += vnValue || 0
@@ -307,7 +308,7 @@ function changeItemNumberOfUnits(vsCode, vsAction, vnValue) {
 function changeItemDiscount(vsCode, vnUnitDiscount) {
   sale.items = sale.items.map((item) => {
     let unitDiscount = item.unitDiscount
-    if (item.codigo === vsCode) {
+    if (item.code === vsCode) {
       unitDiscount = parseFloat(vnUnitDiscount)
     }
     return {
@@ -335,11 +336,11 @@ export default function handlerSales() {
 
     if ($el.matches(".sale-save") || $el.closest(".sale-save")) {
       if (!sale.seller) {
-        ntf.show("Información requerida", "Seleccione el vendedor", "danger")
+        ntf.error("Información requerida", "Seleccione el vendedor")
       } else if (!sale.typePayment) {
-        ntf.show("Información requerida", "Seleccione la forma de pago", "danger")
+        ntf.error("Información requerida", "Seleccione la forma de pago")
       } else if (sale.date > timestampEc()) {
-        ntf.show("Información erronea", `La fecha no puede ser mayor a hoy: ${todayEcToString()} `, "danger")
+        ntf.error("Información erronea", `La fecha no puede ser mayor a hoy: ${todayEcToString()} `)
       } else {
         // Insertar la venta en la base de datos
         insertSalesDB(resetSale)
@@ -363,19 +364,38 @@ export default function handlerSales() {
     let $input = e.target
     console.log(`evento change target = ${$input.classList} `, $input.value)
     if ($input.matches(".sale-item-amount")) {
-      changeItemNumberOfUnits($input.dataset.key, "replace", parseInt($input.value));
+      let newValue = parseInt($input.value)
+      if (isNaN(newValue) || newValue < 1) {
+        ntf.error("Validación valor mínimo", "La cantidad no puede ser menor a uno")
+        newValue = 1
+        $input.value = newValue
+      }
+      changeItemNumberOfUnits($input.dataset.key, "replace", newValue);
       sale.update = true
-    } else if ($input.matches(".sale-item-discount")) {
-      changeItemDiscount($input.dataset.key, $input.value)
+    } else if ($input.matches(".sale-item-unit-discount")) {
+      let newValue = parseFloat($input.value),
+        max = parseFloat($input.max)
+      if (isNaN(newValue) || newValue < 0) {
+        ntf.error("Validación valor mínimo", "El descuento por unidad no puede ser menor a cero")
+        newValue = 0
+        $input.value = newValue
+      } else if (newValue > max) {
+        ntf.error("Validación valor mínimo", "El descuento por unidad no puede ser mayor al valor de la unidad.")
+        newValue = max
+        $input.value = newValue
+      }
+      changeItemDiscount($input.dataset.key, newValue)
       sale.update = true
     } else if ($input.name === "typePayment") {
       sale.typePayment = $input.value
+      sale.update = true
     } else if ($input.name === "seller") {
       sale.seller = $input.value
     } else if ($input.name === "typeSale") {
       sale.type = $input.value
       // Setear valores a consumidor final en el catalogo de productos
       changeProductsModalTypeSale(sale.type === "PORMAYOR")
+      sale.update = true
       //TODO Agregar validacion de al menos un servicio o producto
 
       //} else if ($input.name === "saleHeaderDate") {
@@ -417,11 +437,9 @@ function insertSalesDB(callback) {
   let i = 1
   // Detalles de la venta
   items = items.map((item) => {
-    delete item.descripcion
-    /**salesHeader.fecha,*/
+    delete item.description
     return {
       ...item,
-      category: item.codigo.startsWith("SERV") ? "S" : "P",
       clientId: salesHeader.clientId,
       order: i++,
       saleUid: newSaleKey
@@ -443,7 +461,7 @@ function insertSalesDB(callback) {
   // Registrar la venta en la BD
   dbRef.update(updates, (error) => {
     if (error) {
-      ntf.showTecnicalError("Venta no registrada", error)
+      ntf.tecnicalError("Venta no registrada", error)
     } else {
       ntf.show("Venta registrada", `Se guardó correctamente la información de la venta Nro. ${sale.date}`)
       callback()

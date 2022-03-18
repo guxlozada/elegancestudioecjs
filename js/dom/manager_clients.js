@@ -49,7 +49,7 @@ export default function handlerClients() {
     if (textSearch) {
       searchById(textSearch)
     } else {
-      ntf.show("Información requerida", "Ingrese la identificación o el nombre apellido del cliente para realizar la búsqueda.", "danger")
+      ntf.error("Información requerida", "Ingrese la identificación o el nombre apellido del cliente para realizar la búsqueda.")
     }
   })
 
@@ -85,7 +85,7 @@ const searchById = async (vsSearch) => {
       })
     })
     .catch((error) => {
-      ntf.showTecnicalError("Búsqueda de cliente", error)
+      ntf.tecnicalError("Búsqueda de cliente", error)
     })
 
   if (clientsData.length == 0) {
@@ -107,7 +107,7 @@ const searchById = async (vsSearch) => {
 
       })
       .catch((error) => {
-        ntf.showTecnicalError("Búsqueda de cliente", error)
+        ntf.tecnicalError("Búsqueda de cliente", error)
       })
   }
   renderClients(clientsData)

@@ -13,7 +13,7 @@ const d = document,
   $productsModalContainer = d.querySelector("#products-modal .items-container"),
   $servicesModalContainer = d.querySelector("#services-modal .items-container")
 
-export const ntf = new NotificationBulma()
+export const ntf = new NotificationBulma();
 
 //------------------------------------------------------------------------------------------------
 // Funcionalidad

@@ -105,8 +105,8 @@ function updateSale() {
 }
 
 // Actualizar el carrito de compras
-function updateSaleDetails() {
-  renderSaleItems()
+function updateSaleDetails(changeTypePayment) {
+  renderSaleItems(changeTypePayment)
   renderSaleSummary()
   // Almacenar la venta en el local storage
   localStorage.setItem("SALE", JSON.stringify(sale))
@@ -123,11 +123,9 @@ function renderSaleHeader() {
   d.getElementsByName("typePayment").forEach($el => $el.checked = $el.value === sale.typePayment)
   d.getElementsByName("typeSale").forEach($el => $el.checked = $el.value === sale.type)
 }
-////////////////////////////////////////////////
-// CONTINUAR AQUI
-///////////////////////////////////////////////
+
 // Actualizar los productso/servicios de la venta
-function renderSaleItems() {
+function renderSaleItems(changeTypePayment) {
   const $productsContainer = d.getElementById("sale-details-products"),
     $servicesContainer = d.getElementById("sale-details-services"),
     $productsFragment = d.createDocumentFragment(),
@@ -170,28 +168,28 @@ function renderSaleItems() {
       // El descuento puede haberse igresado/modificado manualmente al registro, null la primera vez
       vnUnitDiscount = item.unitDiscount
 
-      // SOLO para servicios, se aplica los descuentos automaticos la primera vez
-      if (!item.unitDiscount) {
+      // SOLO para servicios, se aplica los descuentos automaticos la primera vez o cuando cambia el metodo de pago
+      if (!item.unitDiscount || changeTypePayment) {
         if (item.type === "S") {
           vnUnitDiscount = 0
           if (item.promo.cash && sale.typePayment === "EFECTIVO")// IVA solo pagos en efectivo
-            vnUnitDiscount += item.promo.cash * item.finalValue / 112 // debe ser igual a item.taxIVA
+            vnUnitDiscount += Math.round((item.promo.cash * item.finalValue / 112) * 100) / 100// debe ser igual a item.taxIVA
           ////////////////////////////////////////////////////
           // TODO: TEMPORALMENTE JUEVES (4) CAMBIAR a MARTES (2)
           ////////////////////////////////////////////////////
-          console.log("todayEc()", todayEc(), todayEcToString(), nowEcToString(), nowEc().to)
-          if (item.promo.discountDay && todayEc().getDay() === 4)// Dia de descuento martes
-            vnUnitDiscount += item.promo.discountDay * item.baseValue / 100
+          if (item.promo.discountDay && todayEc().getDay() === 5)// Dia de descuento martes
+            vnUnitDiscount += Math.round((item.promo.discountDay * item.baseValue / 100) * 100) / 100
         } else {
           vnUnitDiscount = 0
         }
+        item.unitDiscount = vnUnitDiscount
       }
 
       // Recalculo de impuestos por descuentos
-      if (vnUnitDiscount > 0) {////ANTESif (item.unitDiscount && vnUnitDiscount > 0) {
+      if (vnUnitDiscount > 0) {
         // Se considera que todos los servicios y productos  estan gravados solo con IVA
-        vnBaseDiscount = Math.round(vnUnitDiscount / 1.12 * 100) / 100 // 2.85// tecnica para utilizar solo dos decimales del calculo sin redondeo
-        vnTaxDiscount = vnUnitDiscount - vnBaseDiscount //0.35
+        vnBaseDiscount = Math.round(vnUnitDiscount / 1.12 * 100) / 100 // tecnica para utilizar solo dos decimales del calculo sin redondeo
+        vnTaxDiscount = vnUnitDiscount - vnBaseDiscount
       }
       let baseValue = item.baseValue,
         finalValue = item.finalValue,
@@ -203,14 +201,14 @@ function renderSaleItems() {
         taxIVA = item.wholesaleTaxIVA
       }
 
-      vnTaxableIncome = (baseValue - vnBaseDiscount) * item.numberOfUnits //7.15
-      vnTaxes = ((taxIVA || 0) - vnTaxDiscount) * item.numberOfUnits //1.20
-      vnDiscounts = vnUnitDiscount * item.numberOfUnits //3.20
+      vnTaxableIncome = (baseValue - vnBaseDiscount) * item.numberOfUnits
+      vnTaxes = ((taxIVA || 0) - vnTaxDiscount) * item.numberOfUnits
+      vnDiscounts = vnUnitDiscount * item.numberOfUnits
 
-      item.taxableIncome = Math.round(vnTaxableIncome * 100) / 100 // 7.15
-      item.taxes = Math.round(vnTaxes * 100) / 100 // 0.85
-      item.total = item.taxableIncome + item.taxes // 8
-      item.discounts = vnDiscounts // 3.20
+      item.taxableIncome = Math.round(vnTaxableIncome * 100) / 100
+      item.taxes = Math.round(vnTaxes * 100) / 100
+      item.total = item.taxableIncome + item.taxes
+      item.discounts = vnDiscounts
 
       sale.taxableIncome += item.taxableIncome
       sale.taxes += item.taxes
@@ -388,14 +386,17 @@ export default function handlerSales() {
       sale.update = true
     } else if ($input.name === "typePayment") {
       sale.typePayment = $input.value
-      sale.update = true
+      // Recalcula por el descuento por pago en efectivo de servicios, 
+      // true forza a recalcular descuentos automaticos
+      updateSaleDetails(true)
     } else if ($input.name === "seller") {
       sale.seller = $input.value
     } else if ($input.name === "typeSale") {
       sale.type = $input.value
       // Setear valores a consumidor final en el catalogo de productos
       changeProductsModalTypeSale(sale.type === "PORMAYOR")
-      sale.update = true
+      // Recalcular precios de productos con precio CLIENTE o PORMAYOR
+      updateSaleDetails()
       //TODO Agregar validacion de al menos un servicio o producto
 
       //} else if ($input.name === "saleHeaderDate") {
@@ -415,9 +416,12 @@ export default function handlerSales() {
     }
   })
 }
+
 // --------------------------
 // Database operations
 // --------------------------
+
+const zeroPad = (num, places) => String(num).padStart(places, '0')
 
 function insertSalesDB(callback) {
   // Cabecera de la venta
@@ -432,28 +436,32 @@ function insertSalesDB(callback) {
   delete salesHeader.valid
   delete salesHeader.update
 
-  // Obtener la clave de la nueva venta
-  const newSaleKey = dbRef.child(sellerDB.sales).push().key;
+  // Generar la clave de la nueva venta
+  var tzoffset = (new Date()).getTimezoneOffset() * 60000
+  const saleKey = new Date(sale.date - tzoffset).toISOString().replace(/[^0-9T]/g, "").replace(/ +/, " ").slice(0, -3)
   let i = 1
   // Detalles de la venta
   items = items.map((item) => {
+    delete item.active
     delete item.description
+    delete item.promo
+    delete item.retentionIVA
+    delete item.taxIVA
     return {
       ...item,
       clientId: salesHeader.clientId,
       order: i++,
-      saleUid: newSaleKey
+      saleUid: saleKey
     }
   })
 
   // Generar bloque de transaccion
   let updates = {}
-  updates[`${sellerDB.sales}/${newSaleKey}`] = salesHeader
-  let existService
+  updates[`${sellerDB.sales}/${saleKey}`] = salesHeader
   // Registrar Detalles
   items.forEach(item => {
-    let newDetailKey = dbRef.child(sellerDB.salesDetails).push().key;
-    updates[`${sellerDB.salesDetails}/${newDetailKey}`] = item
+    let detailKey = saleKey + '-' + zeroPad(item.order, 2);
+    updates[`${sellerDB.salesDetails}/${detailKey}`] = item
   })
   // Actualizar datos del cliente
   updates[`${sellerDB.clients}/${salesHeader.clientUid}/lastService`] = salesHeader.searchDate

@@ -21,14 +21,14 @@
     }
 
     input.sale-item-amount[type="number"],
-    input.sale-item-discount[type="number"] {
+    input.sale-item-unit-discount[type="number"] {
       width: 2.2rem;
       margin: 0;
       font-size: 0.75rem;
       text-align: right;
     }
 
-    input.sale-item-discount[type="number"] {
+    input.sale-item-unit-discount[type="number"] {
       width: 3rem;
     }
   </style>
@@ -157,15 +157,15 @@
                   <th>
                     <div class="control is-size-7">
                       <label class="radio">
-                        <input type="radio" name="payment" value="EFECTIVO" checked>
+                        <input type="radio" name="typePayment" value="EFECTIVO" checked>
                         Efectivo
                       </label>
                       <label class="radio">
-                        <input type="radio" name="payment" value="CREDITO">
+                        <input type="radio" name="typePayment" value="CREDITO">
                         Tarjeta Crédito
                       </label>
                       <label class="radio">
-                        <input type="radio" name="payment" value="DEBITO">
+                        <input type="radio" name="typePayment" value="DEBITO">
                         Tarjeta Débito
                       </label>
                     </div>
@@ -596,7 +596,7 @@
   </template>
 
   <template id="catalog-template">
-    <a class="catalog-item panel-block" href="#sales" data-key="" data-type="">
+    <a class="catalog-item panel-block" data-key="" data-type="">
       <span class="panel-icon">
         <i class="fa-solid fa-plus"></i>
       </span>
@@ -616,7 +616,7 @@
         <input type="number" class="sale-item-unit-discount" value="0" step="0.1" min="0.0" max="100.0" data-key="UID">
       </td>
       <td class="sale-item-value has-text-right" style="vertical-align: bottom;">0.00</td>
-      <td><a class="sale-item-delete" href="#sales" title="X Remover" data-key="UID">
+      <td><a class="sale-item-delete" title="X Remover" data-key="UID">
           <span class="icon is-small has-text-danger">
             <i class="fa-solid fa-trash-can"></i>
           </span>

@@ -1,10 +1,10 @@
 import { ntf } from "../app.js";
+import { nowEc } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
-import { db } from "./firebase_conexion.js";
+import { db, dbRef } from "./firebase_conexion.js";
 import { renderClients } from "./manager_clients.js";
 
-const d = document,
-  clientsRef = db.ref(sellerDB.clients)
+const d = document
 
 const clientInit = {
   name: null,
@@ -61,6 +61,7 @@ export default function handlerClientEdit() {
 
   // EVENTO=click RAIZ=button<client-save> ACCION=crear y actualizar clientes 
   d.querySelector(".client-save").addEventListener("click", e => {
+    e.preventDefault()
     ////console.log(`client-save click target=${e.target.classList}`, e.target.value)
 
     // Almacenar el cliente en el local storage
@@ -91,7 +92,8 @@ export default function handlerClientEdit() {
       ntf.error("Información requerida", "Seleccione quien registra al cliente")
     }
     if (!ntf.enabled) {
-      insertClientDB(JSON.parse(JSON.stringify(client)))
+      let clientData = JSON.parse(JSON.stringify(client))
+      insertClientDB(clientData)
     }
   })
 
@@ -127,20 +129,27 @@ function insertClientDB(clientData) {
     }]
   }
   delete clientData.valid
-  delete clientData.uid
   delete clientData.registeredBy
 
-  // insertar en la DB
-  clientsRef.push(clientData)
-    .then(res => {
-      ntf.show("Registro de cliente", `Se guardó correctamente la información del cliente: ${client.name}`)
-      console.log("new cli", res, res.key)
-      changeClient(true)
-      clientData.uid = res.key
-      renderClients([clientData])
-    })
-    .catch(error => {
+  // Obtener la clave del cliente
+  const key = clientData.idNumber + '-' + (clientData.searchLastname || nowEc().getSeconds())
+  clientData.uid = key
+
+  let updates = {}
+  // Registrar datos del cliente
+  updates[`${sellerDB.clients}/${key}`] = clientData
+  // TODO  Actualizar referido si aplica
+
+  // Registrar el cliente en la BD
+  dbRef.update(updates, (error) => {
+    if (error) {
       ntf.tecnicalError("Cliente no registrado", error)
-    })
+    } else {
+      d.getElementById("client-edit-form").reset()
+      changeClient(true)
+      renderClients([clientData])
+      ntf.show("Registro de cliente", `Se guardó correctamente la información del cliente: ${clientData.name}`)
+    }
+  })
 }
 

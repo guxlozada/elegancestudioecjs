@@ -1,11 +1,9 @@
 import { ntf } from "../app.js";
-import { timestampEc, todayEcToString, timestampLocalTimezoneString } from "./fecha-util.js";
+import { timestampEc, todayEcToString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
-import { db } from "./firebase_conexion.js";
+import { dbRef } from "./firebase_conexion.js";
 
 const d = document,
-  expensesRef = db.ref(sellerDB.expenses),
-  depositsRef = db.ref(sellerDB.deposits),
   $container = d.getElementById("expenses")
 
 const expenseIni = {
@@ -18,7 +16,7 @@ const expenseIni = {
   valid: false
 }
 
-let expense = localStorage.getItem("EXPENSE") ? JSON.parse(localStorage.getItem("EXPENSE")) : JSON.parse(JSON.stringify(expenseIni))
+let expense = JSON.parse(JSON.stringify(expenseIni))
 changeExpense(false)
 
 //------------------------------------------------------------------------------------------------
@@ -33,11 +31,10 @@ export function changeExpense(reset) {
     CANCELAR: regresar a la anterior`)
   }
   if (discart) {
-    localStorage.removeItem("EXPENSE")
     expense = JSON.parse(JSON.stringify(expenseIni))
     expense.date = timestampEc()
     expense.searchDate = todayEcToString()
-    expense.searchDateTime = timestampLocalTimezoneString(expense.date)
+    expense.searchDateTime = new Date(expense.date).toLocaleString()
     updateExpense()
   } else {
     ntf.show(`${expense.type} pendiente de guardar`, `Recuerde registrar con el botón "Guardar" o 
@@ -53,8 +50,6 @@ function updateExpense() {
   d.getElementById("expense-value").value = expense.value
   d.getElementById("expense-voucher").value = expense.voucher
   d.getElementById("expense-details").value = expense.details
-  // Almacenar el gastoen el local storage
-  localStorage.setItem("EXPENSE", JSON.stringify(expense))
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -67,9 +62,6 @@ export default function handlerExpenses() {
   $container.addEventListener("submit", e => {
     //Prevenir la accion predeterminada que procesa los datos del formulario
     e.preventDefault()
-
-    // Almacenar la compra/gasto en el local storage
-    localStorage.setItem("EXPENSE", JSON.stringify(expense))
 
     // Obtiene los campos que contienen la informacion de la compra/gasto
     const $expenseInput = d.getElementsByClassName("expense-input")
@@ -118,10 +110,7 @@ export default function handlerExpenses() {
     }
     if (!ntf.enabled) {
       let expenseData = JSON.parse(JSON.stringify(expense))
-      if (expense.type === "DEPOSITO")
-        insertDepositsDB(expenseData)
-      else
-        insertExpenseDB(expenseData)
+      insertExpenseDB(expenseData, expense.type === "DEPOSITO")
     }
   })
 
@@ -141,34 +130,28 @@ export default function handlerExpenses() {
 // Database operations
 // --------------------------
 
-function insertExpenseDB() {
+function insertExpenseDB(expenseData, vbDeposit) {
   //Complementar informacion por omision
-  delete expense.valid
+  delete expenseData.valid
 
-  // insertar en la DB
-  expensesRef.push(expense)
-    .then(res => {
-      let idExpense = expense.voucher ? expense.voucher : expense.date
-      ntf.show(`Registro de ${expense.type}`, `Se guardó correctamente la información: ${expense.type} Nro.${idExpense}`)
+  // Generar la clave del compra/gasto
+  var tzoffset = (new Date()).getTimezoneOffset() * 60000
+  const key = expenseData.type.slice(0, 3) + new Date(expenseData.date - tzoffset).toISOString().replace(/[^0-9T]/g, "").replace(/ +/, " ").slice(0, -3)
+
+  // Registrar la compra/gasto en la BD TODO: CAMBIAR POR SET
+  let updates = {}
+  // depositos se registra en una collecion diferente
+  let collection = vbDeposit ? sellerDB.deposits : sellerDB.expenses
+  updates[`${collection}/${key}`] = expenseData
+
+  dbRef.update(updates, (error) => {
+    if (error) {
+      ntf.tecnicalError(`${expenseData.type} no registrado`, error)
+    } else {
+      let idExpense = expenseData.voucher ? expenseData.voucher : expenseData.date
+      ntf.show(`${expenseData.type} registrado`, `Se guardó correctamente la información: ${expenseData.type} Nro.${idExpense}`)
       changeExpense(true)
-    })
-    .catch(error => {
-      ntf.tecnicalError(`${expense.type} no registrado`, error)
-    })
+    }
+  })
+
 }
-
-function insertDepositsDB() {
-  //Complementar informacion por omision
-  delete expense.valid
-
-  // insertar en la DB
-  depositsRef.push(expense)
-    .then(res => {
-      ntf.show(`Registro de depósito`, `Se guardó correctamente la información del depósito Nro.${expense.voucher}`)
-      changeExpense(true)
-    })
-    .catch(error => {
-      ntf.tecnicalError("Deposito no registrado", error)
-    })
-}
-

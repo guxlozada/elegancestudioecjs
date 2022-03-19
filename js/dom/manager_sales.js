@@ -14,7 +14,7 @@ const d = document,
 const saleInit = {
   client: {
     uid: "",
-    description: "DEBE BUSCAR Y SELECCIONAR UN CLIENTE",
+    description: "",
     lastService: null,//TODO: Cuando se guarde la factura hay que actualizar esta fecha
     referrals: 0//TODO: Cuando se registra clientes, se debe actualizar el num referidos buscando por identificacion
   },
@@ -39,7 +39,7 @@ updateSale()
 const resetSale = () => {
   localStorage.removeItem("SALE")
   sale = JSON.parse(JSON.stringify(saleInit))
-  sale.date = timestampEc()
+  sale.searchDate = todayEcToString()
   updateSale()
 }
 
@@ -63,7 +63,9 @@ export function changeSaleClient($client) {
     sale.searchDateTime = new Date(sale.date).toLocaleString()
     sale.valid = true
     updateSale()
-
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ///TODO: Verificar xq no se puede colocar la llmada en updateSale()
+    ///////////////////////////////////////////////////////////////////////////////////////////////
     // Setear valores a consumidor final en el catalogo de productos
     changeProductsModalTypeSale(sale.type === "PORMAYOR")
   } else {
@@ -115,6 +117,12 @@ function updateSaleDetails(changeTypePayment) {
 // Actualizar cabecera de la venta
 function renderSaleHeader() {
   const cli = sale.client
+  if (cli.uid) {
+    d.getElementById("sale-client-empty").classList.add("is-hidden")
+  } else {
+    d.getElementById("sale-client-empty").classList.remove("is-hidden")
+  }
+
   d.getElementById("sale-client").innerText = cli.description
   d.getElementById("sale-client-lastserv").innerText = cli.lastService
   d.getElementById("sale-client-referrals").innerText = cli.referrals
@@ -381,13 +389,13 @@ export default function handlerSales() {
       }
       changeItemDiscount($input.dataset.key, newValue)
       sale.update = true
+    } else if ($input.name === "seller") {
+      sale.seller = $input.value
     } else if ($input.name === "typePayment") {
       sale.typePayment = $input.value
       // Recalcula por el descuento por pago en efectivo de servicios, 
       // true forza a recalcular descuentos automaticos
       updateSaleDetails(true)
-    } else if ($input.name === "seller") {
-      sale.seller = $input.value
     } else if ($input.name === "typeSale") {
       sale.type = $input.value
       // Setear valores a consumidor final en el catalogo de productos

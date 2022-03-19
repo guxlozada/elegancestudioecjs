@@ -21,7 +21,7 @@ Object.defineProperty(String.prototype, 'capitalizarPrimeraLetra', {
 
 const clientInit = {
   name: null,
-  idType: "CEDULA",
+  idType: "CEDULA",// [CEDULA,PASAPORTE,RUC,OTRO]
   idNumber: null,
   email: null,
   city: "Manta",

@@ -182,7 +182,7 @@ function renderSaleItems(changeTypePayment) {
           vnUnitDiscount = 0
           if (item.promo.cash && sale.typePayment === "EFECTIVO")// IVA solo pagos en efectivo
             vnUnitDiscount += Math.round((item.promo.cash * item.finalValue / 112) * 100) / 100// debe ser igual a item.taxIVA
-          if (item.promo.discountDay && todayEc().getDay() === 2)// Dia de descuento MARTES (2)
+          if (item.promo.discountDay && todayEc().getDay() === 6)// Dia de descuento MARTES (2)
             vnUnitDiscount += Math.round((item.promo.discountDay * item.baseValue / 100) * 100) / 100
         } else {
           vnUnitDiscount = 0

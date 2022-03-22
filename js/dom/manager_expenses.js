@@ -9,7 +9,7 @@ const d = document,
 const expenseIni = {
   date: null,
   responsable: null,
-  type: "GASTO",
+  type: "GASTO",//[ADELANTO,AJUSTE,COMPRA,DEPOSITO,GASTO]
   value: null,
   voucher: null,
   details: null,
@@ -69,12 +69,17 @@ export default function handlerExpenses() {
       let $input = $expenseInput[i]
       switch ($input.type) {
         case "radio":
-          if (!$input.checked) break;
+          if (!$input.checked) break
         default:
           if ($input.value) {
-            let key = $input.getAttribute("data-key");
-            let value = $input.value;
-            expense[key] = value;
+            let key = $input.getAttribute("data-key")
+            let value = $input.value
+            if ($input.name === "expenseValue") {
+              expense[key] = parseFloat(value)
+            } else {
+              expense[key] = value
+            }
+
           }
       }
     }
@@ -84,7 +89,9 @@ export default function handlerExpenses() {
       ntf.error("Información requerida", "Seleccione el responsable")
     } else if (!expense.type) {
       ntf.error("Información requerida", "Seleccione el tipo de documento")
-    } else if (!expense.value || expense.value <= 0) {
+    } else if (!expense.value) {
+      ntf.error("Información requerida", "Ingrese un valor")
+    } else if (expense.type !== "AJUSTE" && expense.value <= 0) {
       ntf.error("Información requerida", "Ingrese un valor mayor a cero")
     }
     if (!ntf.enabled) {

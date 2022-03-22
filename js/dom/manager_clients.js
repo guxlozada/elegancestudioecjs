@@ -47,7 +47,7 @@ export default function handlerClients() {
   d.querySelector(".trigger-client-search").addEventListener("click", e => {
     let textSearch = d.querySelector(".client-search-text").value
     if (textSearch) {
-      searchById(textSearch)
+      dbClientesByIdNumber(textSearch)
     } else {
       ntf.error("Información requerida", "Ingrese la identificación o el nombre apellido del cliente para realizar la búsqueda.")
     }
@@ -68,7 +68,7 @@ export default function handlerClients() {
 // Database operations
 // --------------------------
 
-const searchById = async (vsSearch) => {
+const dbClientesByIdNumber = async (vsSearch) => {
   console.log("vsSearch", vsSearch)
   let txtSearch = vsSearch.trim()
   const clientsData = [];

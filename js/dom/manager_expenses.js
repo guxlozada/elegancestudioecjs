@@ -135,7 +135,7 @@ function insertExpenseDB(expenseData, vbDeposit) {
   delete expenseData.valid
 
   // Generar la clave del compra/gasto
-  const key = expenseData.type.slice(0, 3) + formatToOperationDayStringEc(expenseData.date)
+  const key = formatToOperationDayStringEc(expenseData.date) + "-" + expenseData.type.slice(0, 3)
 
   // Registrar la compra/gasto en la BD TODO: CAMBIAR POR SET
   let updates = {}

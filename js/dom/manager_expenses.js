@@ -1,5 +1,5 @@
 import { ntf } from "../app.js";
-import { timestampEc, todayEcToString } from "./fecha-util.js";
+import { formatToOperationDayStringEc, timestampEc, todayEcToString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { dbRef } from "./firebase_conexion.js";
 
@@ -135,8 +135,7 @@ function insertExpenseDB(expenseData, vbDeposit) {
   delete expenseData.valid
 
   // Generar la clave del compra/gasto
-  var tzoffset = (new Date()).getTimezoneOffset() * 60000
-  const key = expenseData.type.slice(0, 3) + new Date(expenseData.date - tzoffset).toISOString().replace(/[^0-9T]/g, "").replace(/ +/, " ").slice(0, -3)
+  const key = expenseData.type.slice(0, 3) + formatToOperationDayStringEc(expenseData.date)
 
   // Registrar la compra/gasto en la BD TODO: CAMBIAR POR SET
   let updates = {}

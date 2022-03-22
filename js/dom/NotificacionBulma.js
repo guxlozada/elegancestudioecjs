@@ -42,7 +42,7 @@ export default class NotificationBulma {
       msg = `${msg}
       A continuación el detalle del error: 
       ${error}`
-      console.log(`Error [${titulo}]`, error)
+      console.log(`Error [${title}]`, error)
     }
     // TODO: Guardar error en tabla con fecha, json y error
     this.show(title, msg, "danger", 20000)

@@ -12,7 +12,7 @@ const d = document,
 //------------------------------------------------------------------------------------------------
 
 export function renderClients(clientsDB) {
-  $container.innerHTML = "";
+  $container.innerHTML = ""
   d.querySelector(".client-search-zero ").classList.add("is-hidden")
   if (clientsDB && clientsDB.length > 0) {
     const $template = d.getElementById("cliente-template").content,

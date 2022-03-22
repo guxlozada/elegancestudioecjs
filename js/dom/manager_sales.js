@@ -1,6 +1,6 @@
 import { changeProductsModalTypeSale, ntf } from "../app.js";
 import { dbRef } from "./firebase_conexion.js";
-import { nowEc, timestampEc, todayEc, todayEcToString, timestampInputDateToDateEc, timestampLocalTimezoneString, nowEcToString } from "./fecha-util.js";
+import { formatToOperationDayStringEc, nowEc, timestampEc, todayEc, todayEcToString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { services } from "./catalog_services.js";
 import { products } from "./catalog_products.js";
@@ -442,8 +442,7 @@ function insertSalesDB(callback) {
   delete salesHeader.update
 
   // Generar la clave de la nueva venta
-  var tzoffset = (new Date()).getTimezoneOffset() * 60000
-  const saleKey = new Date(sale.date - tzoffset).toISOString().replace(/[^0-9T]/g, "").replace(/ +/, " ").slice(0, -3)
+  const saleKey = formatToOperationDayStringEc(sale.date)
   let i = 1
   // Detalles de la venta
   items = items.map((item) => {

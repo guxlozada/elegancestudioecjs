@@ -40,8 +40,8 @@
               <tbody>
                 <tr>
                   <th style="width:100px;vertical-align:middle">Fecha:</th>
-                  <th><input id="cart-header-fecha" class="input is-small" type="date" name="cartHeaderDate"
-                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha de venta: 31/12/2022..." />
+                  <th><input class="summary-day input is-small" type="date" style="max-width: 220px; margin: 0;"
+                      required />
                     </td>
                 </tr>
               </tbody>
@@ -49,78 +49,33 @@
             <table>
               <thead class="has-background-link">
                 <tr>
-                  <th style="text-align:center;color:white;width:50px">Nro.</th>
-                  <th style="text-align:center;color:white;width:50px">Hora</th>
-                  <th style=" text-align:center;color:white;">Vendedor</th>
-                  <th class=" has-text-right has-text-white" style="width:10%">Descuentos</th>
-                  <th class="has-text-right has-text-white" style="width:10%">Base Imponible</th>
-                  <th class=" has-text-right has-text-white" style="width:10%">Impuestos IVA</th>
-                  <th class=" has-text-right has-text-white" style="width:10%">Valor Venta</th>
+                  <th class="has-text-white" style="width:2rem">Nro.</th>
+                  <th class="has-text-white" style="width:4rem">Hora</th>
+                  <th class="has-text-white">Vendedor</th>
+                  <th class="has-text-white">Forma pago</th>
+                  <th class="has-text-right has-text-white">Descuentos</th>
+                  <th class="has-text-right has-text-white">Base Imponible</th>
+                  <th class="has-text-right has-text-white">Impuestos</th>
+                  <th class="has-text-right has-text-white">Valor Venta</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr style=" text-align:right">
-                  <td>1</td>
-                  <td style="text-align:center;">10:12</td>
-                  <td style=" text-align:left;padding-left:10px;">Estiberson</td>
-                  <th>0.00</th>
-                  <td>8.93</td>
-                  <td>1.07</td>
-                  <td>10.00</td>
-                </tr>
-                <tr style="text-align:right">
-                  <td>2</td>
-                  <td style="text-align:center;">10:45</td>
-                  <td style="text-align:left;padding-left:10px;">Oscar</td>
-                  <td>0.00</td>
-                  <td>8.93</td>
-                  <td>1.07</td>
-                  <td>10.00</td>
-                </tr>
-                <tr style="text-align:right">
-                  <td>3</td>
-                  <td style="text-align:center;">12:30</td>
-                  <td style="text-align:left;padding-left:10px;">Oscar</td>
-                  <td>0.00</td>
-                  <td>8.93</td>
-                  <td>1.07</td>
-                  <td>10.00</td>
-                </tr>
-                <tr style="text-align:right">
-                  <td>4</td>
-                  <td style="text-align:center;">15:10</td>
-                  <td style="text-align:left;padding-left:10px;">Estiberson</td>
-                  <td>0.00</td>
-                  <td>8.93</td>
-                  <td>1.07</td>
-                  <td>10.00</td>
-                </tr>
-                <tr style="text-align:right">
-                  <td>5</td>
-                  <td style="text-align:center;">17:00</td>
-                  <td style="text-align:left;padding-left:10px;">Estiberson</td>
-                  <td>2.00</td>
-                  <td>5.14</td>
-                  <td>0.86</td>
-                  <td>6.00</td>
-                </tr>
-                <tr style="text-align:right">
-                  <td>6</td>
-                  <td style="text-align:center;">19:00</td>
-                  <td style="text-align:left;padding-left:10px;">Local</td>
-                  <td>0.00</td>
-                  <td>8.93</td>
-                  <td>1.07</td>
-                  <td>10.00</td>
-                </tr>
+              <tbody id="summary-body">
+                <!-- render summary-->
               </tbody>
-              <tfoot id="cart-summary">
+              <tfoot id="summary-footer">
                 <tr class="has-background-grey">
-                  <th class="has-text-right has-text-white" colspan="3">Totales</th>
-                  <th class="has-text-right has-text-white">2.00</th>
-                  <th class="has-text-right has-text-white">49.79</th>
-                  <th class="has-text-right has-text-white">6.21</th>
-                  <th class="has-text-right has-text-white">56.00</th>
+                  <th class="summary-f-discounts has-text-right has-text-white" colspan="5"></th>
+                  <th class="summary-f-taxable-income has-text-right has-text-white"></th>
+                  <th class="summary-f-taxes has-text-right has-text-white"></th>
+                  <th class="summary-f-value has-text-right has-text-white"></th>
+                </tr>
+                <tr class="has-background-grey">
+                  <th class="has-text-right has-text-white" colspan="7">Tarjetas Débito y Crédito</th>
+                  <th class="summary-f-card has-text-right has-text-white"></th>
+                </tr>
+                <tr class="has-background-grey">
+                  <th class="has-text-right has-text-white" colspan="7">Efectivo</th>
+                  <th class="summary-f-cash has-text-right has-text-white"></th>
                 </tr>
               </tfoot>
             </table>
@@ -147,8 +102,8 @@
               <tbody>
                 <tr>
                   <th style="width:100px;vertical-align:middle">Fecha:</th>
-                  <th><input id="cart-header-fecha" class="input is-small" type="date" name="cartHeaderDate"
-                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha de venta: 31/12/2022..." />
+                  <th><input class="summary-day input is-small" type="date" style="max-width: 220px; margin: 0;"
+                      required />
                     </td>
                 </tr>
               </tbody>
@@ -271,8 +226,8 @@
               <tbody>
                 <tr>
                   <th style="width:100px;vertical-align:middle">Fecha:</th>
-                  <th><input id="cart-header-fecha" class="input is-small" type="date" name="cartHeaderDate"
-                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha de venta: 31/12/2022..." />
+                  <th><input class="summary-day input is-small" type="date" style="max-width: 220px; margin: 0;"
+                      required />
                     </td>
                 </tr>
               </tbody>
@@ -369,8 +324,8 @@
               <tbody>
                 <tr>
                   <th style="width:100px;vertical-align:middle;">Fecha:</th>
-                  <th><input id="cart-header-fecha" class="input is-small" type="date" name="cartHeaderDate"
-                      style="max-width: 140px; margin: 0;" placeholder="Ingrese la fecha de venta: 31/12/2022..." />
+                  <th><input class="summary-day input is-small" type="date" style="max-width: 220px; margin: 0;"
+                      required />
                     </td>
                 </tr>
               </tbody>
@@ -437,6 +392,23 @@
 
   </main>
 
+
+  <template id="summary-row">
+    <tr style=" text-align:right">
+      <td class="summary-index has-text-left"></td>
+      <td class="summary-time has-text-left"></td>
+      <td class="summary-seller has-text-left"></td>
+      <td class="summary-payment has-text-left"></td>
+      <th class="summary-discounts"></th>
+      <td class="summary-taxable-income"></td>
+      <td class="summary-taxes"></td>
+      <td class="summary-value"></td>
+    </tr>
+  </template>
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/daily_closing.js" type="module"></script>
 </body>
 
 </html>

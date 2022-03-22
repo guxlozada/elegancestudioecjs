@@ -23,13 +23,15 @@
     <div id="navMenu" class="navbar-menu">
 
       <div class="navbar-start">
-        <a class="navbar-item is-size-6" href="index.html?#clients">
+        <a class="navbar-item is-size-6" href="index.html?#clients"
+          onblur="document.querySelector('.client-search-text').focus()">
           <span class="bd-emoji is-size-4">🧔</span>Clientes
         </a>
         <a class="navbar-item is-size-6" href="index.html?#sales">
           <span class="bd-emoji is-size-4">💈</span>Ventas
         </a>
-        <a class="navbar-item is-size-6" href="index.html?#expenses">
+        <a class="navbar-item is-size-6" href="index.html?#expenses"
+          onblur="document.getElementById('expense-value').focus()">
           <span class="bd-emoji is-size-4">🧾</span>Compras/Gastos
         </a>
         <a class="navbar-item is-size-6" href="daily-closing.html#summary">

@@ -76,7 +76,8 @@
         </div>
 
         <div class="buttons is-right p-2" style="width: 100%;">
-          <a class="button is-small is-link is-rounded" href="#client-edit">
+          <a class="button is-small is-link is-rounded" href="#client-edit"
+            onblur="document.getElementById('client-name').focus()">
             <span class="icon">
               <i class="fa-solid fa-user-plus"></i>
             </span>
@@ -105,7 +106,8 @@
                 <tr>
                   <th>Cliente:</th>
                   <th><span id="sale-client"></span>
-                    <a id="sale-client-empty" href="#clients">Debe seleccionar un cliente</a>
+                    <a id="sale-client-empty" href="#clients"
+                      onblur="document.querySelector('.client-search-text').focus()">Debe seleccionar un cliente</a>
                   </th>
                 </tr>
                 <tr class="has-background-warning">

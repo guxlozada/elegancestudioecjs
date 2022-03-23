@@ -22,7 +22,7 @@
       onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
   </header>
   <main>
-    <section class="section">
+    <section class="section" style="max-width: 1000px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -48,34 +48,34 @@
             </table>
             <table>
               <thead class="has-background-link">
-                <tr>
+                <tr class="has-text-right">
                   <th class="has-text-white" style="width:2rem">Nro.</th>
-                  <th class="has-text-white" style="width:4rem">Hora</th>
-                  <th class="has-text-white">Vendedor</th>
-                  <th class="has-text-white">Forma pago</th>
-                  <th class="has-text-right has-text-white">Descuentos</th>
-                  <th class="has-text-right has-text-white">Base Imponible</th>
-                  <th class="has-text-right has-text-white">Impuestos</th>
-                  <th class="has-text-right has-text-white">Valor Venta</th>
+                  <th class="has-text-white" style="text-align:center;width:4rem">Hora</th>
+                  <th class="has-text-white has-text-left is-hidden-mobile">Vendedor</th>
+                  <th class="has-text-white" style="width:7rem">Forma pago</th>
+                  <th class="has-text-white is-hidden-mobile" style="width:7rem">Descuentos</th>
+                  <th class="has-text-white" style="width:7rem">Base Imponible</th>
+                  <th class="has-text-white" style="width:7rem">Impuestos</th>
+                  <th class="has-text-white" style="width:7rem">Valor Venta</th>
                 </tr>
               </thead>
               <tbody id="summary-body">
                 <!-- render summary-->
               </tbody>
-              <tfoot id="summary-footer">
-                <tr class="has-background-grey">
-                  <th class="summary-f-discounts has-text-right has-text-white" colspan="5"></th>
-                  <th class="summary-f-taxable-income has-text-right has-text-white"></th>
-                  <th class="summary-f-taxes has-text-right has-text-white"></th>
-                  <th class="summary-f-value has-text-right has-text-white"></th>
+              <tfoot id="summary-footer" class="has-text-weight-semibold ">
+                <tr class="has-background-grey-light">
+                  <th class="total-discounts has-text-right" colspan="5">0.00</th>
+                  <th class="total-taxable-income has-text-right">0.00</th>
+                  <th class="total-taxes has-text-right">0.00</th>
+                  <th class="total-value has-text-right">0.00</th>
                 </tr>
-                <tr class="has-background-grey">
-                  <th class="has-text-right has-text-white" colspan="7">Tarjetas Débito y Crédito</th>
-                  <th class="summary-f-card has-text-right has-text-white"></th>
+                <tr class="has-background-grey-lighter">
+                  <th class="has-text-right" colspan="7">Tarjetas Débito y Crédito</th>
+                  <th class="total-card has-text-right">0.00</th>
                 </tr>
-                <tr class="has-background-grey">
-                  <th class="has-text-right has-text-white" colspan="7">Efectivo</th>
-                  <th class="summary-f-cash has-text-right has-text-white"></th>
+                <tr class="has-background-grey-light">
+                  <th class="has-text-right" colspan="7">Efectivo</th>
+                  <th class="total-cash has-text-right">0.00</th>
                 </tr>
               </tfoot>
             </table>
@@ -84,7 +84,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="by-seller section" style="max-width: 1000px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -110,105 +110,25 @@
             </table>
             <table>
               <thead class="has-background-link">
-                <tr>
-                  <th style=" text-align:center;color:white;">Vendedor</th>
-                  <th style="text-align:center;color:white;width:50px">Nro.</th>
-                  <th style="text-align:center;color:white;width:50px">Hora</th>
-                  <th class=" has-text-right has-text-white" style="width:10%">Descuentos</th>
-                  <th class="has-text-right has-text-white" style="width:10%">Base Imponible</th>
-                  <th class=" has-text-right has-text-white" style="width:10%">Impuestos IVA</th>
-                  <th class=" has-text-right has-text-white" style="width:10%">Valor Venta</th>
+                <tr class="has-text-right">
+                  <th class="has-text-white" style="width:2rem">Nro.</th>
+                  <th class="has-text-white" style="text-align:center;width:4rem">Hora</th>
+                  <th class="has-text-white has-text-left"></th>
+                  <th class="has-text-white" style="width:7rem">Base Imponible</th>
+                  <th class="has-text-white" style="width:7rem">Impuestos</th>
+                  <th class="has-text-white" style="width:7rem">Valor Venta</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr style=" text-align:right">
-                  <td colspan="2">1</td>
-                  <td style="text-align:center;">10:12</td>
-                  <td>0.00</td>
-                  <td>8.93</td>
-                  <td>1.07</td>
-                  <td>10.00</td>
-                </tr>
-                <tr style="text-align:right">
-                  <td colspan="2">2</td>
-                  <td style="text-align:center;">15:10</td>
-                  <td>0.00</td>
-                  <td>8.93</td>
-                  <td>1.07</td>
-                  <td>10.00</td>
-                </tr>
-                <tr style="text-align:right">
-                  <td colspan="2">3</td>
-                  <td style="text-align:center;">17:00</td>
-                  <td>2.00</td>
-                  <td>5.14</td>
-                  <td>0.86</td>
-                  <td>6.00</td>
-                </tr>
-                <tr class="has-background-grey-lighter has-text-weight-semibold">
-                  <th>Estiberson</th>
-                  <th class="has-text-right" colspan="2"></th>
-                  <th class="has-text-right">2.00</th>
-                  <th class="has-text-right">23.00</th>
-                  <th class="has-text-right">3.00</th>
-                  <th class="has-text-right">26.00</th>
-                </tr>
-                <tr style="text-align:right">
-                  <td colspan="2">1</td>
-                  <td style="text-align:center;">10:45</td>
-                  <td>0.00</td>
-                  <td>8.93</td>
-                  <td>1.07</td>
-                  <td>10.00</td>
-                </tr>
-                <tr style="text-align:right">
-                  <td colspan="2">2</td>
-                  <td style="text-align:center;">12:30</td>
-                  <td>0.00</td>
-                  <td>8.93</td>
-                  <td>1.07</td>
-                  <td>10.00</td>
-                </tr>
-                <tr class="has-background-grey-lighter has-text-weight-semibold">
-                  <th>Oscar</th>
-                  <th class="has-text-right" colspan="2"></th>
-                  <th class="has-text-right">0.00</th>
-                  <th class="has-text-right">17.86</th>
-                  <th class="has-text-right">2.14</th>
-                  <th class="has-text-right">20.00</th>
-                </tr>
-                <tr style="text-align:right">
-                  <td colspan="2">1</td>
-                  <td style="text-align:center;">19:00</td>
-                  <td>0.00</td>
-                  <td>8.93</td>
-                  <td>1.07</td>
-                  <td>10.00</td>
-                </tr>
-                <tr class="has-background-grey-lighter has-text-weight-semibold">
-                  <th>Local</th>
-                  <th class="has-text-right" colspan="2"></th>
-                  <th class="has-text-right">0.00</th>
-                  <th class="has-text-right">8.93</th>
-                  <th class="has-text-right">1.07</th>
-                  <th class="has-text-right">10.00</th>
-                </tr>
-              <tfoot>
-                <tr class="has-background-grey" style="font-size:0.8rem">
-                  <th class="has-text-right has-text-white" colspan="3">Totales</th>
-                  <th class="has-text-right has-text-white">2.00</th>
-                  <th class="has-text-right has-text-white">49.79</th>
-                  <th class="has-text-right has-text-white">6.21</th>
-                  <th class="has-text-right has-text-white">56.00</th>
-                </tr>
-              </tfoot>
+              <tbody id="seller-body">
+                <!-- render summary by seller-->
+              </tbody>
             </table>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="expenses section" style="max-width: 1000px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -235,78 +155,24 @@
             <table>
               <thead class="has-background-link">
                 <tr>
-                  <th class="has-text-white" style="width:50px">Nro.</th>
-                  <th class="has-text-white" style="width:100px;">Tipo</th>
-                  <th class="has-text-white" style="width:150px">Responsable</th>
-                  <th class="has-text-white" style="width:200px">Nro. Comprobante/Factura</th>
+                  <th class="has-text-white has-text-right" style="width:2rem">Nro.</th>
+                  <th class="has-text-white" style="text-align:center;width:4rem;">Tipo</th>
+                  <th class="has-text-white" style="width:6rem">Responsable</th>
+                  <th class="has-text-white" style="width:8rem">Comprobante</th>
                   <th class="has-text-white">Detalles</th>
-                  <th class="has-text-white has-text-right" style="width:100px">Valor</th>
+                  <th class="has-text-white has-text-right" style="width:7rem">Valor</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td style="padding-left:5px;">COMPRA</td>
-                  <td>Estiberson</td>
-                  <td>12450000560002333</td>
-                  <td>Articulos limpieza</td>
-                  <td class="has-text-right">12.25</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td style="padding-left:5px;">COMPRA</td>
-                  <td>Estiberson</td>
-                  <td>18560000230001401</td>
-                  <td>Bebidas para clientes</td>
-                  <td class="has-text-right">21.40</td>
-                </tr>
-                <tr class="has-background-grey-lighter has-text-weight-semibold">
-                  <th class="has-text-right" colspan="5">Total compras</th>
-                  <th class="has-text-right">33.65</th>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td style="padding-left:5px;">GASTO</td>
-                  <td>Estiberson</td>
-                  <td>12356666600080009</td>
-                  <td>Lavado de toallas</td>
-                  <td class="has-text-right">15.00</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td style="padding-left:5px;">ADELANTO</td>
-                  <td>Oscar</td>
-                  <td></td>
-                  <td>Adelanto 06/03/2022</td>
-                  <td class="has-text-right">30.00</td>
-                </tr>
-                <tr class="has-background-grey-lighter has-text-weight-semibold">
-                  <th class="has-text-right" colspan="5">Total gastos</th>
-                  <th class="has-text-right">45.00</th>
-                </tr>
-                <tr>
-                  <td>1</td>
-                  <td style="padding-left:5px;">DEPOSITO</td>
-                  <td>Oscar</td>
-                  <td>4564651123123213123</td>
-                  <td>Deposito banco produbanco cta 112231132655656</td>
-                  <td class="has-text-right">100.00</td>
-                </tr>
-                <tr class="has-background-grey-lighter has-text-weight-semibold">
-                  <th class="has-text-right" colspan="5">Total depositos</th>
-                  <th class="has-text-right">100.00</th>
-                </tr>
-                <tr class="has-background-grey">
-                  <th class="has-text-white has-text-right" colspan="5">Total</th>
-                  <th class="has-text-white has-text-right">178.65</th>
-                </tr>
+              <tbody id="expenses-body">
+                <!-- render expenses-->
+              </tbody>
             </table>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="section">
+    <section class="daily-closing section" style="max-width: 500px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -319,7 +185,7 @@
           </p>
         </header>
         <div class="card-content has-background-info-light p-2">
-          <div class="content" style="max-width: 40%;">
+          <div class="content">
             <table style="padding:5px !important">
               <tbody>
                 <tr>
@@ -338,47 +204,63 @@
                   <th class="has-text-white has-text-right" style="width:50px">Valor</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="daily-closing">
                 <tr>
-                  <td>Saldo caja día anterio</td>
+                  <th>Saldo en caja inicial (día anterior)</th>
+                  <td></td>
+                  <td class="initial-balance has-text-right">0.00</td>
+                </tr>
+                <tr class="has-background-grey-lighter">
+                  <th>Ventas en efectivo</th>
                   <td>+</td>
-                  <td class="has-text-right">50.75</td>
+                  <td class="cash-sales has-text-right">0.00</td>
                 </tr>
                 <tr>
-                  <td>Ventas</td>
-                  <td>+</td>
-                  <td class="has-text-right">149.25</td>
-                </tr>
-                <tr>
-                  <td>Compras</td>
+                  <th>Adelantos</th>
                   <td>-</td>
-                  <td class="has-text-right">33.65</td>
+                  <td class="advances has-text-right">0.00</td>
+                </tr>
+                <tr class="has-background-grey-lighter">
+                  <th>Depositos</th>
+                  <td>-</td>
+                  <td class="deposits has-text-right">0.00</td>
                 </tr>
                 <tr>
-                  <td>Gastos</td>
+                  <th>Compras</th>
                   <td>-</td>
-                  <td class="has-text-right">45.00</td>
+                  <td class="shopping has-text-right">0.00</td>
+                </tr>
+                <tr class="has-background-grey-lighter">
+                  <th>Gastos</th>
+                  <td>-</td>
+                  <td class="expenses has-text-right">0.00</td>
                 </tr>
                 <tr>
-                  <td>Depositos</td>
-                  <td>-</td>
-                  <td class="has-text-right">100.00</td>
+                  <th>Ajuste</th>
+                  <td class="fit-symbol "></td>
+                  <td class="fit has-text-right">0.00</td>
                 </tr>
-                <tr class="has-background-grey-lighter has-text-weight-semibold">
-                  <th colspan="2">Saldo en caja</th>
-                  <th class="has-text-right">21.35</th>
+                <tr class="has-background-grey-light is-size-6">
+                  <th colspan="2">Saldo en caja al cierre</th>
+                  <th class="total-sales has-text-right">0.00</th>
                 </tr>
+                <tr>
+                  <th>Ventas con tarjeta (CxC)</th>
+                  <td></td>
+                  <td class="card-sales has-text-right">0.00</td>
+                </tr>
+              </tbody>
             </table>
           </div>
           <footer class="card-footer">
             <div class="buttons is-right" style="width: 100%;">
-              <button class="cart-save card-footer-item button is-primary" href="#clientes">
+              <button class="daily-closing-save card-footer-item button is-primary" href="#clientes">
                 <span class="icon">
                   <i class="fa-solid fa-check"></i>
                 </span>
                 <span>Guardar</span>
               </button>
-              <button class="cart-cancel card-footer-item button is-success" href="#clientes">
+              <button class="daily-closing-update card-footer-item button is-success" href="#clientes">
                 <span class="icon">
                   <i class="fa-solid fa-pen-to-square"></i>
                 </span>
@@ -393,16 +275,52 @@
   </main>
 
 
-  <template id="summary-row">
-    <tr style=" text-align:right">
-      <td class="summary-index has-text-left"></td>
-      <td class="summary-time has-text-left"></td>
-      <td class="summary-seller has-text-left"></td>
-      <td class="summary-payment has-text-left"></td>
-      <th class="summary-discounts"></th>
-      <td class="summary-taxable-income"></td>
-      <td class="summary-taxes"></td>
-      <td class="summary-value"></td>
+  <template id="sale-row">
+    <tr class="has-text-right"">
+      <td class=" index">
+      </td>
+      <td class="time" style="text-align:center"></td>
+      <td class="seller has-text-left is-hidden-mobile"></td>
+      <td class="payment"></td>
+      <th class="discounts is-hidden-mobile"></th>
+      <td class="taxable-income"></td>
+      <td class="taxes"></td>
+      <td class="value"></td>
+    </tr>
+  </template>
+
+  <template id="seller-row">
+    <tr class="has-text-right">
+      <td class="index"></td>
+      <td class="time" style="text-align:center"></td>
+      <td class="taxable-income" colspan="2"></td>
+      <td class="taxes"></td>
+      <td class="value"></td>
+    </tr>
+  </template>
+  <template id="seller-totals">
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <th class="seller" colspan="3"></th>
+      <th class="total-taxable-income"></th>
+      <th class="total-taxes"></th>
+      <th class="total-value"></th>
+    </tr>
+  </template>
+
+  <template id="expense-row">
+    <tr>
+      <td class="index has-text-right"></td>
+      <td class="type"></td>
+      <td class="responsable"></td>
+      <td class="voucher"></td>
+      <td class="details" title=""></td>
+      <td class="value has-text-right"></td>
+    </tr>
+  </template>
+  <template id="expense-totals">
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <th class="type" colspan="5"></th>
+      <th class="total"></th>
     </tr>
   </template>
 

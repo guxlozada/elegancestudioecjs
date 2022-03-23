@@ -141,13 +141,15 @@ function insertExpenseDB(expenseData, vbDeposit) {
   //Complementar informacion por omision
   delete expenseData.valid
 
-  // Generar la clave del compra/gasto
-  const key = formatToOperationDayStringEc(expenseData.date) + "-" + expenseData.type.slice(0, 3)
-
   // Registrar la compra/gasto en la BD TODO: CAMBIAR POR SET
   let updates = {}
   // depositos se registra en una collecion diferente
-  let collection = vbDeposit ? sellerDB.deposits : sellerDB.expenses
+  let collection = sellerDB.deposits,
+    key = formatToOperationDayStringEc(expenseData.date)// Generar la clave del compra/gasto
+  if (!vbDeposit) {
+    collection = sellerDB.expenses
+    key += "-" + expenseData.type.slice(0, 3)
+  }
   updates[`${collection}/${key}`] = expenseData
 
   dbRef.update(updates, (error) => {

@@ -7,27 +7,60 @@ Date.prototype.addHours = function (h) {
   return this;
 }
 
+/**
+ * Add hours
+ * @param {Date} vdDatetime 
+ * @param {number} vnHours 
+ * @returns 
+ */
+export function addHours(vdDatetime, vnHours) {
+  return new Date(vdDatetime).addHours(vnHours)
+}
+
+/**
+ * Text representation of the date-time with locale='es-EC' time zone 'America/Guayaquil'
+ * @returns 
+ */
 export function nowEcToString() {
   return nowEc().toLocaleString(locale, { timeZone: timezoneEC });
 }
 
+/**
+ * Text representation with ISO format of the date-time with time zone 'America/Guayaquil'
+ * @returns 
+ */
 export function nowEcToISOString() {
   return new Date(timestampEc() - tzoffset).toISOString().slice(0, -1)
 }
 
+/**
+ * New date-time with time zone 'America/Guayaquil'
+ * @returns 
+ */
 export function nowEc() {
   var nowEC = new Date().toLocaleString("en-US", { timeZone: timezoneEC })
   return new Date(nowEC);
 }
 
+/**
+ * Conversion to milliseconds of the date and time with time zone 'America/Guayaquil'
+ * @returns 
+ */
 export function timestampEc() {
   return nowEc().getTime()
 }
 
+/**
+ * Text representation of the date with locale='es-EC', time zone 'America/Guayaquil'
+ * @returns {string}
+ */
 export function todayEcToString() {
   return todayEc().toLocaleDateString(locale, { timeZone: timezoneEC })
 }
-
+/**
+ * New date with time zone 'America/Guayaquil'
+ * @returns {Date}
+ */
 export function todayEc() {
   var todayEC = new Date().toLocaleDateString("en-US", { timeZone: timezoneEC })
   return new Date(todayEC);
@@ -58,9 +91,9 @@ export function formatToISOStringEc(timestampUTC) {
 }
 
 /**
- * Truncate the string date 'yyyyMMddThhmmss' to: year, month, day, hours, minutes, seconds
- * @param {number} timestampUTC Date in millisegundos
- * @param {string} to part of date string: year, month, day, hours, minutes, seconds
+ * Truncate the string date 'yyyyMMddThhmmss' to: year, month, date, hours, minutes, seconds
+ * @param {number} timestamp Date in millisegundos
+ * @param {string} to part of date string: year, month, date, hours, minutes, seconds
  */
 export function truncOperationDayString(timestamp, to) {
   let cut = 0
@@ -71,7 +104,7 @@ export function truncOperationDayString(timestamp, to) {
     case "month":
       cut = 6
       break;
-    case "day":
+    case "date":
       cut = 8
       break;
     case "hours":

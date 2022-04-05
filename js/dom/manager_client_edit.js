@@ -117,6 +117,7 @@ export default function handlerClientEdit() {
     let eliminar = confirm("Esta seguró que desea descartar la información de este cliente?")
     if (eliminar) {
       changeClient(true)
+      d.querySelector(".client-search-text").focus()
     }
   })
 }
@@ -161,6 +162,7 @@ function insertClientDB(clientData) {
       changeClient(true)
       renderClients([clientData])
       ntf.show("Registro de cliente", `Se guardó correctamente la información del cliente: ${clientData.name}`)
+      d.querySelector('.client-search-text').focus()
     }
   })
 }

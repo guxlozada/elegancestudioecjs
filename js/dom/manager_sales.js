@@ -1,22 +1,19 @@
 import { changeProductsModalTypeSale, ntf } from "../app.js";
 import { dbRef } from "./firebase_conexion.js";
-import { formatToOperationDayStringEc, nowEc, timestampEc, todayEc, todayEcToString } from "./fecha-util.js";
+import { formatToOperationDayStringEc, timestampEc, todayEc, todayEcToString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { services } from "./catalog_services.js";
 import { products } from "./catalog_products.js";
 
 
-const d = document,
-  $salesContainer = d.getElementById("sale-content"),
-  $salesHeaderContainer = d.getElementById("sale"),
-  $salesDetailsContainer = d.getElementById("sale-details")
+const d = document
 
 const saleInit = {
   client: {
     uid: "",
     description: "",
     lastService: null,//TODO: Cuando se guarde la factura hay que actualizar esta fecha
-    referrals: 0//TODO: Cuando se registra clientes, se debe actualizar el num referidos buscando por identificacion
+    referrals: null//TODO: Cuando se registra clientes, se debe actualizar el num referidos buscando por identificacion
   },
   seller: null,
   typePayment: "EFECTIVO",//[EFECTIVO,CREDITO,DEBITO]
@@ -76,7 +73,7 @@ export function changeSaleClient($client) {
 
 // Agregar item a la venta
 export function addToSale(vsCode, vsType) {
-  console.log(`agregando a la venta=`, vsCode)
+  ////console.log(`agregando a la venta=`, vsCode)
 
   // Verificar si el producto existe en la venta
   if (sale.items.some((item) => item.code === vsCode)) {
@@ -118,9 +115,9 @@ function updateSaleDetails(changeTypePayment) {
 function renderSaleHeader() {
   const cli = sale.client
   if (cli.uid) {
-    d.getElementById("sale-client-empty").classList.add("is-hidden")
+    d.querySelectorAll(".sale-client-empty").forEach($el => $el.classList.add("is-hidden"))
   } else {
-    d.getElementById("sale-client-empty").classList.remove("is-hidden")
+    d.querySelectorAll(".sale-client-empty").forEach($el => $el.classList.remove("is-hidden"))
   }
 
   d.getElementById("sale-client").innerText = cli.description
@@ -168,7 +165,7 @@ function renderSaleItems(changeTypePayment) {
       vnTaxableIncome = 0
 
     sale.items.forEach(item => {
-      console.log("Agregando item a la venta=", item.code)
+      ////console.log("Agregando item a la venta=", item.code)
 
       // Calculos para totalizadores
       vnBaseDiscount = 0
@@ -330,26 +327,34 @@ export default function handlerSales() {
   // EVENTO=click RAIZ=section<servicios> ACCION=Eliminar detalles
   d.getElementById("sales").addEventListener("click", e => {
     let $el = e.target
-    console.log(`evento click target=${$el.classList}`, $el.value)
+    ////console.log(`evento click target=${$el.classList}`, $el.value)
+
+    // Venta a consumidor final
+    if ($el.matches(".trigger-sale")) {
+      changeSaleClient($el)// Cambiar de venta al seleccionar consumidor fnal
+    }
+
     // Elemento a eliminar 
     if ($el.matches(".sale-item-delete") || $el.closest(".sale-item-delete")) {
       const $saleItem = e.target.closest(".sale-item-delete")
       removeFromSale($saleItem.dataset.key)
     }
-
+    // Guardar la venta
     if ($el.matches(".sale-save") || $el.closest(".sale-save")) {
       if (!sale.seller) {
-        ntf.error("Información requerida", "Seleccione el vendedor")
+        ntf.error("Información requerida", "Seleccione el vendedor", 3000)
       } else if (!sale.typePayment) {
-        ntf.error("Información requerida", "Seleccione la forma de pago")
+        ntf.error("Información requerida", "Seleccione la forma de pago", 3000)
       } else if (sale.date > timestampEc()) {
         ntf.error("Información erronea", `La fecha no puede ser mayor a hoy: ${todayEcToString()} `)
+      } else if (sale.items.length === 0) {
+        ntf.error("Información erronea", `No ha registrado ningún producto o servicio`, 3000)
       } else {
         // Insertar la venta en la base de datos
         insertSalesDB(resetSale)
       }
     }
-
+    // Cancelar la venta
     if ($el.matches(".sale-cancel") || $el.closest(".sale-cancel")) {
       let eliminar = true
       if (sale.items.length > 0) {
@@ -365,7 +370,7 @@ export default function handlerSales() {
   // EVENTO=change RAIZ=section<servicios> ACCION=detectar cambios en inputs 
   d.getElementById("sales").addEventListener("change", e => {
     let $input = e.target
-    console.log(`evento change target = ${$input.classList} `, $input.value)
+    ////console.log(`evento change target = ${$input.classList} `, $input.value)
     if ($input.matches(".sale-item-amount")) {
       let newValue = parseInt($input.value)
       if (isNaN(newValue) || newValue < 1) {
@@ -468,7 +473,9 @@ function insertSalesDB(callback) {
     updates[`${sellerDB.salesDetails}/${detailKey}`] = item
   })
   // Actualizar datos del cliente
-  updates[`${sellerDB.clients}/${salesHeader.clientUid}/lastService`] = salesHeader.searchDate
+  if (salesHeader.clientId !== "9999999999999") {
+    updates[`${sellerDB.clients}/${salesHeader.clientUid}/lastService`] = salesHeader.searchDate
+  }
 
   // Registrar la venta en la BD
   dbRef.update(updates, (error) => {

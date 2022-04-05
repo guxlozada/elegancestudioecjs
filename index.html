@@ -64,7 +64,6 @@
         <div class="clients-container">
           <!-- render clientes-->
         </div>
-
         <div class="panel-block" style="width: 100%;">
           <a class="client-search-zero panel-block has-background-warning m-2 is-hidden" id="clientes-busqueda-cero">
             <span class="panel-icon has-text-danger-dark">
@@ -106,8 +105,15 @@
                 <tr>
                   <th>Cliente:</th>
                   <th><span id="sale-client"></span>
-                    <a id="sale-client-empty" href="#clients"
-                      onblur="document.querySelector('.client-search-text').focus()">Debe seleccionar un cliente</a>
+                    <a class="trigger-sale sale-client-empty" data-uid="9999999999999-FINAL"
+                      title="Venta a consumidor final" data-name="Consumidor Final" data-idtype="RUC"
+                      data-idnumber="9999999999999" data-lastserv="No aplica" data-referrals="No aplica">
+                      Venta a Consumidor Final
+                    </a>
+                    <span class="sale-client-empty">&nbsp;o &nbsp;</span>
+                    <a class="sale-client-empty" id="sale-client-empty" href="#clients"
+                      title="Buscar un cliente por identificación o apellido principal"
+                      onblur="document.querySelector('.client-search-text').focus()">Seleccione un cliente</a>
                   </th>
                 </tr>
                 <tr class="has-background-warning">
@@ -253,7 +259,7 @@
         </div>
         <footer class="card-footer">
           <div class="buttons is-right" style="width: 100%;">
-            <a class="sale-save card-footer-item button is-primary" href="#clientes">
+            <a class="sale-save card-footer-item button is-primary">
               <span class="icon">
                 <i class="fa-solid fa-check"></i>
               </span>
@@ -397,13 +403,13 @@
             </div>
             <footer class="card-footer">
               <div class="buttons is-right" style="width: 100%;">
-                <a class="client-save card-footer-item button is-primary" href="#clients">
+                <a class="client-save card-footer-item button is-primary">
                   <span class="icon">
                     <i class="fa-solid fa-check"></i>
                   </span>
                   <span>Guardar</span>
                 </a>
-                <a class="client-cancel card-footer-item button is-danger" href="#clients">
+                <a class="client-cancel card-footer-item button is-danger">
                   <span class="icon">
                     <i class="fa-solid fa-xmark"></i>
                   </span>

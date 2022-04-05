@@ -1,4 +1,4 @@
-import { addHours, nowEc, timestampEc, todayEc, truncOperationDayString } from "./dom/fecha-util.js";
+import { addHours, dateIsValid, nowEc, timestampEc, todayEc, truncOperationDayString } from "./dom/fecha-util.js";
 import { sellerDB } from "./dom/firebase_collections.js";
 import { db } from "./dom/firebase_conexion.js";
 import navbarBurgers from "./dom/navbar_burgers.js";
@@ -73,8 +73,11 @@ d.addEventListener("change", e => {
       dailyClosing.update = true
     } */
   if (e.target.matches(".summary-day")) {
-    operationDay = new Date(e.target.value)
-    changeDailyClosing()
+    if (dateIsValid(e.target.value)) {
+      operationDay = new Date(e.target.value)
+      changeDailyClosing()
+    }
+    return
   }
   if ($input.name === "responsable") {
     dailyClosing.responsable = $input.value

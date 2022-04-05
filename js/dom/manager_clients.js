@@ -49,17 +49,22 @@ export default function handlerClients() {
     if (textSearch) {
       dbClientesByIdNumber(textSearch)
     } else {
+      $container.innerHTML = ""
       ntf.error("Información requerida", "Ingrese la identificación o el nombre apellido del cliente para realizar la búsqueda.")
+      d.querySelector(".client-search-text").focus()
     }
   })
 
   // EVENTO=click RAIZ=section<clientes> ACCION=crear venta con el cliente seleccionado 
   $container.addEventListener("click", e => {
-    ////console.log(`clientes .addEventListener click elemento ${e.target}, el click se origino en ${e.target.className}`)
     // Cliente seleccionado 
     if (e.target.matches(".trigger-sale") || e.target.closest(".trigger-sale")) {
       const $clientItem = e.target.closest(".trigger-sale")
       changeSaleClient($clientItem)// Cambiar de venta al seleccionar un cliente
+
+      // Setear la busqueda
+      $container.innerHTML = ""
+      d.querySelector(".client-search-text").value = ""
     }
   })
 }
@@ -69,32 +74,13 @@ export default function handlerClients() {
 // --------------------------
 
 const dbClientesByIdNumber = async (vsSearch) => {
-  console.log("vsSearch", vsSearch)
-  let txtSearch = vsSearch.trim()
-  const clientsData = [];
-  console.log("vsSearch por id")
-  await clientsRef.orderByChild("idNumber").startAt(txtSearch).endAt(txtSearch + '\uf8ff')
-    .limitToFirst(10)
-    .once('value')
-    .then((snap) => {
-      snap.forEach((child) => {
-        clientsData.push({
-          uid: child.key,
-          ...child.val()
-        });
-      })
-    })
-    .catch((error) => {
-      ntf.tecnicalError("Búsqueda de cliente", error)
-    })
+  ////console.log("vsSearch", vsSearch || "vacio")
 
-  if (clientsData.length == 0) {
-    console.log("vsSearch por name")
-    let txtSearch = vsSearch.toLowerCase().trim()
-    await clientsRef
-      .orderByChild("searchLastname")
-      .startAt(txtSearch)
-      .endAt(txtSearch + "\uf8ff")
+  const clientsData = [];
+  ////console.log("vsSearch por id")
+  if (vsSearch) {
+    let txtSearch = vsSearch.trim()
+    await clientsRef.orderByChild("idNumber").startAt(txtSearch).endAt(txtSearch + '\uf8ff')
       .limitToFirst(10)
       .once('value')
       .then((snap) => {
@@ -104,11 +90,33 @@ const dbClientesByIdNumber = async (vsSearch) => {
             ...child.val()
           });
         })
-
       })
       .catch((error) => {
         ntf.tecnicalError("Búsqueda de cliente", error)
       })
+
+    if (clientsData.length == 0) {
+      ////console.log("vsSearch por name")
+      let txtSearch = vsSearch.toLowerCase().trim()
+      await clientsRef
+        .orderByChild("searchLastname")
+        .startAt(txtSearch)
+        .endAt(txtSearch + "\uf8ff")
+        .limitToFirst(10)
+        .once('value')
+        .then((snap) => {
+          snap.forEach((child) => {
+            clientsData.push({
+              uid: child.key,
+              ...child.val()
+            });
+          })
+
+        })
+        .catch((error) => {
+          ntf.tecnicalError("Búsqueda de cliente", error)
+        })
+    }
   }
   renderClients(clientsData)
 }

@@ -16,6 +16,14 @@ Date.prototype.addHours = function (h) {
 export function addHours(vdDatetime, vnHours) {
   return new Date(vdDatetime).addHours(vnHours)
 }
+/**
+ * Validate if date is valid
+ * @param {Date} date 
+ * @returns 
+ */
+export function dateIsValid(date) {
+  return !Number.isNaN(new Date(date).getTime());
+}
 
 /**
  * Text representation of the date-time with locale='es-EC' time zone 'America/Guayaquil'

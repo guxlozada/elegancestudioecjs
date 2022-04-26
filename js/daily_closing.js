@@ -12,8 +12,6 @@ const d = document,
   depositsRef = db.ref(sellerDB.deposits),
   dailyClosingRef = db.ref(sellerDB.dailyClosing)
 
-
-
 const dailyClosingInit = {
   date: null,
   initialBalance: 0,
@@ -24,6 +22,7 @@ const dailyClosingInit = {
   expenses: 0,
   advances: 0,
   deposits: 0,
+  commissions: 0,
   fit: 0,
   finalBalance: 0,
   update: false
@@ -72,9 +71,9 @@ d.addEventListener("change", e => {
       dailyClosing.initialBalance = parseFloat(e.target.value)
       dailyClosing.update = true
     } */
-  if (e.target.matches(".summary-day")) {
-    if (dateIsValid(e.target.value)) {
-      operationDay = new Date(e.target.value)
+  if ($input.matches(".summary-day")) {
+    if (dateIsValid($input.value)) {
+      operationDay = new Date($input.value)
       changeDailyClosing()
     }
     return
@@ -346,12 +345,15 @@ function renderExpenses(expensesData, depositsData) {
       $totalsTmp.querySelector(".total").innerText = vnTotal.toFixed(2)
       $clone = d.importNode($totalsTmp, true)
       $fragment.appendChild($clone)
-      switch (type) {//ADELANTO,AJUSTE,COMPRA,DEPOSITO,GASTO
+      switch (type) {//ADELANTO,AJUSTE,COMPRA,DEPOSITO,GASTO,COMISION
         case "ADELANTO":
           dailyClosing.advances = vnTotal
           break;
         case "AJUSTE":
           dailyClosing.fit = vnTotal
+          break;
+        case "COMISION":
+          dailyClosing.commissions = vnTotal
           break;
         case "COMPRA":
           dailyClosing.shopping = vnTotal
@@ -399,7 +401,7 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   // Calcular saldo en caja
   dailyClosing.finalBalance = dailyClosing.initialBalance + dailyClosing.cashSales
     - dailyClosing.advances - dailyClosing.deposits - dailyClosing.shopping
-    - dailyClosing.expenses
+    - dailyClosing.expenses - dailyClosing.commissions
   if (dailyClosing.fit > 0) {
     dailyClosing.finalBalance += dailyClosing.fit
   } else {
@@ -415,6 +417,7 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   $contenedor.querySelector(".deposits").innerText = dailyClosing.deposits.toFixed(2)
   $contenedor.querySelector(".shopping").innerText = dailyClosing.shopping.toFixed(2)
   $contenedor.querySelector(".expenses").innerText = dailyClosing.expenses.toFixed(2)
+  $contenedor.querySelector(".commissions").innerText = dailyClosing.commissions.toFixed(2)
   $contenedor.querySelector(".fit").innerText = dailyClosing.fit.toFixed(2)
   $contenedor.querySelector(".total-sales").innerText = dailyClosing.finalBalance.toFixed(2)
   $contenedor.querySelector(".card-sales").innerText = dailyClosing.cardSales.toFixed(2)

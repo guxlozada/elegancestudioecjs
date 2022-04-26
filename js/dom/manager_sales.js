@@ -1,6 +1,6 @@
 import { changeProductsModalTypeSale, ntf } from "../app.js";
 import { dbRef } from "./firebase_conexion.js";
-import { formatToOperationDayStringEc, timestampEc, todayEc, todayEcToString } from "./fecha-util.js";
+import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, timestampEc, timestampInputDateToDateEc, todayEc, todayEcToString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { services } from "./catalog_services.js";
 import { products } from "./catalog_products.js";
@@ -123,7 +123,9 @@ function renderSaleHeader() {
   d.getElementById("sale-client").innerText = cli.description
   d.getElementById("sale-client-lastserv").innerText = cli.lastService
   d.getElementById("sale-client-referrals").innerText = cli.referrals
-  d.getElementById("sale-date").value = sale.searchDate
+  // Descomentar cuando nuevamente se bloquea la fecha a la actual
+  //d.getElementById("sale-date").value = sale.searchDate
+  d.getElementById("sale-date-input").valueAsDate = todayEc()
   d.getElementsByName("seller").forEach($el => $el.checked = $el.value === sale.seller)
   d.getElementsByName("typePayment").forEach($el => $el.checked = $el.value === sale.typePayment)
   d.getElementsByName("typeSale").forEach($el => $el.checked = $el.value === sale.type)
@@ -409,10 +411,13 @@ export default function handlerSales() {
       updateSaleDetails()
       //TODO Agregar validacion de al menos un servicio o producto
 
-      //} else if ($input.name === "saleHeaderDate") {
-      // console.log("sale.date=", new Date(sale.date))
-      //   sale.date = timestampInputDateToDateEc($input.value)
-      //   console.log("despues sale.date=", new Date(sale.date))
+    } else if ($input.name === "saleDate" && dateIsValid($input.value)) {
+      console.log("sale.date=", new Date(sale.date))
+      let vdOther = addHours(new Date($input.value), 5)
+      sale.date = vdOther.getTime()
+      sale.searchDate = dateToStringEc(vdOther)
+      sale.searchDateTime = vdOther.toLocaleString()
+      console.log("despues sale.date=", new Date(sale.date))
     }
     localStorage.setItem("SALE", JSON.stringify(sale))
   })

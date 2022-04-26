@@ -65,6 +65,15 @@ export function timestampEc() {
 export function todayEcToString() {
   return todayEc().toLocaleDateString(locale, { timeZone: timezoneEC })
 }
+
+/**
+ * Text representation of the date with locale='es-EC', time zone 'America/Guayaquil'
+ * @returns {Date} vdDatetime
+ */
+export function dateToStringEc(vdDatetime) {
+  return vdDatetime.toLocaleDateString(locale, { timeZone: timezoneEC })
+}
+
 /**
  * New date with time zone 'America/Guayaquil'
  * @returns {Date}
@@ -130,5 +139,5 @@ export function truncOperationDayString(timestamp, to) {
 
 //TODO: Verificar uso y eliminar
 export function timestampInputDateToDateEc(vsDate) {
-  return new Date(vsDate).addHours(tzOffset).getTime()
+  return new Date(vsDate).addHours(tzoffset).getTime()
 }

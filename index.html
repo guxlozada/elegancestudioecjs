@@ -129,8 +129,10 @@
                   <th>
                     <div class="field">
                       <p class="control has-icons-left">
-                        <input class="input is-small" id="sale-date" type="text" style="max-width: 150px; margin: 0;"
-                          readonly>
+                        <input class="input is-small is-hidden" id="sale-date" type="text"
+                          style="max-width: 150px; margin: 0;" readonly>
+                        <input class="input is-small" id="sale-date-input" name="saleDate" type="date"
+                          style="max-width: 220px; margin: 0;" required />
                         <span class="icon is-small is-left">
                           <i class="fa-solid fa-calendar-days"></i>
                         </span>
@@ -492,6 +494,10 @@
                   <label class="radio">
                     <input class="expense-input" type="radio" name="expenseType" value="AJUSTE" data-key="type">
                     Ajuste
+                  </label>
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="expenseType" value="COMISION" data-key="type">
+                    Comision
                   </label>
                 </div>
               </div>

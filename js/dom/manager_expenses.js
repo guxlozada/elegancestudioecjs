@@ -148,7 +148,11 @@ function insertExpenseDB(expenseData, vbDeposit) {
     key = formatToOperationDayStringEc(expenseData.date)// Generar la clave del compra/gasto
   if (!vbDeposit) {
     collection = sellerDB.expenses
-    key += "-" + expenseData.type.slice(0, 3)
+    if (expenseData.type === "COMISION") {
+      key += "-CMI"
+    } else {
+      key += "-" + expenseData.type.slice(0, 3)
+    }
   }
   updates[`${collection}/${key}`] = expenseData
 

@@ -178,7 +178,6 @@ function renderSummary(salesData) {
 
   if (salesData.length == 0) {
     $body.innerHTML = `<tr><td class="is-size-6" colspan="8">No existen ventas para la fecha seleccionada</td></tr>`
-    return
   } else {
 
     $body.innerHTML = ""

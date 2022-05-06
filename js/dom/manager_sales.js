@@ -1,6 +1,6 @@
 import { changeProductsModalTypeSale, ntf } from "../app.js";
 import { dbRef } from "./firebase_conexion.js";
-import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, timestampEc, timestampInputDateToDateEc, todayEc, todayEcToString } from "./fecha-util.js";
+import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, timestampInputDateToDateEc, todayEc, todayEcToString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { services } from "./catalog_services.js";
 import { products } from "./catalog_products.js";
@@ -16,7 +16,7 @@ const saleInit = {
     referrals: null//TODO: Cuando se registra clientes, se debe actualizar el num referidos buscando por identificacion
   },
   seller: null,
-  typePayment: "EFECTIVO",//[EFECTIVO,CREDITO,DEBITO]
+  typePayment: "EFECTIVO",//[EFECTIVO,CREDITO,DEBITO, TRANSFERENCIA]
   type: "CLIENTE",//[CLIENTE, PORMAYOR]
   items: [],
   taxableIncome: 0,
@@ -414,6 +414,9 @@ export default function handlerSales() {
     } else if ($input.name === "saleDate" && dateIsValid($input.value)) {
       console.log("sale.date=", new Date(sale.date))
       let vdOther = addHours(new Date($input.value), 5)
+      // Agregar la hora y minuto actual de datos
+      let now = nowEc()
+      vdOther.setHours(now.getHours(), now.getMinutes(), now.getSeconds())
       sale.date = vdOther.getTime()
       sale.searchDate = dateToStringEc(vdOther)
       sale.searchDateTime = vdOther.toLocaleString()

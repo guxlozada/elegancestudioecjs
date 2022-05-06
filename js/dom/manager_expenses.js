@@ -1,5 +1,5 @@
 import { ntf } from "../app.js";
-import { formatToOperationDayStringEc, timestampEc, todayEcToString } from "./fecha-util.js";
+import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, todayEc, todayEcToString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { dbRef } from "./firebase_conexion.js";
 
@@ -44,7 +44,9 @@ export function changeExpense(reset) {
 
 // Actualizar el formulario de la compra/gasto
 function updateExpense() {
-  d.getElementById("expense-date").value = expense.searchDate
+  // TODO: Descomentar cuando nuevamente se bloquea la fecha a la actual
+  //d.getElementById("expense-date").value = expense.searchDate
+  d.getElementById("expense-date-input").valueAsDate = todayEc()
   d.getElementsByName("responsable").forEach($el => $el.checked = $el.value === expense.responsable)
   d.getElementsByName("expenseType").forEach($el => $el.checked = $el.value === expense.type)
   d.getElementById("expense-value").value = expense.value
@@ -57,6 +59,22 @@ function updateExpense() {
 // ------------------------------------------------------------------------------------------------
 
 export default function handlerExpenses() {
+  // TODO: Eliminar cuando nuevamente se bloquea la fecha a la actual
+  // EVENTO=change RAIZ=section<servicios> ACCION=detectar cambios en inputs 
+  d.getElementById("expenses").addEventListener("change", e => {
+    let $input = e.target
+    if ($input.name === "expenseDate" && dateIsValid($input.value)) {
+      console.log("expense.date=", new Date(expense.date))
+      let vdOther = addHours(new Date($input.value), 5)
+      // Agregar la hora y minuto actual de datos
+      let now = nowEc()
+      vdOther.setHours(now.getHours(), now.getMinutes(), now.getSeconds())
+      expense.date = vdOther.getTime()
+      expense.searchDate = dateToStringEc(vdOther)
+      expense.searchDateTime = vdOther.toLocaleString()
+      console.log("despues expense.date=", new Date(expense.date))
+    }
+  })
 
   // EVENTO=submit RAIZ=section<expenses> ACCION=crear compra/gasto 
   $container.addEventListener("submit", e => {

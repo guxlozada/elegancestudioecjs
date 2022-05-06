@@ -17,6 +17,7 @@ const dailyClosingInit = {
   initialBalance: 0,
   cashSales: 0,
   cardSales: 0,
+  transferSales: 0,
   totalSales: 0,
   shopping: 0,
   expenses: 0,
@@ -170,6 +171,7 @@ function renderSummary(salesData) {
     vnTotalTaxableIncome = 0,
     vnTotalCash = 0,
     vnTotalCard = 0,
+    vnTotalTransfer = 0,
     vnTotalSales = 0,
     vnDiscounts,
     vnTaxes,
@@ -201,6 +203,8 @@ function renderSummary(salesData) {
       $template.querySelector(".value").innerText = parseFloat(vnValueSale).toFixed(2)
       if (sale.typePayment === "EFECTIVO") {
         vnTotalCash += vnValueSale
+      } else if (sale.typePayment === "TRANSFERENCIA") {
+        vnTotalTransfer += vnValueSale
       } else {
         vnTotalCard += vnValueSale
       }
@@ -215,9 +219,11 @@ function renderSummary(salesData) {
   $footer.querySelector(".total-value").innerText = vnTotalSales.toFixed(2)
   $footer.querySelector(".total-cash").innerText = vnTotalCash.toFixed(2)
   $footer.querySelector(".total-card").innerText = vnTotalCard.toFixed(2)
+  $footer.querySelector(".total-transfer").innerText = vnTotalTransfer.toFixed(2)
 
   // Asignar valores al cierre diario
   dailyClosing.cardSales = vnTotalCard
+  dailyClosing.transferSales = vnTotalTransfer
   dailyClosing.cashSales = vnTotalCash
   dailyClosing.totalSales = vnTotalSales
 }
@@ -420,6 +426,7 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   $contenedor.querySelector(".fit").innerText = dailyClosing.fit.toFixed(2)
   $contenedor.querySelector(".total-sales").innerText = dailyClosing.finalBalance.toFixed(2)
   $contenedor.querySelector(".card-sales").innerText = dailyClosing.cardSales.toFixed(2)
+  $contenedor.querySelector(".transfer-sales").innerText = dailyClosing.transferSales.toFixed(2)
   let $btnSave = d.querySelector(".daily-closing-save")
   $btnSave.dataset.existBefore = beforeDay ? true : false
   $btnSave.dataset.existAfter = afterDay ? true : false

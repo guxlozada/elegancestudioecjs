@@ -181,8 +181,9 @@ function renderSaleItems(changeTypePayment) {
           vnUnitDiscount = 0
           if (item.promo.cash && (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA"))// descuento IVA solo pagos en efectivo y transferencias
             vnUnitDiscount += Math.round((item.promo.cash * item.finalValue / 112) * 100) / 100// debe ser igual a item.taxIVA
-          if (item.promo.discountDay && todayEc().getDay() === 2)// Dia de descuento MARTES (2)
-            vnUnitDiscount += Math.round((item.promo.discountDay * item.baseValue / 100) * 100) / 100
+          // ELIMINADO DESCUENTO DE MARTES
+          ////if (item.promo.discountDay && todayEc().getDay() === 2)// Dia de descuento MARTES (2)
+          ////  vnUnitDiscount += Math.round((item.promo.discountDay * item.baseValue / 100) * 100) / 100
         } else {
           vnUnitDiscount = 0
         }

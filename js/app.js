@@ -30,7 +30,7 @@ const loadServices = () => {
       let $catalogItem = $template.querySelector(".catalog-item")
       $catalogItem.dataset.key = s.code
       $catalogItem.dataset.type = "SERVICE"
-      $template.querySelector(".catalog-item-details").textContent = `[$${(Math.round(s.finalValue * 100) / 100).toFixed(2)}] ${s.description}`
+      $template.querySelector(".catalog-item-details").textContent = `[$${(Math.round(s.baseValue * 100) / 100).toFixed(2)}] ${s.description}`
       $template.querySelector(".wholesale-item-details").textContent = ""
       let $clone = d.importNode($template, true)
       $fragment.appendChild($clone)

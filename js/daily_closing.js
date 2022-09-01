@@ -24,6 +24,7 @@ const dailyClosingInit = {
   advances: 0,
   deposits: 0,
   commissions: 0,
+  salaries: 0,
   fit: 0,
   finalBalance: 0,
   update: false
@@ -350,7 +351,7 @@ function renderExpenses(expensesData, depositsData) {
       $totalsTmp.querySelector(".total").innerText = vnTotal.toFixed(2)
       $clone = d.importNode($totalsTmp, true)
       $fragment.appendChild($clone)
-      switch (type) {//ADELANTO,AJUSTE,COMPRA,DEPOSITO,GASTO,COMISION
+      switch (type) {//ADELANTO,AJUSTE,COMPRA,DEPOSITO,GASTO,COMISION, SUELDO
         case "ADELANTO":
           dailyClosing.advances = vnTotal
           break;
@@ -368,6 +369,9 @@ function renderExpenses(expensesData, depositsData) {
           break;
         case "GASTO":
           dailyClosing.expenses = vnTotal
+          break;
+        case "SUELDO":
+          dailyClosing.salaries = vnTotal
           break;
         default:
           break;
@@ -406,7 +410,7 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   // Calcular saldo en caja
   dailyClosing.finalBalance = dailyClosing.initialBalance + dailyClosing.cashSales
     - dailyClosing.advances - dailyClosing.deposits - dailyClosing.shopping
-    - dailyClosing.expenses - dailyClosing.commissions
+    - dailyClosing.expenses - dailyClosing.commissions - dailyClosing.salaries
   if (dailyClosing.fit > 0) {
     dailyClosing.finalBalance += dailyClosing.fit
   } else {
@@ -423,6 +427,7 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   $contenedor.querySelector(".shopping").innerText = dailyClosing.shopping.toFixed(2)
   $contenedor.querySelector(".expenses").innerText = dailyClosing.expenses.toFixed(2)
   $contenedor.querySelector(".commissions").innerText = dailyClosing.commissions.toFixed(2)
+  $contenedor.querySelector(".salaries").innerText = dailyClosing.salaries.toFixed(2)
   $contenedor.querySelector(".fit").innerText = dailyClosing.fit.toFixed(2)
   $contenedor.querySelector(".total-sales").innerText = dailyClosing.finalBalance.toFixed(2)
   $contenedor.querySelector(".card-sales").innerText = dailyClosing.cardSales.toFixed(2)

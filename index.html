@@ -517,6 +517,10 @@
                     <input class="expense-input" type="radio" name="expenseType" value="COMISION" data-key="type">
                     Comision
                   </label>
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="expenseType" value="SUELDO" data-key="type">
+                    Sueldo
+                  </label>
                 </div>
               </div>
               <div class="field">
@@ -538,6 +542,17 @@
                     data-key="voucher" style="max-width: 250px; margin: 0;" placeholder="# Comprobante o Factura..." />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-receipt"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Mes (SOLO sueldo)</label>
+                <p class="control has-icons-left">
+                  <input class="expense-input input is-small" id="expense-month" name="expenseMonth" type="text"
+                    data-key="month" style="max-width: 50px; margin: 0;"
+                    placeholder="Mes correspondiente al pago de comision o sueldo" />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-calendar"></i>
                   </span>
                 </p>
               </div>

@@ -52,11 +52,12 @@
                   <th class="has-text-white" style="width:2rem">Nro.</th>
                   <th class="has-text-white" style="text-align:center;width:4rem">Hora</th>
                   <th class="has-text-white has-text-left is-hidden-mobile">Vendedor</th>
-                  <th class="has-text-white" style="width:7rem">Forma pago</th>
-                  <th class="has-text-white is-hidden-mobile" style="width:7rem">Descuentos</th>
+                  <th class="has-text-white" style="width:6rem">Forma pago</th>
+                  <th class="has-text-white is-hidden-mobile" style="width:6rem">Descuentos</th>
                   <th class="has-text-white" style="width:7rem">Base Imponible</th>
-                  <th class="has-text-white" style="width:7rem">Impuestos</th>
-                  <th class="has-text-white" style="width:7rem">Valor Venta</th>
+                  <th class="has-text-white" style="width:6rem">Impuestos</th>
+                  <th class="has-text-white" style="width:6rem">Propinas</th>
+                  <th class="has-text-white" style="width:6rem">Valor Venta</th>
                 </tr>
               </thead>
               <tbody id="summary-body">
@@ -67,18 +68,19 @@
                   <th class="total-discounts has-text-right" colspan="5">0.00</th>
                   <th class="total-taxable-income has-text-right">0.00</th>
                   <th class="total-taxes has-text-right">0.00</th>
+                  <th class="total-tips-by-bank has-text-right">0.00</th>
                   <th class="total-value has-text-right">0.00</th>
                 </tr>
                 <tr class="has-background-grey-lighter">
-                  <th class="has-text-right" colspan="7">Tarjetas Débito y Crédito ( - )</th>
+                  <th class="has-text-right" colspan="8">Tarjetas Débito y Crédito ( - )</th>
                   <th class="total-card has-text-right">0.00</th>
                 </tr>
                 <tr class="has-background-grey-lighter">
-                  <th class="has-text-right" colspan="7">Transferencias ( - )</th>
+                  <th class="has-text-right" colspan="8">Transferencias ( - )</th>
                   <th class="total-transfer has-text-right">0.00</th>
                 </tr>
                 <tr class="has-background-grey-light">
-                  <th class="has-text-right" colspan="7">Efectivo</th>
+                  <th class="has-text-right" colspan="8">Efectivo</th>
                   <th class="total-cash has-text-right">0.00</th>
                 </tr>
               </tfoot>
@@ -119,8 +121,9 @@
                   <th class="has-text-white" style="text-align:center;width:4rem">Hora</th>
                   <th class="has-text-white has-text-left"></th>
                   <th class="has-text-white" style="width:7rem">Base Imponible</th>
-                  <th class="has-text-white" style="width:7rem">Impuestos</th>
-                  <th class="has-text-white" style="width:7rem">Valor Venta</th>
+                  <th class="has-text-white" style="width:6rem">Impuestos</th>
+                  <th class="has-text-white" style="width:6rem">Propinas</th>
+                  <th class="has-text-white" style="width:6rem">Valor Venta</th>
                 </tr>
               </thead>
               <tbody id="seller-body">
@@ -140,7 +143,7 @@
               <span class="icon">
                 <i class="fa-solid fa-store"></i>
               </span>
-              <span>Resumen diario de compras, gastos y depositos</span>
+              <span>Resumen diario de ingresos y egresos</span>
             </span>
           </p>
         </header>
@@ -247,6 +250,11 @@
                   <td>-</td>
                   <td class="commissions has-text-right pr-5">0.00</td>
                 </tr>
+                <tr class="has-background-grey-lighter">
+                  <th>Devolucion de propinas tarjeta/transferencia</th>
+                  <td>-</td>
+                  <td class="tips-by-bank has-text-right pr-5">0.00</td>
+                </tr>
                 <tr>
                   <th>Pago salarios</th>
                   <td>-</td>
@@ -327,6 +335,7 @@
       <th class="discounts is-hidden-mobile"></th>
       <td class="taxable-income"></td>
       <td class="taxes"></td>
+      <td class="tips-by-bank"></td>
       <td class="value"></td>
     </tr>
   </template>
@@ -337,6 +346,7 @@
       <td class="time" style="text-align:center"></td>
       <td class="taxable-income" colspan="2"></td>
       <td class="taxes"></td>
+      <td class="tips-by-bank"></td>
       <td class="value"></td>
     </tr>
   </template>
@@ -345,6 +355,7 @@
       <th class="seller" colspan="3"></th>
       <th class="total-taxable-income"></th>
       <th class="total-taxes"></th>
+      <th class="total-tips-by-bank"></th>
       <th class="total-value"></th>
     </tr>
   </template>

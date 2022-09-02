@@ -9,10 +9,9 @@ const d = document,
 const expenseIni = {
   date: null,
   responsable: null,
-  type: "GASTO",//[ADELANTO,AJUSTE,COMPRA,DEPOSITO,GASTO, COMISION, SUELDO]
+  type: "GASTO",//[ADELANTO,AJUSTE,COMISION,COMPRA,DEPOSITO,GASTO,PROPINA,SUELDO]
   value: null,
   voucher: null,
-  month: null,
   details: null,
   valid: false
 }
@@ -52,7 +51,6 @@ function updateExpense() {
   d.getElementsByName("expenseType").forEach($el => $el.checked = $el.value === expense.type)
   d.getElementById("expense-value").value = expense.value
   d.getElementById("expense-voucher").value = expense.voucher
-  d.getElementById("expense-month").value = expense.month
   d.getElementById("expense-details").value = expense.details
 }
 
@@ -131,9 +129,12 @@ export default function handlerExpenses() {
             ntf.error("Información requerida", "Detalle brevemente el gasto")
           }
           break;
+        case "ADELANTO":
+        case "COMISION":
+        case "PROPINA":
         case "SUELDO":
-          if (!expense.month) {
-            ntf.error("Información requerida", "Ingrese el mes 1=Enero, 2=Febrero,...,12=Diciembre")
+          if (expense.responsable === 'ADMIN') {
+            ntf.error("Información requerida", "Para los egresos de empleado no es permitido 'Responsable=Admin'")
           }
           break;
         default:
@@ -175,8 +176,6 @@ function insertExpenseDB(expenseData, vbDeposit) {
     collection = sellerDB.expenses
     if (expenseData.type === "COMISION") {
       key += "-CMI"
-      // TODO: Asignar automaticamente el mes a la comision
-      expenseData.month = nowEc().getMonth().toString()
     } else {
       key += "-" + expenseData.type.slice(0, 3)
     }

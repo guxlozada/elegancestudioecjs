@@ -16,12 +16,13 @@ const saleInit = {
     referrals: null//TODO: Cuando se registra clientes, se debe actualizar el num referidos buscando por identificacion
   },
   seller: null,
-  typePayment: "EFECTIVO",//[EFECTIVO,CREDITO,DEBITO, TRANSFERENCIA]
+  typePayment: "EFECTIVO",//[EFECTIVO,TCREDITO,TDEBITO, TRANSFERENCIA]
   type: "CLIENTE",//[CLIENTE, PORMAYOR]
   items: [],
   taxableIncome: 0,
   discounts: 0,
   taxes: 0,
+  tipByBank: 0,
   totalSale: 0,
   valid: false
 }
@@ -241,6 +242,12 @@ function renderSaleItems(changeTypePayment) {
 
     })
 
+    // Redonder a dos decimales los totales
+    sale.taxableIncome = Math.round(sale.taxableIncome * 100) / 100
+    sale.taxes = Math.round(sale.taxes * 100) / 100
+    sale.totalSale = Math.round(sale.totalSale * 100) / 100
+    sale.discounts = Math.round(sale.discounts * 100) / 100
+
     // Habilitar los botones de catalogos
     $btnServicios.removeAttribute("disabled")
     $btnProductos.removeAttribute("disabled")
@@ -269,6 +276,9 @@ function renderSaleItems(changeTypePayment) {
 
 // Calcular descuentos, impuestos y total de venta
 function renderSaleSummary() {
+  // Agregar las propinas al total de la venta
+  sale.totalSale = Math.round((sale.totalSale + sale.tipByBank) * 100) / 100
+  d.querySelector(".sale-summary-tip").value = sale.tipByBank
   d.querySelector(".sale-summary-totalsale").innerText = sale.totalSale.toFixed(2)
   d.querySelector(".sale-summary-taxableincome").innerText = sale.taxableIncome.toFixed(2)
   d.querySelector(".sale-summary-taxes").innerText = sale.taxes.toFixed(2)
@@ -422,6 +432,11 @@ export default function handlerSales() {
       sale.searchDate = dateToStringEc(vdOther)
       sale.searchDateTime = vdOther.toLocaleString()
       console.log("despues sale.date=", new Date(sale.date))
+    } else if ($input.name === "tipValue") {
+      console.log("sale.tipByBank=", $input.value)
+      // Cambio valor de propina bancaria
+      sale.tipByBank = parseFloat($input.value || 0)
+      sale.update = true
     }
     localStorage.setItem("SALE", JSON.stringify(sale))
   })

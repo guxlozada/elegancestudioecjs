@@ -25,6 +25,7 @@ const dailyClosingInit = {
   deposits: 0,
   commissions: 0,
   salaries: 0,
+  tipsByBank: 0,
   fit: 0,
   finalBalance: 0,
   update: false
@@ -137,7 +138,7 @@ async function updateSalesByDay(vsDate) {
       })
     })
     .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de compras/gastos del día ${operationDay.toLocaleDateString()}`, error)
+      ntf.tecnicalError(`Búsqueda de ingresos/egresos del día ${operationDay.toLocaleDateString()}`, error)
     })
   await depositsRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
     .once('value')
@@ -174,10 +175,12 @@ function renderSummary(salesData) {
     vnTotalCard = 0,
     vnTotalTransfer = 0,
     vnTotalSales = 0,
+    vnTotalTipsByBank = 0,
     vnDiscounts,
     vnTaxes,
     vnTaxableIncome,
-    vnValueSale
+    vnValueSale,
+    vnTipByBank
 
   if (salesData.length == 0) {
     $body.innerHTML = `<tr><td class="is-size-6" colspan="8">No existen ventas para la fecha seleccionada</td></tr>`
@@ -190,10 +193,12 @@ function renderSummary(salesData) {
       vnTaxableIncome = Math.round(parseFloat(sale.taxableIncome) * 100) / 100
       vnTaxes = Math.round(parseFloat(sale.taxes) * 100) / 100
       vnValueSale = Math.round(parseFloat(sale.totalSale) * 100) / 100
+      vnTipByBank = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
       vnTotalDiscounts += vnDiscounts
       vnTotalTaxableIncome += vnTaxableIncome
       vnTotalTaxes += vnTaxes
       vnTotalSales += vnValueSale
+      vnTotalTipsByBank += vnTipByBank
       $template.querySelector(".index").innerText = index + 1
       $template.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
       $template.querySelector(".seller").innerText = sale.seller
@@ -201,6 +206,7 @@ function renderSummary(salesData) {
       $template.querySelector(".discounts").innerText = parseFloat(vnDiscounts).toFixed(2)
       $template.querySelector(".taxable-income").innerText = parseFloat(vnTaxableIncome).toFixed(2)
       $template.querySelector(".taxes").innerText = parseFloat(vnTaxes).toFixed(2)
+      $template.querySelector(".tips-by-bank").innerText = parseFloat(vnTipByBank).toFixed(2)
       $template.querySelector(".value").innerText = parseFloat(vnValueSale).toFixed(2)
       if (sale.typePayment === "EFECTIVO") {
         vnTotalCash += vnValueSale
@@ -217,6 +223,7 @@ function renderSummary(salesData) {
   $footer.querySelector(".total-discounts").innerText = vnTotalDiscounts.toFixed(2)
   $footer.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
   $footer.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
+  $footer.querySelector(".total-tips-by-bank").innerText = vnTotalTipsByBank.toFixed(2)
   $footer.querySelector(".total-value").innerText = vnTotalSales.toFixed(2)
   $footer.querySelector(".total-cash").innerText = vnTotalCash.toFixed(2)
   $footer.querySelector(".total-card").innerText = vnTotalCard.toFixed(2)
@@ -250,10 +257,12 @@ function renderSummaryBySeller(salesData) {
   let vnTotalTaxes = 0,
     vnTotalTaxableIncome = 0,
     vnTotalSales = 0,
+    vnTotalTipsByBank = 0,
     index = 1,
     vnTaxes,
     vnTaxableIncome,
     vnValueSale,
+    vnTipByBank,
     $clone
 
   // aux bucle  
@@ -263,14 +272,17 @@ function renderSummaryBySeller(salesData) {
   do {
     vnTaxableIncome = Math.round(parseFloat(sale.taxableIncome) * 100) / 100
     vnTaxes = Math.round(parseFloat(sale.taxes) * 100) / 100
+    vnTipByBank = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
     vnValueSale = Math.round(parseFloat(sale.totalSale) * 100) / 100
     vnTotalTaxableIncome += vnTaxableIncome
     vnTotalTaxes += vnTaxes
+    vnTotalTipsByBank += vnTipByBank
     vnTotalSales += vnValueSale
     $rowTmp.querySelector(".index").innerText = index
     $rowTmp.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
     $rowTmp.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
     $rowTmp.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
+    $rowTmp.querySelector(".tips-by-bank").innerText = vnTipByBank.toFixed(2)
     $rowTmp.querySelector(".value").innerText = vnValueSale.toFixed(2)
     $clone = d.importNode($rowTmp, true)
     $fragment.appendChild($clone)
@@ -283,6 +295,7 @@ function renderSummaryBySeller(salesData) {
       $totalsTmp.querySelector(".seller").innerText = seller
       $totalsTmp.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
       $totalsTmp.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
+      $totalsTmp.querySelector(".total-tips-by-bank").innerText = vnTotalTipsByBank.toFixed(2)
       $totalsTmp.querySelector(".total-value").innerText = vnTotalSales.toFixed(2)
       $clone = d.importNode($totalsTmp, true)
       $fragment.appendChild($clone)
@@ -342,11 +355,11 @@ function renderExpenses(expensesData, depositsData) {
     $clone = d.importNode($rowTmp, true)
     $fragment.appendChild($clone)
 
-    // verificar si cambia el tipo de compra/gasto o ya no existen registros
+    // verificar si cambia el tipo de ingreso/egreso o ya no existen registros
     item = data[++i]
     index++
 
-    if (!item || type !== item.type) {// Cambio de tipo de compra/gasto
+    if (!item || type !== item.type) {// Cambio de tipo de ingreso/egreso
       $totalsTmp.querySelector(".type").innerText = `Total ${type.toLowerCase()}s`
       $totalsTmp.querySelector(".total").innerText = vnTotal.toFixed(2)
       $clone = d.importNode($totalsTmp, true)
@@ -372,6 +385,9 @@ function renderExpenses(expensesData, depositsData) {
           break;
         case "SUELDO":
           dailyClosing.salaries = vnTotal
+          break;
+        case "PROPINA":
+          dailyClosing.tipsByBank = vnTotal
           break;
         default:
           break;
@@ -410,7 +426,7 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   // Calcular saldo en caja
   dailyClosing.finalBalance = dailyClosing.initialBalance + dailyClosing.cashSales
     - dailyClosing.advances - dailyClosing.deposits - dailyClosing.shopping
-    - dailyClosing.expenses - dailyClosing.commissions - dailyClosing.salaries
+    - dailyClosing.expenses - dailyClosing.commissions - dailyClosing.salaries - dailyClosing.tipsByBank
   if (dailyClosing.fit > 0) {
     dailyClosing.finalBalance += dailyClosing.fit
   } else {
@@ -428,6 +444,7 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   $contenedor.querySelector(".expenses").innerText = dailyClosing.expenses.toFixed(2)
   $contenedor.querySelector(".commissions").innerText = dailyClosing.commissions.toFixed(2)
   $contenedor.querySelector(".salaries").innerText = dailyClosing.salaries.toFixed(2)
+  $contenedor.querySelector(".tips-by-bank").innerText = dailyClosing.tipsByBank.toFixed(2)
   $contenedor.querySelector(".fit").innerText = dailyClosing.fit.toFixed(2)
   $contenedor.querySelector(".total-sales").innerText = dailyClosing.finalBalance.toFixed(2)
   $contenedor.querySelector(".card-sales").innerText = dailyClosing.cardSales.toFixed(2)

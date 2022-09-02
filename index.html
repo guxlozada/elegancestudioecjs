@@ -21,7 +21,8 @@
     }
 
     input.sale-item-amount[type="number"],
-    input.sale-item-unit-discount[type="number"] {
+    input.sale-item-unit-discount[type="number"],
+    input.sale-summary-tip[type="number"] {
       width: 2.2rem;
       margin: 0;
       font-size: 0.75rem;
@@ -30,6 +31,11 @@
 
     input.sale-item-unit-discount[type="number"] {
       width: 3rem;
+    }
+
+    input.sale-summary-tip[type="number"] {
+      width: 3rem;
+      text-align: center;
     }
   </style>
 </head>
@@ -175,11 +181,11 @@
                         Efectivo
                       </label>
                       <label class="radio">
-                        <input type="radio" name="typePayment" value="CREDITO">
+                        <input type="radio" name="typePayment" value="TCREDITO">
                         Tarjeta Crédito
                       </label>
                       <label class="radio">
-                        <input type="radio" name="typePayment" value="DEBITO">
+                        <input type="radio" name="typePayment" value="TDEBITO">
                         Tarjeta Débito
                       </label>
                       <label class="radio">
@@ -243,21 +249,29 @@
                 <!-- Agregar detalles de productos-->
               </tbody>
               <tfoot id="sale-summary">
+                <tr class="has-background-white">
+                  <th>Base imponible</th>
+                  <td class="sale-summary-taxableincome has-text-right" colspan="4">0.00</td>
+                  <td></td>
+                </tr>
+                <tr class="has-background-white">
+                  <th>Impuestos (IVA, etc.)</th>
+                  <td class="sale-summary-taxes has-text-right" colspan="4">0.00</td>
+                  <td></td>
+                </tr>
+                <tr class="has-background-white">
+                  <th>Propina (SOLO transferencia/tarjeta credito/debito)</th>
+                  <th class=" has-text-right" colspan="5">
+                    <input class="sale-summary-tip" id="tip-value" name="tipValue" type="number" step="0.5" min="0.0"
+                      placeholder="0.00" />
+                  </th>
+                </tr>
                 <tr class="has-background-grey-lighter">
                   <th>Venta Total</th>
                   <th class="sale-summary-totalsale has-text-right" colspan="4">0.00</th>
                   <td></td>
                 </tr>
-                <tr>
-                  <th>Base imponible</th>
-                  <td class="sale-summary-taxableincome has-text-right" colspan="4">0.00</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <th>Impuestos (IVA, etc.)</th>
-                  <td class="sale-summary-taxes has-text-right" colspan="4">0.00</td>
-                  <td></td>
-                </tr>
+
                 <!--tr>
                   <th>Descuento</th>
                   <td class="sale-summary-discounts has-text-right" colspan="4">0.00</td>
@@ -444,7 +458,7 @@
               <span class="icon">
                 <i class="fa-solid fa-store"></i>
               </span>
-              <span>Compra / Gasto</span>
+              <span>Ingresos / Egresos</span>
             </span>
           </p>
         </header>
@@ -491,7 +505,7 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Tipo</label>
+                <label class="label is-small is-hidden-mobile is-inline">Para barberia</label>
                 <div class="control is-size-7">
                   <label class="radio">
                     <input class="expense-input" type="radio" name="expenseType" value="GASTO" data-key="type">
@@ -506,16 +520,25 @@
                     Deposito
                   </label>
                   <label class="radio">
+                    <input class="expense-input" type="radio" name="expenseType" value="AJUSTE" data-key="type">
+                    Ajuste
+                  </label>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Pago a barbero</label>
+                <div class="control is-size-7">
+                  <label class="radio">
                     <input class="expense-input" type="radio" name="expenseType" value="ADELANTO" data-key="type">
                     Adelanto
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="expenseType" value="AJUSTE" data-key="type">
-                    Ajuste
-                  </label>
-                  <label class="radio">
                     <input class="expense-input" type="radio" name="expenseType" value="COMISION" data-key="type">
                     Comision
+                  </label>
+                  <label class="radio">
+                    <input class="expense-input" type="radio" name="expenseType" value="PROPINA" data-key="type">
+                    Propina tarjeta/transferencia
                   </label>
                   <label class="radio">
                     <input class="expense-input" type="radio" name="expenseType" value="SUELDO" data-key="type">
@@ -542,17 +565,6 @@
                     data-key="voucher" style="max-width: 250px; margin: 0;" placeholder="# Comprobante o Factura..." />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-receipt"></i>
-                  </span>
-                </p>
-              </div>
-              <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Mes (SOLO sueldo)</label>
-                <p class="control has-icons-left">
-                  <input class="expense-input input is-small" id="expense-month" name="expenseMonth" type="text"
-                    data-key="month" style="max-width: 50px; margin: 0;"
-                    placeholder="Mes correspondiente al pago de comision o sueldo" />
-                  <span class="icon is-small is-left">
-                    <i class="fa-solid fa-calendar"></i>
                   </span>
                 </p>
               </div>

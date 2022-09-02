@@ -424,14 +424,14 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   dailyClosing.initialBalance = beforeDay ? beforeDay.finalBalance : 0
 
   // Calcular saldo en caja
-  dailyClosing.finalBalance = dailyClosing.initialBalance + dailyClosing.cashSales
+  dailyClosing.finalBalance = dailyClosing.initialBalance + dailyClosing.cashSales + dailyClosing.fit
     - dailyClosing.advances - dailyClosing.deposits - dailyClosing.shopping
     - dailyClosing.expenses - dailyClosing.commissions - dailyClosing.salaries - dailyClosing.tipsByBank
-  if (dailyClosing.fit > 0) {
-    dailyClosing.finalBalance += dailyClosing.fit
-  } else {
-    dailyClosing.finalBalance -= dailyClosing.fit
-  }
+  //if (dailyClosing.fit > 0) {
+  //dailyClosing.finalBalance += dailyClosing.fit
+  //} else {
+  //  dailyClosing.finalBalance -= dailyClosing.fit
+  //}
   dailyClosing.finalBalance = Math.round(dailyClosing.finalBalance * 100) / 100
   //Asignar valores
   let $contenedor = d.getElementById("daily-closing")

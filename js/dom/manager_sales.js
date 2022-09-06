@@ -24,7 +24,7 @@ const saleInit = {
   taxes: 0,
   tipByBank: 0,
   totalSale: 0,
-  barberCommision: 0,
+  barberCommission: 0,
   valid: false
 }
 
@@ -151,7 +151,7 @@ function renderSaleItems(changeTypePayment) {
   sale.discounts = 0
   sale.taxes = 0
   sale.totalSale = 0
-  sale.barberCommision = 0
+  sale.barberCommission = 0
 
   if (sale.valid) {
     const $template = d.getElementById("sale-item-template").content,
@@ -168,7 +168,7 @@ function renderSaleItems(changeTypePayment) {
       vnDiscounts,
       vnTaxes,
       vnTaxableIncome = 0,
-      vnBarberCommision = 0;
+      vnBarberCommission = 0;
 
     sale.items.forEach(item => {
       ////console.log("Agregando item a la venta=", item.code)
@@ -213,19 +213,19 @@ function renderSaleItems(changeTypePayment) {
       vnTaxableIncome = (baseValue - vnBaseDiscount) * item.numberOfUnits
       vnTaxes = ((taxIVA || 0) - vnTaxDiscount) * item.numberOfUnits
       vnDiscounts = vnUnitDiscount * item.numberOfUnits
-      vnBarberCommision = vnTaxableIncome * item.sellerCommission / 100
+      vnBarberCommission = vnTaxableIncome * item.sellerCommission / 100
 
       item.taxableIncome = Math.round(vnTaxableIncome * 100) / 100
       item.taxes = Math.round(vnTaxes * 100) / 100
       item.total = item.taxableIncome + item.taxes
       item.discounts = vnDiscounts
-      item.barberCommision = Math.round(vnBarberCommision * 100) / 100
+      item.barberCommission = Math.round(vnBarberCommission * 100) / 100
 
       sale.taxableIncome += item.taxableIncome
       sale.taxes += item.taxes
       sale.totalSale += item.total
       sale.discounts += item.discounts
-      sale.barberCommision += item.barberCommision
+      sale.barberCommission += item.barberCommission
 
       // crear detalle de carrito (fila de tabla)
       $desc.innerText = item.description

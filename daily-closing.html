@@ -59,12 +59,15 @@
                   <th class="has-text-white" style="width:2rem">Nro.</th>
                   <th class="has-text-white" style="text-align:center;width:4rem">Hora</th>
                   <th class="has-text-white has-text-left is-hidden-mobile">Vendedor</th>
-                  <th class="has-text-white" style="width:6rem">Forma pago</th>
-                  <th class="has-text-white is-hidden-mobile" style="width:6rem">Descuentos</th>
+                  <th class="has-text-white" style="width:5.5rem">Forma pago</th>
+                  <th class="has-text-white is-hidden-mobile is-hidden" style="width:5.5rem">Descuentos</th>
+                  <th class="has-text-white" style="width:5.5rem">Valor Venta</th>
+                  <th class="has-text-white" style="width:5.5rem">Impuestos</th>
                   <th class="has-text-white" style="width:7rem">Base Imponible</th>
-                  <th class="has-text-white" style="width:6rem">Impuestos</th>
-                  <th class="has-text-white" style="width:6rem">Propinas</th>
-                  <th class="has-text-white" style="width:6rem">Valor Venta</th>
+                  <th class="has-text-white" style="width:5.5rem">Comisiones</th>
+                  <th class="has-text-white" style="width:7rem">Comisiones 1.12</th>
+                  <th class="has-text-white" style="width:5rem">Propinas</th>
+
                 </tr>
               </thead>
               <tbody id="summary-body">
@@ -72,23 +75,28 @@
               </tbody>
               <tfoot id="summary-footer" class="has-text-weight-semibold ">
                 <tr class="has-background-grey-light">
-                  <th class="total-discounts has-text-right" colspan="5">0.00</th>
-                  <th class="total-taxable-income has-text-right">0.00</th>
+                  <th class="total-discounts has-text-right is-hidden">0.00</th>
+                  <th class="total-value has-text-right" colspan="5">0.00</th>
                   <th class="total-taxes has-text-right">0.00</th>
+                  <th class="total-taxable-income has-text-right">0.00</th>
+                  <th class="total-barber-commissions has-text-right">0.00</th>
+                  <th class="total-barber-commissions-tmp has-text-right">0.00</th>
                   <th class="total-tips-by-bank has-text-right">0.00</th>
-                  <th class="total-value has-text-right">0.00</th>
                 </tr>
                 <tr class="has-background-grey-lighter">
-                  <th class="has-text-right" colspan="8">Tarjetas Débito y Crédito ( - )</th>
+                  <th class="has-text-right" colspan="4">Tarjetas Débito y Crédito ( - )</th>
                   <th class="total-card has-text-right">0.00</th>
+                  <td colspan="5"></td>
                 </tr>
                 <tr class="has-background-grey-lighter">
-                  <th class="has-text-right" colspan="8">Transferencias ( - )</th>
+                  <th class="has-text-right" colspan="4">Transferencias ( - )</th>
                   <th class="total-transfer has-text-right">0.00</th>
+                  <td colspan="5"></td>
                 </tr>
                 <tr class="has-background-grey-light">
-                  <th class="has-text-right" colspan="8">Efectivo</th>
+                  <th class="has-text-right" colspan="4">Efectivo</th>
                   <th class="total-cash has-text-right">0.00</th>
+                  <td colspan="5"></td>
                 </tr>
               </tfoot>
             </table>
@@ -134,10 +142,12 @@
                   <th class="has-text-white" style="width:2rem">Nro.</th>
                   <th class="has-text-white" style="text-align:center;width:4rem">Hora</th>
                   <th class="has-text-white has-text-left"></th>
-                  <th class="has-text-white" style="width:7rem">Base Imponible</th>
-                  <th class="has-text-white" style="width:6rem">Impuestos</th>
-                  <th class="has-text-white" style="width:6rem">Propinas</th>
                   <th class="has-text-white" style="width:6rem">Valor Venta</th>
+                  <th class="has-text-white" style="width:6rem">Impuestos</th>
+                  <th class="has-text-white" style="width:7rem">Base Imponible</th>
+                  <th class="has-text-white" style="width:6rem">Comisiones</th>
+                  <th class="has-text-white" style="width:7rem">Comisiones 1.12</th>
+                  <th class="has-text-white" style="width:6rem">Propinas</th>
                 </tr>
               </thead>
               <tbody id="seller-body">
@@ -360,11 +370,13 @@
       <td class="time" style="text-align:center"></td>
       <td class="seller has-text-left is-hidden-mobile"></td>
       <td class="payment"></td>
-      <th class="discounts is-hidden-mobile"></th>
-      <td class="taxable-income"></td>
+      <td class="discounts is-hidden-mobile is-hidden"></td>
+      <th class="value"></th>
       <td class="taxes"></td>
+      <td class="taxable-income"></td>
+      <td class="barber-commission"></td>
+      <td class="barber-commission-tmp"></td>
       <td class="tips-by-bank"></td>
-      <td class="value"></td>
     </tr>
   </template>
 
@@ -372,19 +384,42 @@
     <tr class="has-text-right">
       <td class="index"></td>
       <td class="time" style="text-align:center"></td>
-      <td class="taxable-income" colspan="2"></td>
+      <td class="value" colspan="2"></td>
       <td class="taxes"></td>
+      <td class="taxable-income"></td>
+      <td class="barber-commission"></td>
+      <td class="barber-commission-tmp"></td>
       <td class="tips-by-bank"></td>
-      <td class="value"></td>
     </tr>
   </template>
   <template id="seller-totals">
     <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
       <th class="seller" colspan="3"></th>
-      <th class="total-taxable-income"></th>
-      <th class="total-taxes"></th>
-      <th class="total-tips-by-bank"></th>
       <th class="total-value"></th>
+      <th class="total-taxes"></th>
+      <th class="total-taxable-income"></th>
+      <th class="total-barber-commissions"></th>
+      <th class="total-barber-commissions-tmp"></th>
+      <th class="total-tips-by-bank"></th>
+    </tr>
+  </template>
+
+  <template id="seller-totals-BACKUP">
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <th class="seller" colspan="2"></th>
+      <th class="total-value"></th>
+      <th class="total-taxes"></th>
+      <th class="total-taxable-income"></th>
+      <th class="total-barber-commissions"></th>
+      <th class="total-tips-by-bank"></th>
+    </tr>
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <th colspan="4">Comisiones pagadas</th>
+      <th class="paid-barber-commissions"></th>
+    </tr>
+    <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
+      <th colspan="4">Comisiones pendientes</th>
+      <th class="pending-barber-commissions"></th>
     </tr>
   </template>
 

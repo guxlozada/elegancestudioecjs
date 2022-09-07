@@ -120,7 +120,7 @@ async function updateSalesByDay(vsDate) {
     /////.orderByChild("searchDate").equalTo(vsDate)
     .once('value')
     .then((snap) => {
-      console.log(snap.toJSON())
+      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         salesData.push(child.val())
       })
@@ -132,7 +132,7 @@ async function updateSalesByDay(vsDate) {
   await expensesRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
     .once('value')
     .then((snap) => {
-      console.log(snap.toJSON())
+      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         expensesData.push(child.val())
       })
@@ -143,7 +143,7 @@ async function updateSalesByDay(vsDate) {
   await depositsRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
     .once('value')
     .then((snap) => {
-      console.log(snap.toJSON())
+      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         depositsData.push(child.val())
       })
@@ -157,8 +157,8 @@ async function updateSalesByDay(vsDate) {
 
 function renderSections(salesData, expensesData, depositsData) {
   renderSummary(salesData)
-  renderSummaryBySeller(salesData)
   renderExpenses(expensesData, depositsData)
+  renderSummaryBySeller(salesData)
   updateDailyCashClosing()
 }
 
@@ -176,11 +176,15 @@ function renderSummary(salesData) {
     vnTotalTransfer = 0,
     vnTotalSales = 0,
     vnTotalTipsByBank = 0,
+    vnTotalBarberCommissions = 0,
+    vnTotalBarberCommissionsTmp = 0,
     vnDiscounts,
     vnTaxes,
     vnTaxableIncome,
     vnValueSale,
-    vnTipByBank
+    vnTipByBank,
+    vnBarberCommission,
+    vnBarberCommissionTmp
 
   if (salesData.length == 0) {
     $body.innerHTML = `<tr><td class="is-size-6" colspan="8">No existen ventas para la fecha seleccionada</td></tr>`
@@ -194,20 +198,26 @@ function renderSummary(salesData) {
       vnTaxes = Math.round(parseFloat(sale.taxes) * 100) / 100
       vnValueSale = Math.round(parseFloat(sale.totalSale) * 100) / 100
       vnTipByBank = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
+      vnBarberCommission = Math.round(parseFloat(sale.barberCommission) * 100) / 100
+      vnBarberCommissionTmp = Math.round(parseFloat(sale.barberCommission) * 112) / 100
       vnTotalDiscounts += vnDiscounts
       vnTotalTaxableIncome += vnTaxableIncome
       vnTotalTaxes += vnTaxes
       vnTotalSales += vnValueSale
       vnTotalTipsByBank += vnTipByBank
+      vnTotalBarberCommissions += vnBarberCommission
+      vnTotalBarberCommissionsTmp += vnBarberCommissionTmp
       $template.querySelector(".index").innerText = index + 1
       $template.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
       $template.querySelector(".seller").innerText = sale.seller
       $template.querySelector(".payment").innerText = sale.typePayment.toLowerCase()
-      $template.querySelector(".discounts").innerText = parseFloat(vnDiscounts).toFixed(2)
-      $template.querySelector(".taxable-income").innerText = parseFloat(vnTaxableIncome).toFixed(2)
-      $template.querySelector(".taxes").innerText = parseFloat(vnTaxes).toFixed(2)
-      $template.querySelector(".tips-by-bank").innerText = parseFloat(vnTipByBank).toFixed(2)
-      $template.querySelector(".value").innerText = parseFloat(vnValueSale).toFixed(2)
+      $template.querySelector(".discounts").innerText = vnDiscounts.toFixed(2)
+      $template.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
+      $template.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
+      $template.querySelector(".tips-by-bank").innerText = vnTipByBank > 0 ? vnTipByBank.toFixed(2) : ''
+      $template.querySelector(".value").innerText = vnValueSale.toFixed(2)
+      $template.querySelector(".barber-commission").innerText = vnBarberCommission.toFixed(2)
+      $template.querySelector(".barber-commission-tmp").innerText = vnBarberCommissionTmp.toFixed(2)
       if (sale.typePayment === "EFECTIVO") {
         vnTotalCash += vnValueSale
       } else if (sale.typePayment === "TRANSFERENCIA") {
@@ -225,6 +235,8 @@ function renderSummary(salesData) {
   $footer.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
   $footer.querySelector(".total-tips-by-bank").innerText = vnTotalTipsByBank.toFixed(2)
   $footer.querySelector(".total-value").innerText = vnTotalSales.toFixed(2)
+  $footer.querySelector(".total-barber-commissions").innerText = vnTotalBarberCommissions.toFixed(2)
+  $footer.querySelector(".total-barber-commissions-tmp").innerText = vnTotalBarberCommissionsTmp.toFixed(2)
   $footer.querySelector(".total-cash").innerText = vnTotalCash.toFixed(2)
   $footer.querySelector(".total-card").innerText = vnTotalCard.toFixed(2)
   $footer.querySelector(".total-transfer").innerText = vnTotalTransfer.toFixed(2)
@@ -258,11 +270,15 @@ function renderSummaryBySeller(salesData) {
     vnTotalTaxableIncome = 0,
     vnTotalSales = 0,
     vnTotalTipsByBank = 0,
+    vnTotalBarberCommissions = 0,
+    vnTotalBarberCommissionsTmp = 0,
     index = 1,
     vnTaxes,
     vnTaxableIncome,
     vnValueSale,
     vnTipByBank,
+    vnBarberCommission,
+    vnBarberCommissionTmp,
     $clone
 
   // aux bucle  
@@ -274,16 +290,22 @@ function renderSummaryBySeller(salesData) {
     vnTaxes = Math.round(parseFloat(sale.taxes) * 100) / 100
     vnTipByBank = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
     vnValueSale = Math.round(parseFloat(sale.totalSale) * 100) / 100
+    vnBarberCommission = Math.round(parseFloat(sale.barberCommission) * 100) / 100
+    vnBarberCommissionTmp = Math.round(parseFloat(sale.barberCommission) * 112) / 100
     vnTotalTaxableIncome += vnTaxableIncome
     vnTotalTaxes += vnTaxes
     vnTotalTipsByBank += vnTipByBank
     vnTotalSales += vnValueSale
+    vnTotalBarberCommissions += vnBarberCommission
+    vnTotalBarberCommissionsTmp += vnBarberCommissionTmp
     $rowTmp.querySelector(".index").innerText = index
     $rowTmp.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
     $rowTmp.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
     $rowTmp.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
-    $rowTmp.querySelector(".tips-by-bank").innerText = vnTipByBank.toFixed(2)
+    $rowTmp.querySelector(".tips-by-bank").innerText = vnTipByBank > 0 ? vnTipByBank.toFixed(2) : ''
     $rowTmp.querySelector(".value").innerText = vnValueSale.toFixed(2)
+    $rowTmp.querySelector(".barber-commission").innerText = vnBarberCommission.toFixed(2)
+    $rowTmp.querySelector(".barber-commission-tmp").innerText = vnBarberCommissionTmp.toFixed(2)
     $clone = d.importNode($rowTmp, true)
     $fragment.appendChild($clone)
 
@@ -297,6 +319,9 @@ function renderSummaryBySeller(salesData) {
       $totalsTmp.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
       $totalsTmp.querySelector(".total-tips-by-bank").innerText = vnTotalTipsByBank.toFixed(2)
       $totalsTmp.querySelector(".total-value").innerText = vnTotalSales.toFixed(2)
+      $totalsTmp.querySelector(".total-barber-commissions").innerText = vnTotalBarberCommissions.toFixed(2)
+      $totalsTmp.querySelector(".total-barber-commissions-tmp").innerText = vnTotalBarberCommissionsTmp.toFixed(2)
+      ////$totalsTmp.querySelector(".paid-barber-commissions").innerText
       $clone = d.importNode($totalsTmp, true)
       $fragment.appendChild($clone)
 
@@ -305,7 +330,7 @@ function renderSummaryBySeller(salesData) {
       }
       // reset
       seller = sale.seller
-      vnTotalTaxes = vnTotalTaxableIncome = vnTotalSales = 0
+      vnTotalTaxes = vnTotalTaxableIncome = vnTotalSales = vnTotalTipsByBank = vnTotalBarberCommissions = vnTotalBarberCommissionsTmp = 0
       index = 1
     }
   } while (i < 1000)

@@ -107,6 +107,8 @@ function changeDailyClosing() {
   d.querySelectorAll(".summary-day").forEach(($el) => $el.valueAsDate = operationDay)
   dailyClosing = JSON.parse(JSON.stringify(dailyClosingInit))
   let filterDayString = truncOperationDayString(operationDay.getTime(), "date")
+  localStorage.removeItem("COMMISSIONS")
+  localStorage.removeItem("TIPS")
   ////console.log("operationDay=", operationDay, "filterDayString=", filterDayString,)
   updateSalesByDay(filterDayString)
 }
@@ -269,17 +271,22 @@ function renderSummaryBySeller(salesData) {
   let vnTotalTaxes = 0,
     vnTotalTaxableIncome = 0,
     vnTotalSales = 0,
-    vnTotalTipsByBank = 0,
+    vnTotalBarberTips = 0,
     vnTotalBarberCommissions = 0,
     vnTotalBarberCommissionsTmp = 0,
     index = 1,
     vnTaxes,
     vnTaxableIncome,
     vnValueSale,
-    vnTipByBank,
+    vnBarberTip,
     vnBarberCommission,
     vnBarberCommissionTmp,
+    vnPaidBarberCommission,
+    vnPaidBarberTip,
     $clone
+
+  const barberCommissions = JSON.parse(localStorage.getItem("COMMISSIONS")) || {},
+    barberTips = JSON.parse(localStorage.getItem("TIPS")) || {}
 
   // aux bucle  
   let i = 0,
@@ -288,13 +295,13 @@ function renderSummaryBySeller(salesData) {
   do {
     vnTaxableIncome = Math.round(parseFloat(sale.taxableIncome) * 100) / 100
     vnTaxes = Math.round(parseFloat(sale.taxes) * 100) / 100
-    vnTipByBank = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
+    vnBarberTip = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
     vnValueSale = Math.round(parseFloat(sale.totalSale) * 100) / 100
     vnBarberCommission = Math.round(parseFloat(sale.barberCommission) * 100) / 100
     vnBarberCommissionTmp = Math.round(parseFloat(sale.barberCommission) * 112) / 100
     vnTotalTaxableIncome += vnTaxableIncome
     vnTotalTaxes += vnTaxes
-    vnTotalTipsByBank += vnTipByBank
+    vnTotalBarberTips += vnBarberTip
     vnTotalSales += vnValueSale
     vnTotalBarberCommissions += vnBarberCommission
     vnTotalBarberCommissionsTmp += vnBarberCommissionTmp
@@ -302,7 +309,7 @@ function renderSummaryBySeller(salesData) {
     $rowTmp.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
     $rowTmp.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
     $rowTmp.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
-    $rowTmp.querySelector(".tips-by-bank").innerText = vnTipByBank > 0 ? vnTipByBank.toFixed(2) : ''
+    $rowTmp.querySelector(".tips-by-bank").innerText = vnBarberTip > 0 ? vnBarberTip.toFixed(2) : ''
     $rowTmp.querySelector(".value").innerText = vnValueSale.toFixed(2)
     $rowTmp.querySelector(".barber-commission").innerText = vnBarberCommission.toFixed(2)
     $rowTmp.querySelector(".barber-commission-tmp").innerText = vnBarberCommissionTmp.toFixed(2)
@@ -317,11 +324,18 @@ function renderSummaryBySeller(salesData) {
       $totalsTmp.querySelector(".seller").innerText = seller
       $totalsTmp.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
       $totalsTmp.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
-      $totalsTmp.querySelector(".total-tips-by-bank").innerText = vnTotalTipsByBank.toFixed(2)
+      $totalsTmp.querySelector(".total-barber-tips").innerText = vnTotalBarberTips.toFixed(2)
       $totalsTmp.querySelector(".total-value").innerText = vnTotalSales.toFixed(2)
       $totalsTmp.querySelector(".total-barber-commissions").innerText = vnTotalBarberCommissions.toFixed(2)
       $totalsTmp.querySelector(".total-barber-commissions-tmp").innerText = vnTotalBarberCommissionsTmp.toFixed(2)
-      ////$totalsTmp.querySelector(".paid-barber-commissions").innerText
+      vnPaidBarberCommission = parseFloat(barberCommissions[seller] || 0)
+      vnPaidBarberTip = parseFloat(barberTips[seller] || 0)
+      $totalsTmp.querySelector(".paid-barber-commissions").innerText = vnPaidBarberCommission.toFixed(2)
+      $totalsTmp.querySelector(".paid-barber-commissions-tmp").innerText = vnPaidBarberCommission.toFixed(2)
+      $totalsTmp.querySelector(".paid-barber-tips").innerText = vnPaidBarberTip.toFixed(2)
+      $totalsTmp.querySelector(".pending-barber-commissions").innerText = (vnTotalBarberCommissions - vnPaidBarberCommission).toFixed(2)
+      $totalsTmp.querySelector(".pending-barber-commissions-tmp").innerText = (vnTotalBarberCommissionsTmp - vnPaidBarberCommission).toFixed(2)
+      $totalsTmp.querySelector(".pending-barber-tips").innerText = (vnTotalBarberTips - vnPaidBarberTip).toFixed(2)
       $clone = d.importNode($totalsTmp, true)
       $fragment.appendChild($clone)
 
@@ -330,7 +344,7 @@ function renderSummaryBySeller(salesData) {
       }
       // reset
       seller = sale.seller
-      vnTotalTaxes = vnTotalTaxableIncome = vnTotalSales = vnTotalTipsByBank = vnTotalBarberCommissions = vnTotalBarberCommissionsTmp = 0
+      vnTotalTaxes = vnTotalTaxableIncome = vnTotalSales = vnTotalBarberTips = vnTotalBarberCommissions = vnTotalBarberCommissionsTmp = 0
       index = 1
     }
   } while (i < 1000)
@@ -361,7 +375,12 @@ function renderExpenses(expensesData, depositsData) {
   let vnTotal = 0,
     index = 1,
     vnValue,
+    vnCommission,
+    vnTip,
     $clone
+
+  const barberCommissions = {},
+    barberTips = {}
 
   // aux bucle  
   let i = 0,
@@ -369,6 +388,7 @@ function renderExpenses(expensesData, depositsData) {
     type = item.type
   do {
     vnValue = Math.round(parseFloat(item.value) * 100) / 100
+    vnCommission = Math.round(parseFloat(item.barberCommission) * 100) / 100
     vnTotal += vnValue
     $rowTmp.querySelector(".index").innerText = index
     $rowTmp.querySelector(".type").innerText = item.type.toLowerCase()
@@ -379,6 +399,14 @@ function renderExpenses(expensesData, depositsData) {
     $rowTmp.querySelector(".value").innerText = vnValue.toFixed(2)
     $clone = d.importNode($rowTmp, true)
     $fragment.appendChild($clone)
+
+    if (type === 'COMISION') {
+      vnCommission = (barberCommissions[item.responsable] || 0) + item.value
+      barberCommissions[item.responsable] = vnCommission
+    } else if (type === 'PROPINA') {
+      vnTip = (barberTips[item.responsable] || 0) + item.value
+      barberTips[item.responsable] = vnTip
+    }
 
     // verificar si cambia el tipo de ingreso/egreso o ya no existen registros
     item = data[++i]
@@ -398,6 +426,7 @@ function renderExpenses(expensesData, depositsData) {
           break;
         case "COMISION":
           dailyClosing.commissions = vnTotal
+          localStorage.setItem("COMMISSIONS", JSON.stringify(barberCommissions))
           break;
         case "COMPRA":
           dailyClosing.shopping = vnTotal
@@ -413,6 +442,7 @@ function renderExpenses(expensesData, depositsData) {
           break;
         case "PROPINA":
           dailyClosing.tipsByBank = vnTotal
+          localStorage.setItem("TIPS", JSON.stringify(barberTips))
           break;
         default:
           break;

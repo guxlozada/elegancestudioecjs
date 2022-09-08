@@ -67,6 +67,16 @@ d.querySelector(".daily-closing .card-footer").addEventListener("click", e => {
 
 })
 
+// EVENTO=click RAIZ=section<summary-filters> ACCION=Actualizar cierre diario
+d.querySelectorAll(".summary-filters").forEach($el => {
+  $el.addEventListener("click", e => {
+    let $el = e.target
+    if ($el.matches(".summary-day-update") || $el.closest(".summary-day-update")) {
+      changeDailyClosing()
+    }
+  })
+})
+
 // EVENTO=change RAIZ=document ACCION=cambio de fecha de operacion, y responsable de cierre de caja
 d.addEventListener("change", e => {
   let $input = e.target

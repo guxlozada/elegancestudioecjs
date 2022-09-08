@@ -113,6 +113,16 @@ function updateSaleDetails(changeTypePayment) {
   localStorage.setItem("SALE", JSON.stringify(sale))
 }
 
+function validateBarberTipActive() {
+  let $tip = d.querySelector(".sale-summary-tip")
+  if (sale.typePayment === "EFECTIVO") {
+    sale.tipByBank = 0
+    $tip.setAttribute("disabled", false)
+  } else {
+    $tip.removeAttribute("disabled")
+  }
+}
+
 // Actualizar cabecera de la venta
 function renderSaleHeader() {
   const cli = sale.client
@@ -282,13 +292,17 @@ function renderSaleItems(changeTypePayment) {
 
 // Calcular descuentos, impuestos y total de venta
 function renderSaleSummary() {
+  // Activar/inactivar propina por pago bancario, debe colocarse primero para validar si 
+  // setea el valor de efectivo=0
+  validateBarberTipActive()
   // Agregar las propinas al total de la venta
   sale.totalSale = Math.round((sale.totalSale + sale.tipByBank) * 100) / 100
-  d.querySelector(".sale-summary-tip").value = sale.tipByBank
+  d.querySelector(".sale-summary-tip").value = sale.tipByBank.toFixed(2)
   d.querySelector(".sale-summary-totalsale").innerText = sale.totalSale.toFixed(2)
   d.querySelector(".sale-summary-taxableincome").innerText = sale.taxableIncome.toFixed(2)
   d.querySelector(".sale-summary-taxes").innerText = sale.taxes.toFixed(2)
   //d.querySelector(".sale-summary-discounts").innerText = sale.discounts.toFixed(2)
+
 
   // Deshabilitar el boton Guardar cuando la venta es cero
   if (sale.valid && sale.items.length > 0) {

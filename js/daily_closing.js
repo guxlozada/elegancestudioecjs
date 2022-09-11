@@ -211,7 +211,12 @@ function renderSummary(salesData) {
       vnValueSale = Math.round(parseFloat(sale.totalSale) * 100) / 100
       vnTipByBank = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
       vnBarberCommission = Math.round(parseFloat(sale.barberCommission) * 100) / 100
-      vnBarberCommissionTmp = Math.round(parseFloat(sale.barberCommission) * 112) / 100
+      // Temporalmente a los pagos con tarjeta de credito o debito la comision al valor final es igual a la de base imponib
+      if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
+        vnBarberCommissionTmp = vnBarberCommission
+      } else {
+        vnBarberCommissionTmp = Math.round(parseFloat(sale.barberCommission) * 112) / 100
+      }
       vnTotalDiscounts += vnDiscounts
       vnTotalTaxableIncome += vnTaxableIncome
       vnTotalTaxes += vnTaxes
@@ -326,7 +331,7 @@ function renderSummaryBySeller(salesData) {
     $clone = d.importNode($rowTmp, true)
     $fragment.appendChild($clone)
 
-    // vrificar si cambia de vendedor o ya no existen registros
+    // verificar si cambia de vendedor o ya no existen registros
     sale = salesData[++i]
     index++
 
@@ -532,6 +537,7 @@ function saveDailyClosing() {
   // Generar la clave de la nueva venta
   const dailyKey = truncOperationDayString(operationDay.getTime(), "date")
   console.log("dailyKey=", dailyKey)
+  ////dailyClosing.date = addHours(operationDay, 5).getTime()
   db.ref(sellerDB.dailyClosing + "/" + dailyKey).set(dailyClosing).then((snapshot) => {
     if (snapshot && snapshot.exists()) {
       console.log(snapshot.val());

@@ -215,7 +215,7 @@ function renderSummary(salesData) {
       if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
         vnBarberCommissionTmp = vnBarberCommission
       } else {
-        vnBarberCommissionTmp = Math.round(parseFloat(sale.barberCommission) * 112) / 100
+        vnBarberCommissionTmp = Math.round(parseFloat(sale.barberCommission) * 11200) / 10000
       }
       vnTotalDiscounts += vnDiscounts
       vnTotalTaxableIncome += vnTaxableIncome

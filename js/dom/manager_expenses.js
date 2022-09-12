@@ -9,7 +9,7 @@ const d = document,
 const expenseIni = {
   date: null,
   responsable: null,
-  type: "GASTO",//[ADELANTO,AJUSTE,COMISION,COMPRA,DEPOSITO,GASTO,PROPINA,SUELDO]
+  type: "GASTO",//[ADELANTO,AJUSTE,BEBIDA,COMISION,COMPRA,DEPOSITO,GASTO,PROPINA,SUELDO]
   value: null,
   voucher: null,
   details: null,
@@ -104,37 +104,40 @@ export default function handlerExpenses() {
     // Ya se realizo al menos primer volcado de data
     expense.valid = true
     if (!expense.responsable) {
-      ntf.error("Información requerida", "Seleccione el responsable")
+      ntf.error("Información requerida", "Seleccione el responsable o beneficiario")
     } else if (!expense.type) {
-      ntf.error("Información requerida", "Seleccione el tipo de documento")
+      ntf.error("Información requerida", "Seleccione el tipo de egreso sea para barberia o para un barbero.")
     } else if (!expense.value) {
       ntf.error("Información requerida", "Ingrese un valor")
     } else if (expense.type !== "AJUSTE" && expense.value <= 0) {
       ntf.error("Información requerida", "Ingrese un valor mayor a cero")
     }
+    const employeeExpenses = ["ADELANTO", "BEBIDA", "COMISION", "PROPINA", "SUELDO"];
+    let isEmployeeExpense = employeeExpenses.includes(expense.type)
+    if (isEmployeeExpense && expense.responsable === 'ADMIN') {
+      ntf.error("Información requerida", "Para los egresos 'Para barbero' no es permitido 'Beneficiario=Admin'")
+    }
+
     if (!ntf.enabled) {
       switch (expense.type) {
         case "DEPOSITO":
           if (!expense.voucher) {
-            ntf.error("Información requerida", "Ingrese el número del comprobante de depósito")
+            ntf.error("Información requerida", "En 'Nro.Comprobante' ingrese el número del comprobante de depósito")
           }
           break;
         case "COMPRA":
           if (!expense.details) {
-            ntf.error("Información requerida", "Detalle brevemente lo que se compró")
+            ntf.error("Información requerida", "En 'Detalles' describa brevemente lo que se compró")
           }
           break;
         case "GASTO":
           if (!expense.details) {
-            ntf.error("Información requerida", "Detalle brevemente el gasto")
+            ntf.error("Información requerida", "En 'Detalles' describa brevemente el gasto")
           }
           break;
-        case "ADELANTO":
-        case "COMISION":
-        case "PROPINA":
-        case "SUELDO":
-          if (expense.responsable === 'ADMIN') {
-            ntf.error("Información requerida", "Para los egresos de empleado no es permitido 'Responsable=Admin'")
+        case "BEBIDA":
+          if (!expense.details) {
+            ntf.error("Información requerida", "En 'Detalles' describa el numero y tipo de bebida: 1 agua, 1 pepsi")
           }
           break;
         default:

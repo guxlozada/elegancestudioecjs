@@ -193,7 +193,8 @@ function renderSaleItems(changeTypePayment) {
       if (!item.unitDiscount || changeTypePayment) {
         if (item.type === "S") {
           vnUnitDiscount = 0
-          if (item.promo.cash && (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA"))// descuento IVA solo pagos en efectivo y transferencias
+          // descuento IVA solo pagos en efectivo y transferencias
+          if (item.promo.cash && (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA"))
             vnUnitDiscount += Math.round((item.promo.cash * item.finalValue / 112) * 100) / 100// debe ser igual a item.taxIVA
           // ELIMINADO DESCUENTO DE MARTES
           ////if (item.promo.discountDay && todayEc().getDay() === 2)// Dia de descuento MARTES (2)
@@ -229,7 +230,7 @@ function renderSaleItems(changeTypePayment) {
       item.taxes = Math.round(vnTaxes * 100) / 100
       item.total = item.taxableIncome + item.taxes
       item.discounts = vnDiscounts
-      item.barberCommission = Math.round(vnBarberCommission * 100) / 100
+      item.barberCommission = Math.round(vnBarberCommission * 10000) / 10000
 
       sale.taxableIncome += item.taxableIncome
       sale.taxes += item.taxes

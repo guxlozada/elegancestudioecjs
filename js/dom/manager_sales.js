@@ -3,6 +3,7 @@ import { dbRef } from "./firebase_conexion.js";
 import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, timestampInputDateToDateEc, todayEc, todayEcToString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { services } from "./catalog_services.js";
+import { servicesEneglimar } from "./catalog_services_eneglimar.js";
 import { products } from "./catalog_products.js";
 
 
@@ -81,9 +82,16 @@ export function addToSale(vsCode, vsType) {
   if (sale.items.some((item) => item.code === vsCode)) {
     changeItemNumberOfUnits(vsCode, "plus", 1)
   } else {
-    const item = vsType === "SERVICE" ?
-      services.find((s) => s.code === vsCode) :
-      products.find((p) => p.code === vsCode)
+    let item
+    if (vsType === "SERVICE") {
+      if (sale.seller === "ENEGLIMAR") {
+        item = servicesEneglimar.find((s) => s.code === vsCode)
+      } else {
+        item = services.find((s) => s.code === vsCode)
+      }
+    } else {
+      item = products.find((p) => p.code === vsCode)
+    }
 
     sale.items.push({
       ...item,
@@ -150,8 +158,18 @@ function renderSaleItems(changeTypePayment) {
     $productsFragment = d.createDocumentFragment(),
     $servicesFragment = d.createDocumentFragment(),
     $btnServicios = d.querySelector(".trigger-services-modal"),
+    $btnServiciosEneglimar = d.querySelector(".trigger-services-modal-eneglimar"),
     $btnProductos = d.querySelector(".trigger-products-modal"),
     $btnCancel = d.querySelector(".sale-cancel")
+
+  // Manejo de catalogo de servicios diferenciado para ENEGLIMAR
+  if (sale.seller === "ENEGLIMAR") {
+    $btnServicios.classList.add("is-hidden")
+    $btnServiciosEneglimar.classList.remove("is-hidden")
+  } else {
+    $btnServicios.classList.remove("is-hidden")
+    $btnServiciosEneglimar.classList.add("is-hidden")
+  }
 
   let vnCountProducts = 0,
     vnCountServices = 0
@@ -365,7 +383,7 @@ export default function handlerSales() {
 
     // Venta a consumidor final
     if ($el.matches(".trigger-sale")) {
-      changeSaleClient($el)// Cambiar de venta al seleccionar consumidor fnal
+      changeSaleClient($el)// Cambiar de venta al seleccionar consumidor final
     }
 
     // Elemento a eliminar 
@@ -430,6 +448,7 @@ export default function handlerSales() {
       sale.update = true
     } else if ($input.name === "seller") {
       sale.seller = $input.value
+      updateSaleDetails()
     } else if ($input.name === "typePayment") {
       sale.typePayment = $input.value
       // Recalcula por el descuento por pago en efectivo de servicios, 

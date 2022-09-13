@@ -221,7 +221,15 @@
                         <i class="fa-solid fa-scissors"></i>
                       </span>
                       <span class="is-hidden-mobile">Agregar Servicio</span>
-                    </button></th>
+                    </button>
+                    <button class="trigger-services-modal-eneglimar button is-small is-link is-rounded is-hidden"
+                      data-target="services-modal-eneglimar">
+                      <span class="icon">
+                        <i class="fa-solid fa-scissors"></i>
+                      </span>
+                      <span class="is-hidden-mobile">Agregar Servicio</span>
+                    </button>
+                  </th>
                   <th style="width:1rem"><span title="Cantidad">Cant.</span></th>
                   <th class="has-text-right" style="width:2.5rem"><span title="Valor por unidad">Val/Unid</span></th>
                   <th style="width:1rem"><span title="Descuento por unidad">Desc/Unid</span></th>
@@ -606,6 +614,26 @@
   </main>
 
   <div class="modal" id="services-modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head has-background-link  p-2">
+        <p class="modal-card-title has-text-white is-size-6">
+          <span class="icon">
+            <i class="fa-solid fa-scissors"></i>
+          </span>
+          Servicios
+        </p>
+        <a class="delete" href="#sales"></a>
+      </header>
+      <section class="modal-card-body">
+        <article class="items-container panel is-info is-size-7">
+          <!-- render servicios -->
+        </article>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal" id="services-modal-eneglimar">
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head has-background-link  p-2">

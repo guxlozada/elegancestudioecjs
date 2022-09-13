@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elegance Studio EC</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    .content table td,
+    .content table th {
+      padding: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <iframe src="./templates/navbar.html"
+      onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+  </header>
+  <main>
+    <section class="section" style="max-width: 1000px !important; margin:auto;">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-store"></i>
+              </span>
+              <span>Pago comisiones</span>
+            </span>
+          </p>
+        </header>
+        <div class="card-content has-background-info-light p-2">
+          <div class="payment-filters content">
+            <table>
+              <thead>
+                <tr>
+                  <th>Barbero</th>
+                  <th>Periodo</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="list-inline">
+                  <td style="vertical-align: middle;">
+                    <div class="control is-size-7">
+                      <label class="radio">
+                        <input type="radio" name="seller" value="ENEGLIMAR">
+                        Eneglimar
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="seller" value="ERICK">
+                        Erick
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="seller" value="ESTIBERSON">
+                        Estiberson
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="seller" value="NESTOR">
+                        Nestor
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="seller" value="TODOS" checked>
+                        Todos
+                      </label>
+                    </div>
+                  </td>
+                  <td>
+                    <input class="payment-day-ini input is-small" style="max-width: 8rem" type="date" required />
+                    <input class="payment-day-fin input is-small" style="max-width: 8rem" type="date" required />
+                    <input class="trigger-payment-search button is-small is-primary" type="button" value="Buscar">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table>
+              <tbody id="summary">
+                <!-- render summary-->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <template id="sale-row-header">
+    <tr class="has-background-black has-text-weight-semibold">
+      <td class="barber has-text-white has-text-centered" colspan="9"></td>
+    </tr>
+    <tr class="has-background-link has-text-right">
+      <th class="has-text-white" style="width:2rem">Nro.</th>
+      <th class="has-text-white" style="text-align:center;width:8rem">Fecha-hora</th>
+      <th class="has-text-white" style="width:6rem">Forma pago</th>
+      <th class="has-text-white" style="width:6rem">Valor Venta</th>
+      <th class="has-text-white" style="width:6rem">Impuestos</th>
+      <th class="has-text-white" style="width:7rem">Base Imponible</th>
+      <th class="has-text-white" style="width:6rem">Comisiones</th>
+      <th class="has-text-white" style="width:7rem">Comisiones 1.12</th>
+      <th class="has-text-white" style="width:6rem">Propinas</th>
+    </tr>
+  </template>
+
+  <template id="sale-row">
+    <tr class="has-text-right">
+      <td class="index"></td>
+      <td class="date" style="text-align:center"></td>
+      <td class="payment"></td>
+      <td class="value"></td>
+      <td class="taxes"></td>
+      <td class="taxable-income"></td>
+      <td class="barber-commission"></td>
+      <td class="barber-commission-tmp"></td>
+      <td class="barber-tip"></td>
+    </tr>
+  </template>
+
+  <template id="sale-row-summary">
+    <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
+      <th colspan="3">Ventas totales</th>
+      <th class="total-value"></th>
+      <th class="total-taxes"></th>
+      <th class="total-taxable-income"></th>
+      <th class="total-barber-commissions"></th>
+      <th class="total-barber-commissions-tmp"></th>
+      <th class="total-barber-tips"></th>
+    </tr>
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <th colspan="6">Propinas pagadas ( - )</th>
+      <th></th>
+      <th></th>
+      <td class="barber-paid-tips"></td>
+    </tr>
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <th colspan="6">Comisiones pagadas ( - )</th>
+      <th class="barber-paid-commissions"></th>
+      <th class="barber-paid-commissions-tmp"></th>
+      <td></td>
+    </tr>
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <th colspan="6">Adelantos ( - )</th>
+      <th class="barber-advance-payments"></th>
+      <th class="barber-advance-payments-tmp"></th>
+      <td></td>
+    </tr>
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <th colspan="6">Bebidas consumidas ( - )</th>
+      <th class="barber-drinks"></th>
+      <th class="barber-drinks-tmp"></th>
+      <td></td>
+    </tr>
+    <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
+      <th colspan="6">Saldos pendientes</th>
+      <th class="barber-pending-payment"></th>
+      <th class="barber-pending-payment-tmp"></th>
+      <td class="barber-pending-tips"></td>
+    </tr>
+  </template>
+
+
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/dom/manager-payment.js" type="module"></script>
+</body>
+
+</html>

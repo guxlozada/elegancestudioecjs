@@ -35,8 +35,8 @@
           </p>
         </header>
         <div class="card-content has-background-info-light p-2">
-          <div class="payment-filters content">
-            <table>
+          <div class=" content">
+            <table id="filters">
               <thead>
                 <tr>
                   <th>Barbero</th>
@@ -70,8 +70,11 @@
                     </div>
                   </td>
                   <td>
-                    <input class="payment-day-ini input is-small" style="max-width: 8rem" type="date" required />
-                    <input class="payment-day-fin input is-small" style="max-width: 8rem" type="date" required />
+                    <input class="payment-day-ini input is-small" style="max-width: 8rem" name="periodStart" type="date"
+                      required />
+                    <input class="payment-day-fin input is-small" style="max-width: 8rem" name="periodEnd" type="date"
+                      required />
+                    <input name="periodLocal" type="datetime-local">
                     <input class="trigger-payment-search button is-small is-primary" type="button" value="Buscar">
                   </td>
                 </tr>

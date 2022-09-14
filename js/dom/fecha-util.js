@@ -153,3 +153,19 @@ export function timestampInputDateToDateEc(vsDate) {
 export const ahoraEC = DateTime.local()
 
 export const hoyEC = ahoraEC.startOf('day')
+
+export function inputDateToDateTime(vsDate) {
+  return DateTime.fromFormat(vsDate, 'yyyy-MM-dd')
+}
+
+export function inputDatetimeToDateTime(vsDate) {
+  let aux = new Date(vsDate).toISOString()
+  let aux2 = DateTime.fromISO(aux)
+  console.log(aux)
+  console.log(aux2)
+  return aux2
+}
+
+export function dateTimeToKeyDateString(vdDateTime) {
+  return vdDateTime.toFormat('yyyyMMdd')
+}

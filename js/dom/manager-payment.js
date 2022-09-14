@@ -1,4 +1,4 @@
-import { addHours, ahoraEC, dateIsValid, hoyEC, todayEc, truncOperationDayString } from "./fecha-util.js";
+import { addHours, ahoraEC, dateIsValid, dateTimeToKeyDateString, hoyEC, inputDatetimeToDateTime, inputDateToDateTime, todayEc, truncOperationDayString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { db } from "./firebase_conexion.js";
 import navbarBurgers from "./navbar_burgers.js";
@@ -14,8 +14,8 @@ const d = document,
 
 const filters = {
   seller: null,
-  periodoStart: null,
-  periodoEnd: null,
+  periodStart: null,
+  periodEnd: null,
   lastClosingDay: null,
   barberAdvancePayment: new Map(),
   barberDrinks: new Map(),
@@ -29,17 +29,51 @@ const filters = {
 
 // EVENTO=DOMContentLoaded RAIZ=document 
 d.addEventListener("DOMContentLoaded", e => {
-  findLastClosingDay()
+  ///////findLastClosingDay()
 
-  let dateTime = DateTime.local();
-  console.log("DateTime.now()", DateTime.now().toString());
-  console.log("ahoraEC", ahoraEC.toString());
-  console.log("hoyEC", hoyEC.toString());
+  // let dateTime = DateTime.local();
+  // console.log("DateTime.now()", DateTime.now().toString());
+  // console.log("ahoraEC", ahoraEC.toString());
+  // console.log("hoyEC", hoyEC.toString());
 
   // console.log("DateTime.now()", DateTime.now().setZone('America/Guayaquil').toString())
   // console.log("DateTime.now().toUTC()", DateTime.utc().toString())
   // console.log("DateTime.utc().toISO()", DateTime.utc().toISO())
-  findExpenses('20220905', '20220911')
+  ////// findExpenses('20220905', '20220911')
+})
+
+// EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
+d.getElementById("filters").addEventListener("change", e => {
+  let $input = e.target
+  if ($input.name === "periodStart" && dateIsValid($input.value)) {
+    console.log("$input.value=", $input.value)
+    filters.periodStart = new Date($input.value)
+    filters.periodEnd = inputDateToDateTime($input.value)
+    console.log("filters.periodStart=", filters.periodStart.toLocaleString())
+    console.log("filters.periodStart.getTime()=", filters.periodStart.getTime())
+    console.log("filters.periodEnd=", filters.periodEnd.toISO())
+    console.log("dateTimeToKeyDateString(filters.periodEnd)=", dateTimeToKeyDateString(filters.periodEnd))
+    console.log("filters.periodEnd.toMillis()=", filters.periodEnd.toMillis())
+    console.log("new Date(filters.periodEnd.getTime()=", new Date(filters.periodEnd.toMillis()).toLocaleString())
+    // console.log("expense.date=", new Date(expense.date))
+    // let vdOther = addHours(new Date($input.value), 5)
+    // // Agregar la hora y minuto actual de datos
+    // let now = nowEc()
+    // vdOther.setHours(now.getHours(), now.getMinutes(), now.getSeconds())
+    // expense.date = vdOther.getTime()
+    // expense.searchDate = dateToStringEc(vdOther)
+    // expense.searchDateTime = vdOther.toLocaleString()
+    // console.log("despues expense.date=", new Date(expense.date))
+  }
+
+  if ($input.name === "periodLocal" && dateIsValid($input.value)) {
+    console.log("Local $input.value=", $input.value)
+    filters.periodStart = new Date($input.value)
+    filters.periodEnd = inputDatetimeToDateTime($input.value)
+    console.log("Local filters.periodStart", filters.periodStart.toLocaleString())
+    console.log("Local filters.periodEnd", filters.periodEnd.toISO())
+    console.log("Local KeyDateString", dateTimeToKeyDateString(filters.periodEnd))
+  }
 })
 
 // EVENTO=resize RAIZ=header ACCION=cambiar el menu hamburguesa
@@ -193,7 +227,7 @@ function searchSalesAndPayments(vsStartDate, vsEndDate) {
 async function findLastClosingDay() {
   await dailyClosingRef.orderByKey().limitToLast(1).once('value')
     .then((snap) => {
-      console.log(snap.toJSON())
+      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         filters.lastClosingDay = new Date(child.val().date)
       })

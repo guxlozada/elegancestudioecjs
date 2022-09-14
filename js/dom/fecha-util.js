@@ -1,6 +1,12 @@
+import { DateTime, Settings } from "../luxon.min.js";
+
 const locale = "es-EC",
   timezoneEC = "America/Guayaquil",
   tzoffset = (new Date()).getTimezoneOffset() * 60000// horas de diferencia en zona horaria del ecuador
+
+// Configurar la zona horaria por defecto para luxon
+Settings.defaultZoneName = timezoneEC;
+
 
 Date.prototype.addHours = function (h) {
   this.setTime(this.getTime() + (h * 60 * 60 * 1000));
@@ -141,3 +147,9 @@ export function truncOperationDayString(timestamp, to) {
 export function timestampInputDateToDateEc(vsDate) {
   return new Date(vsDate).addHours(tzoffset).getTime()
 }
+
+
+//////////////////////////////////////////
+export const ahoraEC = DateTime.local()
+
+export const hoyEC = ahoraEC.startOf('day')

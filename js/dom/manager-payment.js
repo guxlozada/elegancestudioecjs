@@ -1,8 +1,9 @@
-import { addHours, dateIsValid, todayEc, truncOperationDayString } from "./fecha-util.js";
+import { addHours, ahoraEC, dateIsValid, hoyEC, todayEc, truncOperationDayString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { db } from "./firebase_conexion.js";
 import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
+import { DateTime } from "../luxon.min.js";
 
 const d = document,
   w = window,
@@ -29,7 +30,16 @@ const filters = {
 // EVENTO=DOMContentLoaded RAIZ=document 
 d.addEventListener("DOMContentLoaded", e => {
   findLastClosingDay()
-  findPaymentsAndSales('20220905', '20220911')
+
+  let dateTime = DateTime.local();
+  console.log("DateTime.now()", DateTime.now().toString());
+  console.log("ahoraEC", ahoraEC.toString());
+  console.log("hoyEC", hoyEC.toString());
+
+  // console.log("DateTime.now()", DateTime.now().setZone('America/Guayaquil').toString())
+  // console.log("DateTime.now().toUTC()", DateTime.utc().toString())
+  // console.log("DateTime.utc().toISO()", DateTime.utc().toISO())
+  findExpenses('20220905', '20220911')
 })
 
 // EVENTO=resize RAIZ=header ACCION=cambiar el menu hamburguesa
@@ -72,7 +82,7 @@ function renderCommissionsPayment() {
     const barber = $el.value
     vnTotalTaxes = vnTotalTaxableIncome = vnTotalSales = vnTotalBarberCommissions = vnTotalBarberCommissionsTmp = vnTotalBarberTips = 0
     vnTotalBarberAdvancePayment = vnTotalBarberPaidCommissions = vnTotalBarberPaidTips = vnTotalBarberDrinks = vnTotalBarberDiscounts = 0
-    console.log("barbero:", barber)
+    ////console.log("barbero:", barber)
     if (barber !== "TODOS") {
       // Encabezado con barbero de
       $rowBarber.querySelector(".barber").innerText = barber
@@ -127,7 +137,6 @@ function renderCommissionsPayment() {
       if (discounts) {
         vnTotalBarberPaidCommissions = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
         vnTotalBarberDiscounts += vnTotalBarberPaidCommissions
-        console.log("vnTotalBarberPaidCommissions:", vnTotalBarberPaidCommissions)
       }
 
       // GRUPO 3: Totalizar adelantos
@@ -135,14 +144,12 @@ function renderCommissionsPayment() {
       if (discounts) {
         vnTotalBarberAdvancePayment = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
         vnTotalBarberDiscounts += vnTotalBarberAdvancePayment
-        console.log("vnTotalBarberAdvancePayment:", vnTotalBarberAdvancePayment)
       }
 
       // GRUPO 4: Totalizar propinas pagadas
       discounts = filters.barberPaidTips.get(barber)
       if (discounts) {
         vnTotalBarberPaidTips = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
-        console.log("vnTotalBarberPaidTips:", vnTotalBarberPaidTips)
       }
 
       // GRUPO 5: Totalizar bebidas consumidas
@@ -150,7 +157,7 @@ function renderCommissionsPayment() {
       if (discounts) {
         vnTotalBarberDrinks = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
         vnTotalBarberDiscounts += vnTotalBarberDrinks
-        console.log("vnTotalBarberDrinks:", vnTotalBarberDrinks)
+
       }
 
       $totalsTmp.querySelector(".barber-paid-commissions").innerText = vnTotalBarberPaidCommissions.toFixed(2)
@@ -193,7 +200,7 @@ async function findLastClosingDay() {
     })
 }
 
-async function findPaymentsAndSales(vsStartDate, vsEndDate) {
+async function findExpenses(vsStartDate, vsEndDate) {
   let arryTmp
 
   await expensesRef.orderByKey().startAt(vsStartDate + "T").endAt(vsEndDate + "\uf8ff")
@@ -233,7 +240,7 @@ async function findPaymentsAndSales(vsStartDate, vsEndDate) {
   await salesRef.orderByKey().startAt(vsStartDate + "T").endAt(vsEndDate + "\uf8ff")
     .once('value')
     .then((snap) => {
-      console.log(snap.toJSON())
+      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         arryTmp = filters.barberSales.get(child.val().seller) || []
         arryTmp.push(child.val())

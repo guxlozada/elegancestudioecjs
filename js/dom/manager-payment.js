@@ -1,4 +1,4 @@
-import { addHours, ahoraEC, dateIsValid, dateTimeToKeyDateString, hoyEC, inputDatetimeToDateTime, inputDateToDateTime, todayEc, truncOperationDayString } from "./fecha-util.js";
+import { ahoraEC, dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { db } from "./firebase_conexion.js";
 import navbarBurgers from "./navbar_burgers.js";
@@ -13,15 +13,13 @@ const d = document,
   dailyClosingRef = db.ref(sellerDB.dailyClosing)
 
 const filters = {
-  seller: null,
+  seller: "TODOS",
+  period: "CURRENTWEEK",
   periodStart: null,
   periodEnd: null,
-  lastClosingDay: null,
-  barberAdvancePayment: new Map(),
-  barberDrinks: new Map(),
-  barberPaidCommissions: new Map(),
-  barberPaidTips: new Map(),
-  barberSales: new Map()
+  dateStart: null,
+  dateEnd: null,
+  lastClosingDay: null
 }
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
@@ -29,51 +27,31 @@ const filters = {
 
 // EVENTO=DOMContentLoaded RAIZ=document 
 d.addEventListener("DOMContentLoaded", e => {
-  ///////findLastClosingDay()
-
-  // let dateTime = DateTime.local();
-  // console.log("DateTime.now()", DateTime.now().toString());
-  // console.log("ahoraEC", ahoraEC.toString());
-  // console.log("hoyEC", hoyEC.toString());
-
-  // console.log("DateTime.now()", DateTime.now().setZone('America/Guayaquil').toString())
-  // console.log("DateTime.now().toUTC()", DateTime.utc().toString())
-  // console.log("DateTime.utc().toISO()", DateTime.utc().toISO())
-  ////// findExpenses('20220905', '20220911')
+  calculatePeriod()
+  findExpenses()
 })
 
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
 d.getElementById("filters").addEventListener("change", e => {
   let $input = e.target
-  if ($input.name === "periodStart" && dateIsValid($input.value)) {
-    console.log("$input.value=", $input.value)
-    filters.periodStart = new Date($input.value)
-    filters.periodEnd = inputDateToDateTime($input.value)
-    console.log("filters.periodStart=", filters.periodStart.toLocaleString())
-    console.log("filters.periodStart.getTime()=", filters.periodStart.getTime())
-    console.log("filters.periodEnd=", filters.periodEnd.toISO())
-    console.log("dateTimeToKeyDateString(filters.periodEnd)=", dateTimeToKeyDateString(filters.periodEnd))
-    console.log("filters.periodEnd.toMillis()=", filters.periodEnd.toMillis())
-    console.log("new Date(filters.periodEnd.getTime()=", new Date(filters.periodEnd.toMillis()).toLocaleString())
-    // console.log("expense.date=", new Date(expense.date))
-    // let vdOther = addHours(new Date($input.value), 5)
-    // // Agregar la hora y minuto actual de datos
-    // let now = nowEc()
-    // vdOther.setHours(now.getHours(), now.getMinutes(), now.getSeconds())
-    // expense.date = vdOther.getTime()
-    // expense.searchDate = dateToStringEc(vdOther)
-    // expense.searchDateTime = vdOther.toLocaleString()
-    // console.log("despues expense.date=", new Date(expense.date))
+  if ($input.name === "seller") {
+    filters.seller = $input.value
+    findExpenses()
+  } else if ($input.name === "period") {
+    filters.period = $input.value
+    filters.dateStart = null
+    filters.dateEnd = null
+    calculatePeriod()
+    findExpenses()
+  } else if ($input.name === "dateStart" && dateIsValid($input.value)) {
+    filters.dateStart = inputDateToDateTime($input.value)
+  } else if ($input.name === "dateEnd" && dateIsValid($input.value)) {
+    filters.dateEnd = inputDateToDateTime($input.value)
   }
+})
 
-  if ($input.name === "periodLocal" && dateIsValid($input.value)) {
-    console.log("Local $input.value=", $input.value)
-    filters.periodStart = new Date($input.value)
-    filters.periodEnd = inputDatetimeToDateTime($input.value)
-    console.log("Local filters.periodStart", filters.periodStart.toLocaleString())
-    console.log("Local filters.periodEnd", filters.periodEnd.toISO())
-    console.log("Local KeyDateString", dateTimeToKeyDateString(filters.periodEnd))
-  }
+d.getElementById("search").addEventListener("click", e => {
+  findExpenses()
 })
 
 // EVENTO=resize RAIZ=header ACCION=cambiar el menu hamburguesa
@@ -91,7 +69,7 @@ function renderCommissionsPayment() {
     $rowBarber = d.getElementById("sale-row-header").content,
     $totalsTmp = d.getElementById("sale-row-summary").content,
     $fragment = d.createDocumentFragment(),
-    $body = d.getElementById("summary")
+    $paymentsDetails = d.getElementById("payments-details")
 
   let vnTotalBarberTips,
     vnTotalTaxes,
@@ -110,114 +88,138 @@ function renderCommissionsPayment() {
     vnBarberTip,
     vnBarberCommission,
     vnBarberCommissionTmp,
-    $clone
+    $clone,
+    barbers = [filters.seller]
 
-  d.getElementsByName("seller").forEach($el => {
-    const barber = $el.value
+  if (filters.seller === "TODOS") {
+    barbers = Array.from(d.getElementsByName("seller")).map($el => $el.value).filter(val => val !== "TODOS")
+  }
+
+  barbers.forEach(barber => {
     vnTotalTaxes = vnTotalTaxableIncome = vnTotalSales = vnTotalBarberCommissions = vnTotalBarberCommissionsTmp = vnTotalBarberTips = 0
     vnTotalBarberAdvancePayment = vnTotalBarberPaidCommissions = vnTotalBarberPaidTips = vnTotalBarberDrinks = vnTotalBarberDiscounts = 0
-    ////console.log("barbero:", barber)
-    if (barber !== "TODOS") {
-      // Encabezado con barbero de
-      $rowBarber.querySelector(".barber").innerText = barber
-      $clone = d.importNode($rowBarber, true)
+    console.log("barbero:", barber)
+
+    // Encabezado con barbero de
+    $rowBarber.querySelector(".barber").innerText = barber
+    $clone = d.importNode($rowBarber, true)
+    $fragment.appendChild($clone)
+
+    // GRUPO 1: Agregar detalles de servicios y venta de productos
+    const salesByBarber = filters.barberSales.get(barber) || []
+
+    salesByBarber.forEach((sale, index) => {
+      vnValueSale = Math.round(sale.totalSale * 100) / 100
+      vnTaxes = Math.round(sale.taxes * 100) / 100
+      vnTaxableIncome = Math.round(sale.taxableIncome * 100) / 100
+      vnBarberCommission = Math.round(sale.barberCommission * 100) / 100
+      // Temporalmente a los pagos con tarjeta de credito o debito la comision al valor final es igual a la de base imponib
+      if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
+        vnBarberCommissionTmp = vnBarberCommission
+      } else {
+        vnBarberCommissionTmp = Math.round(sale.barberCommission * 11200) / 10000
+      }
+      vnBarberTip = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
+      vnTotalSales += vnValueSale
+      vnTotalTaxes += vnTaxes
+      vnTotalTaxableIncome += vnTaxableIncome
+      vnTotalBarberCommissions += vnBarberCommission
+      vnTotalBarberCommissionsTmp += vnBarberCommissionTmp
+      vnTotalBarberTips += vnBarberTip
+      $rowTmp.querySelector(".index").innerText = index + 1
+      $rowTmp.querySelector(".date").innerText = sale.searchDateTime
+      $rowTmp.querySelector(".payment").innerText = sale.typePayment
+      $rowTmp.querySelector(".value").innerText = vnValueSale.toFixed(2)
+      $rowTmp.querySelector(".taxes").innerText = sale.taxes.toFixed(2)
+      $rowTmp.querySelector(".taxable-income").innerText = sale.taxableIncome.toFixed(2)
+      $rowTmp.querySelector(".barber-commission").innerText = vnBarberCommission.toFixed(2)
+      $rowTmp.querySelector(".barber-commission-tmp").innerText = vnBarberCommissionTmp.toFixed(2)
+      $rowTmp.querySelector(".barber-tip").innerText = vnBarberTip > 0 ? vnBarberTip.toFixed(2) : ''
+      $clone = d.importNode($rowTmp, true)
       $fragment.appendChild($clone)
+    })
 
-      // GRUPO 1: Agregar detalles de servicios y venta de productos
-      const salesByBarber = filters.barberSales.get(barber)
-      if (salesByBarber) {
-        salesByBarber.forEach((sale, index) => {
-          vnValueSale = Math.round(sale.totalSale * 100) / 100
-          vnTaxes = Math.round(sale.taxes * 100) / 100
-          vnTaxableIncome = Math.round(sale.taxableIncome * 100) / 100
-          vnBarberCommission = Math.round(sale.barberCommission * 100) / 100
-          // Temporalmente a los pagos con tarjeta de credito o debito la comision al valor final es igual a la de base imponib
-          if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
-            vnBarberCommissionTmp = vnBarberCommission
-          } else {
-            vnBarberCommissionTmp = Math.round(sale.barberCommission * 11200) / 10000
-          }
-          vnBarberTip = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
-          vnTotalSales += vnValueSale
-          vnTotalTaxes += vnTaxes
-          vnTotalTaxableIncome += vnTaxableIncome
-          vnTotalBarberCommissions += vnBarberCommission
-          vnTotalBarberCommissionsTmp += vnBarberCommissionTmp
-          vnTotalBarberTips += vnBarberTip
-          $rowTmp.querySelector(".index").innerText = index + 1
-          $rowTmp.querySelector(".date").innerText = sale.searchDateTime
-          $rowTmp.querySelector(".payment").innerText = sale.typePayment
-          $rowTmp.querySelector(".value").innerText = vnValueSale.toFixed(2)
-          $rowTmp.querySelector(".taxes").innerText = sale.taxes.toFixed(2)
-          $rowTmp.querySelector(".taxable-income").innerText = sale.taxableIncome.toFixed(2)
-          $rowTmp.querySelector(".barber-commission").innerText = vnBarberCommission.toFixed(2)
-          $rowTmp.querySelector(".barber-commission-tmp").innerText = vnBarberCommissionTmp.toFixed(2)
-          $rowTmp.querySelector(".barber-tip").innerText = vnBarberTip > 0 ? vnBarberTip.toFixed(2) : ''
-          $clone = d.importNode($rowTmp, true)
-          $fragment.appendChild($clone)
-        })
-      }
-      // Agregar totales
-      $totalsTmp.querySelector(".total-value").innerText = vnTotalSales.toFixed(2)
-      $totalsTmp.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
-      $totalsTmp.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
-      $totalsTmp.querySelector(".total-barber-commissions").innerText = vnTotalBarberCommissions.toFixed(2)
-      $totalsTmp.querySelector(".total-barber-commissions-tmp").innerText = vnTotalBarberCommissionsTmp.toFixed(2)
-      $totalsTmp.querySelector(".total-barber-tips").innerText = vnTotalBarberTips.toFixed(2)
+    // Agregar totales
+    $totalsTmp.querySelector(".total-value").innerText = vnTotalSales.toFixed(2)
+    $totalsTmp.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
+    $totalsTmp.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
+    $totalsTmp.querySelector(".total-barber-commissions").innerText = vnTotalBarberCommissions.toFixed(2)
+    $totalsTmp.querySelector(".total-barber-commissions-tmp").innerText = vnTotalBarberCommissionsTmp.toFixed(2)
+    $totalsTmp.querySelector(".total-barber-tips").innerText = vnTotalBarberTips.toFixed(2)
 
+    // GRUPO 2: Totalizar comisiones adelantadas y pagadas 
+    let discounts = filters.barberPaidCommissions.get(barber)
+    if (discounts) {
+      vnTotalBarberPaidCommissions = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
+      vnTotalBarberDiscounts += vnTotalBarberPaidCommissions
+    }
 
-      // GRUPO 2: Totalizar comisiones adelantadas y pagadas 
-      let discounts = filters.barberPaidCommissions.get(barber)
-      if (discounts) {
-        vnTotalBarberPaidCommissions = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
-        vnTotalBarberDiscounts += vnTotalBarberPaidCommissions
-      }
+    // GRUPO 3: Totalizar adelantos
+    discounts = filters.barberAdvancePayment.get(barber)
+    if (discounts) {
+      vnTotalBarberAdvancePayment = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
+      vnTotalBarberDiscounts += vnTotalBarberAdvancePayment
+    }
 
-      // GRUPO 3: Totalizar adelantos
-      discounts = filters.barberAdvancePayment.get(barber)
-      if (discounts) {
-        vnTotalBarberAdvancePayment = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
-        vnTotalBarberDiscounts += vnTotalBarberAdvancePayment
-      }
+    // GRUPO 4: Totalizar propinas pagadas
+    discounts = filters.barberPaidTips.get(barber)
+    if (discounts) {
+      vnTotalBarberPaidTips = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
+    }
 
-      // GRUPO 4: Totalizar propinas pagadas
-      discounts = filters.barberPaidTips.get(barber)
-      if (discounts) {
-        vnTotalBarberPaidTips = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
-      }
-
-      // GRUPO 5: Totalizar bebidas consumidas
-      discounts = filters.barberDrinks.get(barber)
-      if (discounts) {
-        vnTotalBarberDrinks = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
-        vnTotalBarberDiscounts += vnTotalBarberDrinks
-
-      }
-
-      $totalsTmp.querySelector(".barber-paid-commissions").innerText = vnTotalBarberPaidCommissions.toFixed(2)
-      $totalsTmp.querySelector(".barber-paid-commissions-tmp").innerText = vnTotalBarberPaidCommissions.toFixed(2)
-      $totalsTmp.querySelector(".barber-advance-payments").innerText = vnTotalBarberAdvancePayment.toFixed(2)
-      $totalsTmp.querySelector(".barber-advance-payments-tmp").innerText = vnTotalBarberAdvancePayment.toFixed(2)
-      $totalsTmp.querySelector(".barber-drinks").innerText = vnTotalBarberDrinks.toFixed(2)
-      $totalsTmp.querySelector(".barber-drinks-tmp").innerText = vnTotalBarberDrinks.toFixed(2)
-      $totalsTmp.querySelector(".barber-paid-tips").innerText = vnTotalBarberPaidTips.toFixed(2)
-      $totalsTmp.querySelector(".barber-pending-payment").innerText = (vnTotalBarberCommissions - vnTotalBarberDiscounts).toFixed(2)
-      $totalsTmp.querySelector(".barber-pending-payment-tmp").innerText = (vnTotalBarberCommissionsTmp - vnTotalBarberDiscounts).toFixed(2)
-      $totalsTmp.querySelector(".barber-pending-tips").innerText = (vnTotalBarberTips - vnTotalBarberPaidTips).toFixed(2)
-      $clone = d.importNode($totalsTmp, true)
-      $fragment.appendChild($clone)
+    // GRUPO 5: Totalizar bebidas consumidas
+    discounts = filters.barberDrinks.get(barber)
+    if (discounts) {
+      vnTotalBarberDrinks = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
+      vnTotalBarberDiscounts += vnTotalBarberDrinks
 
     }
-  })
 
-  $body.appendChild($fragment)
+    $totalsTmp.querySelector(".barber-paid-commissions").innerText = vnTotalBarberPaidCommissions.toFixed(2)
+    $totalsTmp.querySelector(".barber-paid-commissions-tmp").innerText = vnTotalBarberPaidCommissions.toFixed(2)
+    $totalsTmp.querySelector(".barber-advance-payments").innerText = vnTotalBarberAdvancePayment.toFixed(2)
+    $totalsTmp.querySelector(".barber-advance-payments-tmp").innerText = vnTotalBarberAdvancePayment.toFixed(2)
+    $totalsTmp.querySelector(".barber-drinks").innerText = vnTotalBarberDrinks.toFixed(2)
+    $totalsTmp.querySelector(".barber-drinks-tmp").innerText = vnTotalBarberDrinks.toFixed(2)
+    $totalsTmp.querySelector(".barber-paid-tips").innerText = vnTotalBarberPaidTips.toFixed(2)
+    $totalsTmp.querySelector(".barber-pending-payment").innerText = (vnTotalBarberCommissions - vnTotalBarberDiscounts).toFixed(2)
+    $totalsTmp.querySelector(".barber-pending-payment-tmp").innerText = (vnTotalBarberCommissionsTmp - vnTotalBarberDiscounts).toFixed(2)
+    $totalsTmp.querySelector(".barber-pending-tips").innerText = (vnTotalBarberTips - vnTotalBarberPaidTips).toFixed(2)
+    $clone = d.importNode($totalsTmp, true)
+    $fragment.appendChild($clone)
+
+
+  })
+  $paymentsDetails.innerHTML = "";
+  $paymentsDetails.appendChild($fragment)
 }
 
+function calculatePeriod() {
+  let baseDate = hoyEC
+  //const currentWeek = baseDate.weekNumber
+  switch (filters.period) {
+    case "CURRENTWEEK":
+      filters.periodStart = baseDate.startOf('week')
+      filters.periodEnd = baseDate.endOf('week')
+      break
+    case "LASTWEEK":
+      baseDate = baseDate.minus({ weeks: 1 })
+      filters.periodStart = baseDate.startOf('week')
+      filters.periodEnd = baseDate.endOf('week')
+      break
+    case "CURRENTMONTH":
+      filters.periodStart = baseDate.startOf('month')
+      filters.periodEnd = baseDate.endOf('month')
+      break
+    case "LASTMONTH":
+      baseDate = baseDate.minus({ months: 1 })
+      filters.periodStart = baseDate.startOf('month')
+      filters.periodEnd = baseDate.endOf('month')
+      break
+  }
 
-function searchSalesAndPayments(vsStartDate, vsEndDate) {
-
-  findSales(vsStartDate, vsEndDate)
-  findPayments(vsStartDate, vsEndDate)
+  console.log(filters.periodStart.toISO())
+  console.log(filters.periodEnd.toISO())
 }
 
 
@@ -234,10 +236,26 @@ async function findLastClosingDay() {
     })
 }
 
-async function findExpenses(vsStartDate, vsEndDate) {
-  let arryTmp
+async function findExpenses() {
+  let arryTmp,
+    rangeStart,
+    rangeEnd
 
-  await expensesRef.orderByKey().startAt(vsStartDate + "T").endAt(vsEndDate + "\uf8ff")
+  if (filters.dateStart && filters.dateEnd) {
+    rangeStart = dateTimeToKeyDateString(filters.dateStart)
+    rangeEnd = dateTimeToKeyDateString(filters.dateEnd)
+  } else {
+    rangeStart = dateTimeToKeyDateString(filters.periodStart)
+    rangeEnd = dateTimeToKeyDateString(filters.periodEnd)
+  }
+
+  filters.barberAdvancePayment = new Map()
+  filters.barberDrinks = new Map()
+  filters.barberPaidCommissions = new Map()
+  filters.barberPaidTips = new Map()
+  filters.barberSales = new Map()
+
+  await expensesRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
     .once('value')
     .then((snap) => {
       ////console.log(snap.toJSON())
@@ -271,7 +289,7 @@ async function findExpenses(vsStartDate, vsEndDate) {
       ntf.tecnicalError(`Búsqueda de adelantos y comisiones pagadas con error`, error)
     })
 
-  await salesRef.orderByKey().startAt(vsStartDate + "T").endAt(vsEndDate + "\uf8ff")
+  await salesRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
     .once('value')
     .then((snap) => {
       ////console.log(snap.toJSON())

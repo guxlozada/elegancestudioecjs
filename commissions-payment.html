@@ -30,23 +30,21 @@
               <span class="icon">
                 <i class="fa-solid fa-store"></i>
               </span>
-              <span>Pago comisiones</span>
+              <span>Consulta de comisiones</span>
             </span>
           </p>
         </header>
         <div class="card-content has-background-info-light p-2">
           <div class=" content">
             <table id="filters">
-              <thead>
-                <tr>
-                  <th>Barbero</th>
-                  <th>Periodo</th>
-                </tr>
-              </thead>
               <tbody>
                 <tr class="list-inline">
-                  <td style="vertical-align: middle;">
+                  <td>
                     <div class="control is-size-7">
+                      <label class="radio">
+                        <input type="radio" name="seller" value="TODOS" checked>
+                        Todos
+                      </label>
                       <label class="radio">
                         <input type="radio" name="seller" value="ENEGLIMAR">
                         Eneglimar
@@ -63,25 +61,43 @@
                         <input type="radio" name="seller" value="NESTOR">
                         Nestor
                       </label>
+                    </div>
+                  </td>
+                  <th></th>
+                </tr>
+                <tr class="list-inline">
+                  <td style="vertical-align: middle;">
+                    <div class="control is-size-7">
                       <label class="radio">
-                        <input type="radio" name="seller" value="TODOS" checked>
-                        Todos
+                        <input type="radio" name="period" value="CURRENTWEEK" checked>
+                        Semana actual
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="period" value="LASTWEEK">
+                        Semana anterior
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="period" value="CURRENTMONTH">
+                        Mes actual
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="period" value="LASTMONTH">
+                        Mes anterior
                       </label>
                     </div>
                   </td>
                   <td>
-                    <input class="payment-day-ini input is-small" style="max-width: 8rem" name="periodStart" type="date"
+                    <input class="input is-small is-hidden" style="max-width: 8rem" name="dateStart" type="date"
                       required />
-                    <input class="payment-day-fin input is-small" style="max-width: 8rem" name="periodEnd" type="date"
+                    <input class="input is-small is-hidden" style="max-width: 8rem" name="dateEnd" type="date"
                       required />
-                    <input name="periodLocal" type="datetime-local">
-                    <input class="trigger-payment-search button is-small is-primary" type="button" value="Buscar">
+                    <input id="search" class="button is-small is-primary is-hidden" type="button" value="Buscar">
                   </td>
                 </tr>
               </tbody>
             </table>
             <table>
-              <tbody id="summary">
+              <tbody id="payments-details">
                 <!-- render summary-->
               </tbody>
             </table>

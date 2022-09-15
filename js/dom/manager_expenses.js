@@ -5,6 +5,7 @@ import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
 
 const d = document,
+  w = window,
   ntf = new NotificationBulma(),
   $container = d.getElementById("expenses")
 

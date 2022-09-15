@@ -1,6 +1,7 @@
 import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, todayEc, todayEcToString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { dbRef } from "./firebase_conexion.js";
+import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
 
 const d = document,
@@ -58,12 +59,15 @@ function updateExpense() {
 // ------------------------------------------------------------------------------------------------
 // Delegation of events
 // ------------------------------------------------------------------------------------------------
-
-// EVENTO=DOMContentLoaded RAIZ=document 
-d.addEventListener("DOMContentLoaded", e => {
+// EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
+w.addEventListener("load", e => {
   // Inicializar la informacion de un egreso
-  expense = JSON.parse(JSON.stringify(expenseIni))
-  changeExpense(false)
+  changeExpense(true)
+})
+
+// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
+d.addEventListener("DOMContentLoaded", e => {
+  navbarBurgers()
 })
 
 // TODO: Eliminar cuando nuevamente se bloquea la fecha a la actual

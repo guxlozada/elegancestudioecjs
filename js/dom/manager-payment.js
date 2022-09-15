@@ -35,7 +35,7 @@ w.addEventListener("unload", e => {
   cleanAdminAccess()
 })
 
-// EVENTO=DOMContentLoaded RAIZ=document 
+// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
 d.addEventListener("DOMContentLoaded", e => {
   navbarBurgers()
 })

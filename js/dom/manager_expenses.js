@@ -1,9 +1,10 @@
-import { ntf } from "../app.js";
 import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, todayEc, todayEcToString } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { dbRef } from "./firebase_conexion.js";
+import NotificationBulma from './NotificacionBulma.js';
 
 const d = document,
+  ntf = new NotificationBulma(),
   $container = d.getElementById("expenses")
 
 const expenseIni = {
@@ -16,8 +17,8 @@ const expenseIni = {
   valid: false
 }
 
-let expense = JSON.parse(JSON.stringify(expenseIni))
-changeExpense(false)
+// Variable global para manejo del egreso en proceso
+let expense
 
 //------------------------------------------------------------------------------------------------
 // Funcionalidad
@@ -58,109 +59,114 @@ function updateExpense() {
 // Delegation of events
 // ------------------------------------------------------------------------------------------------
 
-export default function handlerExpenses() {
-  // TODO: Eliminar cuando nuevamente se bloquea la fecha a la actual
-  // EVENTO=change RAIZ=section<servicios> ACCION=detectar cambios en inputs 
-  d.getElementById("expenses").addEventListener("change", e => {
-    let $input = e.target
-    if ($input.name === "expenseDate" && dateIsValid($input.value)) {
-      console.log("expense.date=", new Date(expense.date))
-      let vdOther = addHours(new Date($input.value), 5)
-      // Agregar la hora y minuto actual de datos
-      let now = nowEc()
-      vdOther.setHours(now.getHours(), now.getMinutes(), now.getSeconds())
-      expense.date = vdOther.getTime()
-      expense.searchDate = dateToStringEc(vdOther)
-      expense.searchDateTime = vdOther.toLocaleString()
-      console.log("despues expense.date=", new Date(expense.date))
-    }
-  })
+// EVENTO=DOMContentLoaded RAIZ=document 
+d.addEventListener("DOMContentLoaded", e => {
+  // Inicializar la informacion de un egreso
+  expense = JSON.parse(JSON.stringify(expenseIni))
+  changeExpense(false)
+})
 
-  // EVENTO=submit RAIZ=section<expenses> ACCION=crear compra/gasto 
-  $container.addEventListener("submit", e => {
-    //Prevenir la accion predeterminada que procesa los datos del formulario
-    e.preventDefault()
+// TODO: Eliminar cuando nuevamente se bloquea la fecha a la actual
+// EVENTO=change RAIZ=section<servicios> ACCION=detectar cambios en inputs 
+d.getElementById("expenses").addEventListener("change", e => {
+  let $input = e.target
+  if ($input.name === "expenseDate" && dateIsValid($input.value)) {
+    console.log("expense.date=", new Date(expense.date))
+    let vdOther = addHours(new Date($input.value), 5)
+    // Agregar la hora y minuto actual de datos
+    let now = nowEc()
+    vdOther.setHours(now.getHours(), now.getMinutes(), now.getSeconds())
+    expense.date = vdOther.getTime()
+    expense.searchDate = dateToStringEc(vdOther)
+    expense.searchDateTime = vdOther.toLocaleString()
+    console.log("despues expense.date=", new Date(expense.date))
+  }
+})
 
-    // Obtiene los campos que contienen la informacion de la compra/gasto
-    const $expenseInput = d.getElementsByClassName("expense-input")
-    for (let i = 0, len = $expenseInput.length; i < len; i++) {
-      let $input = $expenseInput[i]
-      switch ($input.type) {
-        case "radio":
-          if (!$input.checked) break
-        default:
-          if ($input.value) {
-            let key = $input.getAttribute("data-key")
-            let value = $input.value
-            if ($input.name === "expenseValue") {
-              expense[key] = parseFloat(value)
-            } else {
-              expense[key] = value
-            }
+// EVENTO=submit RAIZ=section<expenses> ACCION=crear compra/gasto 
+$container.addEventListener("submit", e => {
+  //Prevenir la accion predeterminada que procesa los datos del formulario
+  e.preventDefault()
 
+  // Obtiene los campos que contienen la informacion de la compra/gasto
+  const $expenseInput = d.getElementsByClassName("expense-input")
+  for (let i = 0, len = $expenseInput.length; i < len; i++) {
+    let $input = $expenseInput[i]
+    switch ($input.type) {
+      case "radio":
+        if (!$input.checked) break
+      default:
+        if ($input.value) {
+          let key = $input.getAttribute("data-key")
+          let value = $input.value
+          if ($input.name === "expenseValue") {
+            expense[key] = parseFloat(value)
+          } else {
+            expense[key] = value
           }
-      }
-    }
-    // Ya se realizo al menos primer volcado de data
-    expense.valid = true
-    if (!expense.responsable) {
-      ntf.error("Información requerida", "Seleccione el responsable o beneficiario")
-    } else if (!expense.type) {
-      ntf.error("Información requerida", "Seleccione el tipo de egreso sea para barberia o para un barbero.")
-    } else if (!expense.value) {
-      ntf.error("Información requerida", "Ingrese un valor")
-    } else if (expense.type !== "AJUSTE" && expense.value <= 0) {
-      ntf.error("Información requerida", "Ingrese un valor mayor a cero")
-    }
-    const employeeExpenses = ["ADELANTO", "BEBIDA", "COMISION", "PROPINA", "SUELDO"];
-    let isEmployeeExpense = employeeExpenses.includes(expense.type)
-    if (isEmployeeExpense && expense.responsable === 'ADMIN') {
-      ntf.error("Información requerida", "Para los egresos 'Para barbero' no es permitido 'Beneficiario=Admin'")
-    }
 
-    if (!ntf.enabled) {
-      switch (expense.type) {
-        case "DEPOSITO":
-          if (!expense.voucher) {
-            ntf.error("Información requerida", "En 'Nro.Comprobante' ingrese el número del comprobante de depósito")
-          }
-          break;
-        case "COMPRA":
-          if (!expense.details) {
-            ntf.error("Información requerida", "En 'Detalles' describa brevemente lo que se compró")
-          }
-          break;
-        case "GASTO":
-          if (!expense.details) {
-            ntf.error("Información requerida", "En 'Detalles' describa brevemente el gasto")
-          }
-          break;
-        case "BEBIDA":
-          if (!expense.details) {
-            ntf.error("Información requerida", "En 'Detalles' describa el numero y tipo de bebida: 1 agua, 1 pepsi")
-          }
-          break;
-        default:
-          break;
-      }
+        }
     }
-    if (!ntf.enabled) {
-      let expenseData = JSON.parse(JSON.stringify(expense))
-      insertExpenseDB(expenseData, expense.type === "DEPOSITO")
-    }
-  })
+  }
+  // Ya se realizo al menos primer volcado de data
+  expense.valid = true
+  if (!expense.responsable) {
+    ntf.error("Información requerida", "Seleccione el responsable o beneficiario")
+  } else if (!expense.type) {
+    ntf.error("Información requerida", "Seleccione el tipo de egreso sea para barberia o para un barbero.")
+  } else if (!expense.value) {
+    ntf.error("Información requerida", "Ingrese un valor")
+  } else if (expense.type !== "AJUSTE" && expense.value <= 0) {
+    ntf.error("Información requerida", "Ingrese un valor mayor a cero")
+  }
+  const employeeExpenses = ["ADELANTO", "BEBIDA", "COMISION", "PROPINA", "SUELDO"];
+  let isEmployeeExpense = employeeExpenses.includes(expense.type)
+  if (isEmployeeExpense && expense.responsable === 'ADMIN') {
+    ntf.error("Información requerida", "Para los egresos 'Para barbero' no es permitido 'Beneficiario=Admin'")
+  }
 
-  // EVENTO=reset RAIZ=section<expenses> ACCION=Reset form
-  $container.addEventListener("reset", e => {
-    //Prevenir la accion predeterminada que procesa los datos del formulario
-    e.preventDefault()
-
-    let eliminar = confirm(`Esta seguró que desea descartar la información del ${expense.type}?`)
-    if (eliminar) {
-      changeExpense(true)
+  if (!ntf.enabled) {
+    switch (expense.type) {
+      case "DEPOSITO":
+        if (!expense.voucher) {
+          ntf.error("Información requerida", "En 'Nro.Comprobante' ingrese el número del comprobante de depósito")
+        }
+        break;
+      case "COMPRA":
+        if (!expense.details) {
+          ntf.error("Información requerida", "En 'Detalles' describa brevemente lo que se compró")
+        }
+        break;
+      case "GASTO":
+        if (!expense.details) {
+          ntf.error("Información requerida", "En 'Detalles' describa brevemente el gasto")
+        }
+        break;
+      case "BEBIDA":
+        if (!expense.details) {
+          ntf.error("Información requerida", "En 'Detalles' describa el numero y tipo de bebida: 1 agua, 1 pepsi")
+        }
+        break;
+      default:
+        break;
     }
-  })
-}
+  }
+  if (!ntf.enabled) {
+    let expenseData = JSON.parse(JSON.stringify(expense))
+    insertExpenseDB(expenseData, expense.type === "DEPOSITO")
+  }
+})
+
+// EVENTO=reset RAIZ=section<expenses> ACCION=Reset form
+$container.addEventListener("reset", e => {
+  //Prevenir la accion predeterminada que procesa los datos del formulario
+  e.preventDefault()
+
+  let eliminar = confirm(`Esta seguró que desea descartar la información del ${expense.type}?`)
+  if (eliminar) {
+    changeExpense(true)
+  }
+})
 
 // --------------------------
 // Database operations

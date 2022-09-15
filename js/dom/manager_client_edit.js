@@ -6,6 +6,22 @@ import { renderClients } from "./manager_clients.js";
 
 const d = document
 
+const clientInit = {
+    name: null,
+    idType: "CEDULA",// [CEDULA,PASAPORTE,RUC,OTRO]
+    idNumber: null,
+    email: null,
+    city: "Manta",
+    birthdate: null,
+    cellphone: null,
+    referred: null,
+    registeredBy: "ADMIN",
+    valid: false
+  }
+  
+// Variable global para manejo del cliente que se registra/edita
+let client
+
 /* 
   Esto es como los metodos son definido en el prototipo 
   de cualquier Objecto incorporado 
@@ -17,23 +33,6 @@ Object.defineProperty(String.prototype, 'capitalizarPrimeraLetra', {
   writable: true, // Asi, puede sobreescribirse más tarde
   configurable: true // Asi, puede borrarse más tarde
 });
-
-
-const clientInit = {
-  name: null,
-  idType: "CEDULA",// [CEDULA,PASAPORTE,RUC,OTRO]
-  idNumber: null,
-  email: null,
-  city: "Manta",
-  birthdate: null,
-  cellphone: null,
-  referred: null,
-  registeredBy: "ADMIN",
-  valid: false
-}
-
-let client = localStorage.getItem("CLIENT") ? JSON.parse(localStorage.getItem("CLIENT")) : JSON.parse(JSON.stringify(clientInit))
-changeClient(false)
 
 export function changeClient(reset) {
   let discard = true
@@ -72,6 +71,9 @@ function updateClient() {
 // ------------------------------------------------------------------------------------------------
 
 export default function handlerClientEdit() {
+  // Verificar si se debe cargar un cliente almacenado o inicializar
+  client = localStorage.getItem("CLIENT") ? JSON.parse(localStorage.getItem("CLIENT")) : JSON.parse(JSON.stringify(clientInit))
+  changeClient(false)
 
   // EVENTO=click RAIZ=button<client-save> ACCION=crear y actualizar clientes 
   d.querySelector(".client-save").addEventListener("click", e => {

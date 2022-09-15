@@ -1,9 +1,9 @@
-import { ahoraEC, dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "./fecha-util.js";
+import { dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "./fecha-util.js";
 import { sellerDB } from "./firebase_collections.js";
 import { db } from "./firebase_conexion.js";
+import validAdminAccess, { cleanAdminAccess } from "./manager_user.js";
 import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
-import { DateTime } from "../luxon.min.js";
 
 const d = document,
   w = window,
@@ -26,9 +26,12 @@ const filters = {
 //------------------------------------------------------------------------------------------------
 
 // EVENTO=DOMContentLoaded RAIZ=document 
-d.addEventListener("DOMContentLoaded", e => {
-  calculatePeriod()
-  findExpenses()
+w.addEventListener("load", e => {
+  search()
+})
+
+w.addEventListener("unload", e => {
+  cleanAdminAccess()
 })
 
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
@@ -36,13 +39,12 @@ d.getElementById("filters").addEventListener("change", e => {
   let $input = e.target
   if ($input.name === "seller") {
     filters.seller = $input.value
-    findExpenses()
+    search()
   } else if ($input.name === "period") {
     filters.period = $input.value
     filters.dateStart = null
     filters.dateEnd = null
-    calculatePeriod()
-    findExpenses()
+    search()
   } else if ($input.name === "dateStart" && dateIsValid($input.value)) {
     filters.dateStart = inputDateToDateTime($input.value)
   } else if ($input.name === "dateEnd" && dateIsValid($input.value)) {
@@ -51,7 +53,7 @@ d.getElementById("filters").addEventListener("change", e => {
 })
 
 d.getElementById("search").addEventListener("click", e => {
-  findExpenses()
+  search()
 })
 
 // EVENTO=resize RAIZ=header ACCION=cambiar el menu hamburguesa
@@ -63,6 +65,12 @@ w.addEventListener("resize", e => {
 // Funcionalidad
 //------------------------------------------------------------------------------------------------
 
+function search() {
+  if (validAdminAccess()) {
+    calculatePeriod()
+    findExpenses()
+  }
+}
 
 function renderCommissionsPayment() {
   const $rowTmp = d.getElementById("sale-row").content,
@@ -71,7 +79,10 @@ function renderCommissionsPayment() {
     $fragment = d.createDocumentFragment(),
     $paymentsDetails = d.getElementById("payments-details")
 
-  let vnTotalBarberTips,
+  let vnSearchSales = 0,
+    vnSearchBarberCommissions = 0,
+    vnSearchBarberCommissionsTmp = 0,
+    vnTotalBarberTips,
     vnTotalTaxes,
     vnTotalTaxableIncome,
     vnTotalSales,
@@ -98,7 +109,7 @@ function renderCommissionsPayment() {
   barbers.forEach(barber => {
     vnTotalTaxes = vnTotalTaxableIncome = vnTotalSales = vnTotalBarberCommissions = vnTotalBarberCommissionsTmp = vnTotalBarberTips = 0
     vnTotalBarberAdvancePayment = vnTotalBarberPaidCommissions = vnTotalBarberPaidTips = vnTotalBarberDrinks = vnTotalBarberDiscounts = 0
-    console.log("barbero:", barber)
+    ////console.log("barbero:", barber)
 
     // Encabezado con barbero de
     $rowBarber.querySelector(".barber").innerText = barber
@@ -120,12 +131,17 @@ function renderCommissionsPayment() {
         vnBarberCommissionTmp = Math.round(sale.barberCommission * 11200) / 10000
       }
       vnBarberTip = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
+      // Totales por barbero
       vnTotalSales += vnValueSale
       vnTotalTaxes += vnTaxes
       vnTotalTaxableIncome += vnTaxableIncome
       vnTotalBarberCommissions += vnBarberCommission
       vnTotalBarberCommissionsTmp += vnBarberCommissionTmp
       vnTotalBarberTips += vnBarberTip
+      // Totales por Consulta
+      vnSearchSales += vnValueSale
+      vnSearchBarberCommissions += vnBarberCommission
+      vnSearchBarberCommissionsTmp += vnBarberCommissionTmp
       $rowTmp.querySelector(".index").innerText = index + 1
       $rowTmp.querySelector(".date").innerText = sale.searchDateTime
       $rowTmp.querySelector(".payment").innerText = sale.typePayment
@@ -187,11 +203,16 @@ function renderCommissionsPayment() {
     $totalsTmp.querySelector(".barber-pending-tips").innerText = (vnTotalBarberTips - vnTotalBarberPaidTips).toFixed(2)
     $clone = d.importNode($totalsTmp, true)
     $fragment.appendChild($clone)
-
-
   })
   $paymentsDetails.innerHTML = "";
   $paymentsDetails.appendChild($fragment)
+
+  // Agregar totales por consulta
+  d.querySelector(".search-period").innerText = filters.periodStart.toFormat('dd/MM/yyyy') + "-" + filters.periodEnd.toFormat('dd/MM/yyyy')
+  d.querySelector(".search-sales").innerText = vnSearchSales.toFixed(2)
+  ////d.querySelector(".search-barber-commissions").innerText = vnSearchBarberCommissions.toFixed(2)
+  d.querySelector(".search-barber-commissions-tmp").innerText = vnSearchBarberCommissionsTmp.toFixed(2)
+  d.querySelector(".search-sales-result").innerText = "= " + (vnSearchSales - vnSearchBarberCommissionsTmp).toFixed(2)
 }
 
 function calculatePeriod() {
@@ -218,8 +239,8 @@ function calculatePeriod() {
       break
   }
 
-  console.log(filters.periodStart.toISO())
-  console.log(filters.periodEnd.toISO())
+  ////console.log(filters.periodStart.toISO())
+  ////console.log(filters.periodEnd.toISO())
 }
 
 

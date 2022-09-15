@@ -2,7 +2,6 @@ import modalToggle from "./dom/modal_toggle.js";
 import navbarBurgers from "./dom/navbar_burgers.js";
 import NotificationBulma from './dom/NotificacionBulma.js';
 import handlerClients from "./dom/manager_clients.js";
-import handlerExpenses from "./dom/manager_expenses.js";
 import handlerClientEdit from "./dom/manager_client_edit.js";
 import handlerSales, { addToSale } from "./dom/manager_sales.js";
 import { services } from "./dom/catalog_services.js";
@@ -103,7 +102,6 @@ d.addEventListener("DOMContentLoaded", e => {
   handlerClients()
   handlerClientEdit()
   handlerSales()
-  handlerExpenses()
 })
 
 // EVENTO=click RAIZ=services-modal ACCION=cerrar modal y ejecutar callback

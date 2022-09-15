@@ -29,8 +29,8 @@ const saleInit = {
   valid: false
 }
 
-let sale = localStorage.getItem("SALE") ? JSON.parse(localStorage.getItem("SALE")) : JSON.parse(JSON.stringify(saleInit))
-updateSale()
+// Variable global para manejo de la venta en proceso
+let sale
 
 //------------------------------------------------------------------------------------------------
 // Funcionalidad
@@ -375,6 +375,9 @@ function changeItemDiscount(vsCode, vnUnitDiscount) {
 //------------------------------------------------------------------------------------------------
 
 export default function handlerSales() {
+  // Verificar si se debe cargar una venta almacenada o una nueva
+  sale = localStorage.getItem("SALE") ? JSON.parse(localStorage.getItem("SALE")) : JSON.parse(JSON.stringify(saleInit))
+  updateSale()
 
   // EVENTO=click RAIZ=section<servicios> ACCION=Eliminar detalles
   d.getElementById("sales").addEventListener("click", e => {

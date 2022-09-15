@@ -25,13 +25,19 @@ const filters = {
 // Delegacion de eventos
 //------------------------------------------------------------------------------------------------
 
-// EVENTO=DOMContentLoaded RAIZ=document 
+// EVENTO=load RAIZ=window 
 w.addEventListener("load", e => {
   search()
 })
 
+// EVENTO=unload RAIZ=window 
 w.addEventListener("unload", e => {
   cleanAdminAccess()
+})
+
+// EVENTO=DOMContentLoaded RAIZ=document 
+d.addEventListener("DOMContentLoaded", e => {
+  navbarBurgers()
 })
 
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
@@ -54,11 +60,6 @@ d.getElementById("filters").addEventListener("change", e => {
 
 d.getElementById("search").addEventListener("click", e => {
   search()
-})
-
-// EVENTO=resize RAIZ=header ACCION=cambiar el menu hamburguesa
-w.addEventListener("resize", e => {
-  navbarBurgers()
 })
 
 //------------------------------------------------------------------------------------------------

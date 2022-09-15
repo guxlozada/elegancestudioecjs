@@ -139,7 +139,7 @@ d.querySelector("#products-modal .items-container").addEventListener("click", e 
 
 // EVENTO=resize RAIZ=header ACCION=cambiar el menu hamburguesa
 w.addEventListener("resize", e => {
-  navbarBurgers()
+  ////navbarBurgers()
 })
 
 // TODO: Validar campos requeridos de cliente al actualizaciones

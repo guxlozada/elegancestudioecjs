@@ -1,3 +1,13 @@
+Publicar en heroku 
+----------------------------------------------------------------
+comando Git: git push heroku main
+
+Branch remote proyecto
+-----------------------------------------------------------------
+comando Git: git branch -r
+    respuesta: heroku/main
+
+
 Curso JavaScript: 61. DOM: Introducción
 
 - Hacer hablar un texto

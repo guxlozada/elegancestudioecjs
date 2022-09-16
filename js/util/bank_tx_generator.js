@@ -1,4 +1,4 @@
-import { formatToOperationDayStringEc } from "../dom/fecha-util.js";
+import { formatToOperationDayStringEc } from "./fecha-util.js";
 const TDEBIT_COMISSION = 0.0225,
   TCREDIT_COMISSION = 0.0448,
   TAX_WITHHOLDING_IVA = 0.7,

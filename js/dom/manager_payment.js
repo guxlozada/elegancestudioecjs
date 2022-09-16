@@ -1,6 +1,6 @@
-import { dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "./fecha-util.js";
-import { sellerDB } from "./firebase_collections.js";
-import { db } from "./firebase_conexion.js";
+import { dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
+import { db } from "../persist/firebase_conexion.js";
+import { collections } from "../persist/firebase_collections.js";
 import validAdminAccess, { cleanAdminAccess } from "./manager_user.js";
 import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
@@ -8,9 +8,9 @@ import NotificationBulma from './NotificacionBulma.js';
 const d = document,
   w = window,
   ntf = new NotificationBulma(),
-  salesRef = db.ref(sellerDB.sales),
-  expensesRef = db.ref(sellerDB.expenses),
-  dailyClosingRef = db.ref(sellerDB.dailyClosing)
+  salesRef = db.ref(collections.sales),
+  expensesRef = db.ref(collections.expenses),
+  dailyClosingRef = db.ref(collections.dailyClosing)
 
 const filters = {
   seller: "TODOS",

@@ -1,10 +1,14 @@
-import { changeProductsModalTypeSale, ntf } from "../app.js";
-import { dbRef } from "./firebase_conexion.js";
-import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, timestampInputDateToDateEc, todayEc, todayEcToString } from "./fecha-util.js";
-import { sellerDB } from "./firebase_collections.js";
+import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, todayEc, todayEcToString } from "../util/fecha-util.js";
+import { dbRef } from "../persist/firebase_conexion.js";
+import { collections } from "../persist/firebase_collections.js";
 import { services } from "./catalog_services.js";
 import { servicesEneglimar } from "./catalog_services_eneglimar.js";
 import { products } from "./catalog_products.js";
+import { changeProductsModalTypeSale, ntf } from "../app.js";
+import { generateDateProperties } from "../persist/dao_generic.js";
+import { saleToBanktransaction } from "../persist/dao_bank_reconciliation.js";
+import { roundFour, roundTwo } from "../util/numbers-util.js";
+import { zeroPad } from "../util/text-util.js";
 
 
 const d = document
@@ -39,7 +43,6 @@ let sale
 const resetSale = () => {
   localStorage.removeItem("SALE")
   sale = JSON.parse(JSON.stringify(saleInit))
-  sale.searchDate = todayEcToString()
   updateSale()
 }
 
@@ -58,9 +61,6 @@ export function changeSaleClient($client) {
     sale.client.description = `${$client.dataset.name} _ ${$client.dataset.idtype}: ${$client.dataset.idnumber}`
     sale.client.lastService = $client.dataset.lastserv
     sale.client.referrals = $client.dataset.referrals
-    sale.date = timestampEc()
-    sale.searchDate = todayEcToString()
-    sale.searchDateTime = new Date(sale.date).toLocaleString()
     sale.valid = true
     updateSale()
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,35 +200,6 @@ function renderSaleItems(changeTypePayment) {
 
     sale.items.forEach(item => {
       ////console.log("Agregando item a la venta=", item.code)
-
-      // Calculos para totalizadores
-      vnBaseDiscount = 0
-      vnTaxDiscount = 0
-      // El descuento puede haberse igresado/modificado manualmente al registro, null la primera vez
-      vnUnitDiscount = item.unitDiscount
-
-      // SOLO para servicios, se aplica los descuentos automaticos la primera vez o cuando cambia el metodo de pago
-      if (!item.unitDiscount || changeTypePayment) {
-        if (item.type === "S") {
-          vnUnitDiscount = 0
-          // descuento IVA solo pagos en efectivo y transferencias
-          if (item.promo.cash && (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA"))
-            vnUnitDiscount += Math.round((item.promo.cash * item.finalValue / 112) * 100) / 100// debe ser igual a item.taxIVA
-          // ELIMINADO DESCUENTO DE MARTES
-          ////if (item.promo.discountDay && todayEc().getDay() === 2)// Dia de descuento MARTES (2)
-          ////  vnUnitDiscount += Math.round((item.promo.discountDay * item.baseValue / 100) * 100) / 100
-        } else {
-          vnUnitDiscount = 0
-        }
-        item.unitDiscount = vnUnitDiscount
-      }
-
-      // Recalculo de impuestos por descuentos
-      if (vnUnitDiscount > 0) {
-        // Se considera que todos los servicios y productos  estan gravados solo con IVA
-        vnBaseDiscount = Math.round(vnUnitDiscount / 1.12 * 100) / 100 // tecnica para utilizar solo dos decimales del calculo sin redondeo
-        vnTaxDiscount = vnUnitDiscount - vnBaseDiscount
-      }
       let baseValue = item.baseValue,
         finalValue = item.finalValue,
         taxIVA = item.taxIVA
@@ -239,20 +210,48 @@ function renderSaleItems(changeTypePayment) {
         taxIVA = item.wholesaleTaxIVA
       }
 
+      // Calculos para totalizadores
+      vnBaseDiscount = 0
+      vnTaxDiscount = 0
+      // El descuento puede haberse igresado/modificado manualmente al registro, null la primera vez
+      vnUnitDiscount = item.unitDiscount
+
+      // SOLO para servicios, se aplica los descuentos automaticos la primera vez o cuando cambia el metodo de pago
+      if (!item.unitDiscount || changeTypePayment) {
+        vnUnitDiscount = 0
+        // descuento IVA solo pagos en efectivo y transferencias
+        if (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA") {
+          vnUnitDiscount += taxIVA
+        }
+
+        if (item.type === "S") {
+          // ELIMINADO DESCUENTO DE MARTES
+          ////if (item.promo.discountDay && todayEc().getDay() === 2)// Dia de descuento MARTES (2)
+          ////  vnUnitDiscount += roundFour(item.promo.discountDay * baseValue / 100)
+        }
+        item.unitDiscount = vnUnitDiscount
+      }
+
+      // Recalculo de impuestos por descuentos
+      if (vnUnitDiscount > 0) {
+        // Se considera que todos los servicios y productos estan gravados solo con IVA
+        vnBaseDiscount = roundFour(vnUnitDiscount / 1.12)
+        vnTaxDiscount = vnUnitDiscount - vnBaseDiscount
+      }
+
       vnTaxableIncome = (baseValue - vnBaseDiscount) * item.numberOfUnits
       vnTaxes = ((taxIVA || 0) - vnTaxDiscount) * item.numberOfUnits
       vnDiscounts = vnUnitDiscount * item.numberOfUnits
       vnBarberCommission = vnTaxableIncome * item.sellerCommission / 100
 
-      item.taxableIncome = Math.round(vnTaxableIncome * 100) / 100
-      item.taxes = Math.round(vnTaxes * 100) / 100
-      item.total = item.taxableIncome + item.taxes
-      item.discounts = vnDiscounts
-      item.barberCommission = Math.round(vnBarberCommission * 10000) / 10000
+      item.taxableIncome = roundFour(vnTaxableIncome)
+      item.taxes = roundFour(vnTaxes)
+      item.total = roundFour(item.taxableIncome + item.taxes)
+      item.discounts = roundFour(vnDiscounts)
+      item.barberCommission = roundFour(vnBarberCommission)
 
       sale.taxableIncome += item.taxableIncome
       sale.taxes += item.taxes
-      sale.totalSale += item.total
       sale.discounts += item.discounts
       sale.barberCommission += item.barberCommission
 
@@ -278,10 +277,11 @@ function renderSaleItems(changeTypePayment) {
     })
 
     // Redonder a dos decimales los totales
-    sale.taxableIncome = Math.round(sale.taxableIncome * 100) / 100
-    sale.taxes = Math.round(sale.taxes * 100) / 100
-    sale.totalSale = Math.round(sale.totalSale * 100) / 100
-    sale.discounts = Math.round(sale.discounts * 100) / 100
+    sale.taxableIncome = roundTwo(sale.taxableIncome)
+    sale.taxes = roundTwo(sale.taxes)
+    sale.totalSale = roundTwo(sale.taxableIncome + sale.taxes)
+    sale.discounts = roundTwo(sale.discounts)
+    sale.barberCommission = roundFour(sale.barberCommission)
 
     // Habilitar los botones de catalogos
     $btnServicios.removeAttribute("disabled")
@@ -315,7 +315,7 @@ function renderSaleSummary() {
   // setea el valor de efectivo=0
   validateBarberTipActive()
   // Agregar las propinas al total de la venta
-  sale.totalSale = Math.round((sale.totalSale + sale.tipByBank) * 100) / 100
+  sale.totalSale = roundTwo(sale.totalSale + sale.tipByBank)
   d.querySelector(".sale-summary-tip").value = sale.tipByBank.toFixed(2)
   d.querySelector(".sale-summary-totalsale").innerText = sale.totalSale.toFixed(2)
   d.querySelector(".sale-summary-taxableincome").innerText = sale.taxableIncome.toFixed(2)
@@ -400,7 +400,7 @@ export default function handlerSales() {
         ntf.error("Información requerida", "Seleccione el vendedor", 3000)
       } else if (!sale.typePayment) {
         ntf.error("Información requerida", "Seleccione la forma de pago", 3000)
-      } else if (sale.date > timestampEc()) {
+      } else if (sale.date && sale.date > timestampEc()) {
         ntf.error("Información erronea", `La fecha no puede ser mayor a hoy: ${todayEcToString()} `)
       } else if (sale.items.length === 0) {
         ntf.error("Información erronea", `No ha registrado ningún producto o servicio`, 3000)
@@ -466,15 +466,13 @@ export default function handlerSales() {
       //TODO Agregar validacion de al menos un servicio o producto
 
     } else if ($input.name === "saleDate" && dateIsValid($input.value)) {
-      console.log("sale.date=", new Date(sale.date))
+      ////console.log("sale.date=", new Date(sale.date))
       let vdOther = addHours(new Date($input.value), 5)
       // Agregar la hora y minuto actual de datos
       let now = nowEc()
       vdOther.setHours(now.getHours(), now.getMinutes(), now.getSeconds())
       sale.date = vdOther.getTime()
-      sale.searchDate = dateToStringEc(vdOther)
-      sale.searchDateTime = vdOther.toLocaleString()
-      console.log("despues sale.date=", new Date(sale.date))
+      //// console.log("despues sale.date=", new Date(sale.date))
     } else if ($input.name === "tipValue") {
       console.log("sale.tipByBank=", $input.value)
       // Cambio valor de propina bancaria
@@ -498,26 +496,33 @@ export default function handlerSales() {
 // Database operations
 // --------------------------
 
-const zeroPad = (num, places) => String(num).padStart(places, '0')
-
 function insertSalesDB(callback) {
+
   // Cabecera de la venta
-  let salesHeader = {
+  let saleHeader = {
     ...JSON.parse(JSON.stringify(sale)),
     clientId: sale.client.idNumber,
     clientUid: sale.client.uid
   }
-  let items = salesHeader.items
-  delete salesHeader.items
-  delete salesHeader.client
-  delete salesHeader.valid
-  delete salesHeader.update
 
+  // Agregar las propiedades de fechas
+  saleHeader = generateDateProperties(saleHeader)
   // Generar la clave de la nueva venta
-  const saleKey = formatToOperationDayStringEc(sale.date)
+  const saleKey = saleHeader.tmpUID
+
+  // Si forma pago=TCREDITO/TDEBITO o TRANSFERENCIA se genera una transaccion bancaria
+  let tx = saleToBanktransaction(saleHeader)
+  if (tx) {
+    // Asigna el valor proporcional calculado de la propina luego de la comision del datafast
+    saleHeader.tipByBankPayment = tx.tipByBank || 0
+  }
+
   let i = 1
-  // Detalles de la venta
-  items = items.map((item) => {
+  // Complementar detalles de la venta
+  let saleDetails = saleHeader.items.map((item) => {
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // TODO: Cambiar propiedades con el prefijo tmpXYZ para eliminar propiedades temporales
+    /////////////////////////////////////////////////////////////////////////////////////////////////
     delete item.active
     delete item.description
     delete item.promo
@@ -525,23 +530,42 @@ function insertSalesDB(callback) {
     delete item.taxIVA
     return {
       ...item,
-      clientId: salesHeader.clientId,
+      clientId: saleHeader.clientId,
       order: i++,
       saleUid: saleKey
     }
   })
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  // TODO: Cambiar propiedades con el prefijo tmpXYZ para eliminar propiedades temporales
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  delete saleHeader.items
+  delete saleHeader.client
+  delete saleHeader.valid
+  delete saleHeader.update
+  delete saleHeader.tmpUID
+
   // Generar bloque de transaccion
   let updates = {}
-  updates[`${sellerDB.sales}/${saleKey}`] = salesHeader
-  // Registrar Detalles
-  items.forEach(item => {
+  // Registrar la venta
+  updates[`${collections.sales}/${saleKey}`] = saleHeader
+  // Registrar los detalles de la venta
+  saleDetails.forEach(item => {
     let detailKey = saleKey + '-' + zeroPad(item.order, 2);
-    updates[`${sellerDB.salesDetails}/${detailKey}`] = item
+    updates[`${collections.salesDetails}/${detailKey}`] = item
   })
   // Actualizar datos del cliente
-  if (salesHeader.clientId !== "9999999999999") {
-    updates[`${sellerDB.clients}/${salesHeader.clientUid}/lastService`] = salesHeader.searchDate
+  if (saleHeader.clientId !== "9999999999999") {
+    updates[`${collections.clients}/${saleHeader.clientUid}/lastService`] = saleHeader.searchDate
+  }
+
+  // Registrar si existe la transaccion bancaria
+  if (tx) {
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    // TODO: Cambiar propiedades con el prefijo tmpXYZ para eliminar propiedades temporales
+    /////////////////////////////////////////////////////////////////////////////////////////////////
+    delete tx.tmpUID
+    updates[`${collections.bankReconciliation}/${saleKey}`] = tx
   }
 
   // Registrar la venta en la BD
@@ -549,7 +573,7 @@ function insertSalesDB(callback) {
     if (error) {
       ntf.tecnicalError("Venta no registrada", error)
     } else {
-      ntf.show("Venta registrada", `Se guardó correctamente la información de la venta Nro. ${sale.date}`)
+      ntf.show("Venta registrada", `Se guardó correctamente la información de la venta Nro. ${saleHeader.date}`)
       callback()
     }
   })

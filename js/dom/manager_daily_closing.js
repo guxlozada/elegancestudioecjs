@@ -1,16 +1,16 @@
-import { addHours, dateIsValid, todayEc, truncOperationDayString } from "./fecha-util.js";
-import { sellerDB } from "./firebase_collections.js";
-import { db } from "./firebase_conexion.js";
+import { addHours, dateIsValid, todayEc, truncOperationDayString } from "../util/fecha-util.js";
+import { db } from "../persist/firebase_conexion.js";
+import { collections } from "../persist/firebase_collections.js";
 import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
 
 const d = document,
   w = window,
   ntf = new NotificationBulma(),
-  salesRef = db.ref(sellerDB.sales),
-  expensesRef = db.ref(sellerDB.expenses),
-  depositsRef = db.ref(sellerDB.deposits),
-  dailyClosingRef = db.ref(sellerDB.dailyClosing)
+  salesRef = db.ref(collections.sales),
+  expensesRef = db.ref(collections.expenses),
+  depositsRef = db.ref(collections.deposits),
+  dailyClosingRef = db.ref(collections.dailyClosing)
 
 const dailyClosingInit = {
   date: null,
@@ -537,7 +537,7 @@ function saveDailyClosing() {
   const dailyKey = truncOperationDayString(operationDay.getTime(), "date")
   console.log("dailyKey=", dailyKey)
   ////dailyClosing.date = addHours(operationDay, 5).getTime()
-  db.ref(sellerDB.dailyClosing + "/" + dailyKey).set(dailyClosing).then((snapshot) => {
+  db.ref(collections.dailyClosing + "/" + dailyKey).set(dailyClosing).then((snapshot) => {
     if (snapshot && snapshot.exists()) {
       console.log(snapshot.val());
     } else {

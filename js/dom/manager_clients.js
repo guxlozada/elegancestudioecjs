@@ -1,10 +1,10 @@
+import { db } from "../persist/firebase_conexion.js";
+import { collections } from "../persist/firebase_collections.js";
 import { ntf } from "../app.js";
-import { sellerDB } from "./firebase_collections.js";
-import { db } from "./firebase_conexion.js";
 import { changeSaleClient } from "./manager_sales.js";
 
 const d = document,
-  clientsRef = db.ref(sellerDB.clients),
+  clientsRef = db.ref(collections.clients),
   $container = d.querySelector(".clients-container")
 
 //------------------------------------------------------------------------------------------------

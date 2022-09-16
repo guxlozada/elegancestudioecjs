@@ -24,11 +24,11 @@ export function addHours(vdDatetime, vnHours) {
 }
 /**
  * Validate if date is valid
- * @param {Date} date 
+ * @param {Number} timestamp Miliseconds
  * @returns 
  */
-export function dateIsValid(date) {
-  return !Number.isNaN(new Date(date).getTime());
+export function dateIsValid(timestamp) {
+  return !Number.isNaN(new Date(timestamp).getTime());
 }
 
 /**

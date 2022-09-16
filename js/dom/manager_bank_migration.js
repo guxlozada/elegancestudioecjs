@@ -1,22 +1,16 @@
+import { formatToOperationDayStringEc, } from "../util/fecha-util.js";
+import { db } from "../persist/firebase_conexion.js";
+import { collections } from "../persist/firebase_collections.js";
 import { generarTxBySale } from "../util/bank_tx_generator.js";
-import { dateIsValid, dateTimeToKeyDateString, formatToOperationDayStringEc, hoyEC, inputDateToDateTime } from "./fecha-util.js";
-import { sellerDB } from "./firebase_collections.js";
-import { db } from "./firebase_conexion.js";
-import validAdminAccess, { cleanAdminAccess } from "./manager_user.js";
-import navbarBurgers from "./navbar_burgers.js";
-import NotificationBulma from './NotificacionBulma.js';
 
 const d = document,
   w = window,
-  ntf = new NotificationBulma(),
-  depositsRef = db.ref(sellerDB.deposits),
-  salesRef = db.ref(sellerDB.sales),
-  bankRef = db.ref(sellerDB.bankReconciliation)
+  depositsRef = db.ref(collections.deposits),
+  salesRef = db.ref(collections.sales),
+  bankRef = db.ref(collections.bankReconciliation),
+  periodStart = "20220801",
+  periodEnd = "20220831"
 
-const filters = {
-  periodStart: "20220801",
-  periodEnd: "20220831"
-}
 
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
@@ -24,10 +18,9 @@ const filters = {
 
 // EVENTO=load RAIZ=window 
 w.addEventListener("load", e => {
-  migrarDepositos()
+  ////migrarDepositos()
   ////migrarVentas()
 })
-
 
 // --------------------------
 // Database operations
@@ -56,10 +49,8 @@ async function migrarDepositos() {
 
 async function migrarVentas() {
   const bankPayments = ["TRANSFERENCIA", "TCREDITO", "TDEBITO"]
-  let ventas = [],
-    vsDate = "20220801",
-    vsDateEnd = "20220915"
-  await salesRef.orderByKey().startAt(vsDate + "T").endAt(vsDateEnd + "\uf8ff")
+  let ventas = []
+  await salesRef.orderByKey().startAt(periodStart + "T").endAt(periodEnd + "\uf8ff")
     .once('value')
     .then((snap) => {
       ////console.log(snap.toJSON())
@@ -85,7 +76,7 @@ function saveDeposito(deposito) {
   // Generar la clave de la nueva venta
   let key = formatToOperationDayStringEc(deposito.date)// Generar la clave del deposito
   console.log("deposito key=", key)
-  db.ref(sellerDB.bankReconciliation + "/" + key).set(deposito)
+  db.ref(collections.bankReconciliation + "/" + key).set(deposito)
     .catch((error) => {
       console.log(`Deposito migrado con error ${key}`, error)
     })
@@ -94,11 +85,13 @@ function saveDeposito(deposito) {
 function saveVenta(sale) {
   let tx = generarTxBySale(sale)
   console.log("tx=", tx)
-  // Generar la clave de la nueva venta
-  console.log("tx key=", tx.saleUid)
-  db.ref(sellerDB.bankReconciliation + "/" + tx.saleUid).set(tx)
-    .catch((error) => {
-      console.log(`Transaccion migrada con error ${tx.saleUid}`, error)
-    })
+  if (tx) {
+    // Generar la clave de la nueva venta
+    console.log("tx key=", tx.saleUid)
+    db.ref(collections.bankReconciliation + "/" + tx.saleUid).set(tx)
+      .catch((error) => {
+        console.log(`Transaccion migrada con error ${tx.saleUid}`, error)
+      })
+  }
 }
 

@@ -1,6 +1,6 @@
-import { dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "./fecha-util.js";
-import { sellerDB } from "./firebase_collections.js";
-import { db } from "./firebase_conexion.js";
+import { dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
+import { db } from "../persist/firebase_conexion.js";
+import { collections } from "../persist/firebase_collections.js";
 import validAdminAccess, { cleanAdminAccess } from "./manager_user.js";
 import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
@@ -8,7 +8,7 @@ import NotificationBulma from './NotificacionBulma.js';
 const d = document,
   w = window,
   ntf = new NotificationBulma(),
-  bankRef = db.ref(sellerDB.bankReconciliation)
+  bankRef = db.ref(collections.bankReconciliation)
 
 const filters = {
   typePayment: "TODOS",

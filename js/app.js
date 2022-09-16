@@ -7,6 +7,7 @@ import handlerSales, { addToSale } from "./dom/manager_sales.js";
 import { services } from "./dom/catalog_services.js";
 import { servicesEneglimar } from "./dom/catalog_services_eneglimar.js";
 import { products } from "./dom/catalog_products.js";
+import { roundTwo } from "./util/numbers-util.js";
 
 const d = document,
   w = window,
@@ -31,7 +32,7 @@ const loadServices = () => {
       let $catalogItem = $template.querySelector(".catalog-item")
       $catalogItem.dataset.key = s.code
       $catalogItem.dataset.type = "SERVICE"
-      $template.querySelector(".catalog-item-details").textContent = `[$${(Math.round(s.baseValue * 100) / 100).toFixed(2)}] ${s.description}`
+      $template.querySelector(".catalog-item-details").textContent = `[$${roundTwo(s.baseValue).toFixed(2)}] ${s.description}`
       $template.querySelector(".wholesale-item-details").textContent = ""
       let $clone = d.importNode($template, true)
       $fragment.appendChild($clone)
@@ -51,7 +52,7 @@ const loadServicesEneglimar = () => {
       let $catalogItem = $template.querySelector(".catalog-item")
       $catalogItem.dataset.key = s.code
       $catalogItem.dataset.type = "SERVICE"
-      $template.querySelector(".catalog-item-details").textContent = `[$${(Math.round(s.baseValue * 100) / 100).toFixed(2)}] ${s.description}`
+      $template.querySelector(".catalog-item-details").textContent = `[$${roundTwo(s.baseValue).toFixed(2)}] ${s.description}`
       $template.querySelector(".wholesale-item-details").textContent = ""
       let $clone = d.importNode($template, true)
       $fragment.appendChild($clone)
@@ -73,8 +74,8 @@ const loadProducts = () => {
         let $catalogItem = $template.querySelector(".catalog-item")
         $catalogItem.dataset.key = p.code
         $catalogItem.dataset.type = "PRODUCT"
-        $template.querySelector(".catalog-item-details").textContent = `[$${(Math.round(p.finalValue * 100) / 100).toFixed(2)}] ${p.description}`
-        $template.querySelector(".wholesale-item-details").textContent = `[$${(Math.round(p.wholesaleFinalValue * 100) / 100).toFixed(2)}] ${p.description}`
+        $template.querySelector(".catalog-item-details").textContent = `[$${roundTwo(p.baseValue).toFixed(2)}] ${p.description}`
+        $template.querySelector(".wholesale-item-details").textContent = `[$${roundTwo(p.wholesaleValue).toFixed(2)}] ${p.description}`
         let $clone = d.importNode($template, true)
         $fragment.appendChild($clone)
       })

@@ -1,6 +1,6 @@
-import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, todayEc, todayEcToString } from "./fecha-util.js";
-import { sellerDB } from "./firebase_collections.js";
+import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, todayEc, todayEcToString } from "../util/fecha-util.js";
 import { dbRef } from "./firebase_conexion.js";
+import { sellerDB } from "./firebase_collections.js";
 import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
 

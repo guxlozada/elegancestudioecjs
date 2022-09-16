@@ -1,24 +1,24 @@
+import { nowEc } from "../util/fecha-util.js";
+import { dbRef } from "../persist/firebase_conexion.js";
+import { collections } from "../persist/firebase_collections.js";
 import { ntf } from "../app.js";
-import { nowEc } from "./fecha-util.js";
-import { sellerDB } from "./firebase_collections.js";
-import { db, dbRef } from "./firebase_conexion.js";
 import { renderClients } from "./manager_clients.js";
 
 const d = document
 
 const clientInit = {
-    name: null,
-    idType: "CEDULA",// [CEDULA,PASAPORTE,RUC,OTRO]
-    idNumber: null,
-    email: null,
-    city: "Manta",
-    birthdate: null,
-    cellphone: null,
-    referred: null,
-    registeredBy: "ADMIN",
-    valid: false
-  }
-  
+  name: null,
+  idType: "CEDULA",// [CEDULA,PASAPORTE,RUC,OTRO]
+  idNumber: null,
+  email: null,
+  city: "Manta",
+  birthdate: null,
+  cellphone: null,
+  referred: null,
+  registeredBy: "ADMIN",
+  valid: false
+}
+
 // Variable global para manejo del cliente que se registra/edita
 let client
 
@@ -152,7 +152,7 @@ function insertClientDB(clientData) {
 
   let updates = {}
   // Registrar datos del cliente
-  updates[`${sellerDB.clients}/${key}`] = clientData
+  updates[`${collections.clients}/${key}`] = clientData
   // TODO  Actualizar referido si aplica
 
   // Registrar el cliente en la BD

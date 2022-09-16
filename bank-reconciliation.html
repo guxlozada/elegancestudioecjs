@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Comisiones</title>
+  <title>Conciliacion</title>
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
   <link rel="stylesheet" href="/css/main.css" />
   <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
               <span class="icon">
                 <i class="fa-solid fa-store"></i>
               </span>
-              <span>Consulta de comisiones</span>
+              <span>Consulta de transacciones bancarias</span>
             </span>
           </p>
         </header>
@@ -42,24 +42,24 @@
                   <td>
                     <div class="control is-size-7">
                       <label class="radio">
-                        <input type="radio" name="seller" value="TODOS" checked>
+                        <input type="radio" name="typePayment" value="TODOS" checked>
                         Todos
                       </label>
                       <label class="radio">
-                        <input type="radio" name="seller" value="ENEGLIMAR">
-                        Eneglimar
+                        <input type="radio" name="typePayment" value="DEPOSITO">
+                        Deposito
                       </label>
                       <label class="radio">
-                        <input type="radio" name="seller" value="ERICK">
-                        Erick
+                        <input type="radio" name="typePayment" value="TRANSFERENCIA">
+                        Transferencia
                       </label>
                       <label class="radio">
-                        <input type="radio" name="seller" value="ESTIBERSON">
-                        Estiberson
+                        <input type="radio" name="typePayment" value="TCREDITO">
+                        Tarjeta Credito
                       </label>
                       <label class="radio">
-                        <input type="radio" name="seller" value="NESTOR">
-                        Nestor
+                        <input type="radio" name="typePayment" value="TDEBITO">
+                        Tarjeta Debito
                       </label>
                     </div>
                   </td>
@@ -69,11 +69,11 @@
                   <td style="vertical-align: middle;">
                     <div class="control is-size-7">
                       <label class="radio">
-                        <input type="radio" name="period" value="CURRENTWEEK" checked>
+                        <input type="radio" name="period" value="CURRENTWEEK">
                         Semana actual
                       </label>
                       <label class="radio">
-                        <input type="radio" name="period" value="LASTWEEK">
+                        <input type="radio" name="period" value="LASTWEEK" checked>
                         Semana anterior
                       </label>
                       <label class="radio">
@@ -97,19 +97,31 @@
               </tbody>
             </table>
             <table>
-              <thead>
+              <!--thead>
                 <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
                   <th class="search-period has-text-centered" colspan="2"></th>
                   <th>Ventas Totales:</th>
                   <th class="search-sales">0.00</th>
                   <th colspan="3">- Comisiones Totales:</th>
-                  <!--th class="search-barber-commissions has-text-grey-light">0.00</th-->
                   <th class="search-barber-commissions-tmp">0.00</th>
                   <th class="search-sales-result">=0.00</th>
                 </tr>
+              </thead-->
+
+              <thead>
+                <tr class="has-background-link  has-text-centered">
+                  <th class="has-text-white" style="width:1rem"></th>
+                  <th class="has-text-white" style="width:8rem">Fecha-hora</th>
+                  <th class="has-text-white" style="width:6rem">Responsable</th>
+                  <th class="has-text-white" style="width:6rem">Tipo</th>
+                  <th class="has-text-white" style="width:6rem">Valor Venta</th>
+                  <th class="has-text-white" style="width:6rem" colspan="3">Datafast cm/iva/renta</th>
+                  <th class="has-text-white" style="width:6rem">Monto</th>
+                  <th class="has-text-white" style="width:6rem">Voucher</th>
+                </tr>
               </thead>
-              <tbody id="payments-details">
-                <!-- render summary-->
+              <tbody id="bank-transactions">
+                <!-- render bank transactions-->
               </tbody>
             </table>
           </div>
@@ -119,82 +131,32 @@
 
   </main>
 
-  <template id="sale-row-header">
-    <tr class="has-background-black has-text-weight-semibold">
-      <td class="barber has-text-white has-text-centered" colspan="9"></td>
-    </tr>
-    <tr class="has-background-link has-text-right">
-      <th class="has-text-white" style="width:2rem">Nro.</th>
-      <th class="has-text-white" style="text-align:center;width:8rem">Fecha-hora</th>
-      <th class="has-text-white" style="width:6rem">Forma pago</th>
-      <th class="has-text-white" style="width:6rem">Valor Venta</th>
-      <th class="has-text-white" style="width:6rem">Impuestos</th>
-      <th class="has-text-white" style="width:7rem">Base Imponible</th>
-      <th class="has-text-white" style="width:6rem">Comisiones</th>
-      <th class="has-text-white" style="width:7rem">Comisiones 1.12</th>
-      <th class="has-text-white" style="width:6rem">Propinas</th>
-    </tr>
-  </template>
-
-  <template id="sale-row">
-    <tr class="has-text-right">
+  <template id="bank-tx-row">
+    <tr class="">
       <td class="index"></td>
-      <td class="date" style="text-align:center"></td>
-      <td class="payment"></td>
-      <td class="value"></td>
-      <td class="taxes"></td>
-      <td class="taxable-income"></td>
-      <td class="barber-commission"></td>
-      <td class="barber-commission-tmp"></td>
-      <td class="barber-tip"></td>
+      <td class="date has-text-centered"></td>
+      <td class="responsable"></td>
+      <td class="type-payment"></td>
+      <td class="sale-value has-text-right"></td>
+      <td class="datafast-commission has-text-right"></td>
+      <td class="datafast-iva has-text-right"></td>
+      <td class="datafast-renta has-text-right"></td>
+      <td class="value has-text-right"></td>
+      <td class="voucher has-text-centered"></td>
     </tr>
   </template>
 
-  <template id="sale-row-summary">
-    <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
-      <th colspan="3">Ventas totales</th>
+  <template id="bank-tx-totals">
+    <tr class="has-background-grey-light has-text-right">
+      <th colspan="8">Totales</th>
       <th class="total-value"></th>
-      <th class="total-taxes"></th>
-      <th class="total-taxable-income"></th>
-      <th class="total-barber-commissions"></th>
-      <th class="total-barber-commissions-tmp"></th>
-      <th class="total-barber-tips"></th>
-    </tr>
-    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
-      <th colspan="6">Propinas pagadas ( - )</th>
-      <th></th>
-      <th></th>
-      <td class="barber-paid-tips"></td>
-    </tr>
-    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
-      <th colspan="6">Comisiones pagadas ( - )</th>
-      <th class="barber-paid-commissions"></th>
-      <th class="barber-paid-commissions-tmp"></th>
       <td></td>
-    </tr>
-    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
-      <th colspan="6">Adelantos ( - )</th>
-      <th class="barber-advance-payments"></th>
-      <th class="barber-advance-payments-tmp"></th>
-      <td></td>
-    </tr>
-    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
-      <th colspan="6">Bebidas consumidas ( - )</th>
-      <th class="barber-drinks"></th>
-      <th class="barber-drinks-tmp"></th>
-      <td></td>
-    </tr>
-    <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
-      <th colspan="6">Saldos pendientes</th>
-      <th class="barber-pending-payment"></th>
-      <th class="barber-pending-payment-tmp"></th>
-      <td class="barber-pending-tips"></td>
     </tr>
   </template>
 
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
-  <script src="./js/dom/manager_payment.js" type="module"></script>
+  <script src="./js/dom/manager_bank_reconciliation.js" type="module"></script>
 </body>
 
 </html>

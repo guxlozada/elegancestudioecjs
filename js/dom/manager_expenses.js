@@ -185,7 +185,7 @@ function insertExpenseDB(expenseData, vbDeposit) {
   let updates = {}
   // depositos se registra en una collecion diferente
   let collection = sellerDB.deposits,
-    key = formatToOperationDayStringEc(expenseData.date)// Generar la clave del compra/gasto
+    key = formatToOperationDayStringEc(expenseData.date)// Generar la clave del egreso
   if (!vbDeposit) {
     collection = sellerDB.expenses
     if (expenseData.type === "COMISION") {

@@ -4,5 +4,6 @@ export const sellerDB = {
   deposits: "prodseller-deposits",
   expenses: "prodseller-expenses",
   sales: "prodseller-sales",
-  salesDetails: "prodseller-sales-details"
+  salesDetails: "prodseller-sales-details",
+  bankReconciliation: "prodadmin-bank-reconciliation"
 }

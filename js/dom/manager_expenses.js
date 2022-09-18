@@ -1,6 +1,6 @@
 import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, todayEc, todayEcToString } from "../util/fecha-util.js";
-import { dbRef } from "./firebase_conexion.js";
-import { sellerDB } from "./firebase_collections.js";
+import { dbRef } from "../persist/firebase_conexion.js";
+import { collections } from "../persist/firebase_collections.js";
 import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
 
@@ -184,10 +184,10 @@ function insertExpenseDB(expenseData, vbDeposit) {
   // Registrar la compra/gasto en la BD TODO: CAMBIAR POR SET
   let updates = {}
   // depositos se registra en una collecion diferente
-  let collection = sellerDB.deposits,
+  let collection = collections.deposits,
     key = formatToOperationDayStringEc(expenseData.date)// Generar la clave del egreso
   if (!vbDeposit) {
-    collection = sellerDB.expenses
+    collection = collections.expenses
     if (expenseData.type === "COMISION") {
       key += "-CMI"
     } else {

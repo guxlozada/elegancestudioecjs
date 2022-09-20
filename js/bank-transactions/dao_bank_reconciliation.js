@@ -71,7 +71,6 @@ export function insertBankTransaction(voBankTx, callback, callbackError) {
     key = bankTx.tmpUID
 
   //Complementar informacion por omision
-  delete bankTx.tmpValid
   delete bankTx.tmpUID
 
   db.ref(`${collections.bankReconciliation}/${key}`).set(bankTx)

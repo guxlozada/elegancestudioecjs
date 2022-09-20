@@ -14,6 +14,13 @@
         color: #47b6af !important;
       }
     }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      max-width: 220px !important;
+      margin: 0;
+    }
   </style>
 </head>
 
@@ -43,9 +50,9 @@
                 <label class="label is-small is-hidden-mobile is-inline">Fecha</label>
                 <p class="control has-icons-left">
                   <input class="input is-small is-hidden" id="expense-date" type="text"
-                    style="max-width: 250px; margin: 0;" placeholder="Fecha de registro..." readonly>
-                  <input class="input is-small" id="expense-date-input" name="expenseDate" type="date"
-                    style="max-width: 220px; margin: 0;" required />
+                    placeholder="Fecha de registro..." readonly>
+                  <input type="date" class="prop-input input is-small" id="expense-date-input" data-key="date"
+                    data-type="timestamp" required />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-calendar-days"></i>
                   </span>
@@ -56,19 +63,15 @@
                   responsable)</label>
                 <div class="control is-size-7">
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="expenseType" value="GASTO" data-key="type">
+                    <input class="prop-input" type="radio" name="type" value="GASTO" data-key="type">
                     Gasto
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="expenseType" value="COMPRA" data-key="type">
+                    <input class="prop-input" type="radio" name="type" value="COMPRA" data-key="type">
                     Compra
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="expenseType" value="DEPOSITO" data-key="type">
-                    Deposito
-                  </label>
-                  <label class="radio">
-                    <input class="expense-input" type="radio" name="expenseType" value="AJUSTE" data-key="type">
+                    <input class="prop-input" type="radio" name="type" value="AJUSTE" data-key="type">
                     Ajuste
                   </label>
                 </div>
@@ -78,24 +81,24 @@
                   beneficiario)</label>
                 <div class="control is-size-7">
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="expenseType" value="ADELANTO" data-key="type">
+                    <input class="prop-input" type="radio" name="type" value="ADELANTO" data-key="type">
                     Adelanto
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="expenseType" value="BEBIDA" data-key="type">
+                    <input class="prop-input" type="radio" name="type" value="BEBIDA" data-key="type">
                     Bebida
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="expenseType" value="COMISION" data-key="type">
+                    <input class="prop-input" type="radio" name="type" value="COMISION" data-key="type">
                     Comision
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="expenseType" value="PROPINA" data-key="type"
+                    <input class="prop-input" type="radio" name="type" value="PROPINA" data-key="type"
                       title="Devolucion de propina de barbero recibida mediante pago con transferencia o tarjeta de credito/debito">
                     Propina
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="expenseType" value="SUELDO" data-key="type">
+                    <input class="prop-input" type="radio" name="type" value="SUELDO" data-key="type">
                     Sueldo
                   </label>
                 </div>
@@ -104,25 +107,23 @@
                 <label class="label is-small is-hidden-mobile is-inline">Responsable o Beneficiario</label>
                 <div class="control is-size-7">
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="responsable" value="ESTIBERSON"
-                      data-key="responsable">
+                    <input class="prop-input" type="radio" name="responsable" value="ESTIBERSON" data-key="responsable">
                     Estiberson
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="responsable" value="ERICK" data-key="responsable">
+                    <input class="prop-input" type="radio" name="responsable" value="ERICK" data-key="responsable">
                     Erick
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="responsable" value="NESTOR" data-key="responsable">
+                    <input class="prop-input" type="radio" name="responsable" value="NESTOR" data-key="responsable">
                     Nestor
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="responsable" value="ENEGLIMAR"
-                      data-key="responsable">
+                    <input class="prop-input" type="radio" name="responsable" value="ENEGLIMAR" data-key="responsable">
                     Eneglimar
                   </label>
                   <label class="radio">
-                    <input class="expense-input" type="radio" name="responsable" value="ADMIN" data-key="responsable">
+                    <input class="prop-input" type="radio" name="responsable" value="ADMIN" data-key="responsable">
                     Admin
                   </label>
                 </div>
@@ -130,9 +131,8 @@
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Valor</label>
                 <p class="control has-icons-left">
-                  <input class="expense-input input is-small" id="expense-value" name="expenseValue" type="number"
-                    data-key="value" style="max-width: 250px; margin: 0;" step="0.01" min="-10.00" placeholder="00.00"
-                    autofocus />
+                  <input type="number" class="prop-input input is-small" id="value" data-key="value" step="0.01"
+                    min="-10.00" placeholder="00.00" autofocus />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-money-check-dollar"></i>
                   </span>
@@ -142,8 +142,8 @@
                 <label class="label is-small is-hidden-mobile is-inline">Nro.Comprobante /
                   Factura</label>
                 <p class="control has-icons-left">
-                  <input class="expense-input input is-small" id="expense-voucher" name="expenseVoucher" type="text"
-                    data-key="voucher" style="max-width: 250px; margin: 0;" placeholder="# Comprobante o Factura..." />
+                  <input type="text" class="prop-input input is-small" id="voucher" data-key="voucher"
+                    placeholder="# Comprobante o Factura..." />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-receipt"></i>
                   </span>
@@ -152,20 +152,20 @@
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Detalles</label>
                 <div class="control">
-                  <textarea class="expense-input textarea is-small" id="expense-details" name="expenseDetails" rows="2"
-                    data-key="details" placeholder="Breve detalle del egreso..."></textarea>
+                  <textarea class="prop-input textarea is-small" id="details" rows="2" data-key="details"
+                    placeholder="Breve detalle del egreso..."></textarea>
                 </div>
               </div>
             </div>
             <footer class="card-footer">
               <div class="buttons is-right" style="width: 100%;">
-                <button class="expense-save card-footer-item button is-primary" type="submit">
+                <button type="submit" class="expense-save card-footer-item button is-primary">
                   <span class="icon">
                     <i class="fa-solid fa-check"></i>
                   </span>
                   <span>Guardar</span>
                 </button>
-                <button class="expense-cancel card-footer-item button is-danger" type="reset">
+                <button type="reset" class="expense-cancel card-footer-item button is-danger">
                   <span class="icon">
                     <i class="fa-solid fa-xmark"></i>
                   </span>
@@ -182,7 +182,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
-  <script src="./js/dom/manager_expenses.js" type="module"></script>
+  <script src="./js/expenses/manager_expenses.js" type="module"></script>
 </body>
 
 </html>

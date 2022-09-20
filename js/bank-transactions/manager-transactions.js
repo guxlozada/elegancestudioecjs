@@ -35,10 +35,11 @@ d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
 w.addEventListener("load", () => reset())
 
-// EVENTO=submit RAIZ=section ACCION=registrar movimiento bancario
+// EVENTO=submit RAIZ=section ACCION=inicializar el formulario
 $container.addEventListener("reset", e => {
   e.preventDefault()
   reset()
+  ntf.show("Información", "Movimiento bancario descartado.", "info")
 })
 
 // EVENTO=submit RAIZ=section ACCION=registrar movimiento bancario

@@ -1,6 +1,7 @@
 import navbarBurgers from "../dom/navbar_burgers.js"
 import NotificationBulma from "../dom/NotificacionBulma.js"
-import { hoyEC, inputDateToDateTime } from "../util/fecha-util.js"
+import { hoyEC } from "../util/fecha-util.js"
+import convertFormToObject from "../util/form_util.js"
 import { insertBankTransaction } from "./dao_bank_reconciliation.js"
 
 const d = document,
@@ -23,17 +24,16 @@ function reset() {
   d.getElementById("value").value = null
   d.getElementById("voucher").value = null
   d.getElementById("details").value = null
-
 }
 
 // ------------------------------------------------------------------------------------------------
 // Delegation of events
 // ------------------------------------------------------------------------------------------------
 // EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", e => navbarBurgers())
+d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
-w.addEventListener("load", e => reset())
+w.addEventListener("load", () => reset())
 
 // EVENTO=submit RAIZ=section ACCION=registrar movimiento bancario
 $container.addEventListener("reset", e => {
@@ -45,29 +45,8 @@ $container.addEventListener("reset", e => {
 $container.addEventListener("submit", e => {
   //Prevenir la accion predeterminada que procesa los datos del formulario
   e.preventDefault()
-  const dateTx = inputDateToDateTime(d.getElementById("transaction-date-input").value)
 
-  let bankTx = {}
-  bankTx.date = dateTx.toMillis()
-  // Obtiene los campos que contienen la informacion de la transaccion
-  const $propertyInput = d.getElementsByClassName("prop-input")
-  for (let i = 0, len = $propertyInput.length; i < len; i++) {
-    let $input = $propertyInput[i]
-    switch ($input.type) {
-      case "radio":
-        if (!$input.checked) break
-      default:
-        if ($input.value) {
-          let key = $input.getAttribute("data-key")
-          let value = $input.value
-          if ($input.name === "value") {
-            bankTx[key] = parseFloat(value)
-          } else {
-            bankTx[key] = value
-          }
-        }
-    }
-  }
+  let bankTx = convertFormToObject()
 
   // Validaciones
   if (!bankTx.responsable) {

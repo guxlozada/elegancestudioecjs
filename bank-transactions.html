@@ -51,7 +51,8 @@
                 <p class="control has-icons-left">
                   <input type="text" class="input is-small is-hidden" name="transactionDate"
                     placeholder="Fecha de registro..." readonly>
-                  <input type="date" class="input is-small" id="transaction-date-input" required />
+                  <input type="date" class="prop-input input is-small" name="date" data-key="date" data-type="timestamp"
+                    required />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-calendar-days"></i>
                   </span>
@@ -99,8 +100,8 @@
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Valor</label>
                 <p class="control has-icons-left">
-                  <input type="number" class="prop-input input is-small" id="value" data-key="value" step="0.1"
-                    min="0" placeholder="00.00" autofocus />
+                  <input type="number" class="prop-input input is-small" id="value" data-key="value" step="0.1" min="0"
+                    placeholder="00.00" autofocus />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-money-check-dollar"></i>
                   </span>

@@ -19,7 +19,7 @@ const expenseIni = {
   valid: false
 }
 
-// Variable global para manejo del egreso en proceso
+// Variable global para manejo del registro en proceso
 let expense
 
 //------------------------------------------------------------------------------------------------

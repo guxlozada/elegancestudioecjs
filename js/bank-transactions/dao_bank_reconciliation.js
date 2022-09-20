@@ -1,5 +1,8 @@
 import { roundFour, roundTwo } from "../util/numbers-util.js";
-import timestampToDatekey, { generateDateProperties } from "./dao_generic.js";
+import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
+import { db } from "../persist/firebase_conexion.js";
+import { collections } from "../persist/firebase_collections.js";
+
 const TDEBIT_COMISSION = 0.0225,
   TCREDIT_COMISSION = 0.0448,
   TAX_WITHHOLDING_IVA = 0.7,
@@ -8,11 +11,11 @@ const TDEBIT_COMISSION = 0.0225,
 const txInit = {
   date: null,
   responsable: null,
-  saleUid: null, // Se debe colocar el IDENTIFICADOR de la venta. ID_SALE_20220402T133047
-  type: null,// [DEPOSITO, TRANSFERENCIA, TCREDITO, TDEBITO, RETIRO]
+  type: null,// [DEPOSITO, TRANSFERENCIA, TCREDITO, TDEBITO, TRANSFRETIRO]
   value: null,
   voucher: null,// Para conciliar se coloca el numero de documento del banco
   details: null
+  ////saleUid: null, // Se debe colocar el IDENTIFICADOR de la venta. ID_SALE_20220402T133047
 }
 /**
  * Generar un movimiento bancario por una venta.
@@ -50,4 +53,29 @@ export function saleToBanktransaction(voSale) {
   }
 
   return generateDateProperties(tx)
+}
+
+
+/**
+ * Guarda el movimiento bancario
+ * @param {Object} voBankTx Informacion del movimiento bancario
+ * @param {function} callback 
+ * @param {function} callbackError 
+ */
+export function insertBankTransaction(voBankTx, callback, callbackError) {
+
+  // Copia inmutable
+  const bankTxAux = JSON.parse(JSON.stringify(voBankTx))
+
+  let bankTx = generateDateProperties(bankTxAux),
+    key = bankTx.tmpUID
+
+  //Complementar informacion por omision
+  delete bankTx.tmpValid
+  delete bankTx.tmpUID
+
+  db.ref(`${collections.bankReconciliation}/${key}`).set(bankTx)
+    .then(() => { callback(bankTx) })
+    .catch((error) => { callbackError(error) })
+
 }

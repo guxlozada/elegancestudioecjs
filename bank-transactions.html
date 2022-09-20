@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Movimientos Bancarios</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    @media screen and (max-width: 768px) {
+      ::placeholder {
+        color: #47b6af !important;
+      }
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      max-width: 220px !important;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <iframe src="./templates/navbar.html"
+      onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+  </header>
+  <main>
+
+    <section id="transactions" class="section" style="max-width: 800px !important; margin:auto;">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-store"></i>
+              </span>
+              <span>Registro de movimientos bancarios</span>
+            </span>
+          </p>
+        </header>
+        <form id="form-gen">
+          <div class="card-content has-background-info-light">
+            <div class="content px-7">
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Fecha</label>
+                <p class="control has-icons-left">
+                  <input type="text" class="input is-small is-hidden" name="transactionDate"
+                    placeholder="Fecha de registro..." readonly>
+                  <input type="date" class="input is-small" id="transaction-date-input" required />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-calendar-days"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Tipo movimiento</label>
+                <div class="control is-size-7">
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="type" data-key="type" value="TRANSFERENCIA">
+                    Transferencia (Credito)
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="type" data-key="type" value="DEPOSITO" checked>
+                    Depósito
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="type" data-key="type" value="TRANSFERENCIA_DEBITO">
+                    Transferencia (Debito)
+                  </label>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Responsable</label>
+                <div class="control is-size-7">
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="responsable" data-key="responsable" value="ESTIBERSON">
+                    Estiberson
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="responsable" data-key="responsable" value="ERICK">
+                    Erick
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="responsable" data-key="responsable" value="ENEGLIMAR">
+                    Eneglimar
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="responsable" data-key="responsable" value="ADMIN">
+                    Admin
+                  </label>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Valor</label>
+                <p class="control has-icons-left">
+                  <input type="number" class="prop-input input is-small" id="value" data-key="value" step="0.1"
+                    min="0" placeholder="00.00" autofocus />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-money-check-dollar"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Nro.Comprobante</label>
+                <p class="control has-icons-left">
+                  <input type="text" class="prop-input input is-small" id="voucher" data-key="voucher"
+                    placeholder="# Comprobante o Factura..." />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-receipt"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Detalles</label>
+                <div class="control">
+                  <textarea class="prop-input textarea is-small" id="details" data-key="details" rows="2"
+                    placeholder="Breve detalle del egreso..."></textarea>
+                </div>
+              </div>
+            </div>
+            <footer class="card-footer">
+              <div class="buttons is-right" style="width: 100%;">
+                <button type="submit" class="card-footer-item button is-primary">
+                  <span class="icon">
+                    <i class="fa-solid fa-check"></i>
+                  </span>
+                  <span>Guardar</span>
+                </button>
+                <button type="reset" class="expense-cancel card-footer-item button is-danger">
+                  <span class="icon">
+                    <i class="fa-solid fa-xmark"></i>
+                  </span>
+                  <span>Cancelar</span>
+                </button>
+              </div>
+            </footer>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/bank-transactions/manager-transactions.js" type="module"></script>
+</body>
+
+</html>

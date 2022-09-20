@@ -15,10 +15,14 @@ export default function timestampToDatekey(timestampUTC) {
  * @returns 
  */
 export function generateDateProperties(register) {
-  let audDate = register.date && dateIsValid(register.date) ? DateTime.fromMillis(register.date) : ahoraEC
+  let audDate = ahoraEC()
+  if (register.date && dateIsValid(register.date)) {
+    const inDate = DateTime.fromMillis(register.date)
+    audDate = audDate.set({ year: inDate.year, month: inDate.month, day: inDate.day })
+  }
   const res = {
-    date: audDate.toMillis(),
     ...register,
+    date: audDate.toMillis(),
     searchDate: audDate.startOf('day').toLocaleString(DateTime.DATE_SHORT),
     searchDateTime: audDate.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
     tmpUID: timestampToDatekey(audDate.toMillis())

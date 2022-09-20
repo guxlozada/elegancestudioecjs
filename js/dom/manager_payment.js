@@ -217,7 +217,7 @@ function renderCommissionsPayment() {
 }
 
 function calculatePeriod() {
-  let baseDate = hoyEC
+  let baseDate = hoyEC()
   //const currentWeek = baseDate.weekNumber
   switch (filters.period) {
     case "CURRENTWEEK":

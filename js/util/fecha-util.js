@@ -150,9 +150,9 @@ export function timestampInputDateToDateEc(vsDate) {
 
 
 //////////////////////////////////////////
-export const ahoraEC = DateTime.local()
+export const ahoraEC = () => { return DateTime.local() }
 
-export const hoyEC = ahoraEC.startOf('day')
+export const hoyEC = () => { return DateTime.local().startOf('day') }
 
 export function inputDateToDateTime(vsDate) {
   return DateTime.fromFormat(vsDate, 'yyyy-MM-dd')

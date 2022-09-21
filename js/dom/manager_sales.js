@@ -563,7 +563,8 @@ function insertSalesDB(callback) {
 
   // Registrar si existe la transaccion bancaria
   if (tx) {
-    updates[`${collections.bankReconciliation}/${saleKey}`] = tx
+    let txKey = saleKey + "-" + tx.type.slice(0, 3)
+    updates[`${collections.bankReconciliation}/${txKey}`] = tx
   }
 
   // Registrar la venta en la BD

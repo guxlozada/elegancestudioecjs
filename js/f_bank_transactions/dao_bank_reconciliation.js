@@ -66,7 +66,7 @@ export function insertBankTransaction(voBankTx, callback, callbackError) {
   // Copia inmutable
   const bankTxAux = JSON.parse(JSON.stringify(voBankTx)),
     bankTx = generateDateProperties(bankTxAux),
-    key = timestampToDatekey(bankTx.date)
+    key = timestampToDatekey(bankTx.date) + "-" + bankTx.type.slice(0, 3)
 
   db.ref(`${collections.bankReconciliation}/${key}`).set(bankTx)
     .then(() => { callback(bankTx) })

@@ -1,9 +1,10 @@
 import { dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
-import validAdminAccess, { cleanAdminAccess } from "./manager_user.js";
-import navbarBurgers from "./navbar_burgers.js";
-import NotificationBulma from './NotificacionBulma.js';
+import validAdminAccess, { cleanAdminAccess } from "../dom/manager_user.js";
+import navbarBurgers from "../dom/navbar_burgers.js";
+import NotificationBulma from '../dom/NotificacionBulma.js';
+import { roundFour, roundTwo } from "../util/numbers-util.js";
 
 const d = document,
   w = window,
@@ -26,19 +27,16 @@ const filters = {
 //------------------------------------------------------------------------------------------------
 
 // EVENTO=load RAIZ=window 
-w.addEventListener("load", e => {
-  search()
-})
+w.addEventListener("load", () => { search() })
 
 // EVENTO=unload RAIZ=window 
-w.addEventListener("unload", e => {
-  cleanAdminAccess()
-})
+w.addEventListener("unload", () => { cleanAdminAccess() })
 
 // EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", e => {
-  navbarBurgers()
-})
+d.addEventListener("DOMContentLoaded", () => { navbarBurgers() })
+
+// EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
+d.getElementById("search").addEventListener("click", () => { search() })
 
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
 d.getElementById("filters").addEventListener("change", e => {
@@ -56,10 +54,6 @@ d.getElementById("filters").addEventListener("change", e => {
   } else if ($input.name === "dateEnd" && dateIsValid($input.value)) {
     filters.dateEnd = inputDateToDateTime($input.value)
   }
-})
-
-d.getElementById("search").addEventListener("click", e => {
-  search()
 })
 
 //------------------------------------------------------------------------------------------------
@@ -121,17 +115,17 @@ function renderCommissionsPayment() {
     const salesByBarber = filters.barberSales.get(barber) || []
 
     salesByBarber.forEach((sale, index) => {
-      vnValueSale = Math.round(sale.totalSale * 100) / 100
-      vnTaxes = Math.round(sale.taxes * 100) / 100
-      vnTaxableIncome = Math.round(sale.taxableIncome * 100) / 100
-      vnBarberCommission = Math.round(sale.barberCommission * 100) / 100
+      vnValueSale = roundTwo(sale.totalSale)
+      vnTaxes = roundTwo(sale.taxes)
+      vnTaxableIncome = roundTwo(sale.taxableIncome)
+      vnBarberCommission = roundTwo(sale.barberCommission)
       // Temporalmente a los pagos con tarjeta de credito o debito la comision al valor final es igual a la de base imponib
       if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
         vnBarberCommissionTmp = vnBarberCommission
       } else {
-        vnBarberCommissionTmp = Math.round(sale.barberCommission * 11200) / 10000
+        vnBarberCommissionTmp = roundFour(sale.barberCommission * 1.12)
       }
-      vnBarberTip = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
+      vnBarberTip = roundTwo(parseFloat(sale.tipByBank || 0))
       // Totales por barbero
       vnTotalSales += vnValueSale
       vnTotalTaxes += vnTaxes
@@ -167,29 +161,28 @@ function renderCommissionsPayment() {
     // GRUPO 2: Totalizar comisiones adelantadas y pagadas 
     let discounts = filters.barberPaidCommissions.get(barber)
     if (discounts) {
-      vnTotalBarberPaidCommissions = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
+      vnTotalBarberPaidCommissions = roundTwo(discounts.reduce((acc, el) => acc + el.value, 0))
       vnTotalBarberDiscounts += vnTotalBarberPaidCommissions
     }
 
     // GRUPO 3: Totalizar adelantos
     discounts = filters.barberAdvancePayment.get(barber)
     if (discounts) {
-      vnTotalBarberAdvancePayment = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
+      vnTotalBarberAdvancePayment = roundTwo(discounts.reduce((acc, el) => acc + el.value, 0))
       vnTotalBarberDiscounts += vnTotalBarberAdvancePayment
     }
 
     // GRUPO 4: Totalizar propinas pagadas
     discounts = filters.barberPaidTips.get(barber)
     if (discounts) {
-      vnTotalBarberPaidTips = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
+      vnTotalBarberPaidTips = roundTwo(discounts.reduce((acc, el) => acc + el.value, 0))
     }
 
     // GRUPO 5: Totalizar bebidas consumidas
     discounts = filters.barberDrinks.get(barber)
     if (discounts) {
-      vnTotalBarberDrinks = Math.round(discounts.reduce((acc, el) => acc + el.value, 0) * 100) / 100
+      vnTotalBarberDrinks = roundTwo(discounts.reduce((acc, el) => acc + el.value, 0))
       vnTotalBarberDiscounts += vnTotalBarberDrinks
-
     }
 
     $totalsTmp.querySelector(".barber-paid-commissions").innerText = vnTotalBarberPaidCommissions.toFixed(2)
@@ -244,14 +237,12 @@ function calculatePeriod() {
   ////console.log(filters.periodEnd.toISO())
 }
 
-
 // --------------------------
 // Database operations
 // --------------------------
 async function findLastClosingDay() {
   await dailyClosingRef.orderByKey().limitToLast(1).once('value')
     .then((snap) => {
-      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         filters.lastClosingDay = new Date(child.val().date)
       })
@@ -280,7 +271,6 @@ async function findExpenses() {
   await expensesRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
     .once('value')
     .then((snap) => {
-      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         const dta = child.val()
         switch (dta.type) {
@@ -314,7 +304,6 @@ async function findExpenses() {
   await salesRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
     .once('value')
     .then((snap) => {
-      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         arryTmp = filters.barberSales.get(child.val().seller) || []
         arryTmp.push(child.val())

@@ -1,8 +1,8 @@
 import { addHours, dateIsValid, todayEc, truncOperationDayString } from "../util/fecha-util.js";
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
-import navbarBurgers from "./navbar_burgers.js";
-import NotificationBulma from './NotificacionBulma.js';
+import navbarBurgers from "../dom/navbar_burgers.js";
+import NotificationBulma from '../dom/NotificacionBulma.js';
 
 const d = document,
   w = window,

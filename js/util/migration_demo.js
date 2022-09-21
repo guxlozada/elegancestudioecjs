@@ -1,15 +1,14 @@
-import { formatToOperationDayStringEc, } from "../util/fecha-util.js";
+import { formatToOperationDayStringEc, } from "./fecha-util.js";
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
-import { generarTxBySale } from "../util/bank_tx_generator.js";
+import { saleToBanktransaction } from "../bank-transactions/dao_bank_reconciliation.js";
 
 const d = document,
   w = window,
-  depositsRef = db.ref(collections.deposits),
+  depositsRef = db.ref("prodseller-deposits"),
   salesRef = db.ref(collections.sales),
-  bankRef = db.ref(collections.bankReconciliation),
   periodStart = "20220801",
-  periodEnd = "20220831"
+  periodEnd = "20220921"
 
 
 //------------------------------------------------------------------------------------------------
@@ -18,8 +17,8 @@ const d = document,
 
 // EVENTO=load RAIZ=window 
 w.addEventListener("load", e => {
-  ////migrarDepositos()
-  ////migrarVentas()
+  //migrarDepositos()
+  //migrarVentas()
 })
 
 // --------------------------
@@ -28,7 +27,7 @@ w.addEventListener("load", e => {
 
 async function migrarDepositos() {
   let depositos = []
-  await depositsRef.orderByKey()
+  await depositsRef.orderByKey().startAt(periodStart + "T").endAt(periodEnd + "\uf8ff")
     .once('value')
     .then((snap) => {
       ////console.log(snap.toJSON())
@@ -83,7 +82,7 @@ function saveDeposito(deposito) {
 }
 
 function saveVenta(sale) {
-  let tx = generarTxBySale(sale)
+  let tx = saleToBanktransaction(sale)
   console.log("tx=", tx)
   if (tx) {
     // Generar la clave de la nueva venta

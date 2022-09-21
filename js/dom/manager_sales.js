@@ -5,7 +5,7 @@ import { services } from "./catalog_services.js";
 import { servicesEneglimar } from "./catalog_services_eneglimar.js";
 import { products } from "./catalog_products.js";
 import { changeProductsModalTypeSale, ntf } from "../app.js";
-import { generateDateProperties } from "../persist/dao_generic.js";
+import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
 import { saleToBanktransaction } from "../bank-transactions/dao_bank_reconciliation.js";
 import { roundFour, roundTwo } from "../util/numbers-util.js";
 import { zeroPad } from "../util/text-util.js";
@@ -508,7 +508,7 @@ function insertSalesDB(callback) {
   // Agregar las propiedades de fechas
   saleHeader = generateDateProperties(saleHeader)
   // Generar la clave de la nueva venta
-  const saleKey = saleHeader.tmpUID
+  const saleKey = timestampToDatekey(saleHeader.date)
 
   // Si forma pago=TCREDITO/TDEBITO o TRANSFERENCIA se genera una transaccion bancaria
   let tx = saleToBanktransaction(saleHeader)
@@ -543,7 +543,6 @@ function insertSalesDB(callback) {
   delete saleHeader.client
   delete saleHeader.valid
   delete saleHeader.update
-  delete saleHeader.tmpUID
 
   // Generar bloque de transaccion
   let updates = {}
@@ -561,10 +560,6 @@ function insertSalesDB(callback) {
 
   // Registrar si existe la transaccion bancaria
   if (tx) {
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    // TODO: Cambiar propiedades con el prefijo tmpXYZ para eliminar propiedades temporales
-    /////////////////////////////////////////////////////////////////////////////////////////////////
-    delete tx.tmpUID
     updates[`${collections.bankReconciliation}/${saleKey}`] = tx
   }
 

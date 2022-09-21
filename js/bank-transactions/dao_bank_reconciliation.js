@@ -30,6 +30,8 @@ export function saleToBanktransaction(voSale) {
   let tx = JSON.parse(JSON.stringify(txInit))
   // Se asigna el timestamp similar de la venta
   tx.date = voSale.date
+  tx.searchDate = voSale.searchDate
+  tx.searchDateTime = voSale.searchDateTime
   tx.saleUid = timestampToDatekey(voSale.date)
   tx.responsable = voSale.seller
   tx.type = voSale.typePayment
@@ -51,10 +53,8 @@ export function saleToBanktransaction(voSale) {
       tx.tipByBank = roundFour(voSale.tipByBank * tx.value / tx.saleValue)
     }
   }
-
-  return generateDateProperties(tx)
+  return tx
 }
-
 
 /**
  * Guarda el movimiento bancario
@@ -63,15 +63,10 @@ export function saleToBanktransaction(voSale) {
  * @param {function} callbackError 
  */
 export function insertBankTransaction(voBankTx, callback, callbackError) {
-
   // Copia inmutable
-  const bankTxAux = JSON.parse(JSON.stringify(voBankTx))
-
-  let bankTx = generateDateProperties(bankTxAux),
-    key = bankTx.tmpUID
-
-  //Complementar informacion por omision
-  delete bankTx.tmpUID
+  const bankTxAux = JSON.parse(JSON.stringify(voBankTx)),
+    bankTx = generateDateProperties(bankTxAux),
+    key = timestampToDatekey(bankTx.date)
 
   db.ref(`${collections.bankReconciliation}/${key}`).set(bankTx)
     .then(() => { callback(bankTx) })

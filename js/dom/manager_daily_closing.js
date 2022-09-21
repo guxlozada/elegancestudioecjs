@@ -9,7 +9,7 @@ const d = document,
   ntf = new NotificationBulma(),
   salesRef = db.ref(collections.sales),
   expensesRef = db.ref(collections.expenses),
-  depositsRef = db.ref(collections.deposits),
+  bankTxRef = db.ref(collections.bankReconciliation),
   dailyClosingRef = db.ref(collections.dailyClosing)
 
 const dailyClosingInit = {
@@ -151,12 +151,13 @@ async function updateSalesByDay(vsDate) {
     .catch((error) => {
       ntf.tecnicalError(`Búsqueda de ingresos/egresos del día ${operationDay.toLocaleDateString()}`, error)
     })
-  await depositsRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
+  await bankTxRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
     .once('value')
     .then((snap) => {
       ////console.log(snap.toJSON())
       snap.forEach((child) => {
-        depositsData.push(child.val())
+        const dta = child.val()
+        if (dta.type === "DEPOSITO") depositsData.push(dta)
       })
     })
     .catch((error) => {

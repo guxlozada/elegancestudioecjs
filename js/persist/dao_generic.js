@@ -10,7 +10,7 @@ export default function timestampToDatekey(timestampUTC) {
   return DateTime.fromMillis(timestampUTC).toISO().replace(/[^0-9T]/g, "").replace(/ +/, " ").slice(0, -7)
 }
 /**
- * Agrega al objeto las propiedades: date, searchDate, searchDateTime, tmpUID
+ * Agrega al objeto las propiedades: date, searchDate, searchDateTime
  * @param {Object} register Registro para persistir en la BD
  * @returns 
  */
@@ -24,8 +24,7 @@ export function generateDateProperties(register) {
     ...register,
     date: audDate.toMillis(),
     searchDate: audDate.startOf('day').toLocaleString(DateTime.DATE_SHORT),
-    searchDateTime: audDate.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
-    tmpUID: timestampToDatekey(audDate.toMillis())
+    searchDateTime: audDate.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
   }
   return res
 }

@@ -3,6 +3,7 @@ import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
 import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
+import { roundFour, roundTwo } from "../util/numbers-util.js";
 
 const d = document,
   w = window,
@@ -205,17 +206,17 @@ function renderSummary(salesData) {
     $body.innerHTML = ""
 
     salesData.forEach((sale, index) => {
-      vnDiscounts = Math.round(parseFloat(sale.discounts) * 100) / 100
-      vnTaxableIncome = Math.round(parseFloat(sale.taxableIncome) * 100) / 100
-      vnTaxes = Math.round(parseFloat(sale.taxes) * 100) / 100
-      vnValueSale = Math.round(parseFloat(sale.totalSale) * 100) / 100
-      vnTipByBank = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
-      vnBarberCommission = Math.round(parseFloat(sale.barberCommission) * 100) / 100
+      vnDiscounts = roundTwo(sale.discounts)
+      vnTaxableIncome = roundTwo(sale.taxableIncome)
+      vnTaxes = roundTwo(sale.taxes)
+      vnValueSale = roundTwo(sale.totalSale)
+      vnTipByBank = roundTwo(sale.tipByBankPayment || 0)
+      vnBarberCommission = roundTwo(sale.barberCommission)
       // Temporalmente a los pagos con tarjeta de credito o debito la comision al valor final es igual a la de base imponib
       if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
         vnBarberCommissionTmp = vnBarberCommission
       } else {
-        vnBarberCommissionTmp = Math.round(parseFloat(sale.barberCommission) * 11200) / 10000
+        vnBarberCommissionTmp = roundFour(sale.barberCommission * 1.12)
       }
       vnTotalDiscounts += vnDiscounts
       vnTotalTaxableIncome += vnTaxableIncome
@@ -308,12 +309,12 @@ function renderSummaryBySeller(salesData) {
     sale = salesData[i],
     seller = sale.seller
   do {
-    vnTaxableIncome = Math.round(parseFloat(sale.taxableIncome) * 100) / 100
-    vnTaxes = Math.round(parseFloat(sale.taxes) * 100) / 100
-    vnBarberTip = Math.round(parseFloat(sale.tipByBank || 0) * 100) / 100
-    vnValueSale = Math.round(parseFloat(sale.totalSale) * 100) / 100
-    vnBarberCommission = Math.round(parseFloat(sale.barberCommission) * 100) / 100
-    vnBarberCommissionTmp = Math.round(parseFloat(sale.barberCommission) * 112) / 100
+    vnTaxableIncome = roundTwo(sale.taxableIncome)
+    vnTaxes = roundTwo(sale.taxes)
+    vnBarberTip = roundTwo(sale.tipByBank || 0)
+    vnValueSale = roundTwo(sale.totalSale)
+    vnBarberCommission = roundTwo(sale.barberCommission)
+    vnBarberCommissionTmp = roundTwo(sale.barberCommission * 1.12)
     vnTotalTaxableIncome += vnTaxableIncome
     vnTotalTaxes += vnTaxes
     vnTotalBarberTips += vnBarberTip
@@ -402,8 +403,8 @@ function renderExpenses(expensesData, depositsData) {
     item = data[i],
     type = item.type
   do {
-    vnValue = Math.round(parseFloat(item.value) * 100) / 100
-    vnCommission = Math.round(parseFloat(item.barberCommission) * 100) / 100
+    vnValue = roundTwo(item.value)
+    vnCommission = roundTwo(item.barberCommission)
     vnTotal += vnValue
     $rowTmp.querySelector(".index").innerText = index
     $rowTmp.querySelector(".type").innerText = item.type.toLowerCase()
@@ -502,11 +503,10 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   //} else {
   //  dailyClosing.finalBalance -= dailyClosing.fit
   //}
-  dailyClosing.finalBalance = Math.round(dailyClosing.finalBalance * 100) / 100
+  dailyClosing.finalBalance = roundTwo(dailyClosing.finalBalance)
   //Asignar valores
   let $contenedor = d.getElementById("daily-closing")
   $contenedor.querySelector(".initial-balance").innerText = dailyClosing.initialBalance.toFixed(2)
-  //$contenedor.querySelector(".initial-balance").value = dailyClosing.initialBalance.toFixed(2)
   $contenedor.querySelector(".cash-sales").innerText = dailyClosing.cashSales.toFixed(2)
   $contenedor.querySelector(".advances").innerText = dailyClosing.advances.toFixed(2)
   $contenedor.querySelector(".deposits").innerText = dailyClosing.deposits.toFixed(2)

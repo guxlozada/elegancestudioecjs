@@ -192,11 +192,7 @@ function renderSaleItems(changeTypePayment) {
 
     let vnUnitDiscount,
       vnBaseDiscount,
-      vnTaxDiscount,
-      vnDiscounts,
-      vnTaxes,
-      vnTaxableIncome = 0,
-      vnBarberCommission = 0;
+      vnTaxDiscount
 
     sale.items.forEach(item => {
       ////console.log("Agregando item a la venta=", item.code)
@@ -239,16 +235,11 @@ function renderSaleItems(changeTypePayment) {
         vnTaxDiscount = vnUnitDiscount - vnBaseDiscount
       }
 
-      vnTaxableIncome = (baseValue - vnBaseDiscount) * item.numberOfUnits
-      vnTaxes = ((taxIVA || 0) - vnTaxDiscount) * item.numberOfUnits
-      vnDiscounts = vnUnitDiscount * item.numberOfUnits
-      vnBarberCommission = vnTaxableIncome * item.sellerCommission / 100
-
-      item.taxableIncome = roundFour(vnTaxableIncome)
-      item.taxes = roundFour(vnTaxes)
+      item.taxableIncome = roundFour((baseValue - vnBaseDiscount) * item.numberOfUnits)
+      item.taxes = roundFour(((taxIVA || 0) - vnTaxDiscount) * item.numberOfUnits)
       item.total = roundFour(item.taxableIncome + item.taxes)
-      item.discounts = roundFour(vnDiscounts)
-      item.barberCommission = roundFour(vnBarberCommission)
+      item.discounts = roundFour(vnUnitDiscount * item.numberOfUnits)
+      item.barberCommission = roundFour(item.taxableIncome * item.sellerCommission / 100)
 
       sale.taxableIncome += item.taxableIncome
       sale.taxes += item.taxes
@@ -314,14 +305,26 @@ function renderSaleSummary() {
   // Activar/inactivar propina por pago bancario, debe colocarse primero para validar si 
   // setea el valor de efectivo=0
   validateBarberTipActive()
-  // Agregar las propinas al total de la venta
-  sale.totalSale = roundTwo(sale.totalSale + sale.tipByBank)
+  // Agregar la propina a la venta
+  if (sale.tipByBank && sale.tipByBank > 0) {
+    switch (sale.typePayment) {
+      case "TRANSFERENCIA":
+        sale.totalSale = roundTwo(sale.totalSale + sale.tipByBank)
+        break;
+      case "TCREDITO":
+      case "TDEBITO":
+        sale.taxableIncome = roundTwo(sale.taxableIncome + sale.tipByBank)
+        sale.taxes = roundTwo(sale.taxes + (sale.tipByBank * 0.12))
+        sale.totalSale = roundTwo(sale.taxableIncome + sale.taxes)
+        break;
+    }
+  }
+
   d.querySelector(".sale-summary-tip").value = sale.tipByBank.toFixed(2)
-  d.querySelector(".sale-summary-totalsale").innerText = sale.totalSale.toFixed(2)
   d.querySelector(".sale-summary-taxableincome").innerText = sale.taxableIncome.toFixed(2)
   d.querySelector(".sale-summary-taxes").innerText = sale.taxes.toFixed(2)
+  d.querySelector(".sale-summary-totalsale").innerText = sale.totalSale.toFixed(2)
   //d.querySelector(".sale-summary-discounts").innerText = sale.discounts.toFixed(2)
-
 
   // Deshabilitar el boton Guardar cuando la venta es cero
   if (sale.valid && sale.items.length > 0) {
@@ -514,7 +517,7 @@ function insertSalesDB(callback) {
   let tx = saleToBanktransaction(saleHeader)
   if (tx) {
     // Asigna el valor proporcional calculado de la propina luego de la comision del datafast
-    saleHeader.tipByBankPayment = tx.tipByBank || 0
+    saleHeader.tipByBankPayment = tx.tipByBank || saleHeader.tipByBank || 0
   }
 
   let i = 1

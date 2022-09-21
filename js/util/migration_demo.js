@@ -1,7 +1,7 @@
 import { formatToOperationDayStringEc, } from "./fecha-util.js";
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
-import { saleToBanktransaction } from "../f-bank-transactions/dao_bank_reconciliation.js";
+import { saleToBanktransaction } from "../f_bank_transactions/dao_bank_reconciliation.js";
 
 const d = document,
   w = window,

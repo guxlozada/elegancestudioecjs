@@ -6,7 +6,7 @@ import { servicesEneglimar } from "./catalog_services_eneglimar.js";
 import { products } from "./catalog_products.js";
 import { changeProductsModalTypeSale, ntf } from "../app.js";
 import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
-import { saleToBanktransaction } from "../bank-transactions/dao_bank_reconciliation.js";
+import { saleToBanktransaction } from "../f-bank-transactions/dao_bank_reconciliation.js";
 import { roundFour, roundTwo } from "../util/numbers-util.js";
 import { zeroPad } from "../util/text-util.js";
 

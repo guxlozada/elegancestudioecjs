@@ -69,7 +69,7 @@ export async function insertBankTransaction(voBankTx, callback, callbackError, c
       .then((snap) => {
         if (!snap || !snap.exists()) {
           return `La venta Nro. ${voBankTx.saleUid} no existe.
-          Verifique que tenga el formato correcto. Ejemplo: 20221231T210059`
+          Verifique que tenga el formato correcto: ANIOMESDIA"T"HORASMINUTOSEGUNDOS. Ejemplo: 20221231T180159`
         }
         let sale = snap.val()
         return sale.bankTxUid ? `La venta Nro ${voBankTx.saleUid} ya esta relacionado a la transaccion bancaria Nro. ${sale.bankTxUid} por valor de ${sale.bankTxValue}.

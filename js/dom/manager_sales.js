@@ -479,7 +479,7 @@ export default function handlerSales() {
     } else if ($input.name === "tipValue") {
       console.log("sale.tipByBank=", $input.value)
       // Cambio valor de propina bancaria
-      sale.tipByBank = parseFloat($input.value || 0)
+      sale.tipByBank = $input.valueAsNumber || 0
       sale.update = true
     }
     localStorage.setItem("SALE", JSON.stringify(sale))

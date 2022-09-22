@@ -7,7 +7,7 @@ export default function convertFormToObject(vsClassInput) {
   const $propertyInput = document.getElementsByClassName(vsClassInput ? vsClassInput : "prop-input")
   for (let i = 0, len = $propertyInput.length; i < len; i++) {
     let $input = $propertyInput[i],
-      key = $input.getAttribute("data-key"),
+      key = $input.dataset.key,
       value = $input.value
     if (!value || !key) {
       continue
@@ -17,11 +17,11 @@ export default function convertFormToObject(vsClassInput) {
         if ($input.checked) obj[key] = value
         break
       case "number":
-        obj[key] = parseFloat(value)
+        obj[key] = $input.valueAsNumber
         break
       case "date":
         let dateTime = inputDateToDateTime(value)
-        let dateType = $input.getAttribute("data-type")
+        let dateType = $input.dataset.type
         if (dateType === "timestamp") {
           obj[key] = dateTime.toMillis()
         } else {

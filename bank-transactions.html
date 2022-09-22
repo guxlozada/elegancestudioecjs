@@ -75,9 +75,50 @@
                   </label>
                 </div>
               </div>
-
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Valor</label>
+                <p class="control has-icons-left">
+                  <input type="number" class="prop-input input is-small" id="value" data-key="value" step="0.1" min="0"
+                    placeholder="00.00" autofocus />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-money-check-dollar"></i>
+                  </span>
+                </p>
+              </div>
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Responsable</label>
+                <div class="control is-size-7">
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="responsable" data-key="responsable"
+                      value="ADM_ESTIBERSON">
+                    Estiberson
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="responsable" data-key="responsable" value="ADM_ERICK">
+                    Erick
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="responsable" data-key="responsable" value="ADMIN">
+                    Admin
+                  </label>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Nro.Comprobante</label>
+                <p class="control has-icons-left">
+                  <input type="text" class="prop-input input is-small" id="voucher" data-key="voucher"
+                    placeholder="# Comprobante o Factura..." />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-receipt"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field has-background-grey-lighter m-0 p-2">
+                <label class="label is-small is-inline">Utilice los siguientes campos SOLO para registrar una
+                  transferencia para un barbero</label>
+              </div>
+              <div class="field has-background-grey-lighter m-0 p-2">
+                <label class="label is-small is-hidden-mobile is-inline">Beneficiario</label>
                 <div class="control is-size-7">
                   <label class="radio">
                     <input type="radio" class="prop-input" name="responsable" data-key="responsable" value="ESTIBERSON">
@@ -91,33 +132,9 @@
                     <input type="radio" class="prop-input" name="responsable" data-key="responsable" value="ENEGLIMAR">
                     Eneglimar
                   </label>
-                  <label class="radio">
-                    <input type="radio" class="prop-input" name="responsable" data-key="responsable" value="ADMIN">
-                    Admin
-                  </label>
                 </div>
               </div>
-              <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Valor</label>
-                <p class="control has-icons-left">
-                  <input type="number" class="prop-input input is-small" id="value" data-key="value" step="0.1" min="0"
-                    placeholder="00.00" autofocus />
-                  <span class="icon is-small is-left">
-                    <i class="fa-solid fa-money-check-dollar"></i>
-                  </span>
-                </p>
-              </div>
-              <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Nro.Comprobante</label>
-                <p class="control has-icons-left">
-                  <input type="text" class="prop-input input is-small" id="voucher" data-key="voucher"
-                    placeholder="# Comprobante o Factura..." />
-                  <span class="icon is-small is-left">
-                    <i class="fa-solid fa-receipt"></i>
-                  </span>
-                </p>
-              </div>
-              <div class="field">
+              <div class="field has-background-grey-lighter m-0 p-2">
                 <label class="label is-small is-hidden-mobile is-inline">Relacionado a la Venta Nro.</label>
                 <p class="control has-icons-left">
                   <input type="text" class="prop-input input is-small" id="sale-uid" data-key="saleUid"
@@ -134,6 +151,7 @@
                     placeholder="Breve detalle del egreso..."></textarea>
                 </div>
               </div>
+
             </div>
             <footer class="card-footer">
               <div class="buttons is-right" style="width: 100%;">

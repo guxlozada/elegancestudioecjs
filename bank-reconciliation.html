@@ -39,84 +39,88 @@
             <table id="filters">
               <tbody>
                 <tr class="list-inline">
-                  <td>
+                  <td colspan="2">
                     <div class="control is-size-7">
-                      <label class="radio">
-                        <input type="radio" name="typePayment" value="TODOS" checked>
+                      <label class="checkbox">
+                        <input type="checkbox" id="type-payment-todos" name="typePayment" value="TODOS" checked>
                         Todos
                       </label>
-                      <label class="radio">
-                        <input type="radio" name="typePayment" value="DEPOSITO">
+                      <label class="checkbox">
+                        <input type="checkbox" name="typePayment" value="DEPOSITO">
                         Deposito
                       </label>
-                      <label class="radio">
-                        <input type="radio" name="typePayment" value="TRANSFERENCIA">
-                        Transferencia
+                      <label class="checkbox">
+                        <input type="checkbox" name="typePayment" value="TRANSFERENCIA">
+                        Transferencia (Credito)
                       </label>
-                      <label class="radio">
-                        <input type="radio" name="typePayment" value="TCREDITO">
+                      <label class="checkbox">
+                        <input type="checkbox" name="typePayment" value="DEBITO_TRANSFERENCIA">
+                        Transferencia (Debito)
+                      </label>
+                      <label class="checkbox">
+                        <input type="checkbox" name="typePayment" value="TCREDITO">
                         Tarjeta Credito
                       </label>
-                      <label class="radio">
-                        <input type="radio" name="typePayment" value="TDEBITO">
+                      <label class="checkbox">
+                        <input type="checkbox" name="typePayment" value="TDEBITO">
                         Tarjeta Debito
                       </label>
                     </div>
                   </td>
-                  <th></th>
                 </tr>
                 <tr class="list-inline">
                   <td style="vertical-align: middle;">
                     <div class="control is-size-7">
                       <label class="radio">
-                        <input type="radio" name="period" value="CURRENTWEEK">
-                        Semana actual
+                        <input type="radio" name="period" value="TODAY" checked>
+                        Hoy
                       </label>
                       <label class="radio">
-                        <input type="radio" name="period" value="LASTWEEK" checked>
-                        Semana anterior
+                        <input type="radio" name="period" value="CURRENTWEEK">
+                        Semana
                       </label>
                       <label class="radio">
                         <input type="radio" name="period" value="CURRENTMONTH">
-                        Mes actual
+                        Mes
                       </label>
+                      <label class="radio">
+                        <input type="radio" name="period" value="LASTWEEK">
+                        Semana anterior
+                      </label>
+
                       <label class="radio">
                         <input type="radio" name="period" value="LASTMONTH">
                         Mes anterior
                       </label>
                     </div>
                   </td>
-                  <td>
-                    <input class="input is-small is-hidden" style="max-width: 8rem" name="dateStart" type="date"
-                      required />
-                    <input class="input is-small is-hidden" style="max-width: 8rem" name="dateEnd" type="date"
-                      required />
-                    <input id="search" class="button is-small is-primary is-hidden" type="button" value="Buscar">
+
+                  <td class="list-inline">
+                    <input type="date" class="input is-small" id="date-start" name="dateStart" required
+                      style="max-width: 8rem" />
+                    <input type="date" class="input is-small" id="date-end" name="dateEnd" required
+                      style="max-width: 8rem" />
+                    <input id="search" class="button is-small is-primary" type="button" value="Buscar">
                   </td>
                 </tr>
               </tbody>
             </table>
             <table>
-              <!--thead>
-                <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
-                  <th class="search-period has-text-centered" colspan="2"></th>
-                  <th>Ventas Totales:</th>
-                  <th class="search-sales">0.00</th>
-                  <th colspan="3">- Comisiones Totales:</th>
-                  <th class="search-barber-commissions-tmp">0.00</th>
-                  <th class="search-sales-result">=0.00</th>
-                </tr>
-              </thead-->
-
               <thead>
+                <tr class="has-background-grey-light has-text-right">
+                  <th class="search-period has-text-centered" colspan="3"></th>
+                  <th colspan="5">Total:</th>
+                  <th class="search-total-value"></th>
+                  <td></td>
+                </tr>
                 <tr class="has-background-link  has-text-centered">
                   <th class="has-text-white" style="width:1rem"></th>
                   <th class="has-text-white" style="width:8rem">Fecha-hora</th>
                   <th class="has-text-white" style="width:6rem">Responsable</th>
                   <th class="has-text-white" style="width:6rem">Tipo</th>
-                  <th class="has-text-white" style="width:6rem">Valor Venta</th>
+                  <th class="has-text-white has-text-right" style="width:6rem">Valor Venta</th>
                   <th class="has-text-white" style="width:6rem" colspan="3">Datafast cm/iva/renta</th>
-                  <th class="has-text-white" style="width:6rem">Monto</th>
+                  <th class="has-text-white has-text-right" style="width:6rem">Monto</th>
                   <th class="has-text-white" style="width:6rem">Voucher</th>
                 </tr>
               </thead>
@@ -143,14 +147,6 @@
       <td class="datafast-renta has-text-right"></td>
       <td class="value has-text-right"></td>
       <td class="voucher has-text-centered"></td>
-    </tr>
-  </template>
-
-  <template id="bank-tx-totals">
-    <tr class="has-background-grey-light has-text-right">
-      <th colspan="8">Totales</th>
-      <th class="total-value"></th>
-      <td></td>
     </tr>
   </template>
 

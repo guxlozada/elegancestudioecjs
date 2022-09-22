@@ -1,7 +1,7 @@
-import { dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
+import { dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
-import validAdminAccess, { cleanAdminAccess } from "./manager_user.js";
+import validAdminAccess from "./manager_user.js";
 import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
 
@@ -10,53 +10,85 @@ const d = document,
   ntf = new NotificationBulma(),
   bankRef = db.ref(collections.bankReconciliation)
 
+const typePayments = ["DEPOSITO", "TRANSFERENCIA", "DEBITO_TRANSFERENCIA", "TCREDITO", "TDEBITO"]
+
 const filters = {
-  typePayment: "TODOS",
-  period: "LASTWEEK",
-  periodStart: null,
-  periodEnd: null,
-  dateStart: null,
-  dateEnd: null
+  typePayments: [...typePayments],
+  period: "TODAY"
 }
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
 //------------------------------------------------------------------------------------------------
 
 // EVENTO=load RAIZ=window 
-w.addEventListener("load", e => {
-  search()
-})
-
-// EVENTO=unload RAIZ=window 
-w.addEventListener("unload", e => {
-  cleanAdminAccess()
-})
+w.addEventListener("load", () => { search() })
 
 // EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", e => {
-  navbarBurgers()
+d.addEventListener("DOMContentLoaded", () => { navbarBurgers() })
+
+// EVENTO=click RAIZ=button<search> ACCION: Buscar informacion
+d.getElementById("search").addEventListener("click", () => {
+  let dateStart = d.getElementById("date-start").value,
+    dateEnd = d.getElementById("date-end").value
+
+  // NO se ha seleccionado al menos una fecha
+  if (!dateStart && !dateEnd) {
+    ntf.error("Información con errores", "Seleccione una fecha o un rango de fechas")
+    return
+  }
+
+  if (!dateEnd) {
+    dateEnd = dateStart
+  } else if (!dateStart) {
+    dateStart = dateEnd
+  }
+
+  // Validar rango y fecha maxima de consulta
+  let dateTimeStart = inputDateToDateTime(dateStart),
+    dateTimeEnd = inputDateToDateTime(dateEnd),
+    hoy = hoyEC()
+  if (dateTimeStart > hoy || dateTimeEnd > hoy) {
+    ntf.error("Información con errores", "No puede seleccionar una fecha mayor a la actual")
+  } else if (dateTimeStart > dateTimeEnd) {
+    ntf.error("Información con errores", "La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
+  }
+
+  // Si hay msj de error finaliza
+  if (ntf.enabled) return
+
+  // Desactivar los periodos delfiltro
+  d.getElementsByName("period").forEach($el => $el.checked = false)
+  filters.period = undefined
+  filters.dateStart = dateTimeStart
+  filters.dateEnd = dateTimeEnd
+  search()
 })
 
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
 d.getElementById("filters").addEventListener("change", e => {
   let $input = e.target
   if ($input.name === "typePayment") {
-    filters.typePayment = $input.value
+    let typePayment = $input.value,
+      typesChecked = []
+    if (typePayment === "TODOS") {
+      typesChecked = [...typePayments]
+      d.getElementsByName("typePayment").forEach($el => $el.checked = $el.value === "TODOS")
+    } else {
+      d.getElementsByName("typePayment").forEach($el => {
+        if ($el.checked && $el.value !== "TODOS") typesChecked.push($el.value)
+      })
+      d.getElementById("type-payment-todos").checked = false
+    }
+    filters.typePayments = typesChecked
     search()
   } else if ($input.name === "period") {
     filters.period = $input.value
-    filters.dateStart = null
-    filters.dateEnd = null
-    search()
-  } else if ($input.name === "dateStart" && dateIsValid($input.value)) {
-    filters.dateStart = inputDateToDateTime($input.value)
-  } else if ($input.name === "dateEnd" && dateIsValid($input.value)) {
-    filters.dateEnd = inputDateToDateTime($input.value)
-  }
-})
 
-d.getElementById("search").addEventListener("click", e => {
-  search()
+    // Setear valores de rango de fechas
+    d.getElementById("date-start").value = ""
+    d.getElementById("date-end").value = ""
+    search()
+  }
 })
 
 //------------------------------------------------------------------------------------------------
@@ -72,7 +104,6 @@ function search() {
 
 function renderBankTransactions(transactions) {
   const $rowTmp = d.getElementById("bank-tx-row").content,
-    $totalsTmp = d.getElementById("bank-tx-totals").content,
     $fragment = d.createDocumentFragment(),
     $transactionsDetails = d.getElementById("bank-transactions")
 
@@ -103,78 +134,67 @@ function renderBankTransactions(transactions) {
     $fragment.appendChild($clone)
   })
 
-  $totalsTmp.querySelector(".total-value").innerText = vnTotalTx.toFixed(2)
-  $clone = d.importNode($totalsTmp, true)
-  $fragment.appendChild($clone)
-
   $transactionsDetails.innerHTML = "";
   $transactionsDetails.appendChild($fragment)
 
   // Agregar totales por consulta
-  // d.querySelector(".search-period").innerText = filters.periodStart.toFormat('dd/MM/yyyy') + "-" + filters.periodEnd.toFormat('dd/MM/yyyy')
-  // d.querySelector(".search-sales").innerText = vnSearchSales.toFixed(2)
-  // ////d.querySelector(".search-barber-commissions").innerText = vnSearchBarberCommissions.toFixed(2)
-  // d.querySelector(".search-barber-commissions-tmp").innerText = vnSearchBarberCommissionsTmp.toFixed(2)
-  // d.querySelector(".search-sales-result").innerText = "= " + (vnSearchSales - vnSearchBarberCommissionsTmp).toFixed(2)
+  d.querySelector(".search-period").innerText = filters.dateStart.toFormat('dd/MM/yyyy') + " al " + filters.dateEnd.toFormat('dd/MM/yyyy')
+  d.querySelector(".search-total-value").innerText = vnTotalTx.toFixed(2)
+
 }
 
 function calculatePeriod() {
+  if (!filters.period) return
+
   let baseDate = hoyEC()
-  //const currentWeek = baseDate.weekNumber
   switch (filters.period) {
+    case "TODAY":
+      filters.dateStart = baseDate.startOf('day')
+      filters.dateEnd = baseDate.endOf('day')
+      break
     case "CURRENTWEEK":
-      filters.periodStart = baseDate.startOf('week')
-      filters.periodEnd = baseDate.endOf('week')
+      filters.dateStart = baseDate.startOf('week')
+      filters.dateEnd = baseDate.endOf('week')
       break
     case "LASTWEEK":
       baseDate = baseDate.minus({ weeks: 1 })
-      filters.periodStart = baseDate.startOf('week')
-      filters.periodEnd = baseDate.endOf('week')
+      filters.dateStart = baseDate.startOf('week')
+      filters.dateEnd = baseDate.endOf('week')
       break
     case "CURRENTMONTH":
-      filters.periodStart = baseDate.startOf('month')
-      filters.periodEnd = baseDate.endOf('month')
+      filters.dateStart = baseDate.startOf('month')
+      filters.dateEnd = baseDate.endOf('month')
       break
     case "LASTMONTH":
       baseDate = baseDate.minus({ months: 1 })
-      filters.periodStart = baseDate.startOf('month')
-      filters.periodEnd = baseDate.endOf('month')
+      filters.dateStart = baseDate.startOf('month')
+      filters.dateEnd = baseDate.endOf('month')
       break
   }
-
-  ////console.log(filters.periodStart.toISO())
-  ////console.log(filters.periodEnd.toISO())
 }
-
 
 // --------------------------
 // Database operations
 // --------------------------
 
 async function findBankTransactions() {
-  let rangeStart,
-    rangeEnd
-
-  if (filters.dateStart && filters.dateEnd) {
-    rangeStart = dateTimeToKeyDateString(filters.dateStart)
+  let rangeStart = dateTimeToKeyDateString(filters.dateStart),
     rangeEnd = dateTimeToKeyDateString(filters.dateEnd)
-  } else {
-    rangeStart = dateTimeToKeyDateString(filters.periodStart)
-    rangeEnd = dateTimeToKeyDateString(filters.periodEnd)
-  }
-  let transactions = []
+
   await bankRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
     .once('value')
     .then((snap) => {
-      ////console.log(snap.toJSON())=
+      let transactions = []
       snap.forEach((child) => {
-        transactions.push(child.val())
+        let tx = child.val()
+        if (filters.typePayments.includes(tx.type)) transactions.push(tx)
       })
+
+      renderBankTransactions(transactions)
     })
     .catch((error) => {
       ntf.tecnicalError(`Búsqueda de movimientos bancarios con error`, error)
     })
 
-  renderBankTransactions(transactions)
 }
 

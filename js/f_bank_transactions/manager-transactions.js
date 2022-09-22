@@ -57,12 +57,20 @@ $container.addEventListener("submit", e => {
     ntf.error("Información requerida", "Seleccione el tipo de movimiento.")
   } else if (!bankTx.value || bankTx.value <= 0) {
     ntf.error("Información requerida", "Ingrese un valor mayor a cero")
-  } else if (bankTx.saleUid && bankTx.type !== "TRANSFERENCIA") {
-    ntf.error("Información con errores", `Solo se permite realizar "Transferencia (Credito)" cuando utilice un numero de venta`)
     // } else if (!bankTx.voucher) {
     //   ntf.error("Información requerida", "Ingrese el número del comprobante")
   } else if (!bankTx.details && !bankTx.saleUid && (bankTx.type === "TRANSFERENCIA" || bankTx.type === "TRANSFRETIRO")) {
-    ntf.error("Información requerida", "En 'Detalles' describa brevemente el motivo de la transferencia.")
+    ntf.error("Información requerida", `En "Detalles" describa brevemente el motivo de la transferencia`)
+  }
+
+  if (bankTx.saleUid) {
+    if (bankTx.type !== "TRANSFERENCIA") {
+      ntf.error("Información con errores", `Solo se permite realizar "Transferencia (Credito)" cuando utilice un numero de venta`)
+    } else if (bankTx.responsable.startsWith("ADM")) {
+      ntf.error("Información con errores", "Seleccione el beneficiario cuando utilice un numero de venta")
+    }
+  } else if (!bankTx.responsable.startsWith("ADM")) {
+    ntf.error("Información con errores", "Seleccione un responsable")
   }
 
   if (!ntf.enabled) {

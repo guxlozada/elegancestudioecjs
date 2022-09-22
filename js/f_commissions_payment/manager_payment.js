@@ -1,7 +1,7 @@
 import { dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
-import validAdminAccess, { cleanAdminAccess } from "../dom/manager_user.js";
+import validAdminAccess from "../dom/manager_user.js";
 import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { roundFour, roundTwo } from "../util/numbers-util.js";
@@ -28,9 +28,6 @@ const filters = {
 
 // EVENTO=load RAIZ=window 
 w.addEventListener("load", () => { search() })
-
-// EVENTO=unload RAIZ=window 
-w.addEventListener("unload", () => { cleanAdminAccess() })
 
 // EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
 d.addEventListener("DOMContentLoaded", () => { navbarBurgers() })
@@ -202,7 +199,7 @@ function renderCommissionsPayment() {
   $paymentsDetails.appendChild($fragment)
 
   // Agregar totales por consulta
-  d.querySelector(".search-period").innerText = filters.periodStart.toFormat('dd/MM/yyyy') + "-" + filters.periodEnd.toFormat('dd/MM/yyyy')
+  d.querySelector(".search-period").innerText = filters.periodStart.toFormat('dd/MM/yyyy') + " al " + filters.periodEnd.toFormat('dd/MM/yyyy')
   d.querySelector(".search-sales").innerText = vnSearchSales.toFixed(2)
   ////d.querySelector(".search-barber-commissions").innerText = vnSearchBarberCommissions.toFixed(2)
   d.querySelector(".search-barber-commissions-tmp").innerText = vnSearchBarberCommissionsTmp.toFixed(2)

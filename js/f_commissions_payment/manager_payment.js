@@ -125,7 +125,7 @@ function renderCommissionsPayment() {
       } else {
         vnBarberCommissionTmp = roundFour(sale.barberCommission * 1.12)
       }
-      vnBarberTip = roundTwo(parseFloat(sale.tipByBankPayment || 0))
+      vnBarberTip = roundTwo(sale.tipByBankPayment || sale.bankTxValue || sale.tipByBank || 0)
       // Totales por barbero
       vnTotalSales += vnValueSale
       vnTotalTaxes += vnTaxes

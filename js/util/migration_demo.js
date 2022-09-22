@@ -73,7 +73,7 @@ async function migrarVentas() {
 
 function saveDeposito(deposito) {
   // Generar la clave de la nueva venta
-  let key = formatToOperationDayStringEc(deposito.date)// Generar la clave del deposito
+  let key = formatToOperationDayStringEc(deposito.date) + "-DEP"// Generar la clave del deposito
   console.log("deposito key=", key)
   db.ref(collections.bankReconciliation + "/" + key).set(deposito)
     .catch((error) => {
@@ -85,11 +85,13 @@ function saveVenta(sale) {
   let tx = saleToBanktransaction(sale)
   console.log("tx=", tx)
   if (tx) {
+    let key = tx.saleUid + "-" + tx.type.slice(0, 3)
     // Generar la clave de la nueva venta
-    console.log("tx key=", tx.saleUid)
-    db.ref(collections.bankReconciliation + "/" + tx.saleUid).set(tx)
+    console.log("tx key=", key)
+
+    db.ref(collections.bankReconciliation + "/" + key).set(tx)
       .catch((error) => {
-        console.log(`Transaccion migrada con error ${tx.saleUid}`, error)
+        console.log(`Transaccion migrada con error ${key}`, error)
       })
   }
 }

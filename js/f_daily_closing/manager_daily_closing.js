@@ -214,7 +214,7 @@ function renderSummary(salesData) {
       //TODO: Temporalmente se coloca el or con sale.tipByBank
       // vnTipByBank = roundTwo(sale.tipByBankPayment || 0)
       ///////////////////////////////////////////////////////////////////////////////
-      vnTipByBank = roundTwo(sale.tipByBankPayment || sale.tipByBank || 0)
+      vnTipByBank = roundTwo(sale.tipByBankPayment || sale.bankTxValue || sale.tipByBank || 0)
       vnBarberCommission = roundTwo(sale.barberCommission)
       // Temporalmente a los pagos con tarjeta de credito o debito la comision al valor final es igual a la de base imponib
       if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
@@ -319,7 +319,7 @@ function renderSummaryBySeller(salesData) {
     //TODO: Temporalmente se coloca el or con sale.tipByBank
     // vnBarberTip = roundTwo(sale.tipByBankPayment || 0)
     ///////////////////////////////////////////////////////////////////////////////
-    vnBarberTip = roundTwo(sale.tipByBankPayment || sale.tipByBank || 0)
+    vnBarberTip = roundTwo(sale.tipByBankPayment || sale.bankTxValue || sale.tipByBank || 0)
     vnValueSale = roundTwo(sale.totalSale)
     vnBarberCommission = roundTwo(sale.barberCommission)
     vnBarberCommissionTmp = roundTwo(sale.barberCommission * 1.12)

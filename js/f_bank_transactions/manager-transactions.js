@@ -56,18 +56,26 @@ $container.addEventListener("submit", e => {
     ntf.error("Información requerida", "Seleccione el tipo de movimiento.")
   } else if (!bankTx.value || bankTx.value <= 0) {
     ntf.error("Información requerida", "Ingrese un valor mayor a cero")
-  } else if (!bankTx.voucher) {
-    ntf.error("Información requerida", "Ingrese el número del comprobante")
-  } else if (!bankTx.details && (bankTx.type === "TRANSFERENCIA" || bankTx.type === "TRANSFRETIRO")) {
+  } else if (bankTx.saleUid && bankTx.type !== "TRANSFERENCIA") {
+    ntf.error("Información con errores", `Solo se permite realizar "Transferencia (Credito)" cuando utilice un numero de venta`)
+    // } else if (!bankTx.voucher) {
+    //   ntf.error("Información requerida", "Ingrese el número del comprobante")
+  } else if (!bankTx.details && !bankTx.saleUid && (bankTx.type === "TRANSFERENCIA" || bankTx.type === "TRANSFRETIRO")) {
     ntf.error("Información requerida", "En 'Detalles' describa brevemente el motivo de la transferencia.")
   }
 
   if (!ntf.enabled) {
-    insertBankTransaction(bankTx, (bankTx) => {
-      let idTx = (bankTx.voucher && !bankTx.voucher.startsWith("00")) ? bankTx.voucher : bankTx.date
-      ntf.show(`Movimiento bancario registrado`, `Se guardó correctamente la información: ${bankTx.type} Nro.${idTx}`)
-      reset()
-    }, () => { ntf.tecnicalError(`Movimiento bancario no registrado`, error) })
+    insertBankTransaction(bankTx,
+      (bankTx) => {
+        let idTx = (bankTx.voucher && !bankTx.voucher.startsWith("00")) ? bankTx.voucher : bankTx.date
+        ntf.show(`Movimiento bancario registrado`, `Se guardó correctamente la información: ${bankTx.type} Nro.${idTx}`)
+        reset()
+      },
+      () => { ntf.tecnicalError(`Movimiento bancario no registrado`, error) },
+      (msjError) => { ntf.error("Información con error", msjError, 10000) }
+    )
   }
 
 })
+
+

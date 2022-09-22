@@ -21,9 +21,10 @@ function reset() {
   //d.getElementById("expense-date").value = expense.searchDate
   d.getElementById("transaction-date-input").valueAsDate = hoyEC().toJSDate()
   d.getElementsByName("responsable").forEach($el => $el.checked = false)
-  d.getElementById("value").value = null
-  d.getElementById("voucher").value = null
-  d.getElementById("details").value = null
+  d.getElementById("value").value = ""
+  d.getElementById("voucher").value = ""
+  d.getElementById("sale-uid").value = ""
+  d.getElementById("details").value = ""
 }
 
 // ------------------------------------------------------------------------------------------------

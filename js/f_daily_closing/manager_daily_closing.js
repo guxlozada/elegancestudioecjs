@@ -40,14 +40,10 @@ let operationDay = todayEc(),
 //------------------------------------------------------------------------------------------------
 
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
-w.addEventListener("load", e => {
-  changeDailyClosing()
-})
+w.addEventListener("load", () => {  changeDailyClosing()})
 
 // EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", e => {
-  navbarBurgers()
-})
+d.addEventListener("DOMContentLoaded", () => {  navbarBurgers()})
 
 // EVENTO=click RAIZ=section<daily-closing> ACCION=Guardar cierre diario
 d.querySelector(".daily-closing .card-footer").addEventListener("click", e => {
@@ -56,14 +52,14 @@ d.querySelector(".daily-closing .card-footer").addEventListener("click", e => {
     const $btnSave = e.target.closest(".daily-closing-save")
     if ($btnSave.disabled) {
       if ($btnSave.dataset.existBefore === "false") {
-        ntf.error("Cierre diario de caja", "No puede realizar el cierre de caja porque no se ha realizado el cierre del día anterior.", 10000)
+        ntf.error("Cierre diario de caja", "No puede realizar el cierre de caja porque no se ha realizado el cierre del dia anterior.", 10000)
       } else if ($btnSave.dataset.existAfter) {
         ntf.error("Cierre diario de caja", "No puede realizar el cierre de caja porque ya existe cierre de caja de dias posteriores.", 10000)
       }
       return
     }
     if (!dailyClosing.responsable) {
-      ntf.error("Información requerida", "Seleccione el responsable")
+      ntf.error("Informacion requerida", "Seleccione el responsable")
     } else {
       // Insertar el cierre diario en la base de datos
       saveDailyClosing()
@@ -85,10 +81,6 @@ d.querySelectorAll(".summary-filters").forEach($el => {
 // EVENTO=change RAIZ=document ACCION=cambio de fecha de operacion, y responsable de cierre de caja
 d.addEventListener("change", e => {
   let $input = e.target
-  /*   if (e.target.matches("#initial-balance")) {
-      dailyClosing.initialBalance = parseFloat(e.target.value)
-      dailyClosing.update = true
-    } */
   if ($input.matches(".summary-day")) {
     if (dateIsValid($input.value)) {
       operationDay = new Date($input.value)
@@ -101,14 +93,6 @@ d.addEventListener("change", e => {
   }
 })
 
-/* d.getElementById("initial-balance").addEventListener("focusout", e => {
-  // Si existe cambios en cantidad o descuento de items, se actualiza el carrito 
-  if (dailyClosing.update) {
-    dailyClosing.update = false
-    dailyCashClosing()
-  }
-}) */
-
 //------------------------------------------------------------------------------------------------
 // Funcionalidad
 //------------------------------------------------------------------------------------------------
@@ -119,7 +103,6 @@ function changeDailyClosing() {
   let filterDayString = truncOperationDayString(operationDay.getTime(), "date")
   localStorage.removeItem("COMMISSIONS")
   localStorage.removeItem("TIPS")
-  ////console.log("operationDay=", operationDay, "filterDayString=", filterDayString,)
   updateSalesByDay(filterDayString)
 }
 
@@ -129,40 +112,36 @@ async function updateSalesByDay(vsDate) {
     depositsData = []
 
   await salesRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
-    /////.orderByChild("searchDate").equalTo(vsDate)
     .once('value')
     .then((snap) => {
-      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         salesData.push(child.val())
       })
     })
     .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de ventas del día ${operationDay.toLocaleDateString()}`, error)
+      ntf.tecnicalError(`Búsqueda de ventas del dia ${operationDay.toLocaleDateString()}`, error)
     })
 
   await expensesRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
     .once('value')
     .then((snap) => {
-      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         expensesData.push(child.val())
       })
     })
     .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de ingresos/egresos del día ${operationDay.toLocaleDateString()}`, error)
+      ntf.tecnicalError(`Búsqueda de ingresos/egresos del dia ${operationDay.toLocaleDateString()}`, error)
     })
   await bankTxRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
     .once('value')
     .then((snap) => {
-      ////console.log(snap.toJSON())
       snap.forEach((child) => {
         const dta = child.val()
         if (dta.type === "DEPOSITO") depositsData.push(dta)
       })
     })
     .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de depositos del día ${operationDay.toLocaleDateString()}`, error)
+      ntf.tecnicalError(`Búsqueda de depositos del dia ${operationDay.toLocaleDateString()}`, error)
     })
 
   renderSections(salesData, expensesData, depositsData)
@@ -181,8 +160,7 @@ function renderSummary(salesData) {
     $body = d.getElementById("summary-body"),
     $footer = d.getElementById("summary-footer")
 
-  let vnTotalDiscounts = 0,
-    vnTotalTaxes = 0,
+  let vnTotalTaxes = 0,
     vnTotalTaxableIncome = 0,
     vnTotalCash = 0,
     vnTotalCard = 0,
@@ -191,7 +169,6 @@ function renderSummary(salesData) {
     vnTotalTipsByBank = 0,
     vnTotalBarberCommissions = 0,
     vnTotalBarberCommissionsTmp = 0,
-    vnDiscounts,
     vnTaxes,
     vnTaxableIncome,
     vnValueSale,
@@ -206,7 +183,6 @@ function renderSummary(salesData) {
     $body.innerHTML = ""
 
     salesData.forEach((sale, index) => {
-      vnDiscounts = roundTwo(sale.discounts)
       vnTaxableIncome = roundTwo(sale.taxableIncome)
       vnTaxes = roundTwo(sale.taxes)
       vnValueSale = roundTwo(sale.totalSale)
@@ -222,7 +198,6 @@ function renderSummary(salesData) {
       } else {
         vnBarberCommissionTmp = roundFour(sale.barberCommission * 1.12)
       }
-      vnTotalDiscounts += vnDiscounts
       vnTotalTaxableIncome += vnTaxableIncome
       vnTotalTaxes += vnTaxes
       vnTotalSales += vnValueSale
@@ -233,7 +208,6 @@ function renderSummary(salesData) {
       $template.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
       $template.querySelector(".seller").innerText = sale.seller
       $template.querySelector(".payment").innerText = sale.typePayment.toLowerCase()
-      $template.querySelector(".discounts").innerText = vnDiscounts.toFixed(2)
       $template.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
       $template.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
       $template.querySelector(".tips-by-bank").innerText = vnTipByBank > 0 ? vnTipByBank.toFixed(2) : ''
@@ -252,7 +226,6 @@ function renderSummary(salesData) {
     })
     $body.appendChild($fragment)
   }
-  $footer.querySelector(".total-discounts").innerText = vnTotalDiscounts.toFixed(2)
   $footer.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
   $footer.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
   $footer.querySelector(".total-tips-by-bank").innerText = vnTotalTipsByBank.toFixed(2)
@@ -491,10 +464,10 @@ async function updateDailyCashClosing() {
 
   let beforeDay = await dailyClosingRef.child(beforeKey).get()
     .then((snapshot) => snapshot.exists() ? snapshot.val() : null)
-    .catch((error) => ntf.tecnicalError(`Búsqueda de cierre diario del día ${beforeKey}`, error))
+    .catch((error) => ntf.tecnicalError(`Búsqueda de cierre diario del dia ${beforeKey}`, error))
   let afterDay = await dailyClosingRef.child(afterKey).get()
     .then((snapshot) => snapshot.exists() ? snapshot.val() : null)
-    .catch((error) => ntf.tecnicalError(`Búsqueda de cierre diario del día ${afterKey}`, error))
+    .catch((error) => ntf.tecnicalError(`Búsqueda de cierre diario del dia ${afterKey}`, error))
 
   renderDailyCashClosing(beforeDay, afterDay)
 }
@@ -506,11 +479,7 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   dailyClosing.finalBalance = dailyClosing.initialBalance + dailyClosing.cashSales + dailyClosing.fit
     - dailyClosing.advances - dailyClosing.deposits - dailyClosing.shopping
     - dailyClosing.expenses - dailyClosing.commissions - dailyClosing.salaries - dailyClosing.tipsByBank
-  //if (dailyClosing.fit > 0) {
-  //dailyClosing.finalBalance += dailyClosing.fit
-  //} else {
-  //  dailyClosing.finalBalance -= dailyClosing.fit
-  //}
+
   dailyClosing.finalBalance = roundTwo(dailyClosing.finalBalance)
   //Asignar valores
   let $contenedor = d.getElementById("daily-closing")
@@ -544,16 +513,10 @@ function renderDailyCashClosing(beforeDay, afterDay) {
 function saveDailyClosing() {
   // Generar la clave de la nueva venta
   const dailyKey = truncOperationDayString(operationDay.getTime(), "date")
-  console.log("dailyKey=", dailyKey)
-  ////dailyClosing.date = addHours(operationDay, 5).getTime()
+
   db.ref(collections.dailyClosing + "/" + dailyKey).set(dailyClosing).then((snapshot) => {
-    if (snapshot && snapshot.exists()) {
-      console.log(snapshot.val());
-    } else {
-      console.log("No data available");
-    }
-    ntf.show("Cierre de caja diario", `Se guardó correctamente la información del cierre diario del día ${operationDay.toLocaleDateString()}`)
+    ntf.show("Cierre de caja diario", `Se guardo correctamente la informacion del cierre diario del dia ${operationDay.toLocaleDateString()}`)
   }).catch((error) => {
-    ntf.tecnicalError(`Registro de cierre diario del día ${operationDay.toLocaleDateString()}`, error)
+    ntf.tecnicalError(`Registro de cierre diario del dia ${operationDay.toLocaleDateString()}`, error)
   })
 }

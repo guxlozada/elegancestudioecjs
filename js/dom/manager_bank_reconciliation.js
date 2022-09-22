@@ -87,11 +87,12 @@ function renderBankTransactions(transactions) {
     $rowTmp.querySelector(".responsable").innerText = trans.responsable
     $rowTmp.querySelector(".type-payment").innerText = trans.type
 
-    if (trans.saleUid) {
-      $rowTmp.querySelector(".sale-value").innerText = trans.saleValue ? trans.saleValue.toFixed(2) : trans.value.toFixed(2)
-      $rowTmp.querySelector(".sale-value").title = "Id Venta:" + (trans.saleUid ? trans.saleUid : "")
+    if (trans.saleUid && trans.saleValue) {
+      $rowTmp.querySelector(".sale-value").innerText = trans.saleValue.toFixed(2)
+      $rowTmp.querySelector(".sale-value").title = "Id Venta:" + trans.saleUid
     } else {
       $rowTmp.querySelector(".sale-value").innerText = ""
+      $rowTmp.querySelector(".sale-value").title = ""
     }
     $rowTmp.querySelector(".datafast-commission").innerText = trans.dfCommission ? trans.dfCommission.toFixed(4) : ""
     $rowTmp.querySelector(".datafast-iva").innerText = trans.dfTaxWithholdingIVA ? trans.dfTaxWithholdingIVA.toFixed(4) : ""

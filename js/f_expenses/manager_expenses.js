@@ -22,9 +22,9 @@ function reset() {
   d.getElementById("expense-date-input").valueAsDate = hoyEC().toJSDate()
   d.getElementsByName("responsable").forEach($el => $el.checked = $el.checked = false)
   d.getElementsByName("type").forEach($el => $el.checked = $el.value === "GASTO")
-  d.getElementById("value").value = null
-  d.getElementById("voucher").value = null
-  d.getElementById("details").value = null
+  d.getElementById("value").value = ""
+  d.getElementById("voucher").value = ""
+  d.getElementById("details").value = ""
 }
 
 // ------------------------------------------------------------------------------------------------

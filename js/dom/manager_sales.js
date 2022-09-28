@@ -146,7 +146,7 @@ function renderSaleHeader() {
   d.getElementById("sale-client").innerText = cli.description
   d.getElementById("sale-client-lastserv").innerText = cli.lastService
   d.getElementById("sale-client-referrals").innerText = cli.referrals
-  d.getElementById("sale-date-input").valueAsDate = hoyEC().toJSDate()
+  d.querySelector(".sale-date-input").valueAsDate = hoyEC().toJSDate()
   // Control de fechas minimo y maximo para ing/egr caja
   addMinMaxPropsWithCashOutflowDates(".sale-date-input")
   d.getElementsByName("seller").forEach($el => $el.checked = $el.value === sale.seller)

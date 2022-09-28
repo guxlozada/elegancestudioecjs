@@ -237,14 +237,6 @@ function calculatePeriod() {
 // --------------------------
 // Database operations
 // --------------------------
-async function findLastClosingDay() {
-  await dailyClosingRef.orderByKey().limitToLast(1).once('value')
-    .then((snap) => {
-      snap.forEach((child) => {
-        filters.lastClosingDay = new Date(child.val().date)
-      })
-    })
-}
 
 async function findExpenses() {
   let arryTmp,

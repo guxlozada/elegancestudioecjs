@@ -40,10 +40,10 @@ let operationDay = todayEc(),
 //------------------------------------------------------------------------------------------------
 
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
-w.addEventListener("load", () => {  changeDailyClosing()})
+w.addEventListener("load", () => { changeDailyClosing() })
 
 // EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => {  navbarBurgers()})
+d.addEventListener("DOMContentLoaded", () => { navbarBurgers() })
 
 // EVENTO=click RAIZ=section<daily-closing> ACCION=Guardar cierre diario
 d.querySelector(".daily-closing .card-footer").addEventListener("click", e => {
@@ -98,7 +98,8 @@ d.addEventListener("change", e => {
 //------------------------------------------------------------------------------------------------
 
 function changeDailyClosing() {
-  d.querySelectorAll(".summary-day").forEach(($el) => $el.valueAsDate = operationDay)
+  d.querySelectorAll(".summary-day").forEach($el => $el.valueAsDate = operationDay)
+  d.getElementsByName("responsable").forEach($el => $el.checked = false)
   dailyClosing = JSON.parse(JSON.stringify(dailyClosingInit))
   let filterDayString = truncOperationDayString(operationDay.getTime(), "date")
   localStorage.removeItem("COMMISSIONS")

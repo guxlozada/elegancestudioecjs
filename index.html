@@ -90,10 +90,8 @@
                   <th>
                     <div class="field">
                       <p class="control has-icons-left">
-                        <input class="input is-small is-hidden" id="sale-date" type="text"
-                          style="max-width: 150px; margin: 0;" readonly>
-                        <input class="input is-small" id="sale-date-input" name="saleDate" type="date"
-                          style="max-width: 220px; margin: 0;" required />
+                        <input type="date" class="sale-date-input input is-small" id="sale-date-input" name="saleDate"
+                          required onkeydown="return false" style="max-width: 9rem; margin: 0;" />
                         <span class="icon is-small is-left">
                           <i class="fa-solid fa-calendar-days"></i>
                         </span>

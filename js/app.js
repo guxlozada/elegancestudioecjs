@@ -15,7 +15,7 @@ const d = document,
   $servicesModalContainer = d.querySelector("#services-modal .items-container"),
   $servicesModalEneglimarContainer = d.querySelector("#services-modal-eneglimar .items-container")
 
-export const ntf = new NotificationBulma();
+export const ntf = new NotificationBulma()
 
 //------------------------------------------------------------------------------------------------
 // Funcionalidad
@@ -137,18 +137,6 @@ d.querySelector("#products-modal .items-container").addEventListener("click", e 
     addToSale($item.dataset.key, $item.dataset.type)// Ejecutar accion al seleccionar el producto
   }
 })
-
-// EVENTO=resize RAIZ=header ACCION=cambiar el menu hamburguesa
-w.addEventListener("resize", e => {
-  ////navbarBurgers()
-})
-
-// TODO: Validar campos requeridos de cliente al actualizaciones
-// TODO: Asignar/sumar referido al momento del registro del cliente
-// TODO: Agregar el searchNames al momento del registro del cliente en minusculas y sin espacios en blanco
-//       y cambiar la busqueda por nombres
-// TODO: Agregar un formulario de gastos/ajustes con los campos responsable/fecha/valor/detalles
-// TODO: Controlar el descuento hasta maximo la base imponible
 
 
 

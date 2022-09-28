@@ -1,17 +1,20 @@
-import { addHours, dateIsValid, dateToStringEc, formatToOperationDayStringEc, nowEc, timestampEc, todayEc, todayEcToString } from "../util/fecha-util.js";
+import { addHours, dateIsValid, hoyEC, nowEc, timestampEc, todayEcToString } from "../util/fecha-util.js";
+import { roundFour, roundTwo } from "../util/numbers-util.js";
+import { zeroPad } from "../util/text-util.js";
+import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js";
 import { dbRef } from "../persist/firebase_conexion.js";
+import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
 import { collections } from "../persist/firebase_collections.js";
+import NotificationBulma from "./NotificacionBulma.js";
 import { services } from "./catalog_services.js";
 import { servicesEneglimar } from "./catalog_services_eneglimar.js";
 import { products } from "./catalog_products.js";
-import { changeProductsModalTypeSale, ntf } from "../app.js";
-import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
-import { saleToBanktransaction } from "../f_bank_transactions/dao_bank_reconciliation.js";
-import { roundFour, roundTwo } from "../util/numbers-util.js";
-import { zeroPad } from "../util/text-util.js";
+import { changeProductsModalTypeSale } from "../app.js";
+import { BANCO_PRODUBANCO, saleToBanktransaction } from "../f_bank_transactions/dao_bank_reconciliation.js";
+import { localdb } from "../repo-browser.js";
 
-
-const d = document
+const d = document,
+  ntf = new NotificationBulma()
 
 const saleInit = {
   client: {
@@ -41,7 +44,7 @@ let sale
 //------------------------------------------------------------------------------------------------
 
 const resetSale = () => {
-  localStorage.removeItem("SALE")
+  localStorage.removeItem(localdb.sale)
   sale = JSON.parse(JSON.stringify(saleInit))
   updateSale()
 }
@@ -54,7 +57,7 @@ export function changeSaleClient($client) {
       CANCELAR: regresar a la venta anterior`)
   }
   if (discart) {
-    localStorage.removeItem("SALE")
+    localStorage.removeItem(localdb.sale)
     sale = JSON.parse(JSON.stringify(saleInit))
     sale.client.uid = $client.dataset.uid
     sale.client.idNumber = $client.dataset.idnumber
@@ -118,7 +121,7 @@ function updateSaleDetails(changeTypePayment) {
   renderSaleItems(changeTypePayment)
   renderSaleSummary()
   // Almacenar la venta en el local storage
-  localStorage.setItem("SALE", JSON.stringify(sale))
+  localStorage.setItem(localdb.sale, JSON.stringify(sale))
 }
 
 function validateBarberTipActive() {
@@ -143,9 +146,9 @@ function renderSaleHeader() {
   d.getElementById("sale-client").innerText = cli.description
   d.getElementById("sale-client-lastserv").innerText = cli.lastService
   d.getElementById("sale-client-referrals").innerText = cli.referrals
-  // Descomentar cuando nuevamente se bloquea la fecha a la actual
-  //d.getElementById("sale-date").value = sale.searchDate
-  d.getElementById("sale-date-input").valueAsDate = todayEc()
+  d.getElementById("sale-date-input").valueAsDate = hoyEC().toJSDate()
+  // Control de fechas minimo y maximo para ing/egr caja
+  addMinMaxPropsWithCashOutflowDates(".sale-date-input")
   d.getElementsByName("seller").forEach($el => $el.checked = $el.value === sale.seller)
   d.getElementsByName("typePayment").forEach($el => $el.checked = $el.value === sale.typePayment)
   d.getElementsByName("typeSale").forEach($el => $el.checked = $el.value === sale.type)
@@ -379,7 +382,7 @@ function changeItemDiscount(vsCode, vnUnitDiscount) {
 
 export default function handlerSales() {
   // Verificar si se debe cargar una venta almacenada o una nueva
-  sale = localStorage.getItem("SALE") ? JSON.parse(localStorage.getItem("SALE")) : JSON.parse(JSON.stringify(saleInit))
+  sale = JSON.parse(localStorage.getItem(localdb.sale) ? localStorage.getItem(localdb.sale) : JSON.stringify(saleInit))
   updateSale()
 
   // EVENTO=click RAIZ=section<servicios> ACCION=Eliminar detalles
@@ -482,7 +485,7 @@ export default function handlerSales() {
       sale.tipByBank = $input.valueAsNumber || 0
       sale.update = true
     }
-    localStorage.setItem("SALE", JSON.stringify(sale))
+    localStorage.setItem(localdb.sale, JSON.stringify(sale))
   })
 
   // EVENTO=focusout RAIZ=section<servicios> ACCION=detectar cambios en inputs que deben refrescarv la pagina
@@ -513,8 +516,8 @@ function insertSalesDB(callback) {
   // Generar la clave de la nueva venta
   const saleKey = timestampToDatekey(saleHeader.date)
 
-  // Si forma pago=TCREDITO/TDEBITO o TRANSFERENCIA se genera una transaccion bancaria
-  let tx = saleToBanktransaction(saleHeader)
+  // Si forma pago=TCREDITO/TDEBITO o TRANSFERENCIA se genera una transaccion bancaria a PRODUBANCO
+  let tx = saleToBanktransaction(saleHeader, BANCO_PRODUBANCO)
   if (tx) {
     // Asigna el valor proporcional calculado de la propina luego de la comision del datafast
     saleHeader.tipByBankPayment = tx.tipByBank || saleHeader.tipByBank || 0

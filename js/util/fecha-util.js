@@ -150,12 +150,15 @@ export function timestampInputDateToDateEc(vsDate) {
 
 
 //////////////////////////////////////////
+export const PATTERN_KEY_DATE = "yyyyMMdd"
+export const PATTERN_INPUT_DATE = "yyyy-MM-dd"
+
 export const ahoraEC = () => { return DateTime.local() }
 
 export const hoyEC = () => { return DateTime.local().startOf('day') }
 
 export function inputDateToDateTime(vsDate) {
-  return DateTime.fromFormat(vsDate, 'yyyy-MM-dd')
+  return DateTime.fromFormat(vsDate, PATTERN_INPUT_DATE)
 }
 
 export function inputDatetimeToDateTime(vsDate) {
@@ -164,5 +167,5 @@ export function inputDatetimeToDateTime(vsDate) {
 }
 
 export function dateTimeToKeyDateString(vdDateTime) {
-  return vdDateTime.toFormat('yyyyMMdd')
+  return vdDateTime.toFormat(PATTERN_KEY_DATE)
 }

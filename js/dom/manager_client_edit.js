@@ -3,6 +3,7 @@ import { dbRef } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
 import { ntf } from "../app.js";
 import { renderClients } from "./manager_clients.js";
+import { localdb } from "../repo-browser.js";
 
 const d = document
 
@@ -42,7 +43,7 @@ export function changeClient(reset) {
     CANCELAR: regresar al cliente anterior`)
   }
   if (discard) {
-    localStorage.removeItem("CLIENT")
+    localStorage.removeItem(localdb.client)
     client = JSON.parse(JSON.stringify(clientInit))
     updateClient()
   } else {
@@ -63,7 +64,7 @@ function updateClient() {
   d.getElementById("client-referred").value = client.referred
   d.getElementsByName("registeredBy").forEach($el => $el.checked = $el.value === client.registeredBy)
   // Almacenar el gastoen el local storage
-  localStorage.setItem("CLIENT", JSON.stringify(client))
+  localStorage.setItem(localdb.client, JSON.stringify(client))
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -72,7 +73,7 @@ function updateClient() {
 
 export default function handlerClientEdit() {
   // Verificar si se debe cargar un cliente almacenado o inicializar
-  client = localStorage.getItem("CLIENT") ? JSON.parse(localStorage.getItem("CLIENT")) : JSON.parse(JSON.stringify(clientInit))
+  client = JSON.parse(localStorage.getItem(localdb.client) ? localStorage.getItem(localdb.client) : JSON.stringify(clientInit))
   changeClient(false)
 
   // EVENTO=click RAIZ=button<client-save> ACCION=crear y actualizar clientes 
@@ -80,7 +81,7 @@ export default function handlerClientEdit() {
     ////console.log(`client-save click target=${e.target.classList}`, e.target.value)
 
     // Almacenar el cliente en el local storage
-    localStorage.setItem("CLIENT", JSON.stringify(client))
+    localStorage.setItem(localdb.client, JSON.stringify(client))
 
     // Obtiene los campos que contienen la informacion del cliente
     const $clientInput = d.getElementsByClassName("client-input")

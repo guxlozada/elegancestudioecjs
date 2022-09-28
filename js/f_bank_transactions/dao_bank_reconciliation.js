@@ -3,39 +3,33 @@ import timestampToDatekey, { generateDateProperties } from "../persist/dao_gener
 import { dbRef } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
 
+export const BANCO_PRODUBANCO = "PROD"
+
 const TDEBIT_COMISSION = 0.0225,
   TCREDIT_COMISSION = 0.0448,
   TAX_WITHHOLDING_IVA = 0.7,
   TAX_WITHHOLDING_RENTA = 0.02
 
-const txInit = {
-  date: null,
-  responsable: null,
-  type: null,// [DEPOSITO, TRANSFERENCIA, TCREDITO, TDEBITO, TRANSFRETIRO]
-  value: null,
-  voucher: null,// Para conciliar se coloca el numero de documento del banco
-  details: null
-  ////saleUid: null, // Se debe colocar el IDENTIFICADOR de la venta. ID_SALE_20220402T133047
-}
 /**
  * Generar un movimiento bancario por una venta.
  * @param {Object} voSale Informacion de la venta
  */
-export function saleToBanktransaction(voSale) {
+export function saleToBanktransaction(voSale, vsBank) {
   const datafastPayments = ["TCREDITO", "TDEBITO"]
   const typePayments = ["TRANSFERENCIA", ...datafastPayments]
   if (!typePayments.includes(voSale.typePayment)) {
     return
   }
-  let tx = JSON.parse(JSON.stringify(txInit))
-  // Se asigna el timestamp similar de la venta
-  tx.date = voSale.date
-  tx.searchDate = voSale.searchDate
-  tx.searchDateTime = voSale.searchDateTime
-  tx.saleUid = timestampToDatekey(voSale.date)
-  tx.responsable = voSale.seller
-  tx.type = voSale.typePayment
-  tx.value = voSale.totalSale
+  let tx = {
+    date: voSale.date,// Se asigna el timestamp similar de la venta
+    searchDate: voSale.searchDate,
+    searchDateTime: voSale.searchDateTime,
+    saleUid: timestampToDatekey(voSale.date),
+    responsable: voSale.seller,
+    type: voSale.typePayment,
+    value: voSale.totalSale,
+    bank: vsBank || BANCO_PRODUBANCO
+  }
   // Calcular el valor acreditado aproximado para datafast
   if (datafastPayments.includes(voSale.typePayment)) {
     const DATAFAST_COMMISSION = voSale.typePayment === "TCREDITO" ? TCREDIT_COMISSION : TDEBIT_COMISSION
@@ -61,6 +55,7 @@ export function saleToBanktransaction(voSale) {
  * @param {Object} voBankTx Informacion del movimiento bancario
  * @param {function} callback 
  * @param {function} callbackError 
+ * @param {function} callbackSaleNoExist Funcion que se invoca cuando no existe el numero de venta 
  */
 export async function insertBankTransaction(voBankTx, callback, callbackError, callbackSaleNoExist) {
   // Valida si existe la venta asociada

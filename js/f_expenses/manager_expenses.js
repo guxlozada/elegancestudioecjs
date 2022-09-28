@@ -46,7 +46,7 @@ $container.addEventListener("reset", e => {
 $container.addEventListener("submit", e => {
   e.preventDefault()
 
-  let expense = convertFormToObject()
+  let expense = convertFormToObject($container)
 
   if (!expense.responsable) {
     ntf.error("Información requerida", "Seleccione el responsable o beneficiario")

@@ -3,7 +3,7 @@ import { DateTime } from "../luxon.min.js"
 import { ahoraEC, dateIsValid } from "../util/fecha-util.js"
 
 /**
- * Convierte un Date in millisegundos para genrar una clave con formato 'yyyyMMddThhmmss'
+ * Convierte un Date in millisegundos para generar una clave con formato 'yyyyMMddThhmmss'
  * @param { number} timestampUTC ONLY UTC Date in millisegundos
  */
 export default function timestampToDatekey(timestampUTC) {

@@ -31,7 +31,7 @@
   </header>
   <main>
 
-    <section id="expenses" class="section" style="max-width: 800px !important; margin:auto;">
+    <section class="section" style="max-width: 800px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -49,10 +49,7 @@
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Fecha</label>
                 <p class="control has-icons-left">
-                  <input class="input is-small is-hidden" id="expense-date" type="text"
-                    placeholder="Fecha de registro..." readonly>
-                  <input type="date" class="prop-input input is-small" id="expense-date-input" data-key="date"
-                    data-type="timestamp" required />
+                  <input type="date" class="expense-date prop-input input is-small" data-type="timestamp" required />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-calendar-days"></i>
                   </span>
@@ -63,15 +60,15 @@
                   responsable)</label>
                 <div class="control is-size-7">
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="type" value="GASTO" data-key="type">
+                    <input type="radio" class="prop-input" name="type" value="GASTO">
                     Gasto
                   </label>
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="type" value="COMPRA" data-key="type">
+                    <input type="radio" class="prop-input" name="type" value="COMPRA">
                     Compra
                   </label>
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="type" value="AJUSTE" data-key="type">
+                    <input type="radio" class="prop-input" name="type" value="AJUSTE">
                     Ajuste
                   </label>
                 </div>
@@ -81,24 +78,24 @@
                   beneficiario)</label>
                 <div class="control is-size-7">
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="type" value="ADELANTO" data-key="type">
+                    <input type="radio" class="prop-input" name="type" value="ADELANTO">
                     Adelanto
                   </label>
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="type" value="BEBIDA" data-key="type">
+                    <input type="radio" class="prop-input" name="type" value="BEBIDA">
                     Bebida
                   </label>
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="type" value="COMISION" data-key="type">
+                    <input type="radio" class="prop-input" name="type" value="COMISION">
                     Comision
                   </label>
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="type" value="PROPINA" data-key="type"
+                    <input type="radio" class="prop-input" name="type" value="PROPINA"
                       title="Devolucion de propina de barbero recibida mediante pago con transferencia o tarjeta de credito/debito">
                     Propina
                   </label>
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="type" value="SUELDO" data-key="type">
+                    <input type="radio" class="prop-input" name="type" value="SUELDO">
                     Sueldo
                   </label>
                 </div>
@@ -107,23 +104,19 @@
                 <label class="label is-small is-hidden-mobile is-inline">Responsable o Beneficiario</label>
                 <div class="control is-size-7">
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="responsable" value="ESTIBERSON" data-key="responsable" autofocus>
+                    <input type="radio" class="prop-input" name="responsable" value="ESTIBERSON" autofocus>
                     Estiberson
                   </label>
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="responsable" value="ERICK" data-key="responsable">
+                    <input type="radio" class="prop-input" name="responsable" value="ERICK">
                     Erick
                   </label>
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="responsable" value="NESTOR" data-key="responsable">
-                    Nestor
-                  </label>
-                  <label class="radio">
-                    <input class="prop-input" type="radio" name="responsable" value="ENEGLIMAR" data-key="responsable">
+                    <input type="radio" class="prop-input" name="responsable" value="ENEGLIMAR">
                     Eneglimar
                   </label>
                   <label class="radio">
-                    <input class="prop-input" type="radio" name="responsable" value="ADMIN" data-key="responsable">
+                    <input type="radio" class="prop-input" name="responsable" value="ADMIN">
                     Admin
                   </label>
                 </div>
@@ -131,8 +124,8 @@
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Valor</label>
                 <p class="control has-icons-left">
-                  <input type="number" class="prop-input input is-small" id="value" data-key="value" step="0.01"
-                    min="-10.00" placeholder="00.00" />
+                  <input type="number" class="prop-input input is-small" name="value" step="0.01" min="0"
+                    placeholder="00.00" required />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-money-check-dollar"></i>
                   </span>
@@ -142,7 +135,7 @@
                 <label class="label is-small is-hidden-mobile is-inline">Nro.Comprobante /
                   Factura</label>
                 <p class="control has-icons-left">
-                  <input type="text" class="prop-input input is-small" id="voucher" data-key="voucher"
+                  <input type="text" class="prop-input input is-small" name="voucher"
                     placeholder="# Comprobante o Factura..." />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-receipt"></i>
@@ -152,7 +145,7 @@
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Detalles</label>
                 <div class="control">
-                  <textarea class="prop-input textarea is-small" id="details" rows="2" data-key="details"
+                  <textarea class="prop-input textarea is-small" name="details" rows="2"
                     placeholder="Breve detalle del egreso..."></textarea>
                 </div>
               </div>

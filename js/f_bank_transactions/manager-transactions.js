@@ -1,5 +1,7 @@
+import validAdminAccess, { isAdmin } from "../dom/manager_user.js"
 import navbarBurgers from "../dom/navbar_burgers.js"
 import NotificationBulma from "../dom/NotificacionBulma.js"
+import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js"
 import { hoyEC } from "../util/fecha-util.js"
 import convertFormToObject, { resetForm } from "../util/form_util.js"
 import { insertBankTransaction } from "./dao_bank_reconciliation.js"
@@ -27,7 +29,18 @@ function reset($form) {
 d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
-w.addEventListener("load", () => d.querySelectorAll(".transaction-date").forEach($el => $el.valueAsDate = hoyEC().toJSDate()))
+w.addEventListener("load", () => {
+  d.querySelectorAll(".transaction-date").forEach($el => {
+    $el.valueAsDate = hoyEC().toJSDate()
+  })
+
+  if (d.getElementById("form-bank-tx") && validAdminAccess()) {
+    d.querySelector(".save-bank-tx").removeAttribute("disabled")
+  } else {
+    addMinMaxPropsWithCashOutflowDates(".transaction-date")
+  }
+
+})
 
 // EVENTO=submit RAIZ=section ACCION=inicializar el formulario
 d.addEventListener("reset", e => {

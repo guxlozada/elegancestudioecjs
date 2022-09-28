@@ -106,7 +106,7 @@
               <label class="label is-small is-hidden-mobile is-inline">Valor</label>
               <p class="control has-icons-left">
                 <input type="number" class="prop-input input is-small" name="value" step="0.1" min="0"
-                  placeholder="00.00" />
+                  placeholder="00.00" required />
                 <span class="icon is-small is-left">
                   <i class="fa-solid fa-money-check-dollar"></i>
                 </span>
@@ -132,13 +132,13 @@
           </div>
           <footer class="card-footer">
             <div class="buttons is-right" style="width: 100%;">
-              <button type="submit" class="card-footer-item button is-primary">
+              <button type="submit" class="save-bank-tx card-footer-item button is-primary" disabled>
                 <span class="icon">
                   <i class="fa-solid fa-check"></i>
                 </span>
                 <span>Guardar</span>
               </button>
-              <button type="reset" class="expense-cancel card-footer-item button is-danger">
+              <button type="reset" class="card-footer-item button is-danger">
                 <span class="icon">
                   <i class="fa-solid fa-xmark"></i>
                 </span>

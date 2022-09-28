@@ -1,8 +1,8 @@
+import { localdb } from "../repo-browser.js"
 import { hoyEC } from "../util/fecha-util.js"
 
-const itemkey = "ACCESSTOKEN"
-const adminkey = "0."
-const fd = "MMdd20yyyy02ddMM"
+const ADMKEY = "0."
+const FD = "MMdd20yyyy02ddMM"
 
 export default function validAdminAccess() {
 
@@ -15,9 +15,9 @@ export default function validAdminAccess() {
     keyIn
   do {
     keyIn = prompt("Acceso para administrador, ingrese la clave:")
-    res = keyIn && keyIn.startsWith(adminkey)
+    res = keyIn && keyIn.startsWith(ADMKEY)
     if (res) {
-      localStorage.setItem(itemkey, hoyEC().toFormat(fd))
+      localStorage.setItem(localdb.accesskey, hoyEC().toFormat(FD))
       break
     } else {
       ask = confirm("Clave equivocada - Acceso denegado/nDesea intentar con otra clave")
@@ -28,9 +28,9 @@ export default function validAdminAccess() {
 }
 
 export const isAdmin = () => {
-  return localStorage.getItem(itemkey) === hoyEC().toFormat(fd)
+  return localStorage.getItem(localdb.accesskey) === hoyEC().toFormat(FD)
 }
 
 export const cleanAdminAccess = () => {
-  localStorage.removeItem(itemkey)
+  localStorage.removeItem(localdb.accesskey)
 }

@@ -31,7 +31,7 @@
   </header>
   <main>
 
-    <section id="deposits" class="section" style="max-width: 800px !important; margin:auto;">
+    <section class="section" style="max-width: 800px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -51,7 +51,7 @@
                 <p class="control has-icons-left">
                   <input type="date" class="transaction-date prop-input input is-small" name="date"
                     data-type="timestamp" required />
-                  <input type="hidden" class="prop-input" name="type" value="DEPOSITO" />
+                  <input type="hidden" class="prop-input" name="type" value="DEPOSITO" required />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-calendar-days"></i>
                   </span>
@@ -91,7 +91,7 @@
                 <label class="label is-small is-hidden-mobile is-inline">Valor</label>
                 <p class="control has-icons-left">
                   <input type="number" class="prop-input input is-small" name="value" step="0.1" min="0"
-                    placeholder="00.00" />
+                    placeholder="00.00" required />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-money-check-dollar"></i>
                   </span>
@@ -129,7 +129,7 @@
       </div>
     </section>
 
-    <section id="transfers" class="section" style="max-width: 800px !important; margin:auto;">
+    <section class="section" style="max-width: 800px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -149,7 +149,7 @@
                 <p class="control has-icons-left">
                   <input type="date" class="transaction-date prop-input input is-small" name="date"
                     data-type="timestamp" required />
-                  <input type="hidden" class="prop-input" name="type" value="TRANSFERENCIA" />
+                  <input type="hidden" class="prop-input" name="type" value="TRANSFERENCIA" required />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-calendar-days"></i>
                   </span>
@@ -189,7 +189,7 @@
                 <label class="label is-small is-hidden-mobile is-inline">Valor</label>
                 <p class="control has-icons-left">
                   <input type="number" class="prop-input input is-small" name="value" step="0.1" min="0"
-                    placeholder="00.00" />
+                    placeholder="00.00" required />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-money-check-dollar"></i>
                   </span>

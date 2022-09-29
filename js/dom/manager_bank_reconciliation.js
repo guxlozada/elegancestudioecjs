@@ -1,16 +1,13 @@
-import { dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
-import { db } from "../persist/firebase_conexion.js";
-import { collections } from "../persist/firebase_collections.js";
+import { hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
 import validAdminAccess from "./manager_user.js";
 import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
-import { updateBankTxVerified } from "../f_bank_transactions/dao_bank_reconciliation.js";
+import { findBankTxs, updateBankTxVerified } from "../f_bank_transactions/dao_bank_reconciliation.js";
 import { roundTwo } from "../util/numbers-util.js";
 
 const d = document,
   w = window,
-  ntf = new NotificationBulma(),
-  bankRef = db.ref(collections.bankReconciliation)
+  ntf = new NotificationBulma()
 
 const typePayments = ["DEPOSITO", "TRANSFERENCIA", "DEBITO_TRANSFERENCIA", "TCREDITO", "TDEBITO"],
   banks = ["PICH", "PROD"]
@@ -38,6 +35,7 @@ d.getElementById("search").addEventListener("click", () => {
   // NO se ha seleccionado al menos una fecha
   if (!dateStart && !dateEnd) {
     ntf.error("Información con errores", "Seleccione una fecha o un rango de fechas")
+    search()
     return
   }
 
@@ -154,7 +152,9 @@ d.getElementById("bank-transactions").addEventListener("change", e => {
 function search() {
   if (validAdminAccess()) {
     calculatePeriod()
-    findBankTransactions()
+    findBankTxs(filters.typePayments, filters.banks, filters.dateStart, filters.dateEnd,
+      (transactions) => { renderBankTransactions(transactions) },
+      error => { ntf.tecnicalError(`Búsqueda de transacciones bancarias con error`, error) })
   }
 }
 
@@ -256,30 +256,4 @@ function calculatePeriod() {
       filters.dateEnd = baseDate.endOf('month')
       break
   }
-}
-
-// --------------------------
-// Database operations
-// --------------------------
-
-function findBankTransactions() {
-  let rangeStart = dateTimeToKeyDateString(filters.dateStart),
-    rangeEnd = dateTimeToKeyDateString(filters.dateEnd)
-
-  bankRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
-    .once('value')
-    .then((snap) => {
-      let transactions = []
-      snap.forEach((child) => {
-        let tx = child.val()
-        tx.tmpUid = child.key
-        if (filters.typePayments.includes(tx.type) && filters.banks.includes(tx.bank)) transactions.push(tx)
-      })
-
-      renderBankTransactions(transactions)
-    })
-    .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de transacciones bancarias con error`, error)
-    })
-
 }

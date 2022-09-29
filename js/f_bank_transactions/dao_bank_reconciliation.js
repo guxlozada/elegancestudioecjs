@@ -1,7 +1,8 @@
 import { roundFour, roundTwo } from "../util/numbers-util.js";
 import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
-import { dbRef } from "../persist/firebase_conexion.js";
+import { db, dbRef } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
+import { dateTimeToKeyDateString } from "../util/fecha-util.js";
 
 export const BANCO_PRODUBANCO = "PROD"
 
@@ -103,8 +104,8 @@ export async function insertBankTx(voBankTx, callback, callbackError, callbackSa
 /**
  * Actualiza la informacion de verificacion de la tx bancaria en la consiliacion.
  * @param {object} voTx Objeto con informacion de la tx bancaria  con los atributos: uid, value, verified, verifiedValue
- * @param {function} callback 
- * @param {function} callbackError 
+ * @param {Function} callback 
+ * @param {Function} callbackError 
  */
 export function updateBankTxVerified(voTx, callback, callbackError) {
   var updates = {}
@@ -118,4 +119,34 @@ export function updateBankTxVerified(voTx, callback, callbackError) {
       callback(voTx)
     }
   })
+}
+
+/**
+ * Consulta de transacciones bancarias por rango de fechas, tipo de transaccion y banco
+ * @param {DateTime} vdStart DateTime utilizado como fecha de inicio del rango
+ * @param {DateTime} vdEnd DateTime utilizado como fecha final del rango
+ * @param {Array} vaTypes Array con tipos de transaccion
+ * @param {Array} vaBanks Array con bancos
+ * @param {Function} callback 
+ * @param {Function} callbackError 
+ */
+export function findBankTxs(vaTypes, vaBanks, vdStart, vdEnd, callback, callbackError) {
+  let rangeStart = dateTimeToKeyDateString(vdStart),
+    rangeEnd = dateTimeToKeyDateString(vdEnd)
+
+  db.ref(collections.bankReconciliation).orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
+    .once('value')
+    .then((snap) => {
+      let transactions = []
+      snap.forEach((child) => {
+        let tx = child.val()
+        tx.tmpUid = child.key
+        if (vaTypes.includes(tx.type) && vaBanks.includes(tx.bank)) transactions.push(tx)
+      })
+      callback(transactions)
+    })
+    .catch((error) => {
+      callbackError(error)
+    })
+
 }

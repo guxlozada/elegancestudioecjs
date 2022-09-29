@@ -166,6 +166,11 @@ export function inputDatetimeToDateTime(vsDate) {
   return DateTime.fromISO(isoString)
 }
 
+/**
+ * Convierte un DateTime Luxon a una cadena 'yyyyMMdd'
+ * @param {DateTime} vdDateTime DateTime Luxon
+ * @returns 
+ */
 export function dateTimeToKeyDateString(vdDateTime) {
   return vdDateTime.toFormat(PATTERN_KEY_DATE)
 }

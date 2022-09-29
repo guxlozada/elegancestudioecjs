@@ -1,10 +1,10 @@
-import validAdminAccess, { isAdmin } from "../dom/manager_user.js"
+import validAdminAccess from "../dom/manager_user.js"
 import navbarBurgers from "../dom/navbar_burgers.js"
 import NotificationBulma from "../dom/NotificacionBulma.js"
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js"
 import { hoyEC } from "../util/fecha-util.js"
 import convertFormToObject, { resetForm } from "../util/form_util.js"
-import { insertBankTransaction } from "./dao_bank_reconciliation.js"
+import { insertBankTx } from "./dao_bank_reconciliation.js"
 
 const d = document,
   w = window,
@@ -88,7 +88,7 @@ d.addEventListener("submit", e => {
   }
 
   if (!ntf.enabled) {
-    insertBankTransaction(bankTx,
+    insertBankTx(bankTx,
       (bankTx) => {
         let idTx = (bankTx.voucher && !bankTx.voucher.startsWith("00")) ? bankTx.voucher : bankTx.date
         ntf.show(`Transaccion bancaria registrado`, `Se guardó correctamente la información: ${bankTx.type} Nro.${idTx}`)

@@ -35,14 +35,14 @@
           </p>
         </header>
         <div class="card-content has-background-info-light p-2">
-          <div class=" content">
+          <div class="content">
             <table id="filters">
               <tbody>
                 <tr class="list-inline">
-                  <td colspan="2">
+                  <td>
                     <div class="control is-size-7">
                       <label class="checkbox">
-                        <input type="checkbox" id="type-payment-todos" name="typePayment" value="TODOS" checked>
+                        <input type="checkbox" id="type-payment-all" name="typePayment" value="TODOS" checked>
                         Todos
                       </label>
                       <label class="checkbox">
@@ -50,20 +50,37 @@
                         Deposito
                       </label>
                       <label class="checkbox">
-                        <input type="checkbox" name="typePayment" value="TRANSFERENCIA">
-                        Transferencia (Credito)
+                        <input type="checkbox" name="typePayment" value="TRANSFERENCIA" title="Transferencia credito">
+                        Transf credito
                       </label>
                       <label class="checkbox">
-                        <input type="checkbox" name="typePayment" value="DEBITO_TRANSFERENCIA">
-                        Transferencia (Debito)
+                        <input type="checkbox" name="typePayment" value="DEBITO_TRANSFERENCIA"
+                          title="Transferencia debito">
+                        Transf debito
                       </label>
                       <label class="checkbox">
                         <input type="checkbox" name="typePayment" value="TCREDITO">
-                        Tarjeta Credito
+                        Tarj credito
                       </label>
                       <label class="checkbox">
                         <input type="checkbox" name="typePayment" value="TDEBITO">
-                        Tarjeta Debito
+                        Tarj debito
+                      </label>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="control is-size-7">
+                      <label class="checkbox">
+                        <input type="checkbox" id="bank-all" name="bank" value="TODOS" checked>
+                        Todos
+                      </label>
+                      <label class="checkbox">
+                        <input type="checkbox" name="bank" value="PICH">
+                        Pichincha
+                      </label>
+                      <label class="checkbox">
+                        <input type="checkbox" name="bank" value="PROD">
+                        Produbanco
                       </label>
                     </div>
                   </td>
@@ -107,21 +124,22 @@
             </table>
             <table>
               <thead>
-                <tr class="has-background-grey-light has-text-right">
-                  <th class="search-period has-text-centered" colspan="3"></th>
+                <tr class="has-background-grey-lighter has-text-right">
+                  <th class="search-period has-text-left pl-4" colspan="4"></th>
                   <th colspan="5">Total:</th>
-                  <th class="search-total-value"></th>
+                  <th class="search-total-value pr-4"></th>
                   <td></td>
                 </tr>
                 <tr class="has-background-link  has-text-centered">
-                  <th class="has-text-white" style="width:1rem"></th>
+                  <th style="width:1rem"></th>
                   <th class="has-text-white" style="width:8rem">Fecha-hora</th>
                   <th class="has-text-white" style="width:6rem">Responsable</th>
-                  <th class="has-text-white" style="width:6rem">Tipo</th>
-                  <th class="has-text-white has-text-right" style="width:6rem">Valor Venta</th>
-                  <th class="has-text-white" style="width:6rem" colspan="3">Datafast cm/iva/renta</th>
-                  <th class="has-text-white has-text-right" style="width:6rem">Monto</th>
-                  <th class="has-text-white" style="width:6rem">Voucher</th>
+                  <th class="has-text-white" style="width:3rem">Banco</th>
+                  <th class="has-text-white">Tipo [Origen]</th>
+                  <th class="has-text-white" style="width:3rem">Venta</th>
+                  <th class="has-text-white" colspan="3">Datafast com/iva/renta</th>
+                  <th class="has-text-white" style="width:3rem">Valor</th>
+                  <th class="has-text-white" style="width:1.5rem"></th>
                 </tr>
               </thead>
               <tbody id="bank-transactions">
@@ -136,17 +154,24 @@
   </main>
 
   <template id="bank-tx-row">
-    <tr class="">
+    <tr class="tx-row">
       <td class="index"></td>
-      <td class="date has-text-centered"></td>
+      <td class="date has-text-left"></td>
       <td class="responsable"></td>
+      <td class="bank"></td>
       <td class="type-payment"></td>
       <td class="sale-value has-text-right"></td>
-      <td class="datafast-commission has-text-right"></td>
-      <td class="datafast-iva has-text-right"></td>
-      <td class="datafast-renta has-text-right"></td>
-      <td class="value has-text-right"></td>
-      <td class="voucher has-text-centered"></td>
+      <td class="datafast-commission has-text-right" style="width:3rem"></td>
+      <td class="datafast-iva has-text-right" style="width:3rem"></td>
+      <td class="datafast-renta has-text-right" style="width:3rem"></td>
+      <td class="value has-text-right">
+        <input type="number" class="verified-value is-size-7 has-text-right m-0 p-0" style="width:4rem" step="0.01" />
+        <div class="verified-value-readonly is-hidden pr-4" style="width:100%"></div>
+      </td>
+      <td class="validate">
+        <input type="checkbox" class="verified m-1" value="true"
+          title="Marcar cuando ha sido validada la transaccion bancaria">
+      </td>
     </tr>
   </template>
 

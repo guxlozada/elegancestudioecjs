@@ -51,13 +51,13 @@ export function saleToBanktransaction(voSale, vsBank) {
 }
 
 /**
- * Guarda el movimiento bancario
- * @param {Object} voBankTx Informacion del movimiento bancario
+ * Guarda la tx bancaria
+ * @param {Object} voBankTx Informacion de la tx bancaria
  * @param {function} callback 
  * @param {function} callbackError 
  * @param {function} callbackSaleNoExist Funcion que se invoca cuando no existe el numero de venta 
  */
-export async function insertBankTransaction(voBankTx, callback, callbackError, callbackSaleNoExist) {
+export async function insertBankTx(voBankTx, callback, callbackError, callbackSaleNoExist) {
   // Valida si existe la venta asociada
   if (voBankTx.saleUid) {
     const msjError = await dbRef.child(collections.sales).child(voBankTx.saleUid).once('value')
@@ -84,7 +84,7 @@ export async function insertBankTransaction(voBankTx, callback, callbackError, c
 
   var updates = {};
   updates[`${collections.bankReconciliation}/${key}`] = bankTx;
-  // Movimiento bancario relacionado a una venta
+  // Tx bancaria relacionada a una venta
   if (bankTx.saleUid) {
     updates[`${collections.sales}/${bankTx.saleUid}/bankTxUid`] = key
     updates[`${collections.sales}/${bankTx.saleUid}/bankTxValue`] = bankTx.value
@@ -98,4 +98,24 @@ export async function insertBankTransaction(voBankTx, callback, callbackError, c
     }
   })
 
+}
+
+/**
+ * Actualiza la informacion de verificacion de la tx bancaria en la consiliacion.
+ * @param {object} voTx Objeto con informacion de la tx bancaria  con los atributos: uid, value, verified, verifiedValue
+ * @param {function} callback 
+ * @param {function} callbackError 
+ */
+export function updateBankTxVerified(voTx, callback, callbackError) {
+  var updates = {}
+  updates[`${collections.bankReconciliation}/${voTx.uid}/verified`] = voTx.verified
+  updates[`${collections.bankReconciliation}/${voTx.uid}/verifiedValue`] = voTx.verifiedValue
+
+  dbRef.update(updates, (error) => {
+    if (error) {
+      callbackError(error)
+    } else {
+      callback(voTx)
+    }
+  })
 }

@@ -77,7 +77,7 @@ export default class NotificationBulma {
     this.nodoContenedor.classList.add("note-visible");
 
     // tiempo de visualizacion de la notificacion antes de ocultarlo automaticamente
-    if (duracion == undefined || duracion <= 1000)
+    if (duracion == undefined || duracion < 1000)
       duracion = 5000
     // Tiempo de espera para cerrar automaticamente la notificacion
     this.timeoutOcultar = setTimeout(() => {

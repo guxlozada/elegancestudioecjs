@@ -4,16 +4,20 @@ import { collections } from "../persist/firebase_collections.js";
 import validAdminAccess from "./manager_user.js";
 import navbarBurgers from "./navbar_burgers.js";
 import NotificationBulma from './NotificacionBulma.js';
+import { updateBankTxVerified } from "../f_bank_transactions/dao_bank_reconciliation.js";
+import { roundTwo } from "../util/numbers-util.js";
 
 const d = document,
   w = window,
   ntf = new NotificationBulma(),
   bankRef = db.ref(collections.bankReconciliation)
 
-const typePayments = ["DEPOSITO", "TRANSFERENCIA", "DEBITO_TRANSFERENCIA", "TCREDITO", "TDEBITO"]
+const typePayments = ["DEPOSITO", "TRANSFERENCIA", "DEBITO_TRANSFERENCIA", "TCREDITO", "TDEBITO"],
+  banks = ["PICH", "PROD"]
 
 const filters = {
   typePayments: [...typePayments],
+  banks: [...banks],
   period: "TODAY"
 }
 //------------------------------------------------------------------------------------------------
@@ -67,7 +71,21 @@ d.getElementById("search").addEventListener("click", () => {
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
 d.getElementById("filters").addEventListener("change", e => {
   let $input = e.target
-  if ($input.name === "typePayment") {
+  if ($input.name === "bank") {
+    let bank = $input.value,
+      banksChecked = []
+    if (bank === "TODOS") {
+      banksChecked = [...banks]
+      d.getElementsByName("bank").forEach($el => $el.checked = $el.value === "TODOS")
+    } else {
+      d.getElementsByName("bank").forEach($el => {
+        if ($el.checked && $el.value !== "TODOS") banksChecked.push($el.value)
+      })
+      d.getElementById("bank-all").checked = false
+    }
+    filters.banks = banksChecked
+    search()
+  } else if ($input.name === "typePayment") {
     let typePayment = $input.value,
       typesChecked = []
     if (typePayment === "TODOS") {
@@ -77,7 +95,7 @@ d.getElementById("filters").addEventListener("change", e => {
       d.getElementsByName("typePayment").forEach($el => {
         if ($el.checked && $el.value !== "TODOS") typesChecked.push($el.value)
       })
-      d.getElementById("type-payment-todos").checked = false
+      d.getElementById("type-payment-all").checked = false
     }
     filters.typePayments = typesChecked
     search()
@@ -89,6 +107,44 @@ d.getElementById("filters").addEventListener("change", e => {
     d.getElementById("date-end").value = ""
     search()
   }
+})
+
+// EVENTO=click RAIZ=button<search> ACCION: Buscar informacion
+d.getElementById("bank-transactions").addEventListener("change", e => {
+  let $el = e.target
+
+  if ($el.type === "checkbox") {
+    let txData = {
+      uid: $el.dataset.tx,
+      value: roundTwo(parseFloat($el.dataset.txValue)),
+      verified: $el.checked,
+      verifiedValue: null
+    }
+
+    if (txData.verified) {
+      txData.verifiedValue = d.getElementById(txData.uid).querySelector(".verified-value").valueAsNumber
+    }
+
+    // Actualizar la informacion de verificacion de la tx en la BD
+    updateBankTxVerified(txData,
+      (txData) => {
+        let $tr = document.getElementById(txData.uid)
+
+        if (txData.verified) {
+          $tr.classList.add("has-background-primary-light")
+        } else {
+          let $verifiedValue = document.getElementById(txData.uid + "-value")
+          if ($verifiedValue) $verifiedValue.value = txData.value.toFixed(2)
+          $tr.classList.remove("has-background-primary-light")
+        }
+        ntf.show(`Transaccion ${txData.uid} actualizada`, `Se actualizo correctamente la informacion`, "info", 1200)
+      },
+      () => {
+        ntf.error(`Transaccion ${txData.uid} no actualizada`, `No se pudo actualizar la informacion. Actualice el reporte e intente nuevamente.`)
+      })
+
+  }
+
 })
 
 //------------------------------------------------------------------------------------------------
@@ -113,11 +169,13 @@ function renderBankTransactions(transactions) {
   transactions.forEach((trans, index) => {
     // Total por Consulta
     vnTotalTx += trans.value
+
     $rowTmp.querySelector(".index").innerText = index + 1
     $rowTmp.querySelector(".date").innerText = trans.searchDateTime
     $rowTmp.querySelector(".responsable").innerText = trans.responsable
-    $rowTmp.querySelector(".type-payment").innerText = trans.type
-
+    let docRelacionado = trans.saleUid ? "Vta:" + trans.saleUid : (trans.voucher ? "Com:" + trans.voucher : "")
+    $rowTmp.querySelector(".type-payment").innerText = trans.type + (docRelacionado ? " [" + docRelacionado + "]" : "")
+    $rowTmp.querySelector(".bank").innerText = trans.bank
     if (trans.saleUid && trans.saleValue) {
       $rowTmp.querySelector(".sale-value").innerText = trans.saleValue.toFixed(2)
       $rowTmp.querySelector(".sale-value").title = "Id Venta:" + trans.saleUid
@@ -128,8 +186,35 @@ function renderBankTransactions(transactions) {
     $rowTmp.querySelector(".datafast-commission").innerText = trans.dfCommission ? trans.dfCommission.toFixed(4) : ""
     $rowTmp.querySelector(".datafast-iva").innerText = trans.dfTaxWithholdingIVA ? trans.dfTaxWithholdingIVA.toFixed(4) : ""
     $rowTmp.querySelector(".datafast-renta").innerText = trans.dfTaxWithholdingRENTA ? trans.dfTaxWithholdingRENTA.toFixed(4) : ""
-    $rowTmp.querySelector(".value").innerText = trans.value.toFixed(2)
-    $rowTmp.querySelector(".voucher").innerText = trans.voucher ? trans.voucher : ""
+    let $input = $rowTmp.querySelector(".verified-value"),
+      $div = $rowTmp.querySelector(".verified-value-readonly")
+
+    $input.id = trans.tmpUid + "-value"
+    if (trans.type === "DEPOSITO") {
+      // depositos no se permite modificar valor
+      $input.classList.add("is-hidden")
+      $div.classList.remove("is-hidden")
+      $div.innerText = trans.value.toFixed(2)
+      $div.title = "valor original: " + trans.value.toFixed(2)
+    } else {
+      $div.classList.add("is-hidden")
+      $input.classList.remove("is-hidden")
+      $input.value = trans.verified === true ? trans.verifiedValue.toFixed(2) : trans.value.toFixed(2)
+      $input.title = "valor original: " + trans.value.toFixed(2)
+    }
+
+    let $checkbox = $rowTmp.querySelector(".verified")
+    $checkbox.dataset.tx = trans.tmpUid
+    $checkbox.dataset.txValue = trans.value
+    $checkbox.checked = trans.verified && trans.verified === true
+    let $tr = $rowTmp.querySelector(".tx-row")
+    $tr.id = trans.tmpUid
+    if ($checkbox.checked) {
+      $tr.classList.add("has-background-primary-light")
+    } else {
+      $tr.classList.remove("has-background-primary-light")
+    }
+
     $clone = d.importNode($rowTmp, true)
     $fragment.appendChild($clone)
   })
@@ -177,24 +262,24 @@ function calculatePeriod() {
 // Database operations
 // --------------------------
 
-async function findBankTransactions() {
+function findBankTransactions() {
   let rangeStart = dateTimeToKeyDateString(filters.dateStart),
     rangeEnd = dateTimeToKeyDateString(filters.dateEnd)
 
-  await bankRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
+  bankRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
     .once('value')
     .then((snap) => {
       let transactions = []
       snap.forEach((child) => {
         let tx = child.val()
-        if (filters.typePayments.includes(tx.type)) transactions.push(tx)
+        tx.tmpUid = child.key
+        if (filters.typePayments.includes(tx.type) && filters.banks.includes(tx.bank)) transactions.push(tx)
       })
 
       renderBankTransactions(transactions)
     })
     .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de movimientos bancarios con error`, error)
+      ntf.tecnicalError(`Búsqueda de transacciones bancarias con error`, error)
     })
 
 }
-

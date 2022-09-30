@@ -10,18 +10,6 @@ const d = document,
   w = window,
   ntf = new NotificationBulma()
 
-//------------------------------------------------------------------------------------------------
-// Funcionalidad
-//------------------------------------------------------------------------------------------------
-
-/**
- * Reset el formulario.
- */
-function reset($form) {
-  resetForm($form)
-  $form.querySelector(".transaction-date").valueAsDate = hoyEC().toJSDate()
-}
-
 // ------------------------------------------------------------------------------------------------
 // Delegation of events
 // ------------------------------------------------------------------------------------------------
@@ -45,57 +33,56 @@ w.addEventListener("load", () => {
 // EVENTO=submit RAIZ=section ACCION=inicializar el formulario
 d.addEventListener("reset", e => {
   e.preventDefault()
-  reset(e.target)
-  ntf.show("Información", "Movimiento bancario descartado.", "info")
+  let $form = e.target
+  resetForm($form)
+  $form.querySelector(".transaction-date").valueAsDate = hoyEC().toJSDate()
 })
-
 
 // EVENTO=submit RAIZ=document=registrar movimiento bancario
 d.addEventListener("submit", e => {
-  //Prevenir la accion predeterminada que procesa los datos del formulario
   e.preventDefault()
   let $form = e.target
   let bankTx = convertFormToObject($form)
   // Validaciones comunes que 
   if (!bankTx.type) {
-    ntf.error("Información requerida", "Seleccione el tipo de transaccion bancaria.")
+    ntf.error("Informacion requerida", "Seleccione el tipo de transaccion bancaria.")
   } else if (!bankTx.bank) {
-    ntf.error("Información requerida", "Seleccione el banco")
+    ntf.error("Informacion requerida", "Seleccione el banco")
   } else if (!bankTx.value || bankTx.value <= 0) {
-    ntf.error("Información requerida", "Ingrese un valor mayor a cero")
+    ntf.error("Informacion requerida", "Ingrese un valor mayor a cero")
   }
 
   switch ($form.id) {
     case "form-deposit":
       if (!bankTx.responsable) {
-        ntf.error("Información requerida", "Seleccione el responsable")
+        ntf.error("Informacion requerida", "Seleccione el responsable")
       }
       break
     case "form-transfer":
       if (!bankTx.responsable) {
-        ntf.error("Información requerida", "Seleccione el beneficiario")
+        ntf.error("Informacion requerida", "Seleccione el beneficiario")
       } else if (!bankTx.details && !bankTx.saleUid) {
-        ntf.error("Información requerida", "Ingrese el numero de venta relacionado o describa brevemente el motivo de la transferencia en el campo detalles")
+        ntf.error("Informacion requerida", "Ingrese el numero de venta relacionado o describa brevemente el motivo de la transferencia en el campo detalles")
       }
       break
     case "form-bank-tx":
       if (!bankTx.responsable) {
-        ntf.error("Información requerida", "Seleccione el responsable")
+        ntf.error("Informacion requerida", "Seleccione el responsable")
       } else if (!bankTx.details && !bankTx.voucher) {
-        ntf.error("Información requerida", "Ingrese el numero de comprobante o describa brevemente el motivo de la transaccion bancaria en el campo detalles")
+        ntf.error("Informacion requerida", "Ingrese el numero de comprobante o describa brevemente el motivo de la transaccion bancaria en el campo detalles")
       }
       break
   }
 
   if (!ntf.enabled) {
     insertBankTx(bankTx,
-      (bankTx) => {
-        let idTx = (bankTx.voucher && !bankTx.voucher.startsWith("00")) ? bankTx.voucher : bankTx.date
-        ntf.show(`Transaccion bancaria registrado`, `Se guardó correctamente la información: ${bankTx.type} Nro.${idTx}`)
-        reset($form)
+      (bankTxData) => {
+        ntf.ok("Transaccion bancaria registrada",
+          `Se guardo correctamente la informacion: ${bankTxData.type} Nro.${bankTxData.voucher || bankTxData.date}`)
+        $form.reset()
       },
-      () => { ntf.tecnicalError(`Transaccion bancaria no registrada`, error) },
-      (msjError) => { ntf.error("Información con error", msjError, 10000) }
+      (error) => { ntf.tecnicalError("Transaccion bancaria no registrada", error) },
+      (msjError) => { ntf.error("Transaccion bancaria no registrada", msjError, 10000) }
     )
   }
 

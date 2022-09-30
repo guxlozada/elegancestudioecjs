@@ -9,25 +9,12 @@ const d = document,
   w = window,
   ntf = new NotificationBulma()
 
-//------------------------------------------------------------------------------------------------
-// Funcionalidad
-//------------------------------------------------------------------------------------------------
-
-/**
- * Inicializa el formulario.
- */
-function reset($form) {
-  resetForm($form)
-  d.querySelector(".expense-date").valueAsDate = hoyEC().toJSDate()
-  d.getElementsByName("type").forEach($el => $el.checked = $el.value === "GASTO")
-}
-
 // ------------------------------------------------------------------------------------------------
 // Delegation of events
 // ------------------------------------------------------------------------------------------------
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
 w.addEventListener("load", () => {
-  reset()
+  d.querySelector(".expense-date").valueAsDate = hoyEC().toJSDate()
   addMinMaxPropsWithCashOutflowDates(".expense-date")
 })
 
@@ -37,44 +24,45 @@ d.addEventListener("DOMContentLoaded", () => { navbarBurgers() })
 // EVENTO=reset RAIZ=document ACCION=inicializar formulario
 d.addEventListener("reset", e => {
   e.preventDefault()
-  reset(e.target)
-  ntf.show("Información", "Egreso de caja descartado.", "info")
+  resetForm(e.target)
+  d.querySelector(".expense-date").valueAsDate = hoyEC().toJSDate()
+  d.getElementsByName("type").forEach($el => $el.checked = $el.value === "GASTO")
 })
 
-// EVENTO=submit RAIZ=document ACCION=registrar egreso 
+// EVENTO=submit RAIZ=document ACCION=registrar egreso de caja
 d.addEventListener("submit", e => {
   e.preventDefault()
   let $form = e.target
   let expense = convertFormToObject($form)
 
   if (!expense.responsable) {
-    ntf.error("Información requerida", "Seleccione el responsable o beneficiario")
+    ntf.error("Informacion requerida", "Seleccione el responsable o beneficiario")
   } else if (!expense.type) {
-    ntf.error("Información requerida", "Seleccione el tipo de egreso sea para barberia o para un barbero.")
+    ntf.error("Informacion requerida", "Seleccione el tipo de egreso sea para barberia o para un barbero.")
   } else if (expense.type !== "AJUSTE" && expense.value <= 0) {
-    ntf.error("Información requerida", "Ingrese un valor mayor a cero")
+    ntf.error("Informacion requerida", "Ingrese un valor mayor a cero")
   }
   const employeeExpenses = ["ADELANTO", "BEBIDA", "COMISION", "PROPINA", "SUELDO"];
   let isEmployeeExpense = employeeExpenses.includes(expense.type)
   if (isEmployeeExpense && expense.responsable === 'ADMIN') {
-    ntf.error("Información requerida", "Para los egresos 'Para barbero' no es permitido 'Beneficiario=Admin'")
+    ntf.error("Informacion requerida", "Para los egresos 'Para barbero' no es permitido 'Beneficiario=Admin'")
   }
 
   if (!ntf.enabled) {
     switch (expense.type) {
       case "COMPRA":
         if (!expense.details) {
-          ntf.error("Información requerida", "En 'Detalles' describa brevemente lo que se compró")
+          ntf.error("Informacion requerida", "En 'Detalles' describa brevemente lo que se compro")
         }
         break;
       case "GASTO":
         if (!expense.details) {
-          ntf.error("Información requerida", "En 'Detalles' describa brevemente el gasto")
+          ntf.error("Informacion requerida", "En 'Detalles' describa brevemente el gasto")
         }
         break;
       case "BEBIDA":
         if (!expense.details) {
-          ntf.error("Información requerida", "En 'Detalles' describa el numero y tipo de bebida: 1 agua, 1 pepsi")
+          ntf.error("Informacion requerida", "En 'Detalles' describa el numero y tipo de bebida: 1 agua, 1 pepsi")
         }
         break;
       default:
@@ -82,10 +70,12 @@ d.addEventListener("submit", e => {
     }
   }
   if (!ntf.enabled) {
-    insertExpenseDB(expense, (snap) => {
-      let id = (snap.voucher && !snap.voucher.startsWith("00")) ? snap.voucher : snap.date
-      ntf.show(`Egreso de caja registrado`, `Se guardó correctamente la información: ${snap.type} Nro.${id}`)
-      reset($form)
-    }, (error) => { ntf.tecnicalError("Egreso de caja no registrado", error) })
+    insertExpenseDB(expense,
+      (expenseData) => {
+        ntf.ok("Egreso de caja registrado",
+          `Se guardo correctamente la informacion: ${expenseData.type} Nro.${expenseData.voucher || expenseData.date}`)
+        $form.reset()
+      },
+      (error) => { ntf.tecnicalError("Egreso de caja no registrado", error) })
   }
 })

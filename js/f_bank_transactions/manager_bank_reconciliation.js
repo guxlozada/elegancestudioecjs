@@ -1,8 +1,8 @@
 import { hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
-import validAdminAccess from "./manager_user.js";
-import navbarBurgers from "./navbar_burgers.js";
-import NotificationBulma from './NotificacionBulma.js';
-import { findBankTxs, updateBankTxVerified } from "../f_bank_transactions/dao_bank_reconciliation.js";
+import validAdminAccess from "../dom/manager_user.js";
+import navbarBurgers from "../dom/navbar_burgers.js";
+import NotificationBulma from '../dom/NotificacionBulma.js';
+import { findBankTxs, updateBankTxVerified } from "./dao_bank_reconciliation.js";
 import { roundTwo } from "../util/numbers-util.js";
 
 const d = document,
@@ -15,7 +15,7 @@ const typePayments = ["DEPOSITO", "TRANSFERENCIA", "DEBITO_TRANSFERENCIA", "TCRE
 const filters = {
   typePayments: [...typePayments],
   banks: [...banks],
-  period: "TODAY"
+  period: "CURRENTMONTH"
 }
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
@@ -135,7 +135,7 @@ d.getElementById("bank-transactions").addEventListener("change", e => {
           if ($verifiedValue) $verifiedValue.value = txData.value.toFixed(2)
           $tr.classList.remove("has-background-primary-light")
         }
-        ntf.show(`Transaccion ${txData.uid} actualizada`, `Se actualizo correctamente la informacion`, "info", 1200)
+        ntf.ok(`Transaccion ${txData.uid} actualizada`, `Se actualizo correctamente la informacion`, 1500)
       },
       () => {
         ntf.error(`Transaccion ${txData.uid} no actualizada`, `No se pudo actualizar la informacion. Actualice el reporte e intente nuevamente.`)
@@ -232,28 +232,24 @@ function calculatePeriod() {
   if (!filters.period) return
 
   let baseDate = hoyEC()
+  let truncPeriod = "month"
   switch (filters.period) {
-    case "TODAY":
-      filters.dateStart = baseDate.startOf('day')
-      filters.dateEnd = baseDate.endOf('day')
+    case "CURRENTMONTH":
       break
     case "CURRENTWEEK":
-      filters.dateStart = baseDate.startOf('week')
-      filters.dateEnd = baseDate.endOf('week')
+      truncPeriod = "week"
+      break
+    case "TODAY":
+      truncPeriod = "day"
       break
     case "LASTWEEK":
       baseDate = baseDate.minus({ weeks: 1 })
-      filters.dateStart = baseDate.startOf('week')
-      filters.dateEnd = baseDate.endOf('week')
-      break
-    case "CURRENTMONTH":
-      filters.dateStart = baseDate.startOf('month')
-      filters.dateEnd = baseDate.endOf('month')
+      truncPeriod = "week"
       break
     case "LASTMONTH":
       baseDate = baseDate.minus({ months: 1 })
-      filters.dateStart = baseDate.startOf('month')
-      filters.dateEnd = baseDate.endOf('month')
       break
   }
+  filters.dateStart = baseDate.startOf(truncPeriod)
+  filters.dateEnd = baseDate.endOf(truncPeriod)
 }

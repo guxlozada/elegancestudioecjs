@@ -49,6 +49,10 @@ export default class NotificationBulma {
 
   }
 
+  ok(titulo, mensaje, duracion) {
+    this.show(titulo, mensaje, "link", duracion)
+  }
+
   error(titulo, mensaje, duracion) {
     this.show(titulo, mensaje, "danger", duracion)
   }
@@ -94,6 +98,6 @@ export default class NotificationBulma {
     this.nodoContenedor.classList.remove("is-link");
     this.nodoContenedor.classList.remove("is-danger");
     this.nodoContenedor.classList.remove("is-warning");
-    this.nodoContenedor.classList.add("is-info");
+    this.nodoContenedor.classList.remove("is-success");
   }
 }

@@ -157,7 +157,21 @@ export const ahoraEC = () => { return DateTime.local() }
 
 export const hoyEC = () => { return DateTime.local().startOf('day') }
 
+/**
+ * Convierte el valor de un input type=date con formato 'yyyy-MM-dd' a un DateTime Luxon
+ * @param {string} vsDate valor de un input type=date con formato 'yyyy-MM-dd'
+ * @returns 
+ */
 export function inputDateToDateTime(vsDate) {
+  return DateTime.fromFormat(vsDate, PATTERN_INPUT_DATE)
+}
+
+/**
+ * Convierte una cadena con formato 'yyyy-MM-dd' a un DateTime Luxon
+ * @param {string} vsDate cadena con formato 'yyyy-MM-dd'
+ * @returns 
+ */
+export function localStringToDateTime(vsDate) {
   return DateTime.fromFormat(vsDate, PATTERN_INPUT_DATE)
 }
 
@@ -173,4 +187,36 @@ export function inputDatetimeToDateTime(vsDate) {
  */
 export function dateTimeToKeyDateString(vdDateTime) {
   return vdDateTime.toFormat(PATTERN_KEY_DATE)
+}
+
+/**
+ * Compara dos DateTime utilizando la operacion solicitada
+ * @param {DateTime} vdDateTimeCompare DateTime que se verifica
+ * @param {string} operation lt='antes', le='antes o igual', eq='igual', ge='posterior o igual', gt='posterior'
+ * @param {DateTime} vdDateTimeBase DateTime contra la que se compara
+ * @returns 
+ */
+export function compareTruncDay(vdDateTimeCompare, operation, vdDateTimeBase) {
+  if (!vdDateTimeBase || !vdDateTimeCompare) return undefined
+  let res,
+    base = vdDateTimeBase.startOf("day"),
+    comparar = vdDateTimeCompare.startOf("day")
+  switch (operation) {
+    case "lt":
+      res = comparar < base
+      break
+    case "le":
+      res = comparar <= base
+      break
+    case "eq":
+      res = comparar == base
+      break
+    case "ge":
+      res = comparar >= base
+      break
+    case "gt":
+      res = comparar > base
+      break
+  }
+  return res
 }

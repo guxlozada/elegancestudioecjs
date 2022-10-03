@@ -1,5 +1,5 @@
 
-import { maxClosingDateTime } from "../f_daily_closing/dao_seller_daily_closing.js"
+import { maxClosingDay } from "../f_daily_closing/dao_seller_daily_closing.js"
 import { DateTime } from "../luxon.min.js"
 import { localdb } from "../repo-browser.js"
 import { hoyEC } from "./fecha-util.js"
@@ -29,29 +29,34 @@ const dailyDataGenerate = (vdMaxClosingDay, callback) => {
   localStorage.setItem(localdb.cashOutflowMinDay, cashOutflowMinDay)
 
   // Inyecta los datos de ayuda diarios a la funcion
-  callback({
-    cashOutflowMaxDay: localStorage.getItem(localdb.operativeDay),
-    cashOutflowMinDay: localStorage.getItem(localdb.cashOutflowMinDay)
-  })
+  if (callback) {
+    callback({
+      cashOutflowMaxDay: localStorage.getItem(localdb.operativeDay),
+      cashOutflowMinDay: localStorage.getItem(localdb.cashOutflowMinDay)
+    })
+  }
 }
 
 /**
-* Inyecta el rango de fechas minimo y maximo de operacion para 
-* registro de flujos de caja: callback({cashOutflowMinDay,cashOutflowMaxDay}). 
-* @returns 
-*/
+ * Genera los datos de ayuda diaria y opcionalmente inyecta el rango de fechas minimo y maximo de 
+ * operacion para registro de flujos de caja: callback({cashOutflowMinDay,cashOutflowMaxDay}). 
+ * @param {Function} callback (Opcional)
+ * @returns 
+ */
 export const inyectDailyData = (callback) => {
   let isValid = localStorage.getItem(localdb.operativeDay) === formatDateTimeToInputRange(hoyEC())
   if (isValid) {
-    callback({
-      cashOutflowMaxDay: localStorage.getItem(localdb.cashOutflowMaxDay),
-      cashOutflowMinDay: localStorage.getItem(localdb.cashOutflowMinDay)
-    })
+    if (callback) {
+      callback({
+        cashOutflowMaxDay: localStorage.getItem(localdb.cashOutflowMaxDay),
+        cashOutflowMinDay: localStorage.getItem(localdb.cashOutflowMinDay)
+      })
+    }
     return
   }
   dailyDataCleaning()
   // Invoca la consulta de la fecha maxima de cierre de caja diario
-  maxClosingDateTime(dailyDataGenerate, callback)
+  maxClosingDay(dateTime => dailyDataGenerate(dateTime, callback))
 }
 
 /**

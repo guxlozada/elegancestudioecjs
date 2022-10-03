@@ -1,9 +1,14 @@
-import { addHours, dateIsValid, todayEc, truncOperationDayString } from "../util/fecha-util.js";
+import { addHours, compareTruncDay, dateIsValid, todayEc, truncOperationDayString } from "../util/fecha-util.js";
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
 import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { roundFour, roundTwo } from "../util/numbers-util.js";
+import { deleteSaleByUid } from "../f_sales/dao_selller_sales.js";
+import { localdb } from "../repo-browser.js";
+import { isAdmin } from "../dom/manager_user.js";
+import { addMinMaxPropsWithCashOutflowDates, inyectDailyData } from "../util/daily-data-cache.js";
+import { DateTime } from "../luxon.min.js";
 
 const d = document,
   w = window,
@@ -40,7 +45,14 @@ let operationDay = todayEc(),
 //------------------------------------------------------------------------------------------------
 
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
-w.addEventListener("load", () => { changeDailyClosing() })
+w.addEventListener("load", () => {
+  inyectDailyData()
+  //TODO: Temporalmente desactivado restriccion de rango de fechas
+  // if (!isAdmin()) {
+  //   addMinMaxPropsWithCashOutflowDates(".summary-day")
+  // }
+  changeDailyClosing()
+})
 
 // EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
 d.addEventListener("DOMContentLoaded", () => { navbarBurgers() })
@@ -76,6 +88,25 @@ d.querySelectorAll(".summary-filters").forEach($el => {
       changeDailyClosing()
     }
   })
+})
+
+// EVENTO=change RAIZ=document ACCION=cambio de fecha de operacion, y responsable de cierre de caja
+d.addEventListener("click", e => {
+  let $el = e.target
+  // Eliminar venta 
+  if ($el.matches(".sale-delete") || $el.closest(".sale-delete")) {
+    const $link = $el.closest(".sale-delete"),
+      saleUid = $link.dataset.key
+    if (confirm(`Esta seguro que desea eliminar la Venta ${saleUid}`)) {
+      deleteSaleByUid(saleUid,
+        (saleUid) => {
+          ntf.ok("venta eliminada", `Se elimino correctamente la Venta ${saleUid}`)
+          changeDailyClosing()
+        },
+        error => ntf.tecnicalError("No se pudo eliminar la venta", error))
+    }
+  }
+
 })
 
 // EVENTO=change RAIZ=document ACCION=cambio de fecha de operacion, y responsable de cierre de caja
@@ -116,7 +147,9 @@ async function updateSalesByDay(vsDate) {
     .once('value')
     .then((snap) => {
       snap.forEach((child) => {
-        salesData.push(child.val())
+        let sale = child.val()
+        sale.tmpUid = child.key
+        salesData.push(sale)
       })
     })
     .catch((error) => {
@@ -150,6 +183,7 @@ async function updateSalesByDay(vsDate) {
 
 function renderSections(salesData, expensesData, depositsData) {
   renderSummary(salesData)
+  // Se procesa primero los egresos porque se requiere data para las ventas por barbero
   renderExpenses(expensesData, depositsData)
   renderSummaryBySeller(salesData)
   updateDailyCashClosing()
@@ -172,14 +206,16 @@ function renderSummary(salesData) {
     vnTotalBarberCommissionsTmp = 0,
     vnTaxes,
     vnTaxableIncome,
-    vnValueSale,
-    vnTipByBank,
-    vnBarberCommission,
-    vnBarberCommissionTmp
+    vnValueSale
 
   if (salesData.length == 0) {
     $body.innerHTML = `<tr><td class="is-size-6" colspan="8">No existen ventas para la fecha seleccionada</td></tr>`
   } else {
+
+    // Validacion para habilitar la opcion de eliminacion de venta
+    const compare = DateTime.fromJSDate(operationDay),
+      base = DateTime.fromISO(localStorage.getItem(localdb.cashOutflowMinDay)),
+      deletedEnabled = compareTruncDay(compare, "gt", base)
 
     $body.innerHTML = ""
 
@@ -187,34 +223,41 @@ function renderSummary(salesData) {
       vnTaxableIncome = roundTwo(sale.taxableIncome)
       vnTaxes = roundTwo(sale.taxes)
       vnValueSale = roundTwo(sale.totalSale)
-      ///////////////////////////////////////////////////////////////////////////////
-      //TODO: Temporalmente se coloca el or con sale.tipByBank
-      // vnTipByBank = roundTwo(sale.tipByBankPayment || 0)
-      ///////////////////////////////////////////////////////////////////////////////
-      vnTipByBank = roundTwo(sale.tipByBankPayment || sale.bankTxValue || sale.tipByBank || 0)
-      vnBarberCommission = roundTwo(sale.barberCommission)
+      // Tiene precedencia la propina con descuento datafast (tipByBankPayment), luego la propina
+      // relacionada a una tx bancaria (bankTxValue) y por ultimo la registrada en la venta (tipByBank)
+      sale.tmpTipByBank = roundTwo(sale.tipByBankPayment || sale.bankTxValue || sale.tipByBank || 0)
+      sale.tmpBarberCommission = roundTwo(sale.barberCommission)
       // Temporalmente a los pagos con tarjeta de credito o debito la comision al valor final es igual a la de base imponib
       if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
-        vnBarberCommissionTmp = vnBarberCommission
+        sale.tmpBarberCommissionTmp = sale.tmpBarberCommission
       } else {
-        vnBarberCommissionTmp = roundFour(sale.barberCommission * 1.12)
+        sale.tmpBarberCommissionTmp = roundFour(sale.barberCommission * 1.12)
       }
       vnTotalTaxableIncome += vnTaxableIncome
       vnTotalTaxes += vnTaxes
       vnTotalSales += vnValueSale
-      vnTotalTipsByBank += vnTipByBank
-      vnTotalBarberCommissions += vnBarberCommission
-      vnTotalBarberCommissionsTmp += vnBarberCommissionTmp
+      vnTotalTipsByBank += sale.tmpTipByBank
+      vnTotalBarberCommissions += sale.tmpBarberCommission
+      vnTotalBarberCommissionsTmp += sale.tmpBarberCommissionTmp
       $template.querySelector(".index").innerText = index + 1
       $template.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
       $template.querySelector(".seller").innerText = sale.seller
       $template.querySelector(".payment").innerText = sale.typePayment.toLowerCase()
       $template.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
       $template.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
-      $template.querySelector(".tips-by-bank").innerText = vnTipByBank > 0 ? vnTipByBank.toFixed(2) : ''
+      $template.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank > 0 ? sale.tmpTipByBank.toFixed(2) : ''
       $template.querySelector(".value").innerText = vnValueSale.toFixed(2)
-      $template.querySelector(".barber-commission").innerText = vnBarberCommission.toFixed(2)
-      $template.querySelector(".barber-commission-tmp").innerText = vnBarberCommissionTmp.toFixed(2)
+      $template.querySelector(".barber-commission").innerText = sale.tmpBarberCommission.toFixed(2)
+      $template.querySelector(".barber-commission-tmp").innerText = sale.tmpBarberCommissionTmp.toFixed(2)
+      let $removeSale = $template.querySelector(".sale-delete")
+      if (deletedEnabled) {
+        $removeSale.classList.remove("is-hidden")
+        $removeSale.dataset.key = sale.tmpUid
+      } else {
+        $removeSale.classList.add("is-hidden")
+        delete $removeSale.dataset.key
+      }
+
       if (sale.typePayment === "EFECTIVO") {
         vnTotalCash += vnValueSale
       } else if (sale.typePayment === "TRANSFERENCIA") {
@@ -272,9 +315,6 @@ function renderSummaryBySeller(salesData) {
     vnTaxes,
     vnTaxableIncome,
     vnValueSale,
-    vnBarberTip,
-    vnBarberCommission,
-    vnBarberCommissionTmp,
     vnPaidBarberCommission,
     vnPaidBarberTip,
     $clone
@@ -289,28 +329,21 @@ function renderSummaryBySeller(salesData) {
   do {
     vnTaxableIncome = roundTwo(sale.taxableIncome)
     vnTaxes = roundTwo(sale.taxes)
-    ///////////////////////////////////////////////////////////////////////////////
-    //TODO: Temporalmente se coloca el or con sale.tipByBank
-    // vnBarberTip = roundTwo(sale.tipByBankPayment || 0)
-    ///////////////////////////////////////////////////////////////////////////////
-    vnBarberTip = roundTwo(sale.tipByBankPayment || sale.bankTxValue || sale.tipByBank || 0)
     vnValueSale = roundTwo(sale.totalSale)
-    vnBarberCommission = roundTwo(sale.barberCommission)
-    vnBarberCommissionTmp = roundTwo(sale.barberCommission * 1.12)
     vnTotalTaxableIncome += vnTaxableIncome
     vnTotalTaxes += vnTaxes
-    vnTotalBarberTips += vnBarberTip
     vnTotalSales += vnValueSale
-    vnTotalBarberCommissions += vnBarberCommission
-    vnTotalBarberCommissionsTmp += vnBarberCommissionTmp
+    vnTotalBarberTips += sale.tmpTipByBank
+    vnTotalBarberCommissions += sale.tmpBarberCommission
+    vnTotalBarberCommissionsTmp += sale.tmpBarberCommissionTmp
     $rowTmp.querySelector(".index").innerText = index
     $rowTmp.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
     $rowTmp.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
     $rowTmp.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
-    $rowTmp.querySelector(".tips-by-bank").innerText = vnBarberTip > 0 ? vnBarberTip.toFixed(2) : ''
+    $rowTmp.querySelector(".tips-by-bank").innerText = sale.tmpBarberTip > 0 ? sale.tmpBarberTip.toFixed(2) : ''
     $rowTmp.querySelector(".value").innerText = vnValueSale.toFixed(2)
-    $rowTmp.querySelector(".barber-commission").innerText = vnBarberCommission.toFixed(2)
-    $rowTmp.querySelector(".barber-commission-tmp").innerText = vnBarberCommissionTmp.toFixed(2)
+    $rowTmp.querySelector(".barber-commission").innerText = sale.tmpBarberCommission.toFixed(2)
+    $rowTmp.querySelector(".barber-commission-tmp").innerText = sale.tmpBarberCommissionTmp.toFixed(2)
     $clone = d.importNode($rowTmp, true)
     $fragment.appendChild($clone)
 
@@ -516,8 +549,8 @@ function saveDailyClosing() {
   const dailyKey = truncOperationDayString(operationDay.getTime(), "date")
 
   db.ref(collections.dailyClosing + "/" + dailyKey).set(dailyClosing).then((snapshot) => {
-    ntf.show("Cierre de caja diario", `Se guardo correctamente la informacion del cierre diario del dia ${operationDay.toLocaleDateString()}`)
+    ntf.ok("Cierre de caja diario registrado", `Se guardo correctamente la informacion del cierre diario del dia ${operationDay.toLocaleDateString()}`)
   }).catch((error) => {
-    ntf.tecnicalError(`Registro de cierre diario del dia ${operationDay.toLocaleDateString()}`, error)
+    ntf.tecnicalError("Cierre de caja diario no registrado", error)
   })
 }

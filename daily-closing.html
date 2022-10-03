@@ -56,7 +56,7 @@
             <table>
               <thead class="has-background-link">
                 <tr class="has-text-right">
-                  <th class="has-text-white" style="width:2rem">Nro.</th>
+                  <th style="width:1rem"></th>
                   <th class="has-text-white" style="text-align:center;width:4rem">Hora</th>
                   <th class="has-text-white has-text-left">Vendedor</th>
                   <th class="has-text-white" style="width:5.5rem">Forma pago</th>
@@ -66,6 +66,7 @@
                   <th class="has-text-white" style="width:5.5rem">Comisiones</th>
                   <th class="has-text-white" style="width:7rem">Comisiones 1.12</th>
                   <th class="has-text-white" style="width:5rem">Propinas</th>
+                  <th style="width:1rem"></th>
 
                 </tr>
               </thead>
@@ -80,21 +81,22 @@
                   <th class="total-barber-commissions has-text-right">0.00</th>
                   <th class="total-barber-commissions-tmp has-text-right">0.00</th>
                   <th class="total-tips-by-bank has-text-right">0.00</th>
+                  <th></th>
                 </tr>
                 <tr class="has-background-grey-lighter">
                   <th class="has-text-right" colspan="4">Tarjetas Débito y Crédito ( - )</th>
                   <th class="total-card has-text-right">0.00</th>
-                  <td colspan="5"></td>
+                  <td colspan="6"></td>
                 </tr>
                 <tr class="has-background-grey-lighter">
                   <th class="has-text-right" colspan="4">Transferencias ( - )</th>
                   <th class="total-transfer has-text-right">0.00</th>
-                  <td colspan="5"></td>
+                  <td colspan="6"></td>
                 </tr>
                 <tr class="has-background-grey-light">
                   <th class="has-text-right" colspan="4">Efectivo</th>
                   <th class="total-cash has-text-right">0.00</th>
-                  <td colspan="5"></td>
+                  <td colspan="6"></td>
                 </tr>
               </tfoot>
             </table>
@@ -137,8 +139,8 @@
             <table>
               <thead class="has-background-link">
                 <tr class="has-text-right">
-                  <th class="has-text-white" style="width:2rem">Nro.</th>
-                  <th class="has-text-white" style="text-align:center;width:4rem">Hora</th>
+                  <th style="width:1rem"></th>
+                  <th class="has-text-white" style="width:4rem;text-align:center;">Hora</th>
                   <th class="has-text-white has-text-left"></th>
                   <th class="has-text-white" style="width:6rem">Valor Venta</th>
                   <th class="has-text-white" style="width:6rem">Impuestos</th>
@@ -191,7 +193,7 @@
             <table>
               <thead class="has-background-link">
                 <tr>
-                  <th class="has-text-white has-text-right" style="width:2rem">Nro.</th>
+                  <th style="width:1rem"></th>
                   <th class="has-text-white" style="text-align:center;width:4rem;">Tipo</th>
                   <th class="has-text-white" style="width:6rem">Responsable</th>
                   <th class="has-text-white" style="width:8rem">Comprobante</th>
@@ -347,7 +349,6 @@
                 </span>
                 <span>Guardar</span>
               </button>
-
             </div>
           </footer>
         </div>
@@ -369,6 +370,13 @@
       <td class="barber-commission"></td>
       <td class="barber-commission-tmp"></td>
       <td class="tips-by-bank"></td>
+      <td>
+        <a class="sale-delete is-hidden" title="Eliminar venta" data-key="UID">
+          <span class="icon is-small has-text-danger ">
+            <i class="fa-solid fa-trash-can"></i>
+          </span>
+        </a>
+      </td>
     </tr>
   </template>
 

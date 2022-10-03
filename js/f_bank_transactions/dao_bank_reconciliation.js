@@ -104,7 +104,7 @@ export async function insertBankTx(voBankTx, callback, callbackError, callbackSa
 }
 
 /**
- * Actualiza la informacion de verificacion de la tx bancaria en la consiliacion.
+ * Actualiza la informacion de verificacion de la tx bancaria en la conciliacion.
  * @param {object} voTx Objeto con informacion de la tx bancaria  con los atributos: uid, value, verified, verifiedValue
  * @param {Function} callback 
  * @param {Function} callbackError 

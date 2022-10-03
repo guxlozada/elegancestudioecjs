@@ -1,79 +1,69 @@
-<!DOCTYPE html>
-<html lang="es">
+<nav class="navbar is-fixed-top is-black">
+  <div class="navbar-brand">
+    <a class="navbar-inner" href="#home">
+      <img src="/assets/logo-rectangulo.png" alt="Elegance Studio EC" width="200">
+    </a>
+    <div class="navbar-burger burger" data-target="navMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Elegance Studio EC</title>
-</head>
+  <div id="navMenu" class="navbar-menu">
 
-<body>
-  <nav class="navbar is-fixed-top is-black">
-    <div class="navbar-brand">
-      <a class="navbar-inner" href="#home">
-        <img src="/assets/logo-rectangulo.png" alt="Elegance Studio EC" width="200">
+    <div class="navbar-start">
+      <a class="navbar-item is-size-6" href="index.html?#clients"
+        onblur="document.querySelector('.client-search-text').focus()">
+        <span class="bd-emoji is-size-4">🧔</span>Clientes
       </a>
-      <div class="navbar-burger burger" data-target="navMenu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
+      <a class="navbar-item is-size-6" href="index.html?#sales">
+        <span class="bd-emoji is-size-4">💈</span>Ventas
+      </a>
+      <a class="navbar-item is-size-6" href="expenses.html" title="Egresos de caja en la barberia">
+        <span class="bd-emoji is-size-4">💸</span>Egresos
+      </a>
+      <a class="navbar-item is-size-6" href="bank-transactions-barber.html"
+        title="Depositos y transferencias en la barberia">
+        <span class="bd-emoji is-size-4">🏧</span>Banco
+      </a>
+      <a class="navbar-item is-size-6" href="daily-closing.html#summary" title="Cierre diario de caja">
+        <span class="bd-emoji is-size-4">📙</span>Cierre diario
+      </a>
+
     </div>
 
-    <div id="navMenu" class="navbar-menu">
-
-      <div class="navbar-start">
-        <a class="navbar-item is-size-6" href="index.html?#clients"
-          onblur="document.querySelector('.client-search-text').focus()">
-          <span class="bd-emoji is-size-4">🧔</span>Clientes
-        </a>
-        <a class="navbar-item is-size-6" href="index.html?#sales">
-          <span class="bd-emoji is-size-4">💈</span>Ventas
-        </a>
-        <a class="navbar-item is-size-6" href="expenses.html" title="Egresos de caja en la barberia">
-          <span class="bd-emoji is-size-4">💸</span>Egresos
-        </a>
-        <a class="navbar-item is-size-6" href="bank-transactions-barber.html"
-          title="Depositos y transferencias en la barberia">
-          <span class="bd-emoji is-size-4">🏧</span>Banco
-        </a>
-        <a class="navbar-item is-size-6" href="daily-closing.html#summary" title="Cierre diario de caja">
-          <span class="bd-emoji is-size-4">📙</span>Cierre diario
-        </a>
-
-      </div>
-
-      <div class="navbar-end">
+    <div class="navbar-end">
         <div class="navbar-item has-dropdown is-hoverable is-size-6">
           <a class="navbar-link">
-            <span class="bd-emoji is-size-4">👨‍🔧</span>Administracion
-          </a>
+          <span class="bd-emoji is-size-4">👨‍🔧</span>Administracion
+        </a>
 
-          <div class="navbar-dropdown">
-            <a class="navbar-item" href="commissions-payment.html" title="Reporte de comisiones por barbero">
-              <span class="bd-emoji">📈</span>Comisiones
-            </a>
-            <hr class="navbar-divider">
-            <a class="navbar-item" href="/bank-transactions.html"
-              title="Registro de transaccion bancaria fuera de la barberia">
-              <span class="bd-emoji">🏦</span>Transaccion bancaria
-            </a>
-            <a class="navbar-item" href="bank-reconciliation.html" title="Consiliación bancaria">
-              <span class="bd-emoji">🏦</span>Conciliacion bancaria
-            </a>
-          </div>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="commissions-payment.html" title="Reporte de comisiones por barbero">
+            <span class="bd-emoji">📈</span>Comisiones
+          </a>
+          <hr class="navbar-divider">
+          <a class="navbar-item" href="/bank-transactions.html"
+            title="Registro de transaccion bancaria fuera de la barberia">
+            <span class="bd-emoji">🏦</span>Transaccion bancaria
+          </a>
+          <a class="navbar-item" href="bank-reconciliation.html" title="Consiliación bancaria">
+            <span class="bd-emoji">🏦</span>Conciliacion bancaria
+          </a>
         </div>
-        <a class="navbar-item" href="https://www.facebook.com/elegancestudioec/" target="_blank" rel="noopener">
-          <span class="icon has-background-white" style="color: #3B5998;">
-            <i class="fa-brands fa-facebook-square is-size-3"></i>
-          </span>
-        </a>
-        <a class="navbar-item" href="https://www.instagram.com/elegancestudioec" target="_blank" rel="noopener">
-          <span class="icon has-background-white" style="color: #DD2A7B;">
-            <i class="fa-brands fa-instagram-square is-size-3"></i>
-          </span>
-        </a>
-        <!--div class="navbar-item">
+      </div>
+      <a class="navbar-item" href="https://www.facebook.com/elegancestudioec/" target="_blank" rel="noopener">
+        <span class="icon has-background-white" style="color: #3B5998;">
+          <i class="fa-brands fa-facebook-square is-size-3"></i>
+        </span>
+      </a>
+      <a class="navbar-item" href="https://www.instagram.com/elegancestudioec" target="_blank" rel="noopener">
+        <span class="icon has-background-white" style="color: #DD2A7B;">
+          <i class="fa-brands fa-instagram-square is-size-3"></i>
+        </span>
+      </a>
+      <!--div class="navbar-item">
           <div class="field is-grouped">
             <p class="control">
               <a class="bd-tw-button button is-primary" data-social-network="Twitter" data-social-action="tweet"
@@ -89,10 +79,7 @@
             </p>
           </div>
         </div-->
-      </div>
-
     </div>
-  </nav>
-</body>
 
-</html>
+  </div>
+</nav>

@@ -516,8 +516,10 @@ function insertSalesDB(callback) {
   // Generar la clave de la nueva venta
   const saleKey = timestampToDatekey(saleHeader.date)
 
+  // TODO: Agregar en la venta el banco para la transferencia
   // Si forma pago=TCREDITO/TDEBITO o TRANSFERENCIA se genera una transaccion bancaria a PRODUBANCO
-  let tx = saleToBanktransaction(saleHeader, BANCO_PRODUBANCO)
+  let bancoTmp = saleHeader.typePayment === "TRANSFERENCIA" ? BANCO_PICHINCHA : BANCO_PRODUBANCO
+  let tx = saleToBanktransaction(saleHeader, bancoTmp)
   if (tx) {
     // Asigna el valor proporcional calculado de la propina luego de la comision del datafast
     saleHeader.tipByBankPayment = tx.tipByBank || saleHeader.tipByBank || 0

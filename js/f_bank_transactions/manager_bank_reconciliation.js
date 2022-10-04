@@ -9,12 +9,10 @@ const d = document,
   w = window,
   ntf = new NotificationBulma()
 
-const typePayments = ["DEPOSITO", "TRANSFERENCIA", "DEBITO_TRANSFERENCIA", "TCREDITO", "TDEBITO"],
-  banks = ["PICH", "PROD"]
+const typePayments = ["DEPOSITO", "TRANSFERENCIA", "DEBITO_TRANSFERENCIA", "TCREDITO", "TDEBITO"]
 
 const filters = {
   typePayments: [...typePayments],
-  banks: [...banks],
   period: "CURRENTMONTH"
 }
 //------------------------------------------------------------------------------------------------
@@ -70,7 +68,7 @@ d.getElementById("search").addEventListener("click", () => {
 d.getElementById("filters").addEventListener("change", e => {
   let $input = e.target
   if ($input.name === "bank") {
-    filters.banks = $input.value === "TODOS" ? banks : [$input.value]
+    filters.bank = $input.value === "TODOS" ? undefined : $input.value
     search()
   } else if ($input.name === "verified") {
     filters.verified = $input.value === "TODOS" ? undefined : $input.value === "true"
@@ -144,7 +142,7 @@ d.getElementById("bank-transactions").addEventListener("change", e => {
 function search() {
   if (validAdminAccess()) {
     calculatePeriod()
-    findBankTxs(filters.typePayments, filters.banks, filters.verified, filters.dateStart, filters.dateEnd,
+    findBankTxs(filters.typePayments, filters.bank, filters.verified, filters.dateStart, filters.dateEnd,
       (transactions) => { renderBankTransactions(transactions) },
       error => { ntf.tecnicalError(`Búsqueda de transacciones bancarias con error`, error) })
   }

@@ -131,14 +131,14 @@ export function updateBankTxVerified(voTx, callback, callbackError) {
 /**
  * Consulta de transacciones bancarias por rango de fechas, tipo de transaccion y banco
  * @param {Array} vaTypes Array con tipos de transaccion
- * @param {Array} vaBanks Array con bancos
+ * @param {string} vsBank Filtro de banco
  * @param {boolean} vbVerified Indica si se filtra los verificados, no verificados o todos
  * @param {DateTime} vdStart DateTime utilizado como fecha de inicio del rango
  * @param {DateTime} vdEnd DateTime utilizado como fecha final del rango
  * @param {Function} callback 
  * @param {Function} callbackError 
  */
-export function findBankTxs(vaTypes, vaBanks, vbVerified, vdStart, vdEnd, callback, callbackError) {
+export function findBankTxs(vaTypes, vsBank, vbVerified, vdStart, vdEnd, callback, callbackError) {
   let rangeStart = dateTimeToKeyDateString(vdStart),
     rangeEnd = dateTimeToKeyDateString(vdEnd)
 
@@ -150,7 +150,7 @@ export function findBankTxs(vaTypes, vaBanks, vbVerified, vdStart, vdEnd, callba
         let tx = child.val()
         tx.tmpUid = child.key
         if (vaTypes.includes(tx.type)
-          && (vaBanks.includes(tx.bank) || !tx.bank)
+          && (vsBank === undefined || vsBank === tx.bank)
           && (vbVerified === undefined || vbVerified === tx.verified)) transactions.push(tx)
       })
       callback(transactions)

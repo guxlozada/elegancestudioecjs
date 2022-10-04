@@ -5,6 +5,8 @@ import { collections } from "../persist/firebase_collections.js";
 import { dateTimeToKeyDateString } from "../util/fecha-util.js";
 
 export const BANCO_PRODUBANCO = "PROD"
+const BANCO_PICHINCHA = "PICH"
+
 
 const TDEBIT_COMISSION = 0.0225,
   TCREDIT_COMISSION = 0.0448,
@@ -143,7 +145,7 @@ export function findBankTxs(vaTypes, vaBanks, vdStart, vdEnd, callback, callback
       snap.forEach((child) => {
         let tx = child.val()
         tx.tmpUid = child.key
-        if (vaTypes.includes(tx.type) && vaBanks.includes(tx.bank)) transactions.push(tx)
+        if (vaTypes.includes(tx.type) && (vaBanks.includes(tx.bank) || !tx.bank)) transactions.push(tx)
       })
       callback(transactions)
     })

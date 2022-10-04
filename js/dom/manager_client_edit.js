@@ -1,4 +1,4 @@
-import { nowEc } from "../util/fecha-util.js";
+import { hoyEC} from "../util/fecha-util.js";
 import { dbRef } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
 import { ntf } from "../app.js";
@@ -148,7 +148,7 @@ function insertClientDB(clientData) {
   delete clientData.registeredBy
 
   // Obtener la clave del cliente
-  const key = clientData.idNumber + '-' + (clientData.searchLastname.toUpperCase() || nowEc().getSeconds())
+  const key = clientData.idNumber + '-' + (clientData.searchLastname.toUpperCase() || hoyEC().toUnixInteger())
   clientData.uid = key
 
   let updates = {}

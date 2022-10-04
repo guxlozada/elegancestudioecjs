@@ -10,8 +10,7 @@ const d = document,
   w = window,
   ntf = new NotificationBulma(),
   salesRef = db.ref(collections.sales),
-  expensesRef = db.ref(collections.expenses),
-  dailyClosingRef = db.ref(collections.dailyClosing)
+  expensesRef = db.ref(collections.expenses)
 
 const filters = {
   seller: "TODOS",
@@ -207,31 +206,29 @@ function renderCommissionsPayment() {
 }
 
 function calculatePeriod() {
+  if (!filters.period) return
+
   let baseDate = hoyEC()
-  //const currentWeek = baseDate.weekNumber
+  let truncPeriod = "month"
   switch (filters.period) {
+    case "CURRENTMONTH":
+      break
     case "CURRENTWEEK":
-      filters.periodStart = baseDate.startOf('week')
-      filters.periodEnd = baseDate.endOf('week')
+      truncPeriod = "week"
+      break
+    case "TODAY":
+      truncPeriod = "day"
       break
     case "LASTWEEK":
       baseDate = baseDate.minus({ weeks: 1 })
-      filters.periodStart = baseDate.startOf('week')
-      filters.periodEnd = baseDate.endOf('week')
-      break
-    case "CURRENTMONTH":
-      filters.periodStart = baseDate.startOf('month')
-      filters.periodEnd = baseDate.endOf('month')
+      truncPeriod = "week"
       break
     case "LASTMONTH":
       baseDate = baseDate.minus({ months: 1 })
-      filters.periodStart = baseDate.startOf('month')
-      filters.periodEnd = baseDate.endOf('month')
       break
   }
-
-  ////console.log(filters.periodStart.toISO())
-  ////console.log(filters.periodEnd.toISO())
+  filters.periodStart = baseDate.startOf(truncPeriod)
+  filters.periodEnd = baseDate.endOf(truncPeriod)
 }
 
 // --------------------------

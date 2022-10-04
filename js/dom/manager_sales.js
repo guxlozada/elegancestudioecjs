@@ -1,4 +1,4 @@
-import { addHours, dateIsValid, hoyEC, nowEc, timestampEc, todayEcToString } from "../util/fecha-util.js";
+import { addHours, dateIsValid, hoyEC, nowEc} from "../util/fecha-util.js";
 import { roundFour, roundTwo } from "../util/numbers-util.js";
 import { zeroPad } from "../util/text-util.js";
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js";
@@ -406,8 +406,6 @@ export default function handlerSales() {
         ntf.error("Información requerida", "Seleccione el vendedor", 3000)
       } else if (!sale.typePayment) {
         ntf.error("Información requerida", "Seleccione la forma de pago", 3000)
-      } else if (sale.date && sale.date > timestampEc()) {
-        ntf.error("Información erronea", `La fecha no puede ser mayor a hoy: ${todayEcToString()} `)
       } else if (sale.items.length === 0) {
         ntf.error("Información erronea", `No ha registrado ningún producto o servicio`, 3000)
       } else {

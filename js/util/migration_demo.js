@@ -1,4 +1,3 @@
-import { formatToOperationDayStringEc, } from "./fecha-util.js";
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
 import { saleToBanktransaction } from "../f_bank_transactions/dao_bank_reconciliation.js";
@@ -94,5 +93,13 @@ function saveVenta(sale) {
         console.log(`Transaccion migrada con error ${key}`, error)
       })
   }
+}
+
+/**
+ * Format date to string 'yyyyMMddThhmmss'
+ * @param { number} timestampUTC ONLY UTC Date in millisegundos
+ */
+function formatToOperationDayStringEc(timestampUTC) {
+  return new Date(timestampUTC - tzoffset).toISOString().replace(/[^0-9T]/g, "").replace(/ +/, " ").slice(0, -3)
 }
 

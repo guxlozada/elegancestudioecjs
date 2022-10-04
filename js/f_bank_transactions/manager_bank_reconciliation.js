@@ -70,18 +70,10 @@ d.getElementById("search").addEventListener("click", () => {
 d.getElementById("filters").addEventListener("change", e => {
   let $input = e.target
   if ($input.name === "bank") {
-    let bank = $input.value,
-      banksChecked = []
-    if (bank === "TODOS") {
-      banksChecked = [...banks]
-      d.getElementsByName("bank").forEach($el => $el.checked = $el.value === "TODOS")
-    } else {
-      d.getElementsByName("bank").forEach($el => {
-        if ($el.checked && $el.value !== "TODOS") banksChecked.push($el.value)
-      })
-      d.getElementById("bank-all").checked = false
-    }
-    filters.banks = banksChecked
+    filters.banks = $input.value === "TODOS" ? banks : [$input.value]
+    search()
+  } else if ($input.name === "verified") {
+    filters.verified = $input.value === "TODOS" ? undefined : $input.value === "true"
     search()
   } else if ($input.name === "typePayment") {
     let typePayment = $input.value,
@@ -152,7 +144,7 @@ d.getElementById("bank-transactions").addEventListener("change", e => {
 function search() {
   if (validAdminAccess()) {
     calculatePeriod()
-    findBankTxs(filters.typePayments, filters.banks, filters.dateStart, filters.dateEnd,
+    findBankTxs(filters.typePayments, filters.banks, filters.verified, filters.dateStart, filters.dateEnd,
       (transactions) => { renderBankTransactions(transactions) },
       error => { ntf.tecnicalError(`Búsqueda de transacciones bancarias con error`, error) })
   }

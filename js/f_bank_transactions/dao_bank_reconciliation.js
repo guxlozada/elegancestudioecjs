@@ -87,6 +87,9 @@ export async function insertBankTx(voBankTx, callback, callbackError, callbackSa
     bankTx = generateDateProperties(bankTxAux),
     key = timestampToDatekey(bankTx.date) + "-" + bankTx.type.slice(0, 3)
 
+  //Agregar propiedad con valores por omision
+  bankTx.verified = false
+
   var updates = {};
   updates[`${collections.bankReconciliation}/${key}`] = bankTx;
   // Tx bancaria relacionada a una venta
@@ -127,14 +130,15 @@ export function updateBankTxVerified(voTx, callback, callbackError) {
 
 /**
  * Consulta de transacciones bancarias por rango de fechas, tipo de transaccion y banco
- * @param {DateTime} vdStart DateTime utilizado como fecha de inicio del rango
- * @param {DateTime} vdEnd DateTime utilizado como fecha final del rango
  * @param {Array} vaTypes Array con tipos de transaccion
  * @param {Array} vaBanks Array con bancos
+ * @param {boolean} vbVerified Indica si se filtra los verificados, no verificados o todos
+ * @param {DateTime} vdStart DateTime utilizado como fecha de inicio del rango
+ * @param {DateTime} vdEnd DateTime utilizado como fecha final del rango
  * @param {Function} callback 
  * @param {Function} callbackError 
  */
-export function findBankTxs(vaTypes, vaBanks, vdStart, vdEnd, callback, callbackError) {
+export function findBankTxs(vaTypes, vaBanks, vbVerified, vdStart, vdEnd, callback, callbackError) {
   let rangeStart = dateTimeToKeyDateString(vdStart),
     rangeEnd = dateTimeToKeyDateString(vdEnd)
 
@@ -145,7 +149,9 @@ export function findBankTxs(vaTypes, vaBanks, vdStart, vdEnd, callback, callback
       snap.forEach((child) => {
         let tx = child.val()
         tx.tmpUid = child.key
-        if (vaTypes.includes(tx.type) && (vaBanks.includes(tx.bank) || !tx.bank)) transactions.push(tx)
+        if (vaTypes.includes(tx.type)
+          && (vaBanks.includes(tx.bank) || !tx.bank)
+          && (vbVerified === undefined || vbVerified === tx.verified)) transactions.push(tx)
       })
       callback(transactions)
     })

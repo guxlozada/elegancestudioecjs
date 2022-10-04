@@ -39,7 +39,7 @@
             <table id="filters">
               <tbody>
                 <tr class="list-inline">
-                  <td>
+                  <td colspan="2">
                     <div class="control is-size-7">
                       <label class="checkbox">
                         <input type="checkbox" id="type-payment-all" name="typePayment" value="TODOS" checked>
@@ -51,36 +51,54 @@
                       </label>
                       <label class="checkbox">
                         <input type="checkbox" name="typePayment" value="TRANSFERENCIA" title="Transferencia credito">
-                        Transf credito
+                        Transferencia credito
                       </label>
                       <label class="checkbox">
                         <input type="checkbox" name="typePayment" value="DEBITO_TRANSFERENCIA"
                           title="Transferencia debito">
-                        Transf debito
+                        Transferencia debito
                       </label>
                       <label class="checkbox">
                         <input type="checkbox" name="typePayment" value="TCREDITO">
-                        Tarj credito
+                        Tarjeta credito
                       </label>
                       <label class="checkbox">
                         <input type="checkbox" name="typePayment" value="TDEBITO">
-                        Tarj debito
+                        Tarjeta debito
+                      </label>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="list-inline">
+                  <td>
+                    <div class="control is-size-7">
+                      <label class="radio">
+                        <input type="radio" id="bank-all" name="bank" value="TODOS" checked>
+                        Todos
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="bank" value="PICH">
+                        Pichincha
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="bank" value="PROD">
+                        Produbanco
                       </label>
                     </div>
                   </td>
                   <td>
                     <div class="control is-size-7">
-                      <label class="checkbox">
-                        <input type="checkbox" id="bank-all" name="bank" value="TODOS" checked>
+                      <label class="radio">
+                        <input type="radio" name="verified" value="TODOS" checked>
                         Todos
                       </label>
-                      <label class="checkbox">
-                        <input type="checkbox" name="bank" value="PICH">
-                        Pichincha
+                      <label class="radio">
+                        <input type="radio" name="verified" value="true">
+                        Verificado
                       </label>
-                      <label class="checkbox">
-                        <input type="checkbox" name="bank" value="PROD">
-                        Produbanco
+                      <label class="radio">
+                        <input type="radio" name="verified" value="false">
+                        Pendiente
                       </label>
                     </div>
                   </td>

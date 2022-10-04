@@ -1,22 +1,16 @@
-import { addHours, compareTruncDay, dateIsValid, todayEc, truncOperationDayString } from "../util/fecha-util.js";
-import { db } from "../persist/firebase_conexion.js";
-import { collections } from "../persist/firebase_collections.js";
+import { compareTruncDay, dateIsValid, hoyEC, inputDateToDateTime, localStringToDateTime } from "../util/fecha-util.js";
 import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { roundFour, roundTwo } from "../util/numbers-util.js";
 import { deleteSaleByUid } from "../f_sales/dao_selller_sales.js";
 import { localdb } from "../repo-browser.js";
 import { isAdmin } from "../dom/manager_user.js";
-import { addMinMaxPropsWithCashOutflowDates, inyectDailyData } from "../util/daily-data-cache.js";
-import { DateTime } from "../luxon.min.js";
+import { addMinMaxPropsWithCashOutflowDates, inyectDailyData, updateDailyData } from "../util/daily-data-cache.js";
+import { findSalesExpensesBankTxsByDay, inyectBeforeAfterDailyCashClosing, saveDailyClosing } from "./dao_seller_daily_closing.js";
 
 const d = document,
   w = window,
-  ntf = new NotificationBulma(),
-  salesRef = db.ref(collections.sales),
-  expensesRef = db.ref(collections.expenses),
-  bankTxRef = db.ref(collections.bankReconciliation),
-  dailyClosingRef = db.ref(collections.dailyClosing)
+  ntf = new NotificationBulma()
 
 const dailyClosingInit = {
   date: null,
@@ -36,8 +30,7 @@ const dailyClosingInit = {
   finalBalance: 0,
   update: false
 }
-let operationDay = todayEc(),
-  dailyClosing = JSON.parse(JSON.stringify(dailyClosingInit))
+let dailyClosing
 
 
 //------------------------------------------------------------------------------------------------
@@ -51,15 +44,36 @@ w.addEventListener("load", () => {
   // if (!isAdmin()) {
   //   addMinMaxPropsWithCashOutflowDates(".summary-day")
   // }
-  changeDailyClosing()
+  changeDailyClosing(hoyEC())
 })
 
 // EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
 d.addEventListener("DOMContentLoaded", () => { navbarBurgers() })
 
-// EVENTO=click RAIZ=section<daily-closing> ACCION=Guardar cierre diario
-d.querySelector(".daily-closing .card-footer").addEventListener("click", e => {
+// EVENTO=change RAIZ=document ACCION=cambio de fecha de operacion, y responsable de cierre de caja
+d.addEventListener("click", e => {
   let $el = e.target
+
+  // Actualizar la informacion del mismo dia
+  if ($el.matches(".summary-day-update") || $el.closest(".summary-day-update")) {
+    changeDailyClosing(dailyClosing.tmpDateTime)
+  }
+
+  // Eliminar venta 
+  if ($el.matches(".sale-delete") || $el.closest(".sale-delete")) {
+    const $link = $el.closest(".sale-delete"),
+      saleUid = $link.dataset.key
+    if (confirm(`Esta seguro que desea eliminar la Venta ${saleUid}`)) {
+      deleteSaleByUid(saleUid,
+        (saleUid) => {
+          ntf.ok("venta eliminada", `Se elimino correctamente la Venta ${saleUid}`)
+          changeDailyClosing(dailyClosing.tmpDateTime)
+        },
+        error => ntf.tecnicalError("No se pudo eliminar la venta", error))
+    }
+  }
+
+  //Guardar cierre diario
   if ($el.matches(".daily-closing-save") || $el.closest(".daily-closing-save")) {
     const $btnSave = e.target.closest(".daily-closing-save")
     if ($btnSave.disabled) {
@@ -74,36 +88,15 @@ d.querySelector(".daily-closing .card-footer").addEventListener("click", e => {
       ntf.error("Informacion requerida", "Seleccione el responsable")
     } else {
       // Insertar el cierre diario en la base de datos
-      saveDailyClosing()
-    }
-  }
-
-})
-
-// EVENTO=click RAIZ=section<summary-filters> ACCION=Actualizar cierre diario
-d.querySelectorAll(".summary-filters").forEach($el => {
-  $el.addEventListener("click", e => {
-    let $el = e.target
-    if ($el.matches(".summary-day-update") || $el.closest(".summary-day-update")) {
-      changeDailyClosing()
-    }
-  })
-})
-
-// EVENTO=change RAIZ=document ACCION=cambio de fecha de operacion, y responsable de cierre de caja
-d.addEventListener("click", e => {
-  let $el = e.target
-  // Eliminar venta 
-  if ($el.matches(".sale-delete") || $el.closest(".sale-delete")) {
-    const $link = $el.closest(".sale-delete"),
-      saleUid = $link.dataset.key
-    if (confirm(`Esta seguro que desea eliminar la Venta ${saleUid}`)) {
-      deleteSaleByUid(saleUid,
-        (saleUid) => {
-          ntf.ok("venta eliminada", `Se elimino correctamente la Venta ${saleUid}`)
-          changeDailyClosing()
+      saveDailyClosing(dailyClosing,
+        dateString => {
+          // Actualiza el rango con fecha minima y maxima para registro de informacion de ingresos y egresos de caja
+          updateDailyData()
+          changeDailyClosing(dailyClosing.tmpDateTime)
+          ntf.ok("Cierre de caja diario registrado",
+            `Se guardo correctamente la informacion del cierre diario del dia ${dateString}`)
         },
-        error => ntf.tecnicalError("No se pudo eliminar la venta", error))
+        error => ntf.tecnicalError("Cierre de caja diario no registrado", error))
     }
   }
 
@@ -112,12 +105,8 @@ d.addEventListener("click", e => {
 // EVENTO=change RAIZ=document ACCION=cambio de fecha de operacion, y responsable de cierre de caja
 d.addEventListener("change", e => {
   let $input = e.target
-  if ($input.matches(".summary-day")) {
-    if (dateIsValid($input.value)) {
-      operationDay = new Date($input.value)
-      changeDailyClosing()
-    }
-    return
+  if ($input.matches(".summary-day") && dateIsValid($input.value)) {
+    changeDailyClosing(inputDateToDateTime($input.value))
   }
   if ($input.name === "responsable") {
     dailyClosing.responsable = $input.value
@@ -128,57 +117,18 @@ d.addEventListener("change", e => {
 // Funcionalidad
 //------------------------------------------------------------------------------------------------
 
-function changeDailyClosing() {
-  d.querySelectorAll(".summary-day").forEach($el => $el.valueAsDate = operationDay)
-  d.getElementsByName("responsable").forEach($el => $el.checked = false)
+function changeDailyClosing(vdDateTime) {
   dailyClosing = JSON.parse(JSON.stringify(dailyClosingInit))
-  let filterDayString = truncOperationDayString(operationDay.getTime(), "date")
+  dailyClosing.tmpDateTime = vdDateTime ? vdDateTime.startOf("day") : hoyEC()
+  d.querySelectorAll(".summary-day").forEach($el => $el.valueAsDate = dailyClosing.tmpDateTime.toJSDate())
+  d.getElementsByName("responsable").forEach($el => $el.checked = false)
   localStorage.removeItem("COMMISSIONS")
   localStorage.removeItem("TIPS")
-  updateSalesByDay(filterDayString)
-}
 
-async function updateSalesByDay(vsDate) {
-  const salesData = [],
-    expensesData = [],
-    depositsData = []
-
-  await salesRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
-    .once('value')
-    .then((snap) => {
-      snap.forEach((child) => {
-        let sale = child.val()
-        sale.tmpUid = child.key
-        salesData.push(sale)
-      })
-    })
-    .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de ventas del dia ${operationDay.toLocaleDateString()}`, error)
-    })
-
-  await expensesRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
-    .once('value')
-    .then((snap) => {
-      snap.forEach((child) => {
-        expensesData.push(child.val())
-      })
-    })
-    .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de ingresos/egresos del dia ${operationDay.toLocaleDateString()}`, error)
-    })
-  await bankTxRef.orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
-    .once('value')
-    .then((snap) => {
-      snap.forEach((child) => {
-        const dta = child.val()
-        if (dta.type === "DEPOSITO") depositsData.push(dta)
-      })
-    })
-    .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de depositos del dia ${operationDay.toLocaleDateString()}`, error)
-    })
-
-  renderSections(salesData, expensesData, depositsData)
+  // Consultar las ventas, egresos de caja y transacciones bancarias
+  findSalesExpensesBankTxsByDay(dailyClosing.tmpDateTime,
+    (salesData, expensesData, depositsData) => renderSections(salesData, expensesData, depositsData),
+    (titleError, error) => ntf.tecnicalError(titleError, error))
 }
 
 function renderSections(salesData, expensesData, depositsData) {
@@ -186,7 +136,10 @@ function renderSections(salesData, expensesData, depositsData) {
   // Se procesa primero los egresos porque se requiere data para las ventas por barbero
   renderExpenses(expensesData, depositsData)
   renderSummaryBySeller(salesData)
-  updateDailyCashClosing()
+  // Consulta si existe los cierres de caja diario anterior y posterior, luego actualiza la vista
+  inyectBeforeAfterDailyCashClosing(dailyClosing.tmpDateTime,
+    (voBeforeClosingDay, voAfterClosingDay) => renderDailyCashClosing(voBeforeClosingDay, voAfterClosingDay),
+    (vsClosingDay, error) => ntf.tecnicalError(`Busqueda de cierre diario del dia ${vsClosingDay}`, error))
 }
 
 function renderSummary(salesData) {
@@ -213,9 +166,8 @@ function renderSummary(salesData) {
   } else {
 
     // Validacion para habilitar la opcion de eliminacion de venta
-    const compare = DateTime.fromJSDate(operationDay),
-      base = DateTime.fromISO(localStorage.getItem(localdb.cashOutflowMinDay)),
-      deletedEnabled = compareTruncDay(compare, "gt", base)
+    const base = localStringToDateTime(localStorage.getItem(localdb.cashOutflowMinDay)),
+      deletedEnabled = compareTruncDay(dailyClosing.tmpDateTime, "ge", base)
 
     $body.innerHTML = ""
 
@@ -492,22 +444,8 @@ function renderExpenses(expensesData, depositsData) {
   $body.appendChild($fragment)
 }
 
-async function updateDailyCashClosing() {
-  const beforeKey = truncOperationDayString(addHours(operationDay, -24).getTime(), "date")
-  const afterKey = truncOperationDayString(addHours(operationDay, 24).getTime(), "date")
-
-  let beforeDay = await dailyClosingRef.child(beforeKey).get()
-    .then((snapshot) => snapshot.exists() ? snapshot.val() : null)
-    .catch((error) => ntf.tecnicalError(`Búsqueda de cierre diario del dia ${beforeKey}`, error))
-  let afterDay = await dailyClosingRef.child(afterKey).get()
-    .then((snapshot) => snapshot.exists() ? snapshot.val() : null)
-    .catch((error) => ntf.tecnicalError(`Búsqueda de cierre diario del dia ${afterKey}`, error))
-
-  renderDailyCashClosing(beforeDay, afterDay)
-}
-
-function renderDailyCashClosing(beforeDay, afterDay) {
-  dailyClosing.initialBalance = beforeDay ? beforeDay.finalBalance : 0
+function renderDailyCashClosing(voBeforeClosingDay, voAfterClosingDay) {
+  dailyClosing.initialBalance = voBeforeClosingDay ? voBeforeClosingDay.finalBalance : 0
 
   // Calcular saldo en caja
   dailyClosing.finalBalance = dailyClosing.initialBalance + dailyClosing.cashSales + dailyClosing.fit
@@ -531,26 +469,11 @@ function renderDailyCashClosing(beforeDay, afterDay) {
   $contenedor.querySelector(".card-sales").innerText = dailyClosing.cardSales.toFixed(2)
   $contenedor.querySelector(".transfer-sales").innerText = dailyClosing.transferSales.toFixed(2)
   let $btnSave = d.querySelector(".daily-closing-save")
-  $btnSave.dataset.existBefore = beforeDay ? true : false
-  $btnSave.dataset.existAfter = afterDay ? true : false
-  if (!beforeDay || afterDay) {
+  $btnSave.dataset.existBefore = voBeforeClosingDay ? true : false
+  $btnSave.dataset.existAfter = voAfterClosingDay ? true : false
+  if (!voBeforeClosingDay || voAfterClosingDay) {
     $btnSave.setAttribute("disabled", true)
   } else {
     $btnSave.removeAttribute("disabled")
   }
-}
-
-// --------------------------
-// Database operations
-// --------------------------
-
-function saveDailyClosing() {
-  // Generar la clave de la nueva venta
-  const dailyKey = truncOperationDayString(operationDay.getTime(), "date")
-
-  db.ref(collections.dailyClosing + "/" + dailyKey).set(dailyClosing).then((snapshot) => {
-    ntf.ok("Cierre de caja diario registrado", `Se guardo correctamente la informacion del cierre diario del dia ${operationDay.toLocaleDateString()}`)
-  }).catch((error) => {
-    ntf.tecnicalError("Cierre de caja diario no registrado", error)
-  })
 }

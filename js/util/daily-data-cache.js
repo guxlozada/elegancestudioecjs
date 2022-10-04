@@ -60,6 +60,15 @@ export const inyectDailyData = (callback) => {
 }
 
 /**
+ * Actualiza los datos de ayuda diaria, borrando los datos previamente generados.
+ */
+export const updateDailyData = () => {
+  dailyDataCleaning()
+  // Invoca la consulta de la fecha maxima de cierre de caja diario
+  maxClosingDay(dateTime => dailyDataGenerate(dateTime))
+}
+
+/**
  * Asigna a un input type="date" la fecha minima y maxima para registro de informacion de ingresos y egresos de caja
  * @param {string} vsClassSelector Selector de clase del input type=date a quien se asigna los atributos min y max
  * @param {Object} range Rango con fecha minima y maxima para registro de informacion de ingresos y egresos de caja

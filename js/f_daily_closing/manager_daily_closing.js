@@ -177,6 +177,7 @@ function renderSummary(salesData) {
       vnValueSale = roundTwo(sale.totalSale)
       // Tiene precedencia la propina con descuento datafast (tipByBankPayment), luego la propina
       // relacionada a una tx bancaria (bankTxValue) y por ultimo la registrada en la venta (tipByBank)
+      // IMPORTANTE: Debe conincidir con el calculo en manager_payments.js
       sale.tmpTipByBank = roundTwo(sale.tipByBankPayment || sale.bankTxValue || sale.tipByBank || 0)
       sale.tmpBarberCommission = roundTwo(sale.barberCommission)
       // Temporalmente a los pagos con tarjeta de credito o debito la comision al valor final es igual a la de base imponib

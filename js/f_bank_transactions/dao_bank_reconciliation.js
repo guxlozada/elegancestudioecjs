@@ -148,10 +148,12 @@ export function findBankTxs(vaTypes, vsBank, vbVerified, vdStart, vdEnd, callbac
       let transactions = []
       snap.forEach((child) => {
         let tx = child.val()
-        tx.tmpUid = child.key
         if (vaTypes.includes(tx.type)
           && (vsBank === undefined || vsBank === tx.bank)
-          && (vbVerified === undefined || vbVerified === tx.verified)) transactions.push(tx)
+          && (vbVerified === undefined || vbVerified === tx.verified)) {
+          tx.tmpUid = child.key
+          transactions.push(tx)
+        }
       })
       callback(transactions)
     })

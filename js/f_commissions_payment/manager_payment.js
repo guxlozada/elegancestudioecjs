@@ -1,4 +1,4 @@
-import { dateIsValid, dateTimeToKeyDateString, hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
+import { dateTimeToKeyDateString, dateTimeToLocalString, hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
 import validAdminAccess from "../dom/manager_user.js";
@@ -14,25 +14,56 @@ const d = document,
 
 const filters = {
   seller: "TODOS",
-  period: "CURRENTWEEK",
-  periodStart: null,
-  periodEnd: null,
-  dateStart: null,
-  dateEnd: null,
-  lastClosingDay: null
+  period: "CURRENTWEEK"
 }
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
 //------------------------------------------------------------------------------------------------
 
 // EVENTO=load RAIZ=window 
-w.addEventListener("load", () => { search() })
+w.addEventListener("load", () => search())
 
 // EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => { navbarBurgers() })
+d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
-d.getElementById("search").addEventListener("click", () => { search() })
+d.getElementById("search").addEventListener("click", () => {
+  let dateStart = d.getElementById("date-start").value,
+    dateEnd = d.getElementById("date-end").value
+
+  // NO se ha seleccionado al menos una fecha
+  if (!dateStart && !dateEnd) {
+    ntf.error("Información con errores", "Seleccione una fecha o un rango de fechas")
+    search()
+    return
+  }
+
+  if (!dateEnd) {
+    dateEnd = dateStart
+  } else if (!dateStart) {
+    dateStart = dateEnd
+  }
+
+  // Validar rango y fecha maxima de consulta
+  let dateTimeStart = inputDateToDateTime(dateStart),
+    dateTimeEnd = inputDateToDateTime(dateEnd),
+    hoy = hoyEC()
+  if (dateTimeStart > hoy || dateTimeEnd > hoy) {
+    ntf.error("Información con errores", "No puede seleccionar una fecha mayor a la actual")
+  } else if (dateTimeStart > dateTimeEnd) {
+    ntf.error("Información con errores", "La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
+  }
+
+  // Si hay msj de error finaliza
+  if (ntf.enabled) return
+
+  // Desactivar los periodos delfiltro
+  d.getElementsByName("period").forEach($el => $el.checked = false)
+  delete filters.period
+  filters.dateStart = dateTimeStart
+  filters.dateEnd = dateTimeEnd
+  search()
+})
 
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
 d.getElementById("filters").addEventListener("change", e => {
@@ -42,13 +73,10 @@ d.getElementById("filters").addEventListener("change", e => {
     search()
   } else if ($input.name === "period") {
     filters.period = $input.value
-    filters.dateStart = null
-    filters.dateEnd = null
+    // Setear valores de rango de fechas
+    d.getElementById("date-start").value = ""
+    d.getElementById("date-end").value = ""
     search()
-  } else if ($input.name === "dateStart" && dateIsValid($input.value)) {
-    filters.dateStart = inputDateToDateTime($input.value)
-  } else if ($input.name === "dateEnd" && dateIsValid($input.value)) {
-    filters.dateEnd = inputDateToDateTime($input.value)
   }
 })
 
@@ -91,11 +119,7 @@ function renderCommissionsPayment() {
     vnBarberCommission,
     vnBarberCommissionTmp,
     $clone,
-    barbers = [filters.seller]
-
-  if (filters.seller === "TODOS") {
-    barbers = Array.from(d.getElementsByName("seller")).map($el => $el.value).filter(val => val !== "TODOS")
-  }
+    barbers = [...filters.barberSales.keys()]
 
   barbers.forEach(barber => {
     vnTotalTaxes = vnTotalTaxableIncome = vnTotalSales = vnTotalBarberCommissions = vnTotalBarberCommissionsTmp = vnTotalBarberTips = 0
@@ -121,6 +145,9 @@ function renderCommissionsPayment() {
       } else {
         vnBarberCommissionTmp = roundFour(sale.barberCommission * 1.12)
       }
+      // Tiene precedencia la propina con descuento datafast (tipByBankPayment), luego la propina
+      // relacionada a una tx bancaria (bankTxValue) y por ultimo la registrada en la venta (tipByBank)
+      // IMPORTANTE: Debe conincidir con el calculo en manager_daily_closing.js
       vnBarberTip = roundTwo(sale.tipByBankPayment || sale.bankTxValue || sale.tipByBank || 0)
       // Totales por barbero
       vnTotalSales += vnValueSale
@@ -198,7 +225,7 @@ function renderCommissionsPayment() {
   $paymentsDetails.appendChild($fragment)
 
   // Agregar totales por consulta
-  d.querySelector(".search-period").innerText = filters.periodStart.toFormat('dd/MM/yyyy') + " al " + filters.periodEnd.toFormat('dd/MM/yyyy')
+  d.querySelector(".search-period").innerText = dateTimeToLocalString(filters.dateStart) + " al " + dateTimeToLocalString(filters.dateEnd)
   d.querySelector(".search-sales").innerText = vnSearchSales.toFixed(2)
   ////d.querySelector(".search-barber-commissions").innerText = vnSearchBarberCommissions.toFixed(2)
   d.querySelector(".search-barber-commissions-tmp").innerText = vnSearchBarberCommissionsTmp.toFixed(2)
@@ -227,8 +254,8 @@ function calculatePeriod() {
       baseDate = baseDate.minus({ months: 1 })
       break
   }
-  filters.periodStart = baseDate.startOf(truncPeriod)
-  filters.periodEnd = baseDate.endOf(truncPeriod)
+  filters.dateStart = baseDate.startOf(truncPeriod)
+  filters.dateEnd = baseDate.endOf(truncPeriod)
 }
 
 // --------------------------
@@ -236,17 +263,9 @@ function calculatePeriod() {
 // --------------------------
 
 async function findExpenses() {
-  let arryTmp,
-    rangeStart,
-    rangeEnd
-
-  if (filters.dateStart && filters.dateEnd) {
-    rangeStart = dateTimeToKeyDateString(filters.dateStart)
-    rangeEnd = dateTimeToKeyDateString(filters.dateEnd)
-  } else {
-    rangeStart = dateTimeToKeyDateString(filters.periodStart)
-    rangeEnd = dateTimeToKeyDateString(filters.periodEnd)
-  }
+  let rangeStart = dateTimeToKeyDateString(filters.dateStart),
+    rangeEnd = dateTimeToKeyDateString(filters.dateEnd),
+    arryTmp
 
   filters.barberAdvancePayment = new Map()
   filters.barberDrinks = new Map()
@@ -254,11 +273,10 @@ async function findExpenses() {
   filters.barberPaidTips = new Map()
   filters.barberSales = new Map()
 
-  await expensesRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
-    .once('value')
-    .then((snap) => {
-      snap.forEach((child) => {
-        const dta = child.val()
+  await expensesRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff").once('value')
+    .then(snap => snap.forEach(child => {
+      const dta = child.val()
+      if (filters.seller === "TODOS" || filters.seller === dta.responsable) {
         switch (dta.type) {
           case 'ADELANTO':
             arryTmp = filters.barberAdvancePayment.get(dta.responsable) || []
@@ -281,24 +299,21 @@ async function findExpenses() {
             filters.barberPaidTips.set(dta.responsable, arryTmp)
             break
         }
-      })
-    })
-    .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de adelantos y comisiones pagadas con error`, error)
-    })
+      }
+    }))
+    .catch(error => ntf.tecnicalError("Busqueda de adelantos y comisiones pagadas con error", error))
 
-  await salesRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
-    .once('value')
-    .then((snap) => {
-      snap.forEach((child) => {
-        arryTmp = filters.barberSales.get(child.val().seller) || []
+  await salesRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff").once('value')
+    .then(snap => snap.forEach(child => {
+      const dta = child.val()
+      if (filters.seller === "TODOS" || filters.seller === dta.seller) {
+        console.log(dta.responsable)
+        arryTmp = filters.barberSales.get(dta.seller) || []
         arryTmp.push(child.val())
-        filters.barberSales.set(child.val().seller, arryTmp)
-      })
-    })
-    .catch((error) => {
-      ntf.tecnicalError(`Búsqueda de ventas con error`, error)
-    })
+        filters.barberSales.set(dta.seller, arryTmp)
+      }
+    }))
+    .catch(error => ntf.tecnicalError("Busqueda de ventas con error", error))
 
   renderCommissionsPayment()
 }

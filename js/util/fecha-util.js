@@ -91,6 +91,15 @@ export function dateTimeToKeyDatetimeString(vdDateTime) {
 }
 
 /**
+ * Convierte un DateTime Luxon a una cadena 'yyyy-MM-dd'
+ * @param {DateTime} vdDateTime DateTime Luxon
+ * @returns 
+ */
+export function dateTimeToLocalString(vdDateTime) {
+  return vdDateTime.toFormat(PATTERN_INPUT_DATE)
+}
+
+/**
  * Compara dos DateTime utilizando la operacion solicitada
  * @param {DateTime} vdDateTimeCompare DateTime que se verifica
  * @param {string} operation lt='antes', le='antes o igual', eq='igual', ge='posterior o igual', gt='posterior'

@@ -65,29 +65,29 @@
                   <td style="vertical-align: middle;">
                     <div class="control is-size-7">
                       <label class="radio">
-                        <input type="radio" name="period" value="CURRENTWEEK" checked>
-                        Semana actual
+                        <input type="radio" name="period" value="LASTMONTH">
+                        Mes anterior
                       </label>
                       <label class="radio">
                         <input type="radio" name="period" value="LASTWEEK">
                         Semana anterior
                       </label>
                       <label class="radio">
-                        <input type="radio" name="period" value="CURRENTMONTH">
-                        Mes actual
+                        <input type="radio" name="period" value="CURRENTWEEK" checked>
+                        Semana actual
                       </label>
                       <label class="radio">
-                        <input type="radio" name="period" value="LASTMONTH">
-                        Mes anterior
+                        <input type="radio" name="period" value="CURRENTMONTH">
+                        Mes actual
                       </label>
                     </div>
                   </td>
                   <td>
-                    <input class="input is-small is-hidden" style="max-width: 8rem" name="dateStart" type="date"
-                      required />
-                    <input class="input is-small is-hidden" style="max-width: 8rem" name="dateEnd" type="date"
-                      required />
-                    <input id="search" class="button is-small is-primary is-hidden" type="button" value="Buscar">
+                    <input type="date" class="input is-small" id="date-start" name="dateStart" required
+                      style="max-width: 8rem" />
+                    <input type="date" class="input is-small" id="date-end" name="dateEnd" required
+                      style="max-width: 8rem" />
+                    <input type="button" id="search" class="button is-small is-primary" value="Buscar">
                   </td>
                 </tr>
               </tbody>

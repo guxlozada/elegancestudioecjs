@@ -17,6 +17,15 @@ export function roundFour(vnDecimal) {
 }
 
 /**
+ * Trunca a cuatro decimales
+ * @param {Number} vnDecimal Valor decimal
+ * @returns 
+ */
+export function truncFour(vnDecimal) {
+  return Math.trunc(vnDecimal * 10000) / 10000
+}
+
+/**
  * Trunca a dos decimales
  * @param {Number} vnDecimal Valor decimal
  * @returns 

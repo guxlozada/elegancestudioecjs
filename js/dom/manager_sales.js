@@ -1,5 +1,5 @@
 import { addHours, dateIsValid, hoyEC, nowEc } from "../util/fecha-util.js";
-import { roundFour, roundTwo, truncTwo } from "../util/numbers-util.js";
+import { roundFour, roundTwo, truncFour } from "../util/numbers-util.js";
 import { zeroPad } from "../util/text-util.js";
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js";
 import { dbRef } from "../persist/firebase_conexion.js";
@@ -238,12 +238,11 @@ function renderSaleItems(changeTypePayment) {
         vnTaxDiscount = vnUnitDiscount - vnBaseDiscount
       }
 
-      let taxableIncome = (baseValue - vnBaseDiscount) * item.numberOfUnits
-      item.taxableIncome = roundFour(taxableIncome)
+      item.taxableIncome = roundFour((baseValue - vnBaseDiscount) * item.numberOfUnits)
       item.taxes = roundFour(((taxIVA || 0) - vnTaxDiscount) * item.numberOfUnits)
       item.total = roundFour(item.taxableIncome + item.taxes)
       item.discounts = roundFour(vnUnitDiscount * item.numberOfUnits)
-      item.barberCommission = truncTwo(truncTwo(taxableIncome) * item.sellerCommission / 100)
+      item.barberCommission = truncFour(item.taxableIncome * item.sellerCommission / 100)
 
       sale.taxableIncome += item.taxableIncome
       sale.taxes += item.taxes

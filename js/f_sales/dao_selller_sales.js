@@ -54,7 +54,7 @@ function deleteSaleDetailsBySaleUid(voSale, callback, callbackError) {
  */
 function deleteSaleDetailsBankTx(voSale, vaSaleDetails, callback, callbackError) {
   // Buscar si existe una transaccion bancaria relacionada
-  dbRef.child(collections.bankReconciliation).orderByChild("saleUid").equalTo(voSale.uid)
+  dbRef.child(collections.bankingTransactions).orderByChild("saleUid").equalTo(voSale.uid)
     .once('value')
     .then(snap => {
       let bankTx
@@ -79,7 +79,7 @@ function deleteSaleDetailsBankTx(voSale, vaSaleDetails, callback, callbackError)
       // Eliminar tx relacionada
       if (bankTx) {
         updates[`${collections.deletedBankTx}/${bankTx.uid}`] = bankTx
-        updates[`${collections.bankReconciliation}/${bankTx.uid}`] = null
+        updates[`${collections.bankingTransactions}/${bankTx.uid}`] = null
       }
       console.log(updates)
       dbRef.update(updates, error => error ? callbackError(error) : callback(voSale.uid))

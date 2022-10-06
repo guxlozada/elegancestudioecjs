@@ -1,5 +1,5 @@
-import { addHours, dateIsValid, hoyEC, nowEc} from "../util/fecha-util.js";
-import { roundFour, roundTwo } from "../util/numbers-util.js";
+import { addHours, dateIsValid, hoyEC, nowEc } from "../util/fecha-util.js";
+import { roundFour, roundTwo, truncTwo } from "../util/numbers-util.js";
 import { zeroPad } from "../util/text-util.js";
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js";
 import { dbRef } from "../persist/firebase_conexion.js";
@@ -10,7 +10,7 @@ import { services } from "./catalog_services.js";
 import { servicesEneglimar } from "./catalog_services_eneglimar.js";
 import { products } from "./catalog_products.js";
 import { changeProductsModalTypeSale } from "../app.js";
-import { BANCO_PRODUBANCO, saleToBanktransaction } from "../f_bank_transactions/dao_bank_reconciliation.js";
+import { BANCO_PICHINCHA, BANCO_PRODUBANCO, saleToBanktransaction } from "../f_bank_transactions/dao_bank_reconciliation.js";
 import { localdb } from "../repo-browser.js";
 
 const d = document,
@@ -238,11 +238,12 @@ function renderSaleItems(changeTypePayment) {
         vnTaxDiscount = vnUnitDiscount - vnBaseDiscount
       }
 
-      item.taxableIncome = roundFour((baseValue - vnBaseDiscount) * item.numberOfUnits)
+      let taxableIncome = (baseValue - vnBaseDiscount) * item.numberOfUnits
+      item.taxableIncome = roundFour(taxableIncome)
       item.taxes = roundFour(((taxIVA || 0) - vnTaxDiscount) * item.numberOfUnits)
       item.total = roundFour(item.taxableIncome + item.taxes)
       item.discounts = roundFour(vnUnitDiscount * item.numberOfUnits)
-      item.barberCommission = roundFour(item.taxableIncome * item.sellerCommission / 100)
+      item.barberCommission = truncTwo(truncTwo(taxableIncome) * item.sellerCommission / 100)
 
       sale.taxableIncome += item.taxableIncome
       sale.taxes += item.taxes
@@ -517,13 +518,18 @@ function insertSalesDB(callback) {
   // TODO: Agregar en la venta el banco para la transferencia
   // Si forma pago=TCREDITO/TDEBITO o TRANSFERENCIA se genera una transaccion bancaria a PRODUBANCO
   let bancoTmp = saleHeader.typePayment === "TRANSFERENCIA" ? BANCO_PICHINCHA : BANCO_PRODUBANCO
-  let tx = saleToBanktransaction(saleHeader, bancoTmp)
+  let tx = saleToBanktransaction(saleHeader, bancoTmp),
+    txKey = undefined
   if (tx) {
-    // Asigna el valor proporcional calculado de la propina luego de la comision del datafast
-    saleHeader.tipByBankPayment = tx.tipByBank || saleHeader.tipByBank || 0
+    txKey = saleKey + "-" + tx.type.slice(0, 3)
+    saleHeader.bankTxUid = txKey
   }
+  saleHeader.paymentTip = tx && tx.tipByBank ? tx.tipByBank : (saleHeader.tipByBank || 0)
+  saleHeader.paymentTotalSale = tx ? tx.value : saleHeader.totalSale
+  saleHeader.paymentEffectiveSale = roundFour(saleHeader.paymentTotalSale - saleHeader.paymentTip)
 
-  let i = 1
+  let i = 1,
+    effectiveSale = saleHeader.totalSale - saleHeader.tipByBank
   // Complementar detalles de la venta
   let saleDetails = saleHeader.items.map((item) => {
     /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -538,7 +544,8 @@ function insertSalesDB(callback) {
       ...item,
       clientId: saleHeader.clientId,
       order: i++,
-      saleUid: saleKey
+      saleUid: saleKey,
+      paymentTotal: roundFour(item.total * saleHeader.paymentEffectiveSale / effectiveSale)
     }
   })
 
@@ -566,8 +573,7 @@ function insertSalesDB(callback) {
 
   // Registrar si existe la transaccion bancaria
   if (tx) {
-    let txKey = saleKey + "-" + tx.type.slice(0, 3)
-    updates[`${collections.bankReconciliation}/${txKey}`] = tx
+    updates[`${collections.bankingTransactions}/${txKey}`] = tx
   }
 
   // Registrar la venta en la BD

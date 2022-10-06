@@ -1,11 +1,11 @@
 export const collections = {
-  bankReconciliation: "prodadmin-bank-reconciliation",
+  bankingTransactions: "prod-banking-transaction",
   clients: "prodseller-clients",
-  dailyClosing: "prodseller-daily-closing",
-  expenses: "prodseller-expenses",
-  sales: "prodseller-sales",
-  salesDetails: "prodseller-sales-details",
-  deletedBankTx: "deleted-bank-tx",
+  dailyClosing: "prod-daily-closing",
+  expenses: "prod-cash-outflows",
+  sales: "prod-sales",
+  salesDetails: "prod-sales-details",
+  deletedBankTx: "deleted-banking-transaction",
   deletedSales: "deleted-sales",
   deletedSalesDetails: "deleted-sales-details"
 }

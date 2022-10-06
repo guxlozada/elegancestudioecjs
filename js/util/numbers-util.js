@@ -15,3 +15,12 @@ export function roundTwo(vnDecimal) {
 export function roundFour(vnDecimal) {
   return Math.round(vnDecimal * 10000) / 10000
 }
+
+/**
+ * Trunca a dos decimales
+ * @param {Number} vnDecimal Valor decimal
+ * @returns 
+ */
+export function truncTwo(vnDecimal) {
+  return Math.trunc(vnDecimal * 100) / 100
+}

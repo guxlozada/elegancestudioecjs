@@ -5,7 +5,7 @@ import { collections } from "../persist/firebase_collections.js";
 import { dateTimeToKeyDateString } from "../util/fecha-util.js";
 
 export const BANCO_PRODUBANCO = "PROD"
-const BANCO_PICHINCHA = "PICH"
+export const BANCO_PICHINCHA = "PICH"
 
 
 const TDEBIT_COMISSION = 0.0225,
@@ -91,8 +91,8 @@ export async function insertBankTx(voBankTx, callback, callbackError, callbackSa
   bankTx.verified = false
 
   var updates = {};
-  updates[`${collections.bankReconciliation}/${key}`] = bankTx;
-  // Tx bancaria relacionada a una venta
+  updates[`${collections.bankingTransactions}/${key}`] = bankTx;
+  // SOLO Tx bancaria relacionada a una venta por propinas
   if (bankTx.saleUid) {
     updates[`${collections.sales}/${bankTx.saleUid}/bankTxUid`] = key
     updates[`${collections.sales}/${bankTx.saleUid}/bankTxValue`] = bankTx.value
@@ -116,8 +116,8 @@ export async function insertBankTx(voBankTx, callback, callbackError, callbackSa
  */
 export function updateBankTxVerified(voTx, callback, callbackError) {
   var updates = {}
-  updates[`${collections.bankReconciliation}/${voTx.uid}/verified`] = voTx.verified
-  updates[`${collections.bankReconciliation}/${voTx.uid}/verifiedValue`] = voTx.verifiedValue
+  updates[`${collections.bankingTransactions}/${voTx.uid}/verified`] = voTx.verified
+  updates[`${collections.bankingTransactions}/${voTx.uid}/verifiedValue`] = voTx.verifiedValue
 
   dbRef.update(updates, (error) => {
     if (error) {
@@ -142,7 +142,7 @@ export function findBankTxs(vaTypes, vsBank, vbVerified, vdStart, vdEnd, callbac
   let rangeStart = dateTimeToKeyDateString(vdStart),
     rangeEnd = dateTimeToKeyDateString(vdEnd)
 
-  db.ref(collections.bankReconciliation).orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
+  db.ref(collections.bankingTransactions).orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff")
     .once('value')
     .then((snap) => {
       let transactions = []

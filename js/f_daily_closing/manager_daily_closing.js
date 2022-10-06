@@ -175,10 +175,11 @@ function renderSummary(salesData) {
       vnTaxableIncome = roundTwo(sale.taxableIncome)
       vnTaxes = roundTwo(sale.taxes)
       vnValueSale = roundTwo(sale.totalSale)
-      // Tiene precedencia la propina con descuento datafast (tipByBankPayment), luego la propina
-      // relacionada a una tx bancaria (bankTxValue) y por ultimo la registrada en la venta (tipByBank)
+      // Tiene precedencia la propina con descuento datafast (paymentTip), luego la propina
+      // relacionada a una tx bancaria registrada solo para propina (bankTxValue) y por ultimo
+      // la registrada en la venta (tipByBank)
       // IMPORTANTE: Debe conincidir con el calculo en manager_payments.js
-      sale.tmpTipByBank = roundTwo(sale.tipByBankPayment || sale.bankTxValue || sale.tipByBank || 0)
+      sale.tmpTipByBank = roundTwo(sale.paymentTip || sale.bankTxValue || sale.tipByBank || 0)
       sale.tmpBarberCommission = roundTwo(sale.barberCommission)
       // Temporalmente a los pagos con tarjeta de credito o debito la comision al valor final es igual a la de base imponib
       if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
@@ -293,7 +294,7 @@ function renderSummaryBySeller(salesData) {
     $rowTmp.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
     $rowTmp.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
     $rowTmp.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
-    $rowTmp.querySelector(".tips-by-bank").innerText = sale.tmpBarberTip > 0 ? sale.tmpBarberTip.toFixed(2) : ''
+    $rowTmp.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank > 0 ? sale.tmpTipByBank.toFixed(2) : ''
     $rowTmp.querySelector(".value").innerText = vnValueSale.toFixed(2)
     $rowTmp.querySelector(".barber-commission").innerText = sale.tmpBarberCommission.toFixed(2)
     $rowTmp.querySelector(".barber-commission-tmp").innerText = sale.tmpBarberCommissionTmp.toFixed(2)

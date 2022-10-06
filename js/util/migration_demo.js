@@ -1,105 +1,136 @@
-import { db } from "../persist/firebase_conexion.js";
-import { collections } from "../persist/firebase_collections.js";
-import { saleToBanktransaction } from "../f_bank_transactions/dao_bank_reconciliation.js";
+import { db, dbRef } from "./js/persist/firebase_conexion.js";
+import { collections } from "./js/persist/firebase_collections.js";
+import { roundFour, truncFour } from "./js/util/numbers-util.js";
 
 const d = document,
   w = window,
-  depositsRef = db.ref("prodseller-deposits"),
-  salesRef = db.ref(collections.sales),
-  periodStart = "20220801",
-  periodEnd = "20220921"
-
+  periodStart = "20210801",
+  periodEnd = "20211031",
+  types = ["TRANSFERENCIA", "TCREDITO", "TDEBITO"]
 
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
 //------------------------------------------------------------------------------------------------
 
 // EVENTO=load RAIZ=window 
-w.addEventListener("load", e => {
+w.addEventListener("load", () => {
   //migrarDepositos()
   //migrarVentas()
 })
 
-// --------------------------
-// Database operations
-// --------------------------
+d.getElementById("migrar").addEventListener("click", () => migrar())
 
-async function migrarDepositos() {
-  let depositos = []
-  await depositsRef.orderByKey().startAt(periodStart + "T").endAt(periodEnd + "\uf8ff")
+function migrar() {
+  let origen = "prodseller-expenses",
+    destino = "prod-cash-outflows"
+
+  dbRef.child(origen).orderByKey().startAt(periodStart + "T").endAt(periodEnd + "\uf8ff")
     .once('value')
-    .then((snap) => {
-      ////console.log(snap.toJSON())
-      snap.forEach((child) => {
-        console.log(child.key)
-        depositos.push(child.val())
+    .then(snap => {
+      console.log(`Empezo`)
+      snap.forEach(child => {
+        let uid = child.key
+        console.log(`${uid}`)
+        dbRef.child(destino).child(uid)
+          .set(child.val())
+          .catch(error => console.log(`${uid}no migrado con error ${uid}`, error))
       })
     })
-    .catch((error) => {
-      console.log(`Búsqueda de depositos con error`, error)
-    })
-
-  depositos.forEach(d => {
-    console.log(d.searchDate)
-    saveDeposito(d)
-  })
+    .catch(error => console.error(`MIgracion con error`, error))
 }
 
 async function migrarVentas() {
-  const bankPayments = ["TRANSFERENCIA", "TCREDITO", "TDEBITO"]
-  let ventas = []
-  await salesRef.orderByKey().startAt(periodStart + "T").endAt(periodEnd + "\uf8ff")
+  dbRef.child("prodseller-sales").orderByKey().startAt(periodStart + "T").endAt(periodEnd + "\uf8ff")
     .once('value')
-    .then((snap) => {
-      ////console.log(snap.toJSON())
+    .then(snap => {
       snap.forEach((child) => {
-        let sale = child.val()
-        if (bankPayments.includes(sale.typePayment)) {
-          console.log(child.key)
-          ventas.push(sale)
+        let sale = child.val(),
+          uid = child.key
+        /////console.log("sale:" + JSON.stringify(snap, undefined, 2))
+        console.log(`sales ${uid}`)
+        if (types.includes(sale.typePayment)) {
+          consultarTx(uid, sale)
+        } else {
+          consultarDetails(uid, sale)
         }
       })
     })
-    .catch((error) => {
-      console.log(`Búsqueda de depositos con error`, error)
-    })
+    .catch(error => console.error(`Búsqueda de ventas con error`, error))
+}
 
-  ventas.forEach(v => {
-    console.log(v.searchDate)
-    saveVenta(v)
+function consultarTx(uid, sale) {
+  let txUid = uid + "-" + sale.typePayment.slice(0, 3)
+  dbRef.child("prodadmin-bank-reconciliation").orderByKey().equalTo(txUid).once('value')
+    .then(snap => {
+      console.log(`sales ${uid}, tx exists=${snap.exists()}`)
+      if (snap.exists()) {
+        snap.forEach(child => {
+          let tx = child.val()
+          tx.tmpUid = child.key
+          console.log(`sales ${uid}, tx ${tx.tmpUid}`)
+          consultarDetails(uid, sale, tx)
+        })
+      } else {
+        console.error(`Búsqueda de tx con error ${uid}, deberia existir para ${sale.typePayment}`)
+        consultarDetails(uid, sale)
+      }
+    })
+    .catch(error => console.error(`Búsqueda de tx con error ${uid}`, error))
+}
+
+function consultarDetails(uid, sale, tx) {
+  dbRef.child("prodseller-sales-details").orderByKey().startAt(uid).endAt(uid + "\uf8ff")
+    .once('value')
+    .then(snap => {
+      let details = []
+      snap.forEach(child => {
+        let detail = child.val()
+        detail.tmpUid = child.key
+        console.log(`sales ${uid}, detail : ${detail.tmpUid}`)
+        details.push(detail)
+      })
+      guardarMigracion(uid, sale, details, tx)
+    })
+    .catch(error => console.error(`Búsqueda de detalles con error ${uid}`, error))
+}
+
+function guardarMigracion(uid, sale, details, tx) {
+  let updates = {}
+  if (tx) {
+    sale.bankTxUid = tx.tmpUid
+    // delete tx.tmpUid
+    // // Migrar la tx
+    // updates[`${collections.newTx}/${sale.tx}`] = tx
+  }
+  sale.tipByBank = sale.tipByBank || 0
+  sale.paymentTip = tx && tx.tipByBank ? tx.tipByBank : sale.tipByBank
+  sale.paymentTotalSale = tx ? tx.value : sale.totalSale
+  sale.paymentEffectiveSale = roundFour(sale.paymentTotalSale - sale.paymentTip)
+  // Migrar la venta
+  updates[`${collections.sales}/${uid}`] = sale
+  let effectiveSale = sale.totalSale - sale.tipByBank
+  details.forEach(det => {
+    let detUid = det.tmpUid
+    let unop = parseFloat(det.total) / 112
+    det.paymentTotal = roundFour(det.total * sale.paymentEffectiveSale / effectiveSale)
+    det.taxes = roundFour(unop * 12)
+    let taxableIncome = det.total - det.taxes
+    det.taxableIncome = roundFour(taxableIncome)
+    det.barberCommission = truncFour(truncFour(taxableIncome) * det.sellerCommission / 100)
+
+    // Migrar el detalles
+    delete det.tmpUid
+    updates[`${collections.salesDetails}/${detUid}`] = det
+  })
+
+  // Registrar la venta en la BD
+  dbRef.update(updates, (error) => {
+    if (error) {
+      console.error(`ERROR: Venta ${uid} no migrada`, error)
+    } else {
+      console.log(`OK: Venta ${uid} migrada`)
+    }
   })
 }
 
-function saveDeposito(deposito) {
-  // Generar la clave de la nueva venta
-  let key = formatToOperationDayStringEc(deposito.date) + "-DEP"// Generar la clave del deposito
-  console.log("deposito key=", key)
-  db.ref(collections.bankReconciliation + "/" + key).set(deposito)
-    .catch((error) => {
-      console.log(`Deposito migrado con error ${key}`, error)
-    })
-}
-
-function saveVenta(sale) {
-  let tx = saleToBanktransaction(sale)
-  console.log("tx=", tx)
-  if (tx) {
-    let key = tx.saleUid + "-" + tx.type.slice(0, 3)
-    // Generar la clave de la nueva venta
-    console.log("tx key=", key)
-
-    db.ref(collections.bankReconciliation + "/" + key).set(tx)
-      .catch((error) => {
-        console.log(`Transaccion migrada con error ${key}`, error)
-      })
-  }
-}
-
-/**
- * Format date to string 'yyyyMMddThhmmss'
- * @param { number} timestampUTC ONLY UTC Date in millisegundos
- */
-function formatToOperationDayStringEc(timestampUTC) {
-  return new Date(timestampUTC - tzoffset).toISOString().replace(/[^0-9T]/g, "").replace(/ +/, " ").slice(0, -3)
-}
 

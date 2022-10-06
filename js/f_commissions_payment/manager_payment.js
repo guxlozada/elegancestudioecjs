@@ -145,10 +145,11 @@ function renderCommissionsPayment() {
       } else {
         vnBarberCommissionTmp = roundFour(sale.barberCommission * 1.12)
       }
-      // Tiene precedencia la propina con descuento datafast (tipByBankPayment), luego la propina
-      // relacionada a una tx bancaria (bankTxValue) y por ultimo la registrada en la venta (tipByBank)
+      // Tiene precedencia la propina con descuento datafast (paymentTip), luego la propina
+      // relacionada a una tx bancaria registrada solo para propina (bankTxValue) y por ultimo
+      // la registrada en la venta (tipByBank)
       // IMPORTANTE: Debe conincidir con el calculo en manager_daily_closing.js
-      vnBarberTip = roundTwo(sale.tipByBankPayment || sale.bankTxValue || sale.tipByBank || 0)
+      vnBarberTip = roundTwo(sale.paymentTip || sale.bankTxValue || sale.tipByBank || 0)
       // Totales por barbero
       vnTotalSales += vnValueSale
       vnTotalTaxes += vnTaxes

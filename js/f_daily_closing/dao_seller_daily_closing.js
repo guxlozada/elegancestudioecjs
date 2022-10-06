@@ -77,7 +77,7 @@ export async function findSalesExpensesBankTxsByDay(vdDateTime, callback, callba
     }))
     .catch(error => callbackError(`Busqueda de egresos de caja del dia ${searchDay}`, error))
 
-  await dbRef.child(collections.bankReconciliation).orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
+  await dbRef.child(collections.bankingTransactions).orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
     .once('value')
     .then(snap => {
       snap.forEach(child => {

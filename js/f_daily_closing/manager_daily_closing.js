@@ -82,22 +82,29 @@ d.addEventListener("click", e => {
       } else if ($btnSave.dataset.existAfter) {
         ntf.error("Cierre diario de caja", "No puede realizar el cierre de caja porque ya existe cierre de caja de dias posteriores.", 10000)
       }
+    } else if (!dailyClosing.responsable) {
+      ntf.error("Informacion requerida", "Seleccione el responsable")
+    }
+
+    if (ntf.enabled) return
+
+    if (dailyClosing.tmpTipsAlert &&
+      !confirm(`ALERTA: Existen propinas pagadas por un valor mayor a las registradas.
+      Para guardar el cierre de caja de todas formas de clic <<Aceptar>>, 
+      Para NO guardar el cierre de caja de clic en <<Cancelar>> `)) {
       return
     }
-    if (!dailyClosing.responsable) {
-      ntf.error("Informacion requerida", "Seleccione el responsable")
-    } else {
-      // Insertar el cierre diario en la base de datos
-      saveDailyClosing(dailyClosing,
-        dateString => {
-          // Actualiza el rango con fecha minima y maxima para registro de informacion de ingresos y egresos de caja
-          updateDailyData()
-          changeDailyClosing(dailyClosing.tmpDateTime)
-          ntf.ok("Cierre de caja diario registrado",
-            `Se guardo correctamente la informacion del cierre diario del dia ${dateString}`)
-        },
-        error => ntf.tecnicalError("Cierre de caja diario no registrado", error))
-    }
+    // Insertar el cierre diario en la base de datos
+    saveDailyClosing(dailyClosing,
+      dateString => {
+        // Actualiza el rango con fecha minima y maxima para registro de informacion de ingresos y egresos de caja
+        updateDailyData()
+        changeDailyClosing(dailyClosing.tmpDateTime)
+        ntf.ok("Cierre de caja diario registrado",
+          `Se guardo correctamente la informacion del cierre diario del dia ${dateString}`)
+      },
+      error => ntf.tecnicalError("Cierre de caja diario no registrado", error))
+
   }
 
 })
@@ -320,7 +327,16 @@ function renderSummaryBySeller(salesData) {
       $totalsTmp.querySelector(".paid-barber-tips").innerText = vnPaidBarberTip.toFixed(2)
       $totalsTmp.querySelector(".pending-barber-commissions").innerText = (vnTotalBarberCommissions - vnPaidBarberCommission).toFixed(2)
       $totalsTmp.querySelector(".pending-barber-commissions-tmp").innerText = (vnTotalBarberCommissionsTmp - vnPaidBarberCommission).toFixed(2)
-      $totalsTmp.querySelector(".pending-barber-tips").innerText = (vnTotalBarberTips - vnPaidBarberTip).toFixed(2)
+      let pendingBarberTips = vnTotalBarberTips - vnPaidBarberTip,
+        $pendingBarberTips = $totalsTmp.querySelector(".pending-barber-tips")
+      $pendingBarberTips.innerText = (pendingBarberTips).toFixed(2)
+      if (pendingBarberTips < 0) {
+        // Alertar que se ha pagado propinas bancarias sin transaccion bancaria de sustento
+        dailyClosing.tmpTipsAlert = true
+        $pendingBarberTips.classList.add("has-background-danger")
+      } else {
+        $pendingBarberTips.classList.remove("has-background-danger")
+      }
       $clone = d.importNode($totalsTmp, true)
       $fragment.appendChild($clone)
 
@@ -473,9 +489,9 @@ function renderDailyCashClosing(voBeforeClosingDay, voAfterClosingDay) {
   let $btnSave = d.querySelector(".daily-closing-save")
   $btnSave.dataset.existBefore = voBeforeClosingDay ? true : false
   $btnSave.dataset.existAfter = voAfterClosingDay ? true : false
-  if (!voBeforeClosingDay || voAfterClosingDay) {
-    $btnSave.setAttribute("disabled", true)
-  } else {
-    $btnSave.removeAttribute("disabled")
-  }
+  // if (!voBeforeClosingDay || voAfterClosingDay) {
+  //   $btnSave.setAttribute("disabled", true)
+  // } else {
+  $btnSave.removeAttribute("disabled")
+  // }
 }

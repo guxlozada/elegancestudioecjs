@@ -64,16 +64,17 @@ export async function insertBankTx(voBankTx, callback, callbackError, callbackSa
   // Valida si existe la venta asociada
   if (voBankTx.saleUid) {
     let msjError = await dbRef.child(collections.sales).child(voBankTx.saleUid).once('value')
-      .then((snap) => {
-        if (snap && snap.exists()) {
+      .then(snap => {
+        if (snap.exists()) {
           let sale = snap.val()
           if (sale.bankTxUid) {
             return `La venta Nro ${voBankTx.saleUid} ya esta relacionado a la transaccion bancaria Nro. ${sale.bankTxUid} por valor de ${sale.bankTxValue}.
             No puede relacionar mas de una transaccion bancaria a la misma venta.`
           }
+        } else {
+          return `La venta Nro. ${voBankTx.saleUid} no existe.
+            Verifique que tenga el formato correcto: ANIOMESDIA"T"HORASMINUTOSEGUNDOS. Ejemplo: 20221231T180159`
         }
-        return `La venta Nro. ${voBankTx.saleUid} no existe.
-          Verifique que tenga el formato correcto: ANIOMESDIA"T"HORASMINUTOSEGUNDOS. Ejemplo: 20221231T180159`
       }).catch(error => error)
 
     if (msjError) {

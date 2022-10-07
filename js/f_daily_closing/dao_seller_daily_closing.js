@@ -104,6 +104,7 @@ export function saveDailyClosing(voDailyClosing, callback, callbackError) {
 
   //Remover atributos temporales
   delete dailyClosing.tmpDateTime
+  delete dailyClosing.tmpTipsAlert
 
   dbRef.child(collections.dailyClosing).child(dailyKey).set(dailyClosing)
     .then(snap => callback(dailyClosing.searchDate))

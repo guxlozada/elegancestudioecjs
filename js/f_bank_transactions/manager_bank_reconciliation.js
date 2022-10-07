@@ -3,7 +3,7 @@ import validAdminAccess from "../dom/manager_user.js";
 import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { findBankTxs, updateBankTxVerified } from "./dao_bank_reconciliation.js";
-import { roundTwo } from "../util/numbers-util.js";
+import { roundTwo, truncTwo } from "../util/numbers-util.js";
 
 const d = document,
   w = window,
@@ -109,7 +109,9 @@ d.getElementById("bank-transactions").addEventListener("change", e => {
       verifiedValue: null
     }
 
-    if (txData.verified) {
+    if (!$el.dataset.txType === "DEPOSITO") {
+      txData.verifiedValue = txData.value
+    } else if (txData.verified) {
       txData.verifiedValue = d.getElementById(txData.uid).querySelector(".verified-value").valueAsNumber
     }
 
@@ -154,18 +156,23 @@ function renderBankTransactions(transactions) {
     $transactionsDetails = d.getElementById("bank-transactions")
 
   let vnTotalTx = 0,
+    vnVerifiedTotalTx = 0,
     $clone
 
   transactions.forEach((trans, index) => {
     // Total por Consulta
     vnTotalTx += trans.value
+    vnVerifiedTotalTx += trans.verifiedValue || trans.value
 
     $rowTmp.querySelector(".index").innerText = index + 1
     $rowTmp.querySelector(".date").innerText = trans.searchDateTime
-    $rowTmp.querySelector(".responsable").innerText = trans.responsable
-    let docRelacionado = trans.saleUid ? "Vta:" + trans.saleUid : (trans.voucher ? "Com:" + trans.voucher : "")
-    $rowTmp.querySelector(".type-payment").innerText = trans.type + (docRelacionado ? " [" + docRelacionado + "]" : "")
-    $rowTmp.querySelector(".bank").innerText = trans.bank
+    let $bank = $rowTmp.querySelector(".bank")
+    $bank.innerText = trans.bank
+    $bank.title = "Responsable:" + trans.responsable
+    let docRelacionado = trans.saleUid ? "Vta:" + trans.saleUid : (trans.voucher ? "Com:" + trans.voucher : ""),
+      $typeAndVoucher = $rowTmp.querySelector(".type-payment")
+    $typeAndVoucher.innerText = trans.type + (docRelacionado ? " [" + docRelacionado + "]" : "")
+    $typeAndVoucher.title = trans.details || "Sin detalles"
     if (trans.saleUid && trans.saleValue) {
       $rowTmp.querySelector(".sale-value").innerText = trans.saleValue.toFixed(2)
       $rowTmp.querySelector(".sale-value").title = "Id Venta:" + trans.saleUid
@@ -176,26 +183,28 @@ function renderBankTransactions(transactions) {
     $rowTmp.querySelector(".datafast-commission").innerText = trans.dfCommission ? trans.dfCommission.toFixed(4) : ""
     $rowTmp.querySelector(".datafast-iva").innerText = trans.dfTaxWithholdingIVA ? trans.dfTaxWithholdingIVA.toFixed(4) : ""
     $rowTmp.querySelector(".datafast-renta").innerText = trans.dfTaxWithholdingRENTA ? trans.dfTaxWithholdingRENTA.toFixed(4) : ""
-    let $input = $rowTmp.querySelector(".verified-value"),
-      $div = $rowTmp.querySelector(".verified-value-readonly")
-
-    $input.id = trans.tmpUid + "-value"
+    let $verifiedValue = $rowTmp.querySelector(".verified-value"),
+      $originalValue = $rowTmp.querySelector(".original-value")
+    $originalValue.innerText = trans.value.toFixed(2)
+    if (trans.verifiedValue && trans.value.toFixed(2) !== trans.verifiedValue.toFixed(2)) {
+      $originalValue.classList.add("has-background-warning")
+    } else {
+      $originalValue.classList.remove("has-background-warning")
+    }
+    $verifiedValue.id = trans.tmpUid + "-value"
     if (trans.type === "DEPOSITO") {
       // depositos no se permite modificar valor
-      $input.classList.add("is-hidden")
-      $div.classList.remove("is-hidden")
-      $div.innerText = trans.value.toFixed(2)
-      $div.title = "valor original: " + trans.value.toFixed(2)
+      $verifiedValue.classList.add("is-hidden")
+      $verifiedValue.removeAttribute("value")
     } else {
-      $div.classList.add("is-hidden")
-      $input.classList.remove("is-hidden")
-      $input.value = trans.verified === true ? trans.verifiedValue.toFixed(2) : trans.value.toFixed(2)
-      $input.title = "valor original: " + trans.value.toFixed(2)
+      $verifiedValue.classList.remove("is-hidden")
+      $verifiedValue.value = trans.verified === true ? trans.verifiedValue.toFixed(2) : trans.value.toFixed(2)
     }
 
     let $checkbox = $rowTmp.querySelector(".verified")
     $checkbox.dataset.tx = trans.tmpUid
     $checkbox.dataset.txValue = trans.value
+    $checkbox.dataset.txType = trans.type
     $checkbox.checked = trans.verified && trans.verified === true
     let $tr = $rowTmp.querySelector(".tx-row")
     $tr.id = trans.tmpUid
@@ -214,7 +223,8 @@ function renderBankTransactions(transactions) {
 
   // Agregar totales por consulta
   d.querySelector(".search-period").innerText = filters.dateStart.toFormat('dd/MM/yyyy') + " al " + filters.dateEnd.toFormat('dd/MM/yyyy')
-  d.querySelector(".search-total-value").innerText = vnTotalTx.toFixed(2)
+  d.querySelector(".total-value").innerText = vnTotalTx.toFixed(2)
+  d.querySelector(".verified-total-value").innerText = vnVerifiedTotalTx.toFixed(2)
 
 }
 

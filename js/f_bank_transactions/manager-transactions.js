@@ -68,7 +68,11 @@ d.addEventListener("submit", e => {
     case "form-bank-tx":
       if (!bankTx.responsable) {
         ntf.error("Informacion requerida", "Seleccione el responsable")
-      } else if (!bankTx.details && !bankTx.voucher) {
+      } else if (bankTx.type === "DEBITO_TRANSFERENCIA" && !bankTx.rubro) {
+        ntf.error("Informacion requerida", "Seleccione un rubro que respalde el debito bancario")
+      } else if (bankTx.type !== "DEBITO_TRANSFERENCIA" && bankTx.rubro) {
+        ntf.error("Informacion con error", "Solo debe seleccionar el rubro para debitos bancarios, seleccione la opcion (...)")
+      } else if (!bankTx.rubro && !bankTx.details && !bankTx.voucher) {
         ntf.error("Informacion requerida", "Ingrese el numero de comprobante o describa brevemente el motivo de la transaccion bancaria en el campo detalles")
       }
       break

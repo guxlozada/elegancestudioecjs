@@ -22,20 +22,31 @@ export default function convertFormToObject($element, vsClassInput) {
       continue
     }
     switch ($input.type) {
-      case "radio":
-        if ($input.checked) obj[name] = value
+      case "checkbox":
+        if ($input.checked) {
+          let arryTmp = obj[name] || []
+          obj[name] = [value, ...arryTmp]
+        }
+        break
+      case "date":
+        let dateTime = inputDateToDateTime(value)
+        switch ($input.dataset.type) {
+          case "datetime":
+            obj[name] = dateTime
+            break;
+          case "timestamp":
+            obj[name] = dateTime.toMillis()
+            break;
+          default:
+            obj[name] = dateTime.toLocaleString()
+            break;
+        }
         break
       case "number":
         obj[name] = $input.valueAsNumber
         break
-      case "date":
-        let dateTime = inputDateToDateTime(value)
-        let dateType = $input.dataset.type
-        if (dateType === "timestamp") {
-          obj[name] = dateTime.toMillis()
-        } else {
-          obj[name] = dateTime.toLocaleString()
-        }
+      case "radio":
+        if ($input.checked) obj[name] = value
         break
       default:
         obj[name] = value

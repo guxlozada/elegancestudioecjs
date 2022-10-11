@@ -169,7 +169,7 @@ function renderBankTransactions(transactions) {
     let $bank = $rowTmp.querySelector(".bank")
     $bank.innerText = trans.bank
     $bank.title = "Responsable:" + trans.responsable
-    let docRelacionado = trans.saleUid ? "Vta:" + trans.saleUid : (trans.voucher ? "Com:" + trans.voucher : ""),
+    let docRelacionado = trans.saleUid ? "Vta:" + trans.saleUid : (trans.rubro ? "Rub:" + trans.rubro : (trans.voucher ? "Com:" + trans.voucher : "")),
       $typeAndVoucher = $rowTmp.querySelector(".type-payment")
     $typeAndVoucher.innerText = trans.type + (docRelacionado ? " [" + docRelacionado + "]" : "")
     $typeAndVoucher.title = trans.details || "Sin detalles"

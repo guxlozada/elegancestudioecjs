@@ -155,14 +155,22 @@ function renderBankTransactions(transactions) {
     $fragment = d.createDocumentFragment(),
     $transactionsDetails = d.getElementById("bank-transactions")
 
-  let vnTotalTx = 0,
+  let vnTxValue,
+    vnVerifiedTxValue,
+    vnTotalTx = 0,
     vnVerifiedTotalTx = 0,
     $clone
 
   transactions.forEach((trans, index) => {
     // Total por Consulta
-    vnTotalTx += trans.value
-    vnVerifiedTotalTx += trans.verifiedValue || trans.value
+    vnTxValue = trans.value
+    vnVerifiedTxValue = trans.verifiedValue || trans.value
+    if (trans.type === "DEBITO_TRANSFERENCIA") {
+      vnTxValue *= -1
+      vnVerifiedTxValue *= -1
+    }
+    vnTotalTx += vnTxValue
+    vnVerifiedTotalTx += vnVerifiedTxValue
 
     $rowTmp.querySelector(".index").innerText = index + 1
     $rowTmp.querySelector(".date").innerText = trans.searchDateTime

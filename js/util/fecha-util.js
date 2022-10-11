@@ -138,7 +138,7 @@ export function compareTruncDay(vdDateTimeCompare, operation, vdDateTimeBase) {
  * @returns 
  */
 export function calculatePeriod(voFilters) {
-  if (!voFilters.period) return
+  if (!voFilters.period) return voFilters
 
   // Por omision el periodo esta ajustado para periodo 'TODAY'
   let baseDate = hoyEC()

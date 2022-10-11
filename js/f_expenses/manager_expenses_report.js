@@ -25,27 +25,24 @@ d.addEventListener("submit", e => {
   e.preventDefault()
   let filters = convertFormToObject($form)
 
-  let periodStart = filters.periodStart,
-    periodEnd = filters.periodEnd
-
   // NO se ha seleccionado al menos una fecha
-  if (!periodStart && !periodEnd) {
-    ntf.error("Información con errores", "Seleccione una fecha o un rango de fechas")
+  if (!filters.periodStart && !filters.periodEnd) {
+    ntf.error("Informacion con errores", "Seleccione una fecha o un rango de fechas")
     search(filters)
     return
   }
 
-  if (!periodEnd) {
-    periodEnd = periodStart
-  } else if (!periodStart) {
-    periodStart = periodEnd
+  if (!filters.periodEnd) {
+    filters.periodEnd = filters.periodStart
+  } else if (!filters.periodStart) {
+    filters.periodStart = filters.periodEnd
   }
 
   // Validar rango y fecha maxima de consulta
   let hoy = hoyEC()
-  if (periodStart > hoy || periodEnd > hoy) {
+  if (filters.periodStart > hoy || filters.periodEnd > hoy) {
     ntf.error("Informacion con errores", "No puede seleccionar una fecha mayor a la actual")
-  } else if (periodStart > periodEnd) {
+  } else if (filters.periodStart > filters.periodEnd) {
     ntf.error("Informacion con errores", "La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
   }
 
@@ -64,17 +61,18 @@ d.getElementById("filters").addEventListener("change", e => {
   let $input = e.target
   if ($input.name === "period") {
     // Setear valores de rango de fechas
-    d.getElementById("date-start").value = ""
-    d.getElementById("date-end").value = ""
+    d.getElementById("period-start").value = ""
+    d.getElementById("period-end").value = ""
+    search()
   } else if ($input.name === "type") {
-
     if ($input.value === "TODOS") {
       d.getElementsByName("type").forEach($el => $el.checked = $el.value === "TODOS")
     } else {
       d.getElementById("type-all").checked = false
     }
+    search()
   }
-  search()
+
 })
 
 //------------------------------------------------------------------------------------------------
@@ -82,8 +80,7 @@ d.getElementById("filters").addEventListener("change", e => {
 //------------------------------------------------------------------------------------------------
 
 function search(voFilters) {
-  let filters = voFilters
-  if (!filters) filters = convertFormToObject($form)
+  let filters = voFilters || convertFormToObject($form)
 
   if (validAdminAccess()) {
     filters = calculatePeriod(filters)

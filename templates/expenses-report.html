@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consulta egresos</title>
+  <link rel="shortcut icon" type="image/x-icon" href="../assets/favicon.ico">
+  <link rel="stylesheet" href="../css/main.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    .content table td,
+    .content table th {
+      padding: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <iframe src="./navbar.html"
+      onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+  </header>
+  <main>
+    <section class="section" style="max-width: 1000px !important; margin:auto;">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-store"></i>
+              </span>
+              <span>Consulta de egresos</span>
+            </span>
+          </p>
+        </header>
+        <div class="card-content has-background-info-light p-2">
+          <div class="content">
+            <form id="filters">
+              <table>
+                <tbody>
+                  <tr class="list-inline">
+                    <td colspan="2">
+                      <div class="control is-size-7">
+                        <label class="checkbox">
+                          <input type="checkbox" id="type-all" class="prop-input" name="type" value="TODOS" checked>
+                          Todos
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="type" value="GASTO">
+                          Gastos
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="type" value="COMPRA">
+                          Compras
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="type" value="AJUSTE">
+                          Ajustes
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="type" value="COMISION">
+                          Comisiones
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="type" value="SUELDO">
+                          Sueldos
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="type" value="ADELANTO">
+                          Adelantos
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="type" value="PROPINA">
+                          Propinas
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="type" value="BEBIDA">
+                          Bebidas
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="list-inline">
+                    <td colspan="2">
+                      <div class="control is-size-7">
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="responsable" value="TODOS" checked>
+                          Todos
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="responsable" value="ENEGLIMAR">
+                          Eneglimar
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="responsable" value="ERICK">
+                          Erick
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="responsable" value="ESTIBERSON">
+                          Estiberson
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="responsable" value="ADMIN">
+                          Admin
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="list-inline">
+                    <td style="vertical-align: middle;">
+                      <div class="control is-size-7">
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="period" value="LASTMONTH">
+                          Mes anterior
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="period" value="LASTWEEK">
+                          Semana anterior
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="period" value="CURRENTWEEK" checked>
+                          Semana actual
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="period" value="CURRENTMONTH">
+                          Mes actual
+                        </label>
+                      </div>
+                    </td>
+                    <td>
+                      <input type="date" class="prop-input input is-small" id="date-start" name="dateStart"
+                        data-type="datetime" style="max-width: 8rem" />
+                      <input type="date" class="prop-input input is-small" id="date-end" name="dateEnd"
+                        data-type="datetime" style="max-width: 8rem" />
+                      <input type="submit" class="button is-small is-primary" value="Buscar">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
+            <table>
+              <thead>
+                <tr class="has-background-black has-text-weight-semibold">
+                  <td class="period has-text-white" colspan="7"></td>
+                </tr>
+                <tr class="has-background-link has-text-centered">
+                  <th class="has-text-white" style="width:1rem">#</th>
+                  <th class="has-text-white" style="text-align:center;width:8rem">Fecha-hora</th>
+                  <th class="has-text-white" style="width:4rem;text-overflow: ellipsis;">Resp/Benef</th>
+                  <th class="has-text-white" style="width:4rem">Valor</th>
+                  <th class="has-text-white" style="word-wrap: break-word">Detalles</th>
+                </tr>
+              </thead>
+              <tbody id="details">
+                <!-- render details-->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+  <template id="row">
+    <tr>
+      <td class="index"></td>
+      <td class="date has-text-centered"></td>
+      <td class="responsable"></td>
+      <td class="value has-text-right"></td>
+      <td class="details"></td>
+    </tr>
+  </template>
+
+  <template id="row-summary">
+    <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
+      <th class="type has-text-centered" colspan="2"></th>
+      <th>Total</th>
+      <th class="total-value"></th>
+      <th></th>
+    </tr>
+  </template>
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="../js/f_expenses/manager_expenses_report.js" type="module"></script>
+</body>
+
+</html>

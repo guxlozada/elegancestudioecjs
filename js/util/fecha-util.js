@@ -130,3 +130,38 @@ export function compareTruncDay(vdDateTimeCompare, operation, vdDateTimeBase) {
   }
   return res
 }
+
+/**
+ * Inyecta al objeto 'voFilters' los atributos 'periodStart' y 'periodEnd'
+ * @param {Object} voFilters Objeto que debe contener el atributo 'period' con uno de los valores
+ * posibles: LASTMONTH, LASTWEEK, TODAY, CURRENTWEEK, CURRENTMONTH
+ * @returns 
+ */
+export function calculatePeriod(voFilters) {
+  if (!voFilters.period) return
+
+  // Por omision el periodo esta ajustado para periodo 'TODAY'
+  let baseDate = hoyEC()
+  let truncPeriod = "day"
+  switch (voFilters.period) {
+    case "LASTMONTH":
+      truncPeriod = "month"
+      baseDate = baseDate.minus({ months: 1 })
+      break
+    case "LASTWEEK":
+      baseDate = baseDate.minus({ weeks: 1 })
+      truncPeriod = "week"
+      break
+    case "CURRENTWEEK":
+      truncPeriod = "week"
+      break
+    case "CURRENTMONTH":
+      truncPeriod = "month"
+      break
+  }
+  return {
+    ...voFilters,
+    periodStart: baseDate.startOf(truncPeriod),
+    periodEnd: baseDate.endOf(truncPeriod)
+  }
+}

@@ -25,27 +25,27 @@ export function insertExpenseDB(voExpense, callback, callbackError) {
 
 /**
  * Obtiene los egresos de caja para el reporte de egresos.
- * @param {Object} filters Filtros: dateStart, dateEnd, types, responsable
+ * @param {Object} voFilters Filtros: dateStart, dateEnd, types, responsable
  * @param {Function} callback 
  * @param {Function} callbackError 
  */
-export function findExpensesReport(filters, callback, callbackError) {
-  let periodStart = dateTimeToKeyDateString(filters.periodStart),
-    periodEnd = dateTimeToKeyDateString(filters.periodEnd),
+export function findExpensesReport(voFilters, callback, callbackError) {
+  let periodStart = dateTimeToKeyDateString(voFilters.periodStart),
+    periodEnd = dateTimeToKeyDateString(voFilters.periodEnd),
     res = new Map()
 
   db.ref(collections.expenses).orderByKey().startAt(periodStart + "T").endAt(periodEnd + "\uf8ff").once('value')
     .then(snap => {
       snap.forEach(child => {
         const dta = child.val()
-        if ((filters.type.includes("TODOS") || filters.type.includes(dta.type)) &&
-          (filters.responsable === "TODOS" || filters.responsable === dta.responsable)) {
+        if ((voFilters.type.includes("TODOS") || voFilters.type.includes(dta.type)) &&
+          (voFilters.responsable === "TODOS" || voFilters.responsable === dta.responsable)) {
           let arryTmp = res.get(dta.type) || []
           arryTmp.push(dta)
           res.set(dta.type, arryTmp)
         }
       })
-      callback(res)
+      callback(res, voFilters)
     })
     .catch(error => callbackError(error))
 

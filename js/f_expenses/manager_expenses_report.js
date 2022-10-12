@@ -86,12 +86,12 @@ function search(voFilters) {
     filters = calculatePeriod(filters)
 
     findExpensesReport(filters,
-      vmExpenses => renderExpense(vmExpenses),
+      (vmExpenses, voFilters) => renderExpense(vmExpenses, voFilters),
       error => ntf.tecnicalError("Busqueda de egresos con error", error))
   }
 }
 
-function renderExpense(vmExpenses) {
+function renderExpense(vmExpenses, voFilters) {
   const $rowTmp = d.getElementById("row").content,
     $rowSummary = d.getElementById("row-summary").content,
     $fragment = d.createDocumentFragment(),
@@ -121,4 +121,6 @@ function renderExpense(vmExpenses) {
   })
   $details.innerHTML = "";
   $details.appendChild($fragment)
+
+  d.querySelector(".search-period").innerText = voFilters.periodStart.toFormat('dd/MM/yyyy') + " al " + voFilters.periodEnd.toFormat('dd/MM/yyyy')
 }

@@ -81,6 +81,12 @@ function search(voFilters) {
     return
   }
 
+  // Cuando se desmarcan todas las casillas, se coloca la opcion 'TODOS'
+  if (!filters.type) {
+    filters.type = ["TODOS"]
+    d.getElementById("type-all").checked = true
+  }
+
   if (validAdminAccess()) {
     filters = calculatePeriod(filters)
 
@@ -97,13 +103,13 @@ function renderExpense(vmExpenses, voFilters) {
     $details = d.getElementById("details"),
     types = [...vmExpenses.keys()]
 
-  let $clone
-
+  let $clone,
+    vnTotalValue = 0
   types.forEach(type => {
     const expensesByType = vmExpenses.get(type) || []
-    let vnTotalValue = 0
+    let vnTotalValueByType = 0
     expensesByType.forEach((exp, index) => {
-      vnTotalValue += exp.value
+      vnTotalValueByType += exp.value
       $rowTmp.querySelector(".index").innerText = index + 1
       let $date = $rowTmp.querySelector(".date")
       $date.innerText = exp.searchDateTime
@@ -115,13 +121,16 @@ function renderExpense(vmExpenses, voFilters) {
       $clone = d.importNode($rowTmp, true)
       $fragment.appendChild($clone)
     })
+    vnTotalValue += vnTotalValueByType
     $rowSummary.querySelector(".type").innerText = type
-    $rowSummary.querySelector(".total-value").innerText = vnTotalValue.toFixed(2)
+    $rowSummary.querySelector(".total-value").innerText = vnTotalValueByType.toFixed(2)
     $clone = d.importNode($rowSummary, true)
     $fragment.appendChild($clone)
   })
+
   $details.innerHTML = "";
   $details.appendChild($fragment)
 
+  d.querySelector(".search-total").innerText = vnTotalValue.toFixed(2)
   d.querySelector(".search-period").innerText = voFilters.periodStart.toFormat('dd/MM/yyyy') + " al " + voFilters.periodEnd.toFormat('dd/MM/yyyy')
 }

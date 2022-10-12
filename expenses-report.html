@@ -141,15 +141,17 @@
             </form>
             <table>
               <thead>
-                <tr class="has-background-black has-text-weight-semibold has-text-centered">
-                  <td class="search-period  has-text-white" colspan="7"></td>
+                <tr class="has-background-black has-text-weight-semibold has-text-right">
+                  <td class="search-period has-text-centered has-text-white" colspan="3"></td>
+                  <td class="has-text-white" >Total:</td>
+                  <td class="search-total has-text-white" ></td>
                 </tr>
                 <tr class="has-background-link has-text-centered">
                   <th class="has-text-white" style="width:1rem">#</th>
                   <th class="has-text-white" style="text-align:center;width:8rem">Fecha-hora</th>
                   <th class="has-text-white" style="width:4rem;text-overflow: ellipsis;">Resp/Benef</th>
-                  <th class="has-text-white" style="width:4rem">Valor</th>
-                  <th class="has-text-white" style="word-wrap: break-word">Detalles</th>
+                  <th class="has-text-white" style="text-overflow: ellipsis">Detalles</th>
+                  <th class="has-text-white" style="width:3rem">Valor</th>
                 </tr>
               </thead>
               <tbody id="details">
@@ -168,17 +170,17 @@
       <td class="index"></td>
       <td class="date has-text-centered"></td>
       <td class="responsable"></td>
-      <td class="value has-text-right pr-1"></td>
       <td class="details"></td>
+      <td class="value has-text-right pr-1"></td>
     </tr>
   </template>
 
   <template id="row-summary">
     <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
-      <th class="type has-text-centered" colspan="2"></th>
-      <th>Total</th>
-      <th class="total-value pr-1"></th>
       <th></th>
+      <th class="type has-text-centered" colspan="2"></th>
+      <th>Total:</th>
+      <th class="total-value pr-1"></th>
     </tr>
   </template>
 

@@ -38,6 +38,7 @@ export function findExpensesReport(voFilters, callback, callbackError) {
     .then(snap => {
       snap.forEach(child => {
         const dta = child.val()
+        dta.tmpUid = child.key
         if ((voFilters.type.includes("TODOS") || voFilters.type.includes(dta.type)) &&
           (voFilters.responsable === "TODOS" || voFilters.responsable === dta.responsable)) {
           let arryTmp = res.get(dta.type) || []

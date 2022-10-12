@@ -105,7 +105,9 @@ function renderExpense(vmExpenses, voFilters) {
     expensesByType.forEach((exp, index) => {
       vnTotalValue += exp.value
       $rowTmp.querySelector(".index").innerText = index + 1
-      $rowTmp.querySelector(".date").innerText = exp.searchDateTime
+      let $date = $rowTmp.querySelector(".date")
+      $date.innerText = exp.searchDateTime
+      $date.title = exp.tmpUid
       $rowTmp.querySelector(".responsable").innerText = exp.responsable
       $rowTmp.querySelector(".value").innerText = exp.value.toFixed(2)
       $rowTmp.querySelector(".details").innerText = exp.voucher ? "Comprobante Nro. exp.voucher" : (exp.details || "")

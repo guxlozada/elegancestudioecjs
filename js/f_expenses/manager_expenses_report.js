@@ -23,37 +23,7 @@ d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
 d.addEventListener("submit", e => {
   e.preventDefault()
-  let filters = convertFormToObject($form)
-
-  // NO se ha seleccionado al menos una fecha
-  if (!filters.periodStart && !filters.periodEnd) {
-    ntf.error("Informacion con errores", "Seleccione una fecha o un rango de fechas")
-    search(filters)
-    return
-  }
-
-  if (!filters.periodEnd) {
-    filters.periodEnd = filters.periodStart
-  } else if (!filters.periodStart) {
-    filters.periodStart = filters.periodEnd
-  }
-
-  // Validar rango y fecha maxima de consulta
-  let hoy = hoyEC()
-  if (filters.periodStart > hoy || filters.periodEnd > hoy) {
-    ntf.error("Informacion con errores", "No puede seleccionar una fecha mayor a la actual")
-  } else if (filters.periodStart > filters.periodEnd) {
-    ntf.error("Informacion con errores", "La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
-  }
-
-  // Si hay msj de error finaliza
-  if (ntf.enabled) return
-
-  // Desactivar los periodos delfiltro
-  d.getElementsByName("period").forEach($el => $el.checked = false)
-  delete filters.period
-
-  search(filters)
+  search()
 })
 
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
@@ -81,6 +51,35 @@ d.getElementById("filters").addEventListener("change", e => {
 
 function search(voFilters) {
   let filters = voFilters || convertFormToObject($form)
+
+  // Se ha seleccionado al menos una fecha
+  if (filters.periodStart || filters.periodEnd) {
+    if (!filters.periodEnd) {
+      filters.periodEnd = filters.periodStart
+    }
+    if (!filters.periodStart) {
+      filters.periodStart = filters.periodEnd
+    }
+
+    // Validar rango y fecha maxima de consulta
+    let hoy = hoyEC()
+    if (filters.periodStart > hoy || filters.periodEnd > hoy) {
+      ntf.error("Informacion con errores", "No puede seleccionar una fecha mayor a la actual")
+    } else if (filters.periodStart > filters.periodEnd) {
+      ntf.error("Informacion con errores", "La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
+    }
+
+    // Si hay msj de error finaliza
+    if (ntf.enabled) return
+
+    // Desactivar los periodos delfiltro
+    d.getElementsByName("period").forEach($el => $el.checked = false)
+    delete filters.period
+  } else if (!filters.period) {
+    ntf.error("Informacion con errores", "Seleccione una fecha o un rango de fechas")
+    search(filters)
+    return
+  }
 
   if (validAdminAccess()) {
     filters = calculatePeriod(filters)

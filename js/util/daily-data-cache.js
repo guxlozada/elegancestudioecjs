@@ -4,10 +4,14 @@ import { DateTime } from "../luxon.min.js"
 import { localdb } from "../repo-browser.js"
 import { hoyEC } from "./fecha-util.js"
 
-const dailyData = [localdb.cashOutflowMaxDay, localdb.cashOutflowMinDay, localdb.operativeDay, localdb.accesskey]
+const dailyData = [localdb.cashOutflowMaxDay, localdb.cashOutflowMinDay, localdb.operativeDay, localdb.accesskey],
+  tmpData = [localdb.tmpBankReconciliation]
 
 /** Eliminar la informacion de ayuda diaria. */
 const dailyDataCleaning = () => { dailyData.forEach(item => localStorage.removeItem(item)) }
+
+/** Eliminar la informacion de ayuda temporal. */
+export const tmpDataCleaning = () => { tmpData.forEach(item => localStorage.removeItem(item)) }
 
 /** Formato generico */
 function formatDateTimeToInputRange(vdDateTime) {

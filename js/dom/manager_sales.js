@@ -518,7 +518,7 @@ function insertSalesDB(callback) {
   // Si forma pago=TCREDITO/TDEBITO o TRANSFERENCIA se genera una transaccion bancaria a PRODUBANCO
   let bancoTmp = saleHeader.typePayment === "TRANSFERENCIA" ? BANCO_PICHINCHA : BANCO_PRODUBANCO
   let tx = saleToBanktransaction(saleHeader, bancoTmp),
-    txKey = undefined
+    txKey = null
   if (tx) {
     txKey = saleKey + "-" + tx.type.slice(0, 3)
     saleHeader.bankTxUid = txKey

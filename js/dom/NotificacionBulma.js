@@ -36,21 +36,38 @@ export default class NotificationBulma {
     document.body.appendChild(this.nodoContenedor);
   }
 
+  errorAndLog(message, error) {
+    this.tecnicalError("Error del sistema", error, message)
+  }
+
+  // TODO: Cambiar el orden de los parametros
   tecnicalError(title, error, message) {
-    let msg = message || "Se produjo un error inesperado, consulte con el administrador."
+    let msg = message || "Se produjo un error inesperado, consulte con el administrador del sistema."
     if (error) {
       msg = `${msg}
       A continuación el detalle del error: 
       ${error}`
-      console.log(`Error [${title}]`, error)
+      console.error(`Error [${title}]`, error)
     }
     // TODO: Guardar error en tabla con fecha, json y error
     this.show(title, msg, "danger", 20000)
 
   }
 
+  okey(mensaje, duracion) {
+    this.show("OK", mensaje, "link", duracion)
+  }
+
   ok(titulo, mensaje, duracion) {
     this.show(titulo, mensaje, "link", duracion)
+  }
+
+  validation(mensaje, duracion) {
+    this.show("Validacion no superada", mensaje, "danger", duracion)
+  }
+
+  errors(mensaje, duracion) {
+    this.show("Revise", mensaje, "danger", duracion)
   }
 
   error(titulo, mensaje, duracion) {

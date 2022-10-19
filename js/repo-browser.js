@@ -4,6 +4,9 @@ export const localdb = {
   cashOutflowMaxDay: "CASHOUTFLOWMAXDAY",
   cashOutflowMinDay: "CASHOUTFLOWMINDAY",
   operativeDay: "OPERATIVEDAY",
-  accesskey: "ACCESSTOKEN"
+  accesskey: "ACCESSTOKEN",
+  catalogProducts: "PRODS",
+  catalogServices: "SERVS",
+  tmpBankReconciliation: "TMPBR"
 }
 

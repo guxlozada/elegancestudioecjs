@@ -1,4 +1,5 @@
-import { inputDateToDateTime } from "./fecha-util.js"
+import { DateTime } from "../luxon.min.js"
+import { inputDateToDateTime, inputMonthToDateTime } from "./fecha-util.js"
 
 /**
  * Extrae el valor de los campos de un formulario a un objeto.
@@ -21,6 +22,7 @@ export default function convertFormToObject($element, vsClassInput) {
     if (!value || !name) {
       continue
     }
+    let dateTime
     switch ($input.type) {
       case "checkbox":
         if ($input.checked) {
@@ -28,18 +30,24 @@ export default function convertFormToObject($element, vsClassInput) {
           obj[name] = [value, ...arryTmp]
         }
         break
+      case "month":
+        dateTime = inputMonthToDateTime(value)
       case "date":
-        let dateTime = inputDateToDateTime(value)
-        switch ($input.dataset.type) {
-          case "datetime":
-            obj[name] = dateTime
-            break;
-          case "timestamp":
-            obj[name] = dateTime.toMillis()
-            break;
-          default:
-            obj[name] = dateTime.toLocaleString()
-            break;
+         dateTime = dateTime || inputDateToDateTime(value)
+        if (dateTime instanceof DateTime) {
+          switch ($input.dataset.type) {
+            case "datetime":
+              obj[name] = dateTime
+              break;
+            case "timestamp":
+              obj[name] = dateTime.toMillis()
+              break;
+            default:
+              obj[name] = dateTime.toLocaleString()
+              break;
+          }
+        } else {
+          console.error(`El valor: ${value}, del input: ${name} no es una fecha valida de tipo 'DateTime'`)
         }
         break
       case "number":

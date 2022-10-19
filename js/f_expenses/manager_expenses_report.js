@@ -1,4 +1,4 @@
-import { calculatePeriod, hoyEC } from "../util/fecha-util.js";
+import { calculatePeriod, dateTimeToLocalString, hoyEC } from "../util/fecha-util.js";
 import validAdminAccess from "../dom/manager_user.js";
 import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
@@ -29,28 +29,33 @@ d.addEventListener("submit", e => {
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
 d.getElementById("filters").addEventListener("change", e => {
   let $input = e.target
+
+  // Cuando cambia la busqueda por rango de fechas se espera el evento 'submit'
+  if ($input.type === "date") return
+
   if ($input.name === "period") {
     // Setear valores de rango de fechas
     d.getElementById("period-start").value = ""
     d.getElementById("period-end").value = ""
-    search()
-  } else if ($input.name === "type") {
+  }
+
+  if ($input.name === "type") {
     if ($input.value === "TODOS") {
       d.getElementsByName("type").forEach($el => $el.checked = $el.value === "TODOS")
     } else {
       d.getElementById("type-all").checked = false
     }
-    search()
   }
 
+  search()
 })
 
 //------------------------------------------------------------------------------------------------
 // Funcionalidad
 //------------------------------------------------------------------------------------------------
 
-function search(voFilters) {
-  let filters = voFilters || convertFormToObject($form)
+function search() {
+  let filters = convertFormToObject($form)
 
   // Se ha seleccionado al menos una fecha
   if (filters.periodStart || filters.periodEnd) {
@@ -69,17 +74,15 @@ function search(voFilters) {
       ntf.error("Informacion con errores", "La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
     }
 
-    // Si hay msj de error finaliza
-    if (ntf.enabled) return
-
-    // Desactivar los periodos delfiltro
+    // Desactivar los periodos del filtro
     d.getElementsByName("period").forEach($el => $el.checked = false)
     delete filters.period
   } else if (!filters.period) {
     ntf.error("Informacion con errores", "Seleccione una fecha o un rango de fechas")
-    search(filters)
-    return
   }
+
+  // Si hay msj de error finaliza
+  if (ntf.enabled) return
 
   // Cuando se desmarcan todas las casillas, se coloca la opcion 'TODOS'
   if (!filters.type) {
@@ -132,5 +135,5 @@ function renderExpense(vmExpenses, voFilters) {
   $details.appendChild($fragment)
 
   d.querySelector(".search-total").innerText = vnTotalValue.toFixed(2)
-  d.querySelector(".search-period").innerText = voFilters.periodStart.toFormat('dd/MM/yyyy') + " al " + voFilters.periodEnd.toFormat('dd/MM/yyyy')
+  d.querySelector(".search-period").innerText = dateTimeToLocalString(voFilters.periodStart) + " al " + dateTimeToLocalString(voFilters.periodEnd)
 }

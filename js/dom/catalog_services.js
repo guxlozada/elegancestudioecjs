@@ -1,4 +1,4 @@
-export const services = [
+ const services = [
   { code: "SERVCRT01", category: "CORTES", description: "Corte básico", baseValue: 10.00, finalValue: 11.20, taxIVA: 1.20, sellerCommission: 40, type: "S", retentionIVA: true, active: true, promo: { discountDay: 0, cash: 12 } },
   { code: "SERVCRT02", category: "CORTES", description: "Corte básico niño", baseValue: 10.00, finalValue: 11.20, taxIVA: 1.20, sellerCommission: 40, type: "S", retentionIVA: true, active: true, promo: { discountDay: 0, cash: 12 } },
   { code: "SERVCRT03", category: "CORTES", description: "Corte premium", baseValue: 12.00, finalValue: 13.44, taxIVA: 1.44, sellerCommission: 40, type: "S", retentionIVA: true, active: true, promo: { discountDay: 0, cash: 12 } },

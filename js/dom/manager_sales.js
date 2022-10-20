@@ -10,7 +10,7 @@ import { services } from "./catalog_services.js";
 import { servicesEneglimar } from "./catalog_services_eneglimar.js";
 import { products } from "./catalog_products.js";
 import { changeProductsModalTypeSale } from "../app.js";
-import { BANCO_PICHINCHA, BANCO_PRODUBANCO, saleToBanktransaction } from "../f_bank_transactions/dao_bank_reconciliation.js";
+import { BANCO_PICHINCHA, BANCO_PRODUBANCO, saleToBanktransaction } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
 
 const d = document,

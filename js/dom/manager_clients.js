@@ -1,9 +1,10 @@
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
-import { ntf } from "../app.js";
-import { changeSaleClient } from "./manager_sales.js";
+import { changeSaleClient } from "../f_sales/manager_barber_sales.js";
+import NotificationBulma from "./NotificacionBulma.js";
 
 const d = document,
+  ntf = new NotificationBulma(),
   clientsRef = db.ref(collections.clients),
   $container = d.querySelector(".clients-container")
 

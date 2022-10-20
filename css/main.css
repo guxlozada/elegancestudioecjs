@@ -33,13 +33,13 @@ body {
 }
 
 .note-title {
-  font-size: 1.25em;
+  font-size: 1.5em;
   font-weight: bold;
   text-align: center;
 }
 
 .note-content {
-  font-size: 1em;
+  font-size: 1.25em;
 }
 
 /***** Notificaciones - Fin *****/

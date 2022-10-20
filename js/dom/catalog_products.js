@@ -1,4 +1,4 @@
-export const products = [
+const products = [
   { code: "ACE001", category: "ELEGANCE-ACCESORIOS", description: "Capa profesional ELEGANCE (negra)", baseValue: 0.00, finalValue: 0.00, taxIVA: 0.00, wholesaleValue: 0.00, wholesaleFinalValue: 0.00, wholesaleTaxIVA: 0.00, sellerCommission: 10, type: "P", retentionIVA: true, active: false },
   { code: "ACN001", category: "ELEGANCE-ACCESORIOS", description: "Camiseta negra ELEGANCE ecuador (talla:S)", baseValue: 0.00, finalValue: 0.00, taxIVA: 0.00, wholesaleValue: 0.00, wholesaleFinalValue: 0.00, wholesaleTaxIVA: 0.00, sellerCommission: 10, type: "P", retentionIVA: true, active: false },
   { code: "ACN002", category: "ELEGANCE-ACCESORIOS", description: "Camiseta negra ELEGANCE ecuador (talla:M)", baseValue: 0.00, finalValue: 0.00, taxIVA: 0.00, wholesaleValue: 0.00, wholesaleFinalValue: 0.00, wholesaleTaxIVA: 0.00, sellerCommission: 10, type: "P", retentionIVA: true, active: false },

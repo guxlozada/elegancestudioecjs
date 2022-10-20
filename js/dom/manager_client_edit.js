@@ -1,11 +1,12 @@
 import { hoyEC} from "../util/fecha-util.js";
 import { dbRef } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
-import { ntf } from "../app.js";
 import { renderClients } from "./manager_clients.js";
 import { localdb } from "../repo-browser.js";
+import NotificationBulma from "./NotificacionBulma.js";
 
-const d = document
+const d = document,
+  ntf = new NotificationBulma()
 
 const clientInit = {
   name: null,

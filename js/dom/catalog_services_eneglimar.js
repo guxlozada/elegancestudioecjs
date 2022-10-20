@@ -1,4 +1,4 @@
-export const servicesEneglimar = [
+const servicesEneglimar = [
   { code: "SERVCJA04", category: "CEJAS", description: "[%60] Pigmentación de cejas", baseValue: 7.00, finalValue: 7.84, taxIVA: 0.84, sellerCommission: 60, type: "S", retentionIVA: true, active: true, promo: { discountDay: 0, cash: 12 } },
   { code: "SERVCJA10", category: "CEJAS", description: "[%60] Depilación con cera + pigmentación", baseValue: 10.00, finalValue: 11.20, taxIVA: 1.20, sellerCommission: 60, type: "S", retentionIVA: true, active: true, promo: { discountDay: 0, cash: 12 } },
   { code: "SERVUNA01", category: "UNIAS", description: "[%60] Manicure rusa hombre", baseValue: 5.00, finalValue: 5.60, taxIVA: 0.60, sellerCommission: 60, type: "S", retentionIVA: true, active: true, promo: { discountDay: 0, cash: 12 } },

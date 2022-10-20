@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ventas-Clientes</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/main.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    @media screen and (max-width: 768px) {
+      ::placeholder {
+        color: #47b6af !important;
+      }
+    }
+
+    .content table td,
+    .content table th {
+      padding: 2px;
+    }
+
+    input.sale-item-amount[type="number"],
+    input.sale-item-unit-discount[type="number"],
+    input.sale-summary-tip[type="number"] {
+      width: 2.2rem;
+      margin: 0;
+      font-size: 0.75rem;
+      text-align: right;
+    }
+
+    input.sale-item-unit-discount[type="number"] {
+      width: 3rem;
+    }
+
+    input.sale-summary-tip[type="number"] {
+      width: 2.8rem;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <iframe src="./templates/navbar.html"
+      onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+  </header>
+  <main>
+
+    <section id="sales" class="section is-medium" style="max-width: 1000px !important; margin:auto;">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-store"></i>
+              </span>
+              <span>Servicio / Venta</span>
+            </span>
+          </p>
+        </header>
+        <div class="card-content has-background-info-light p-2">
+          <div class="content" id="sale-content">
+            <table id="sale-header">
+              <tbody>
+                <tr>
+                  <th>Cliente:</th>
+                  <th><span id="sale-client"></span>
+                    <a class="trigger-sale sale-client-empty" data-uid="9999999999999-FINAL"
+                      title="Venta a consumidor final" data-name="Consumidor Final" data-idtype="RUC"
+                      data-idnumber="9999999999999" data-lastserv="No aplica" data-referrals="No aplica">
+                      Venta a Consumidor Final
+                    </a>
+                    <span class="sale-client-empty">&nbsp;o &nbsp;</span>
+                    <a class="sale-client-empty" id="sale-client-empty" href="#clients"
+                      title="Buscar un cliente por identificación o apellido principal"
+                      onblur="document.querySelector('.client-search-text').focus()">Seleccione un cliente</a>
+                  </th>
+                </tr>
+                <tr class="has-background-warning">
+                  <th>Último servicio:</th>
+                  <th><span id="sale-client-lastserv">No existe</span></td>
+                </tr>
+                <tr class="has-background-warning">
+                  <th>Referidos:</th>
+                  <th><span id="sale-client-referrals">0</span></th>
+                </tr>
+                <tr>
+                  <th>Fecha:</th>
+                  <th>
+                    <div class="field">
+                      <p class="control has-icons-left">
+                        <input type="date" class="sale-date-input input is-small" name="saleDate" required
+                          onkeydown="return false" style="max-width: 9rem; margin: 0;" />
+                        <span class="icon is-small is-left">
+                          <i class="fa-solid fa-calendar-days"></i>
+                        </span>
+                      </p>
+                    </div>
+                </tr>
+                <tr>
+                  <th>Vendedor:</td>
+                  <th>
+                    <div class="control is-size-7">
+                      <label class="radio">
+                        <input type="radio" name="seller" value="ESTIBERSON">
+                        Estiberson
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="seller" value="ERICK">
+                        Erick
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="seller" value="ENEGLIMAR">
+                        Eneglimar
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="seller" value="LOCAL">
+                        Local
+                      </label>
+                    </div>
+                  </th>
+                </tr>
+                <tr>
+                  <th>Forma de Pago:</th>
+                  <th>
+                    <div class="control is-size-7">
+                      <label class="radio">
+                        <input type="radio" name="typePayment" value="EFECTIVO" checked>
+                        Efectivo
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="typePayment" value="TCREDITO">
+                        Tarjeta Crédito
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="typePayment" value="TDEBITO">
+                        Tarjeta Débito
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="typePayment" value="TRANSFERENCIA">
+                        Transferencia
+                      </label>
+                    </div>
+                  </th>
+                </tr>
+                <tr>
+                  <th>Destino:</th>
+                  <th>
+                    <div class="control is-size-7">
+                      <label class="radio">
+                        <input type="radio" name="typeSale" value="CLIENTE" checked>
+                        Cliente
+                      </label>
+                      <label class="radio">
+                        <input type="radio" name="typeSale" value="PORMAYOR">
+                        Al por mayor (SOLO para productos)
+                      </label>
+                    </div>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+            <table id="sale-details">
+              <thead class="has-background-grey-lighter">
+                <tr>
+                  <th><button class="trigger-services-modal button is-small is-link is-rounded"
+                      data-target="services-modal">
+                      <span class="icon">
+                        <i class="fa-solid fa-scissors"></i>
+                      </span>
+                      <span class="is-hidden-mobile">Agregar Servicio</span>
+                    </button>
+                    <button class="trigger-services-modal-eneglimar button is-small is-link is-rounded is-hidden"
+                      data-target="services-modal-eneglimar">
+                      <span class="icon">
+                        <i class="fa-solid fa-scissors"></i>
+                      </span>
+                      <span class="is-hidden-mobile">Agregar Servicio</span>
+                    </button>
+                  </th>
+                  <th style="width:1rem"><span title="Cantidad">Cant.</span></th>
+                  <th class="has-text-right" style="width:2.5rem"><span title="Valor por unidad">Val/Unid</span></th>
+                  <th style="width:1rem"><span title="Descuento por unidad">Desc/Unid</span></th>
+                  <th class="has-text-right" style="width:2.5rem">Valor</th>
+                  <th style="width:1rem"></th>
+                </tr>
+              </thead>
+              <tbody id="sale-details-services">
+                <!-- Agregar detalles de servicios-->
+
+              </tbody>
+              <thead class="has-background-grey-lighter">
+                <tr>
+                  <th><button href="#" class="trigger-products-modal button is-small is-link is-rounded"
+                      data-target="products-modal">
+                      <span class="icon">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                      </span>
+                      <span class="is-hidden-mobile">Agregar Producto</span>
+                    </button></th>
+                  <th colspan="5"></th>
+                </tr>
+              </thead>
+              <tbody id="sale-details-products">
+                <!-- Agregar detalles de productos-->
+              </tbody>
+              <tfoot id="sale-summary">
+                <tr class="has-background-grey-lighter">
+                  <th>Propina (SOLO transferencia/tarjeta credito/debito)</th>
+                  <th class=" has-text-right" colspan="5">
+                    <input class="sale-summary-tip" id="tip-value" name="tipValue" type="number" step="0.1" min="0.0"
+                      placeholder="0.00" />
+                  </th>
+                </tr>
+                <tr class="has-background-white">
+                  <th>Base imponible</th>
+                  <td class="sale-summary-taxableincome has-text-right" colspan="4">0.00</td>
+                  <td></td>
+                </tr>
+                <tr class="has-background-white">
+                  <th>Impuestos (IVA, etc.)</th>
+                  <td class="sale-summary-taxes has-text-right" colspan="4">0.00</td>
+                  <td></td>
+                </tr>
+                <tr class="has-background-grey-lighter">
+                  <th>Venta Total</th>
+                  <th class="sale-summary-totalsale has-text-right" colspan="4">0.00</th>
+                  <td></td>
+                </tr>
+
+                <!--tr>
+                  <th>Descuento</th>
+                  <td class="sale-summary-discounts has-text-right" colspan="4">0.00</td>
+                  <td></td>
+                </tr-->
+              </tfoot>
+            </table>
+          </div>
+        </div>
+        <footer class="card-footer">
+          <div class="buttons is-right" style="width: 100%;">
+            <a class="sale-save card-footer-item button is-primary">
+              <span class="icon">
+                <i class="fa-solid fa-check"></i>
+              </span>
+              <span>Guardar</span>
+            </a>
+            <a class="sale-cancel card-footer-item button is-danger">
+              <span class="icon">
+                <i class="fa-solid fa-xmark"></i>
+              </span>
+              <span>Cancelar</span>
+            </a>
+          </div>
+        </footer>
+      </div>
+    </section>
+
+    <section id="clients" class="section is-medium" style="max-width: 1000px !important; margin:auto;">
+      <article class="panel is-info is-size-7 has-background-info-light">
+        <p class="panel-heading  is-size-6">
+          <span class="panel-icon has-text-white">
+            <i class="fa-solid fa-users"></i>
+          </span>
+          Clientes
+        </p>
+        <div class="panel-block">
+          <p class="control has-icons-left">
+            <input class="client-search-text input is-small is-primary" type="text"
+              placeholder="Ingrese identificación o apellido">
+            <span class="icon is-left">
+              <i class="fas fa-search"></i>
+            </span>
+          </p>
+          <div class="control" style="width:fit-content;">
+            <input class="trigger-client-search button is-small is-primary" type="button" value="Buscar">
+          </div>
+        </div>
+
+        <div class="clients-container">
+          <!-- render clientes-->
+        </div>
+        <div class="panel-block" style="width: 100%;">
+          <a class="client-search-zero panel-block has-background-warning m-2 is-hidden" id="clientes-busqueda-cero">
+            <span class="panel-icon has-text-danger-dark">
+              <i class="fa-solid fa-user-slash"></i>
+            </span>
+            Búsqueda finalizada con 0 resultados. Ingrese correctamente la identificación o apellido del cliente
+            <br>RECUERDE: Si el cliente no se encuentra registrado de clic en el botón Agregar Cliente
+          </a>
+        </div>
+
+        <div class="buttons is-right p-2" style="width: 100%;">
+          <a class="button is-small is-link is-rounded" href="#client-edit"
+            onblur="document.getElementById('client-name').focus()">
+            <span class="icon">
+              <i class="fa-solid fa-user-plus"></i>
+            </span>
+            <span>Agregar Cliente</span>
+          </a>
+        </div>
+      </article>
+    </section>
+
+    <section id="client-edit" class="section is-large" style="max-width: 1000px !important; margin:auto;">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-user-pen"></i>
+              </span>
+              <span>Cliente</span>
+            </span>
+          </p>
+        </header>
+        <form id="client-edit-form">
+          <div class="card-content has-background-info-light">
+            <div class="content px-7">
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Primer nombre y primer apellido</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-name" type="text" data-key="name"
+                    style="max-width: 500px; margin: 0;" placeholder="Primer nombre y apellido..." />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-signature"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <div class="control is-size-7">
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="idType" value="CEDULA" data-key="idType" checked>
+                    Cédula
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="idType" value="PASAPORTE" data-key="idType">
+                    Pasaporte
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="idType" value="RUC" data-key="idType">
+                    RUC
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="idType" value="OTRO" data-key="idType"> Otro</label>
+                </div>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-idnumber" type="text" data-key="idNumber"
+                    style="max-width: 250px; margin: 0;" placeholder="Número de identificación..." />
+                  <span class="icon is-small is-left">
+                    <i class="far fa-id-card"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Correo electrónico</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-email" type="email" data-key="email"
+                    style="max-width: 500px; margin: 0;" placeholder="Correo electrónico...">
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-envelope"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Ciudad donde vive</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-city" type="text" data-key="city"
+                    style="max-width: 250px; margin: 0;" placeholder="Ciudad donde vive..." value="Manta" />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-map-marker-alt"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Fecha de nacimiento :</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-birthdate" type="date" data-key="birthdate"
+                    style="max-width: 250px; margin: 0;" placeholder="Fecha de nacimiento..." />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-birthday-cake"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Teléfono celular</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-cellphone" type="tel" data-key="cellphone"
+                    style="max-width: 250px; margin: 0;" placeholder="Teléfono celular..." />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-phone"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Presentado / Referido por :</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-referred" type="text" data-key="referred"
+                    style="max-width: 250px; margin: 0;" placeholder="Identificación de quien referencia..." />
+                  <span class="icon is-small is-left">
+                    <i class="far fa-id-card"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Registrado por</label>
+                <div class="control is-size-7">
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="registeredBy" value="ADMIN" data-key="registeredBy">
+                    Admin
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="registeredBy" value="ESTIBERSON"
+                      data-key="registeredBy">
+                    Estiberson
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="registeredBy" value="ERICK" data-key="registeredBy">
+                    Erick
+                  </label>
+                  <label class="radio">
+                    <input class="client-input" type="radio" name="registeredBy" value="ENEGLIMAR"
+                      data-key="registeredBy">
+                    Eneglimar
+                  </label>
+                </div>
+              </div>
+              <input class="input" id="client-uid" type="hidden" name="uid" data-key="uid" />
+            </div>
+            <footer class="card-footer">
+              <div class="buttons is-right" style="width: 100%;">
+                <a class="client-save card-footer-item button is-primary">
+                  <span class="icon">
+                    <i class="fa-solid fa-check"></i>
+                  </span>
+                  <span>Guardar</span>
+                </a>
+                <a class="client-cancel card-footer-item button is-danger">
+                  <span class="icon">
+                    <i class="fa-solid fa-xmark"></i>
+                  </span>
+                  <span>Cancelar</span>
+                </a>
+              </div>
+            </footer>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="modal" id="services-modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head has-background-link  p-2">
+        <p class="modal-card-title has-text-white is-size-6">
+          <span class="icon">
+            <i class="fa-solid fa-scissors"></i>
+          </span>
+          Servicios
+        </p>
+        <a class="delete" href="#sales"></a>
+      </header>
+      <section class="modal-card-body">
+        <article class="items-container panel is-info is-size-7">
+          <!-- render servicios -->
+        </article>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal" id="services-modal-eneglimar">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head has-background-link  p-2">
+        <p class="modal-card-title has-text-white is-size-6">
+          <span class="icon">
+            <i class="fa-solid fa-scissors"></i>
+          </span>
+          Servicios
+        </p>
+        <a class="delete" href="#sales"></a>
+      </header>
+      <section class="modal-card-body">
+        <article class="items-container panel is-info is-size-7">
+          <!-- render servicios -->
+        </article>
+      </section>
+    </div>
+  </div>
+
+  <div class="modal" id="products-modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head has-background-info p-2">
+        <p class="modal-card-title has-text-white is-size-6">
+          <span class="icon">
+            <i class="fa-solid fa-basket-shopping"></i>
+          </span>
+          Productos
+        </p>
+        <button class="delete" href="#sales"></button>
+      </header>
+      <section class="modal-card-body">
+        <article class="items-container panel is-info is-size-7">
+          <!-- render productos -->
+        </article>
+      </section>
+    </div>
+  </div>
+
+  <template id="cliente-template">
+    <div class="panel-block px-1">
+      <a class="trigger-client-edit button is-small is-rounded is-link py-0" data-href="#client-edit" data-uid="NULO"
+        title="Actualizar información de cliente" disabled>
+        <span class="icon is-small">
+          <i class="fa-solid fa-pen-to-square"></i>
+        </span>
+      </a>
+      &nbsp;
+      <a class="trigger-sale button is-small is-rounded is-primary py-0" href="#sales" data-uid="NULO"
+        title="Nuevo servicio / venta">
+        <span class="icon is-small">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </span>
+      </a>
+      <div class="panel-block">
+        <span class="client-description"> NOMBRE APELLIDO [IDTIPO: IDNUMERO]</span>
+      </div>
+    </div>
+  </template>
+
+  <template id="catalog-template">
+    <a class="catalog-item panel-block" data-key="" data-type="">
+      <span class="panel-icon">
+        <i class="fa-solid fa-plus"></i>
+      </span>
+      <span class="catalog-item-details"></span>
+      <span class="wholesale-item-details is-hidden"></span>
+    </a>
+  </template>
+
+  <template id="sale-item-template">
+    <tr>
+      <td class="sale-item-description" style="vertical-align: bottom;">No name</td>
+      <td>
+        <input type="number" class="sale-item-amount" value="1" step="1" min="1" max="99" data-key="UID">
+      </td>
+      <td class="sale-item-unit-value has-text-right" style="vertical-align: bottom;">0.00</td>
+      <td>
+        <input type="number" class="sale-item-unit-discount" value="0" step="0.1" min="0.0" max="100.0" data-key="UID">
+      </td>
+      <td class="sale-item-value has-text-right" style="vertical-align: bottom;">0.00</td>
+      <td><a class="sale-item-delete" title="X Remover" data-key="UID">
+          <span class="icon is-small has-text-danger">
+            <i class="fa-solid fa-trash-can"></i>
+          </span>
+        </a>
+      </td>
+    </tr>
+  </template>
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/f_sales/manager_barber_sales.js" type="module"></script>
+</body>
+
+</html>

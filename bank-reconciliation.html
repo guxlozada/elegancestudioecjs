@@ -13,6 +13,29 @@
     .content table th {
       padding: 2px;
     }
+
+    table {
+      position: relative;
+    }
+
+    th {
+      background: hsl(217, 71%, 53%);
+      position: sticky;
+      top: 0;
+      /* Don't forget this, that is required for the stickiness */
+      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+    }
+
+    article {
+      height: 50vh;
+    }
+
+    article section {
+      height: 100%;
+      display: flex;
+      overflow-y: auto;
+      flex-direction: column;
+    }
   </style>
 </head>
 
@@ -33,143 +56,179 @@
               <span>Consulta de transacciones bancarias</span>
             </span>
           </p>
+          <p class="card-header-icon has-text-white is-size-6 has-text-right">
+            <span class="search-period "></span>
+          </p>
         </header>
         <div class="card-content has-background-info-light p-2">
           <div class="content">
-            <table id="filters">
-              <tbody>
-                <tr class="list-inline">
-                  <td colspan="2">
-                    <div class="control is-size-7">
-                      <label class="checkbox">
-                        <input type="checkbox" id="type-payment-all" name="typePayment" value="TODOS" checked>
-                        Todos
-                      </label>
-                      <label class="checkbox">
-                        <input type="checkbox" name="typePayment" value="DEPOSITO">
-                        Deposito
-                      </label>
-                      <label class="checkbox">
-                        <input type="checkbox" name="typePayment" value="TRANSFERENCIA" title="Transferencia credito">
-                        Transferencia credito
-                      </label>
-                      <label class="checkbox">
-                        <input type="checkbox" name="typePayment" value="DEBITO_TRANSFERENCIA"
-                          title="Transferencia debito">
-                        Transferencia debito
-                      </label>
-                      <label class="checkbox">
-                        <input type="checkbox" name="typePayment" value="TCREDITO">
-                        Tarjeta credito
-                      </label>
-                      <label class="checkbox">
-                        <input type="checkbox" name="typePayment" value="TDEBITO">
-                        Tarjeta debito
-                      </label>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="list-inline">
-                  <td>
-                    <div class="control is-size-7">
-                      <label class="radio">
-                        <input type="radio" id="bank-all" name="bank" value="TODOS" checked>
-                        Todos
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="bank" value="PICH">
-                        Pichincha
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="bank" value="PROD">
-                        Produbanco
-                      </label>
-                    </div>
-                  </td>
-                  <td>
-                    <div class="control is-size-7">
-                      <label class="radio">
-                        <input type="radio" name="verified" value="TODOS" checked>
-                        Todos
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="verified" value="true">
-                        Verificado
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="verified" value="false">
-                        Pendiente
-                      </label>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="list-inline">
-                  <td style="vertical-align: middle;">
-                    <div class="control is-size-7">
-                      <label class="radio">
-                        <input type="radio" name="period" value="LASTMONTH">
-                        Mes anterior
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="period" value="LASTWEEK">
-                        Semana anterior
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="period" value="TODAY">
-                        Hoy
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="period" value="CURRENTWEEK">
-                        Semana
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="period" value="CURRENTMONTH" checked>
-                        Mes
-                      </label>
-                    </div>
-                  </td>
-
-                  <td class="list-inline">
-                    <input type="date" class="input is-small" id="date-start" name="dateStart" required
-                      style="max-width: 8rem" />
-                    <input type="date" class="input is-small" id="date-end" name="dateEnd" required
-                      style="max-width: 8rem" />
-                    <input id="search" class="button is-small is-primary" type="button" value="Buscar">
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <table>
-              <thead>
-                <tr class="has-background-grey-lighter has-text-right">
-                  <th class="search-period has-text-left pl-4" colspan="4"></th>
-                  <th colspan="4">Totales:</th>
-                  <th class="total-value pr-2"></th>
-                  <th class="verified-total-value pr-4"></th>
-                  <td></td>
-                </tr>
-                <tr class="has-background-link  has-text-centered">
-                  <th style="width:1rem"></th>
-                  <th class="has-text-white" style="width:8rem">Fecha-hora</th>
-                  <th class="has-text-white" style="width:3rem">Banco</th>
-                  <th class="has-text-white">Tipo [Origen]</th>
-                  <th class="has-text-white" style="width:3rem">Venta</th>
-                  <th class="has-text-white" colspan="3">Datafast com/iva/renta</th>
-                  <th class="has-text-white" style="width:3rem">Valor</th>
-                  <th class="has-text-white" style="width:3rem">Verificado</th>
-                  <th class="has-text-white" style="width:1.5rem"></th>
-                </tr>
-              </thead>
-              <tbody id="bank-transactions">
-                <!-- render bank transactions-->
-              </tbody>
-            </table>
+            <form id="filters">
+              <table>
+                <tbody>
+                  <tr class="list-inline">
+                    <td colspan="2">
+                      <div class="control is-size-7">
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" id="type-payment-all" name="typePayment"
+                            value="TODOS" checked>
+                          Todos
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="typePayment" value="DEPOSITO">
+                          Deposito
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="typePayment" value="TRANSFERENCIA"
+                            title="Transferencia credito">
+                          Transferencia credito
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="typePayment" value="DEBITO_TRANSFERENCIA"
+                            title="Transferencia debito">
+                          Transferencia debito
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="typePayment" value="TCREDITO">
+                          Tarjeta credito
+                        </label>
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="typePayment" value="TDEBITO">
+                          Tarjeta debito
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="list-inline">
+                    <td>
+                      <div class="control is-size-7">
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="bank" value="TOTAL" checked>
+                          Todos
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="bank" value="PICH">
+                          Pichincha
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="bank" value="PROD">
+                          Produbanco
+                        </label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="control is-size-7">
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="verified" value="TODOS" checked>
+                          Todos
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="verified" value="true">
+                          Verificado
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="verified" value="false">
+                          Pendiente
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="list-inline">
+                    <td style="vertical-align: middle;">
+                      <div class="control is-size-7">
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="period" value="LASTWEEK">
+                          Semana anterior
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="period" value="TODAY">
+                          Hoy
+                        </label>
+                        <label class="radio">
+                          <input type="radio" class="prop-input" name="period" value="CURRENTWEEK" checked>
+                          Semana
+                        </label>
+                      </div>
+                    </td>
+                    <td class="list-inline">
+                      <input type="month" class="prop-input input is-small" id="period-month" name="periodMonth"
+                        min="2022-08" data-type="datetime" onkeydown="return false" style="max-width: 8rem" />
+                      <input type="date" class="prop-input input is-small" id="period-start" name="periodStart"
+                        data-type="datetime" style="max-width: 8rem" />
+                      <input type="date" class="prop-input input is-small" id="period-end" name="periodEnd"
+                        data-type="datetime" style="max-width: 8rem" />
+                      <input type="submit" class="button is-small is-primary" value="Buscar">
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </form>
+            <div class="reconciliation-blocked-msj has-background-primary has-text-white has-text-centered is-hidden">
+              Conciliacion mensual solo para consulta
+            </div>
+            <div class="reconciliation-blocked-error has-background-danger has-text-white has-text-centered is-hidden">
+              Conciliacion mensual solo para consulta, revise nuevas transacciones registradas sin verificar
+            </div>
+            <article>
+              <section>
+                <table>
+                  <thead>
+                    <tr class="has-background-link has-text-centered">
+                      <th style="width:1rem"></th>
+                      <th class="has-text-white" style="width:8rem">Fecha-hora</th>
+                      <th class="has-text-white" style="width:3rem">Banco</th>
+                      <th class="has-text-white">Tipo [Origen] Responsable</th>
+                      <th class="has-text-white" style="width:3rem">Venta</th>
+                      <th class="has-text-white" colspan="3">Datafast com/iva/renta</th>
+                      <th class="has-text-white" style="width:3rem">Valor</th>
+                      <th class="has-text-white" style="width:3rem">Verificado</th>
+                      <th class="has-text-white" style="width:1.5rem"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="bank-transactions">
+                    <!-- render bank transactions-->
+                  </tbody>
+                  <tfoot>
+                    <tr class="has-background-grey-lighter has-text-right">
+                      <td colspan="4">Ventas:</td>
+                      <td class="total-sale pr-2"></td>
+                      <td colspan="3">Totales:</td>
+                      <td class="total-value pr-2"></td>
+                      <td class="total-verified pr-4"></td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </section>
+            </article>
           </div>
         </div>
+        <footer class="card-footer">
+          <a href="#" class="card-footer-item"></a>
+          <a href="#" class="card-footer-item"></a>
+          <input type="button" class="reconciliation-save card-footer-item button is-small is-primary p-0"
+            value="Finalizar conciliacion mensual" title="Recuerde que para que se active el boton debe cumplir lo siguiente: 
+            seleccione el periodo mensual, 
+            todos los filtros deben estar seleccionado la opcion 'TODOS', 
+            debe existir el saldo inicial, 
+            todas las transacciones del mes deben estar verificadas y 
+            el saldo total VERIFICADO de cada cuenta bancaria debe ser mayor o igual a cero." disabled></input>
+        </footer>
       </div>
     </section>
-
+    </article>
   </main>
+
+  <template id="bank-initial-balance">
+    <tr>
+      <td></td>
+      <td class="date has-text-left"></td>
+      <td class="bank"></td>
+      <td class="type-payment"></td>
+      <td class="original-value has-text-right pr-2" colspan="5"></td>
+      <td class="verified-value has-text-right pr-4"></td>
+      <td></td>
+    </tr>
+  </template>
 
   <template id="bank-tx-row">
     <tr class="tx-row">
@@ -183,12 +242,13 @@
       <td class="datafast-renta has-text-right" style="width:3rem"></td>
       <td class="original-value has-text-right pr-2" style="width:3rem"></td>
       <td class="has-text-right">
-        <input type="number" class="verified-value is-size-7 has-text-right m-0 p-0" style="width:4rem" step="0.01" />
-        <div class="verified-value-readonly is-hidden pr-4" style="width:100%"></div>
+        <input type="number" class="verified-value is-size-7 has-text-right m-0 p-0 is-hidden" style="width:4rem"
+          min="0.01" step="0.01" required />
+        <div class="verified-value-readonly pr-4"></div>
       </td>
       <td class="validate">
-        <input type="checkbox" class="verified m-1" value="true"
-          title="Marcar cuando ha sido validada la transaccion bancaria">
+        <input type="checkbox" class="verified m-1 is-hidden" value="true"
+          title="Marcar SOLO cuando la transaccion bancaria ha sido verificada en el estado de cuenta.">
       </td>
     </tr>
   </template>

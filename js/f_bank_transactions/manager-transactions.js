@@ -4,7 +4,7 @@ import NotificationBulma from "../dom/NotificacionBulma.js"
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js"
 import { hoyEC } from "../util/fecha-util.js"
 import convertFormToObject, { resetForm } from "../util/form_util.js"
-import { insertBankTx } from "./dao_bank_reconciliation.js"
+import { insertBankTx } from "./dao_banking_transactions.js"
 
 const d = document,
   w = window,
@@ -70,8 +70,8 @@ d.addEventListener("submit", e => {
         ntf.error("Informacion requerida", "Seleccione el responsable")
       } else if (bankTx.type === "DEBITO_TRANSFERENCIA" && !bankTx.rubro) {
         ntf.error("Informacion requerida", "Seleccione un rubro que respalde el debito bancario")
-      } else if (bankTx.type !== "DEBITO_TRANSFERENCIA" && bankTx.rubro) {
-        ntf.error("Informacion con error", "Solo debe seleccionar el rubro para debitos bancarios, seleccione la opcion (...)")
+      } else if (bankTx.type !== "DEBITO_TRANSFERENCIA" && bankTx.type !== "TRANSFERENCIA" && bankTx.rubro) {
+        ntf.error("Informacion con error", "Solo debe seleccionar el rubro para transferencias bancarios. Para continuar elimine el rubro seleccionado.")
       } else if (!bankTx.rubro && !bankTx.details && !bankTx.voucher) {
         ntf.error("Informacion requerida", "Ingrese el numero de comprobante o describa brevemente el motivo de la transaccion bancaria en el campo detalles")
       }

@@ -18,10 +18,19 @@
       position: relative;
     }
 
-    th {
-      background: hsl(217, 71%, 53%);
+    thead th {
+      background: hsl(217, 71%, 45%);
       position: sticky;
       top: 0;
+      /* Don't forget this, that is required for the stickiness */
+      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+    }
+
+    tfoot th {
+      background: hsl(217, 71%, 45%);
+      color: white;
+      position: sticky;
+      bottom: 0;
       /* Don't forget this, that is required for the stickiness */
       box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
     }
@@ -162,17 +171,17 @@
                 </tbody>
               </table>
             </form>
-            <div class="reconciliation-blocked-msj has-background-primary has-text-white has-text-centered is-hidden">
-              Conciliacion mensual solo para consulta
-            </div>
-            <div class="reconciliation-blocked-error has-background-danger has-text-white has-text-centered is-hidden">
-              Conciliacion mensual solo para consulta, revise nuevas transacciones registradas sin verificar
-            </div>
-            <article>
+            <article class="pt-2">
               <section>
+                <div class="reconciliation-blocked-msj has-background-primary has-text-white has-text-centered is-hidden">
+                  Conciliacion mensual solo para consulta
+                </div>
+                <div class="reconciliation-blocked-error has-background-danger has-text-white has-text-centered is-hidden">
+                  Conciliacion mensual solo para consulta, revise nuevas transacciones registradas sin verificar
+                </div>
                 <table>
                   <thead>
-                    <tr class="has-background-link has-text-centered">
+                    <tr class="has-text-centered">
                       <th style="width:1rem"></th>
                       <th class="has-text-white" style="width:8rem">Fecha-hora</th>
                       <th class="has-text-white" style="width:3rem">Banco</th>
@@ -188,13 +197,13 @@
                     <!-- render bank transactions-->
                   </tbody>
                   <tfoot>
-                    <tr class="has-background-grey-lighter has-text-right">
-                      <td colspan="4">Ventas:</td>
-                      <td class="total-sale pr-2"></td>
-                      <td colspan="3">Totales:</td>
-                      <td class="total-value pr-2"></td>
-                      <td class="total-verified pr-4"></td>
-                      <td></td>
+                    <tr class="has-text-white has-text-right">
+                      <th class="has-text-white" colspan="4"></th>
+                      <th class="has-text-white total-sale pr-2"></th>
+                      <th class="has-text-white" colspan="3"></th>
+                      <th class="has-text-white total-value pr-2"></th>
+                      <th class="has-text-white total-verified pr-4"></th>
+                      <th></th>
                     </tr>
                   </tfoot>
                 </table>

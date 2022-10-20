@@ -113,13 +113,11 @@ d.getElementById("bank-transactions").addEventListener("change", e => {
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
 d.querySelector(".reconciliation-save").addEventListener("click", e => {
   e.preventDefault()
-  let $reconciliationSave = e.target,
-    reconciliation = JSON.parse(localStorage.getItem(localdb.tmpBankReconciliation)),
-    month = DateTime.fromMillis(reconciliation.date).setLocale('ec').toFormat('MMMM yyyy')
+  let month = DateTime.fromMillis(reconciliation.date).setLocale('ec').toFormat('MMMM yyyy')
 
   if (confirm(`Al guardar la conciliacion mensual de ${month}, no podra realizar modificaciones posteriores. 
   Esta seguro que la informacion esta lista para continuar?`)) {
-    insertMonthlyReconciliation(reconciliation,
+    insertMonthlyReconciliation(JSON.parse(localStorage.getItem(localdb.tmpBankReconciliation)),
       vdMonth => {
         let monthString = vdMonth.setLocale('ec').toFormat('MMMM yyyy')
         ntf.okey(`Conciliacion mensual de ${monthString} registrada`)
@@ -195,9 +193,11 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
   d.querySelector(".search-period").innerText = dateTimeToLocalString(voFilters.periodStart)
     + " al " + dateTimeToLocalString(voFilters.periodEnd)
 
-  // Agregar saldo inicial a la/las cuentas, si existe la reconcialiacion del mes anterior
-  if (voFilters.periodMonth) {
+  // El saldo inicial solo se presenta cuando se despliega todas las formas de pago y el periodo es mensual
+  // para la conciliacion mensual
+  if (voFilters.periodMonth && voFilters.typePayment.includes("TODOS")) {
     const $initialRow = d.getElementById("bank-initial-balance").content.cloneNode(true)
+    // Agregar saldo inicial cuando existe la reconcialiacion del mes anterior
     if (voLastBalance) {
       let accountStatus = voLastBalance[voFilters.bank]
       $initialRow.querySelector(".date").innerText = DateTime.fromMillis(voLastBalance.date).startOf('day').toLocaleString(DateTime.DATE_SHORT)

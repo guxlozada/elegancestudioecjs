@@ -50,101 +50,23 @@ const loadCatalog = ($container, vaItems) => {
   console.log($container, $container.childElementCount)
   if ($container.childElementCount == 0) {
     console.log("Cargando items al modal")
-    let $fragment = d.createDocumentFragment(),
-      $template = d.getElementById("catalog-template").content
+    const $fragment = d.createDocumentFragment()
 
     if (!vaItems) {
       $container.innerHTML = `<div class="has-text-danger">Ningun item disponible. Comunique este problema a Carlos Quinteros</div>`
       return
     }
     vaItems.forEach(item => {
-      let $catalogItem = $template.querySelector(".catalog-item")
+      let $rowTmp = d.getElementById("catalog-template").content.cloneNode(true),
+        $catalogItem = $rowTmp.querySelector(".catalog-item")
       $catalogItem.dataset.key = item.tmpUid
       $catalogItem.dataset.type = item.type
-      $template.querySelector(".catalog-item-details").textContent = `[$${roundTwo(item.baseValue).toFixed(2)}] ${item.description}`
-      $template.querySelector(".wholesale-item-details").textContent = item.type === "P" ? `[$${roundTwo(item.wholesaleValue).toFixed(2)}] ${item.description}` : ""
-      let $clone = d.importNode($template, true)
-      $fragment.appendChild($clone)
+      $rowTmp.querySelector(".catalog-item-details").textContent = `[$${roundTwo(item.baseValue).toFixed(2)}] ${item.description}`
+      if (item.type === "P")
+        $rowTmp.querySelector(".wholesale-item-details").textContent = `[$${roundTwo(item.wholesaleValue).toFixed(2)}] ${item.description}`
+      $fragment.appendChild($rowTmp)
     })
     $container.appendChild($fragment)
-  }
-}
-
-const loadServices = ($container) => {
-  ////console.log($servicesModalContainer, $servicesModalContainer.childElementCount)
-  if ($servicesModalContainer.childElementCount == 0) {
-    ////console.log("Cargando servicios al modal")
-    let $fragment = d.createDocumentFragment(),
-      $template = d.getElementById("catalog-template").content
-
-    if (!services) {
-      $servicesModalContainer.innerHTML = `<div class="has-text-danger">Ningun servicio disponible. Comunique este problema a Carlos Quinteros</div>`
-      return
-    }
-    services
-      .filter(s => s.active && s.barber !== "ENEGLIMAR")
-      .forEach(s => {
-        let $catalogItem = $template.querySelector(".catalog-item")
-        $catalogItem.dataset.key = s.code
-        $catalogItem.dataset.type = s.type
-        $template.querySelector(".catalog-item-details").textContent = `[$${roundTwo(s.baseValue).toFixed(2)}] ${s.description}`
-        $template.querySelector(".wholesale-item-details").textContent = ""
-        let $clone = d.importNode($template, true)
-        $fragment.appendChild($clone)
-      })
-    $servicesModalContainer.appendChild($fragment)
-  }
-}
-
-const loadServicesEneglimar = () => {
-  ////console.log($servicesModalEneglimarContainer, $servicesModalEneglimarContainer.childElementCount)
-  if ($servicesModalEneglimarContainer.childElementCount == 0) {
-    ////console.log("Cargando servicios al modal eneglimar")
-    let $fragment = d.createDocumentFragment(),
-      $template = d.getElementById("catalog-template").content
-
-    if (!services) {
-      $servicesModalEneglimarContainer.innerHTML = `<div class="has-text-danger">Ningun servicio disponible. Comunique este problema a Carlos Quinteros</div>`
-      return
-    }
-    services
-      .filter(s => s.active && s.barber === "ENEGLIMAR")
-      .forEach(s => {
-        let $catalogItem = $template.querySelector(".catalog-item")
-        $catalogItem.dataset.key = s.code
-        $catalogItem.dataset.type = s.type
-        $template.querySelector(".catalog-item-details").textContent = `[$${roundTwo(s.baseValue).toFixed(2)}] ${s.description}`
-        $template.querySelector(".wholesale-item-details").textContent = ""
-        let $clone = d.importNode($template, true)
-        $fragment.appendChild($clone)
-      })
-    $servicesModalEneglimarContainer.appendChild($fragment)
-  }
-}
-
-const loadProducts = () => {
-  //// console.log($productsModalContainer, $productsModalContainer.childElementCount)
-  if ($productsModalContainer.childElementCount == 0) {
-    ////console.log("Cargando productos al modal")
-    let $fragment = d.createDocumentFragment(),
-      $template = d.getElementById("catalog-template").content
-
-    if (!products) {
-      $productsModalContainer.innerHTML = `<div class="has-text-danger">Ningun producto disponible. Comunique este problema a Carlos Quinteros</div>`
-      return
-    }
-    products
-      .filter(p => p.active)
-      .forEach(p => {
-        let $catalogItem = $template.querySelector(".catalog-item")
-        $catalogItem.dataset.key = p.code
-        $catalogItem.dataset.type = p.type
-        $template.querySelector(".catalog-item-details").textContent = `[$${roundTwo(p.baseValue).toFixed(2)}] ${p.description}`
-        $template.querySelector(".wholesale-item-details").textContent = `[$${roundTwo(p.wholesaleValue).toFixed(2)}] ${p.description}`
-        let $clone = d.importNode($template, true)
-        $fragment.appendChild($clone)
-      })
-    $productsModalContainer.appendChild($fragment)
   }
 }
 
@@ -497,7 +419,7 @@ d.addEventListener("DOMContentLoaded", e => {
         products = [...res]
         localStorage.setItem(localdb.catalogProducts, JSON.stringify(products))
       },
-      error => ntf.error("Busqueda de catalogo de productos con error", error))
+      error => ntf.errorAndLog("Busqueda de catalogo de productos con error", error))
   }
   if (services === null) {
     findCatalog(collections.catalogServices,
@@ -505,7 +427,7 @@ d.addEventListener("DOMContentLoaded", e => {
         services = [...res]
         localStorage.setItem(localdb.catalogServices, JSON.stringify(services))
       },
-      error => ntf.error("Busqueda de catalogo de servicios con error", error))
+      error => ntf.errorAndLog("Busqueda de catalogo de servicios con error", error))
   }
 
   modalToggle(".trigger-services-modal", () => loadCatalog($servicesModalContainer,
@@ -575,11 +497,11 @@ d.getElementById("sales").addEventListener("click", e => {
   // Guardar la venta
   if ($el.matches(".sale-save") || $el.closest(".sale-save")) {
     if (!sale.seller) {
-      ntf.error("Información requerida", "Seleccione el vendedor", 3000)
+      ntf.validation("Seleccione el vendedor")
     } else if (!sale.typePayment) {
-      ntf.error("Información requerida", "Seleccione la forma de pago", 3000)
+      ntf.validation("Seleccione la forma de pago")
     } else if (sale.items.length === 0) {
-      ntf.error("Información erronea", `No ha registrado ningún producto o servicio`, 3000)
+      ntf.validation("No ha registrado ningún producto o servicio")
     } else {
       // Insertar la venta en la base de datos
       insertSalesDB(resetSale)
@@ -593,7 +515,7 @@ d.getElementById("sales").addEventListener("click", e => {
     }
     if (eliminar) {
       resetSale()
-      ntf.show("Venta descartada", `Se elimino la venta sin guardar.`)
+      ntf.okey("Venta descartada")
     }
   }
 })
@@ -605,7 +527,7 @@ d.getElementById("sales").addEventListener("change", e => {
   if ($input.matches(".sale-item-amount")) {
     let newValue = parseInt($input.value)
     if (isNaN(newValue) || newValue < 1) {
-      ntf.error("Validación valor mínimo", "La cantidad no puede ser menor a uno")
+      ntf.validation("La cantidad no puede ser menor a uno")
       newValue = 1
       $input.value = newValue
     }
@@ -615,11 +537,11 @@ d.getElementById("sales").addEventListener("change", e => {
     let newValue = parseFloat($input.value),
       max = parseFloat($input.max)
     if (isNaN(newValue) || newValue < 0) {
-      ntf.error("Validación valor mínimo", "El descuento por unidad no puede ser menor a cero")
+      ntf.validation("El descuento por unidad no puede ser menor a cero")
       newValue = 0
       $input.value = newValue
     } else if (newValue > max) {
-      ntf.error("Validación valor mínimo", "El descuento por unidad no puede ser mayor al valor de la unidad.")
+      ntf.validation("El descuento por unidad no puede ser mayor al valor de la unidad.")
       newValue = max
       $input.value = newValue
     }
@@ -749,9 +671,9 @@ function insertSalesDB(callback) {
   // Registrar la venta en la BD
   dbRef.update(updates, (error) => {
     if (error) {
-      ntf.tecnicalError("Venta no registrada", error)
+      ntf.errorAndLog("Venta no registrada", error)
     } else {
-      ntf.show("Venta registrada", `Se guardó correctamente la información de la venta Nro. ${saleHeader.date}`)
+      ntf.okey(`Se guardó correctamente la información de la venta Nro. ${saleHeader.date}`)
       callback()
     }
   })

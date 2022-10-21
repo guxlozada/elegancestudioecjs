@@ -7,11 +7,11 @@
   <title>Consulta de egresos</title>
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
   <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/report.css" />
   <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
   <style>
-    .content table td,
-    .content table th {
-      padding: 2px;
+    article {
+      height: 55vh;
     }
   </style>
 </head>
@@ -24,14 +24,17 @@
   <main>
     <section class="section" style="max-width: 1000px !important; margin:auto;">
       <div class="card is-size-7">
-        <header class="card-header has-background-info">
-          <p class="card-header-title has-text-white is-size-6">
+        <header class="card-header has-background-info is-size-6">
+          <p class="card-header-title has-text-white">
             <span class="icon-text">
               <span class="icon">
                 <i class="fa-solid fa-store"></i>
               </span>
               <span>Consulta de egresos</span>
             </span>
+          </p>
+          <p class="card-header-icon has-text-white">
+            <span class="search-period "></span>
           </p>
         </header>
         <div class="card-content has-background-info-light p-2">
@@ -111,10 +114,6 @@
                     <td style="vertical-align: middle;">
                       <div class="control is-size-7">
                         <label class="radio">
-                          <input type="radio" class="prop-input" name="period" value="LASTMONTH">
-                          Mes anterior
-                        </label>
-                        <label class="radio">
                           <input type="radio" class="prop-input" name="period" value="LASTWEEK">
                           Semana anterior
                         </label>
@@ -122,15 +121,13 @@
                           <input type="radio" class="prop-input" name="period" value="CURRENTWEEK" checked>
                           Semana actual
                         </label>
-                        <label class="radio">
-                          <input type="radio" class="prop-input" name="period" value="CURRENTMONTH">
-                          Mes actual
-                        </label>
                       </div>
                     </td>
                     <td>
-                      <input type="date" class="prop-input input is-small" id="period-start" name="periodStart" required
-                        data-type="datetime" style="max-width: 8rem" />
+                      <input type="month" class="prop-input input is-small" id="period-month" name="periodMonth"
+                        min="2022-08" data-type="datetime" onkeydown="return false" style="max-width: 9rem" />
+                      <input type="date" class="prop-input input is-small" id="period-start" name="periodStart"
+                        data-type="datetime" style="max-width: 8rem" required />
                       <input type="date" class="prop-input input is-small" id="period-end" name="periodEnd"
                         data-type="datetime" style="max-width: 8rem" />
                       <input type="submit" class="button is-small is-primary" value="Buscar">
@@ -139,36 +136,42 @@
                 </tbody>
               </table>
             </form>
-            <table>
-              <thead>
-                <tr class="has-background-black has-text-weight-semibold has-text-right">
-                  <td class="search-period has-text-centered has-text-white" colspan="3"></td>
-                  <td class="has-text-white">Total:</td>
-                  <td class="search-total has-text-white"></td>
-                </tr>
-                <tr class="has-background-link has-text-centered">
-                  <th class="has-text-white" style="width:1rem">#</th>
-                  <th class="has-text-white" style="text-align:center;width:8rem">Fecha-hora</th>
-                  <th class="has-text-white" style="width:4rem;text-overflow: ellipsis;">Resp/Benef</th>
-                  <th class="has-text-white" style="text-overflow: ellipsis">Detalles</th>
-                  <th class="has-text-white" style="width:3rem">Valor</th>
-                </tr>
-              </thead>
-              <tbody id="details">
-                <!-- render details-->
-              </tbody>
-            </table>
+            <article class="pt-2">
+              <section>
+                <table>
+                  <thead>
+                    <tr class="has-background-link has-text-centered">
+                      <th class="has-text-white" style="width:1rem">#</th>
+                      <th class="has-text-white" style="width:8rem">Fecha-hora</th>
+                      <th class="has-text-white text-ellipsis" style="width:3rem">Tipo</th>
+                      <th class="has-text-white text-ellipsis" style="width:4rem">Resp/Benef</th>
+                      <th class="has-text-white text-ellipsis">Detalles</th>
+                      <th class="has-text-white" style="width:3rem">Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody id="details">
+                    <!-- render details-->
+                  </tbody>
+                  <tfoot>
+                    <tr class="has-text-right">
+                      <th class="has-text-white" colspan="5">Total:</th>
+                      <th class="search-total has-text-white" colspan="5"></th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </section>
+            </article>
           </div>
         </div>
       </div>
     </section>
   </main>
 
-
   <template id="row">
     <tr>
       <td class="index"></td>
       <td class="date has-text-centered"></td>
+      <td class="type"></td>
       <td class="responsable"></td>
       <td class="details"></td>
       <td class="value has-text-right pr-1"></td>
@@ -177,10 +180,8 @@
 
   <template id="row-summary">
     <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
-      <th></th>
-      <th class="type has-text-centered" colspan="2"></th>
-      <th>Total:</th>
-      <th class="total-value pr-1"></th>
+      <td colspan="5">Subtotal:</td>
+      <td class="total-value pr-1"></td>
     </tr>
   </template>
 

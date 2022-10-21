@@ -135,39 +135,40 @@ function search() {
   // Borrar la conciliacion mensual previamente generada
   localStorage.removeItem(localdb.tmpBankReconciliation)
 
-  let filters = convertFormToObject($form)
-
-  // Se ha seleccionado al menos una fecha
-  if (filters.periodStart || filters.periodEnd) {
-    if (!filters.periodEnd) {
-      filters.periodEnd = filters.periodStart
-    }
-    if (!filters.periodStart) {
-      filters.periodStart = filters.periodEnd
-    }
-
-    // Validar rango y fecha maxima de consulta
-    let hoy = hoyEC()
-    if (filters.periodStart > hoy || filters.periodEnd > hoy) {
-      ntf.validation("No puede seleccionar una fecha mayor a la actual")
-    } else if (filters.periodStart > filters.periodEnd) {
-      ntf.validation("La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
-    }
-
-  } else if (!filters.period && !filters.periodMonth) {
-    ntf.validation("Seleccione un periodo, mes o un rango de fechas")
-  }
-
-  // Si hay msj de error finaliza
-  if (ntf.enabled) return
-
-  // Cuando se desmarcan todas las casillas de 'name=typePayment', se coloca la opcion 'TODOS'
-  if (!filters.typePayment) {
-    filters.typePayment = ["TODOS"]
-    d.getElementById("type-payment-all").checked = true
-  }
-
   if (validAdminAccess()) {
+    let filters = convertFormToObject($form)
+
+    // Se ha seleccionado al menos una fecha
+    if (filters.periodStart || filters.periodEnd) {
+      if (!filters.periodEnd) {
+        filters.periodEnd = filters.periodStart
+      }
+      if (!filters.periodStart) {
+        filters.periodStart = filters.periodEnd
+      }
+
+      // Validar rango y fecha maxima de consulta
+      let hoy = hoyEC()
+      if (filters.periodStart > hoy || filters.periodEnd > hoy) {
+        ntf.validation("No puede seleccionar una fecha mayor a la actual")
+      } else if (filters.periodStart > filters.periodEnd) {
+        ntf.validation("La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
+      }
+
+    } else if (!filters.period && !filters.periodMonth) {
+      ntf.validation("Seleccione un periodo, mes o un rango de fechas")
+    }
+
+    // Si hay msj de error finaliza
+    if (ntf.enabled) return
+
+    // Cuando se desmarcan todas las casillas de 'name=typePayment', se coloca la opcion 'TODOS'
+    if (!filters.typePayment) {
+      filters.typePayment = ["TODOS"]
+      d.getElementById("type-payment-all").checked = true
+    }
+
+    // Ejecutar consulta de informacion
     filters = calculatePeriod(filters)
     findBankTxs(filters,
       (voFilters, vaTransactions, vaBalances) => {

@@ -3,7 +3,7 @@ import NotificationBulma from '../dom/NotificacionBulma.js'
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js"
 import { hoyEC } from "../util/fecha-util.js"
 import convertFormToObject, { resetForm } from "../util/form_util.js"
-import { insertExpenseDB } from "./dao_seller_expenses.js"
+import { insertExpenseDB } from "./dao_cash_outflows.js"
 
 const d = document,
   w = window,

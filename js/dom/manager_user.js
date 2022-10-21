@@ -14,13 +14,14 @@ export default function validAdminAccess() {
     res = false,
     keyIn
   do {
-    keyIn = prompt("Acceso para administrador, ingrese la clave:")
+    keyIn = prompt("Acceso restringido para administrador, ingrese la clave:")
     res = keyIn && keyIn.startsWith(ADMKEY)
     if (res) {
       localStorage.setItem(localdb.accesskey, hoyEC().toFormat(FD))
       break
     } else {
-      ask = confirm("Clave equivocada - Acceso denegado/nDesea intentar con otra clave")
+      ask = confirm(`Acceso denegado - la clave no es valida.
+      ¿Desea intentar con otra clave?`)
     }
   } while (ask)
 

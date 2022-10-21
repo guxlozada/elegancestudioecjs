@@ -56,8 +56,8 @@
   <main>
     <section class="section" style="max-width: 1000px !important; margin:auto;">
       <div class="card is-size-7">
-        <header class="card-header has-background-info">
-          <p class="card-header-title has-text-white is-size-6">
+        <header class="card-header has-background-info is-size-6">
+          <p class="card-header-title has-text-white">
             <span class="icon-text">
               <span class="icon">
                 <i class="fa-solid fa-store"></i>
@@ -65,7 +65,7 @@
               <span>Consulta de transacciones bancarias</span>
             </span>
           </p>
-          <p class="card-header-icon has-text-white is-size-6 has-text-right">
+          <p class="card-header-icon has-text-white">
             <span class="search-period "></span>
           </p>
         </header>
@@ -162,7 +162,7 @@
                       <input type="month" class="prop-input input is-small" id="period-month" name="periodMonth"
                         min="2022-08" data-type="datetime" onkeydown="return false" style="max-width: 8rem" />
                       <input type="date" class="prop-input input is-small" id="period-start" name="periodStart"
-                        data-type="datetime" style="max-width: 8rem" />
+                        data-type="datetime" style="max-width: 8rem" required />
                       <input type="date" class="prop-input input is-small" id="period-end" name="periodEnd"
                         data-type="datetime" style="max-width: 8rem" />
                       <input type="submit" class="button is-small is-primary" value="Buscar">
@@ -170,15 +170,15 @@
                   </tr>
                 </tbody>
               </table>
+              <div class="reconciliation-blocked-msj has-background-primary has-text-white has-text-centered is-hidden">
+                Conciliacion mensual solo para consulta
+              </div>
+              <div class="reconciliation-blocked-error has-background-danger has-text-white has-text-centered is-hidden">
+                Conciliacion mensual solo para consulta, revise nuevas transacciones registradas sin verificar
+              </div>
             </form>
-            <article class="pt-2">
+            <article>
               <section>
-                <div class="reconciliation-blocked-msj has-background-primary has-text-white has-text-centered is-hidden">
-                  Conciliacion mensual solo para consulta
-                </div>
-                <div class="reconciliation-blocked-error has-background-danger has-text-white has-text-centered is-hidden">
-                  Conciliacion mensual solo para consulta, revise nuevas transacciones registradas sin verificar
-                </div>
                 <table>
                   <thead>
                     <tr class="has-text-centered">

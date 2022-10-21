@@ -1,0 +1,36 @@
+.content table td,
+.content table th {
+  padding: 2px;
+}
+
+table {
+  position: relative;
+}
+
+thead th {
+  background: hsl(217, 71%, 45%);
+  position: sticky;
+  top: 0;
+  /* Don't forget this, that is required for the stickiness */
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+tfoot th {
+  background: hsl(217, 71%, 45%);
+  color: white;
+  position: sticky;
+  bottom: 0;
+  /* Don't forget this, that is required for the stickiness */
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+article {
+  height: 50vh;
+}
+
+article section {
+  height: 100%;
+  display: flex;
+  overflow-y: auto;
+  flex-direction: column;
+}

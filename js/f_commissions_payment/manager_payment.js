@@ -1,21 +1,16 @@
-import { dateTimeToKeyDateString, dateTimeToLocalString, hoyEC, inputDateToDateTime } from "../util/fecha-util.js";
-import { db } from "../persist/firebase_conexion.js";
-import { collections } from "../persist/firebase_collections.js";
+import { calculatePeriod, dateTimeToLocalString, hoyEC } from "../util/fecha-util.js";
 import validAdminAccess from "../dom/manager_user.js";
 import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { roundFour, roundTwo } from "../util/numbers-util.js";
+import convertFormToObject from "../util/form_util.js";
+import { findForCommissionsPayment } from "../f_expenses/dao_cash_outflows.js";
 
 const d = document,
   w = window,
   ntf = new NotificationBulma(),
-  salesRef = db.ref(collections.sales),
-  expensesRef = db.ref(collections.expenses)
+  $form = d.querySelector("#filters")
 
-const filters = {
-  seller: "TODOS",
-  period: "CURRENTWEEK"
-}
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
 //------------------------------------------------------------------------------------------------
@@ -27,57 +22,36 @@ w.addEventListener("load", () => search())
 d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
-d.getElementById("search").addEventListener("click", () => {
-  let dateStart = d.getElementById("date-start").value,
-    dateEnd = d.getElementById("date-end").value
-
-  // NO se ha seleccionado al menos una fecha
-  if (!dateStart && !dateEnd) {
-    ntf.error("Información con errores", "Seleccione una fecha o un rango de fechas")
-    search()
-    return
-  }
-
-  if (!dateEnd) {
-    dateEnd = dateStart
-  } else if (!dateStart) {
-    dateStart = dateEnd
-  }
-
-  // Validar rango y fecha maxima de consulta
-  let dateTimeStart = inputDateToDateTime(dateStart),
-    dateTimeEnd = inputDateToDateTime(dateEnd),
-    hoy = hoyEC()
-  if (dateTimeStart > hoy || dateTimeEnd > hoy) {
-    ntf.error("Información con errores", "No puede seleccionar una fecha mayor a la actual")
-  } else if (dateTimeStart > dateTimeEnd) {
-    ntf.error("Información con errores", "La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
-  }
-
-  // Si hay msj de error finaliza
-  if (ntf.enabled) return
-
-  // Desactivar los periodos delfiltro
-  d.getElementsByName("period").forEach($el => $el.checked = false)
-  delete filters.period
-  filters.dateStart = dateTimeStart
-  filters.dateEnd = dateTimeEnd
+d.addEventListener("submit", e => {
+  e.preventDefault()
   search()
 })
 
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
 d.getElementById("filters").addEventListener("change", e => {
   let $input = e.target
-  if ($input.name === "seller") {
-    filters.seller = $input.value
-    search()
-  } else if ($input.name === "period") {
-    filters.period = $input.value
-    // Setear valores de rango de fechas
-    d.getElementById("date-start").value = ""
-    d.getElementById("date-end").value = ""
-    search()
+
+  if ($input.name === "period") {
+    d.getElementById("period-start").value = ""
+    d.getElementById("period-end").value = ""
+    d.getElementById("period-month").value = ""
   }
+
+  if ($input.name === "periodMonth") {
+    d.getElementsByName("period").forEach($el => $el.checked = false)
+    d.getElementById("period-start").value = ""
+    d.getElementById("period-end").value = ""
+  }
+
+  if ($input.name === "periodStart" || $input.name === "periodEnd") {
+    d.getElementsByName("period").forEach($el => $el.checked = false)
+    d.getElementById("period-month").value = ""
+  }
+
+  // Cuando cambia la busqueda por rango de fechas se espera el evento 'submit'
+  if ($input.type === "date") return
+
+  search()
 })
 
 //------------------------------------------------------------------------------------------------
@@ -86,16 +60,42 @@ d.getElementById("filters").addEventListener("change", e => {
 
 function search() {
   if (validAdminAccess()) {
-    calculatePeriod()
-    findExpenses()
+    let filters = convertFormToObject($form)
+
+    // Se ha seleccionado al menos una fecha
+    if (filters.periodStart || filters.periodEnd) {
+      if (!filters.periodEnd) {
+        filters.periodEnd = filters.periodStart
+      }
+      if (!filters.periodStart) {
+        filters.periodStart = filters.periodEnd
+      }
+
+      // Validar rango y fecha maxima de consulta
+      let hoy = hoyEC()
+      if (filters.periodStart > hoy || filters.periodEnd > hoy) {
+        ntf.validation("No puede seleccionar una fecha mayor a la actual")
+      } else if (filters.periodStart > filters.periodEnd) {
+        ntf.validation("La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
+      }
+
+    } else if (!filters.period && !filters.periodMonth) {
+      ntf.validation("Seleccione un periodo, mes o un rango de fechas")
+    }
+
+    // Si hay msj de error finaliza
+    if (ntf.enabled) return
+
+    // Ejecutar consulta de informacion
+    filters = calculatePeriod(filters)
+    findForCommissionsPayment(filters,
+      (filters, vmSales, voAdvancesToBarber) => renderCommissionsPayment(filters, vmSales, voAdvancesToBarber),
+      (vsTitle, error) => ntf.errorAndLog(vsTitle, error))
   }
 }
 
-function renderCommissionsPayment() {
-  const $rowTmp = d.getElementById("sale-row").content,
-    $rowBarber = d.getElementById("sale-row-header").content,
-    $totalsTmp = d.getElementById("sale-row-summary").content,
-    $fragment = d.createDocumentFragment(),
+function renderCommissionsPayment(voFilters, vmSales, voAdvancesToBarber) {
+  const $fragment = d.createDocumentFragment(),
     $paymentsDetails = d.getElementById("payments-details")
 
   let vnSearchSales = 0,
@@ -118,8 +118,10 @@ function renderCommissionsPayment() {
     vnBarberTip,
     vnBarberCommission,
     vnBarberCommissionTmp,
-    $clone,
-    barbers = [...filters.barberSales.keys()]
+    barbers = [...vmSales.keys()]
+
+  // Agregar totales por consulta
+  d.querySelector(".search-period").innerText = dateTimeToLocalString(voFilters.periodStart) + " al " + dateTimeToLocalString(voFilters.periodEnd)
 
   barbers.forEach(barber => {
     vnTotalTaxes = vnTotalTaxableIncome = vnTotalSales = vnTotalBarberCommissions = vnTotalBarberCommissionsTmp = vnTotalBarberTips = 0
@@ -127,14 +129,15 @@ function renderCommissionsPayment() {
     ////console.log("barbero:", barber)
 
     // Encabezado con barbero de
+    let $rowBarber = d.getElementById("sale-row-header").content.cloneNode(true)
     $rowBarber.querySelector(".barber").innerText = barber
-    $clone = d.importNode($rowBarber, true)
-    $fragment.appendChild($clone)
+    $fragment.appendChild($rowBarber)
 
     // GRUPO 1: Agregar detalles de servicios y venta de productos
-    const salesByBarber = filters.barberSales.get(barber) || []
+    const salesByBarber = vmSales.get(barber) || []
 
     salesByBarber.forEach((sale, index) => {
+      let $rowTmp = d.getElementById("sale-row").content.cloneNode(true)
       vnValueSale = roundTwo(sale.totalSale)
       vnTaxes = roundTwo(sale.taxes)
       vnTaxableIncome = roundTwo(sale.taxableIncome)
@@ -169,12 +172,12 @@ function renderCommissionsPayment() {
       $rowTmp.querySelector(".taxable-income").innerText = sale.taxableIncome.toFixed(2)
       $rowTmp.querySelector(".barber-commission").innerText = vnBarberCommission.toFixed(2)
       $rowTmp.querySelector(".barber-commission-tmp").innerText = vnBarberCommissionTmp.toFixed(2)
-      $rowTmp.querySelector(".barber-tip").innerText = vnBarberTip > 0 ? vnBarberTip.toFixed(2) : ''
-      $clone = d.importNode($rowTmp, true)
-      $fragment.appendChild($clone)
+      if (vnBarberTip > 0) $rowTmp.querySelector(".barber-tip").innerText = vnBarberTip.toFixed(2)
+      $fragment.appendChild($rowTmp)
     })
 
     // Agregar totales
+    let $totalsTmp = d.getElementById("sale-row-summary").content.cloneNode(true)
     $totalsTmp.querySelector(".total-value").innerText = vnTotalSales.toFixed(2)
     $totalsTmp.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
     $totalsTmp.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
@@ -183,27 +186,27 @@ function renderCommissionsPayment() {
     $totalsTmp.querySelector(".total-barber-tips").innerText = vnTotalBarberTips.toFixed(2)
 
     // GRUPO 2: Totalizar comisiones adelantadas y pagadas 
-    let discounts = filters.barberPaidCommissions.get(barber)
+    let discounts = voAdvancesToBarber.paidCommissions.get(barber)
     if (discounts) {
       vnTotalBarberPaidCommissions = roundTwo(discounts.reduce((acc, el) => acc + el.value, 0))
       vnTotalBarberDiscounts += vnTotalBarberPaidCommissions
     }
 
     // GRUPO 3: Totalizar adelantos
-    discounts = filters.barberAdvancePayment.get(barber)
+    discounts = voAdvancesToBarber.advancePayment.get(barber)
     if (discounts) {
       vnTotalBarberAdvancePayment = roundTwo(discounts.reduce((acc, el) => acc + el.value, 0))
       vnTotalBarberDiscounts += vnTotalBarberAdvancePayment
     }
 
     // GRUPO 4: Totalizar propinas pagadas
-    discounts = filters.barberPaidTips.get(barber)
+    discounts = voAdvancesToBarber.paidTips.get(barber)
     if (discounts) {
       vnTotalBarberPaidTips = roundTwo(discounts.reduce((acc, el) => acc + el.value, 0))
     }
 
     // GRUPO 5: Totalizar bebidas consumidas
-    discounts = filters.barberDrinks.get(barber)
+    discounts = voAdvancesToBarber.drinks.get(barber)
     if (discounts) {
       vnTotalBarberDrinks = roundTwo(discounts.reduce((acc, el) => acc + el.value, 0))
       vnTotalBarberDiscounts += vnTotalBarberDrinks
@@ -218,104 +221,20 @@ function renderCommissionsPayment() {
     $totalsTmp.querySelector(".barber-paid-tips").innerText = vnTotalBarberPaidTips.toFixed(2)
     $totalsTmp.querySelector(".barber-pending-payment").innerText = (vnTotalBarberCommissions - vnTotalBarberDiscounts).toFixed(2)
     $totalsTmp.querySelector(".barber-pending-payment-tmp").innerText = (vnTotalBarberCommissionsTmp - vnTotalBarberDiscounts).toFixed(2)
-    $totalsTmp.querySelector(".barber-pending-tips").innerText = (vnTotalBarberTips - vnTotalBarberPaidTips).toFixed(2)
-    $clone = d.importNode($totalsTmp, true)
-    $fragment.appendChild($clone)
+    let $barberPendingTips = $totalsTmp.querySelector(".barber-pending-tips"),
+      barberPendingTips = vnTotalBarberTips - vnTotalBarberPaidTips
+    $barberPendingTips.innerText = barberPendingTips.toFixed(2)
+    if (barberPendingTips.toFixed(2) !== "0.00") $barberPendingTips.classList.add("has-background-warning")
+    $totalsTmp.querySelector(".barber").innerText = barber
+
+    $fragment.appendChild($totalsTmp)
   })
   $paymentsDetails.innerHTML = "";
   $paymentsDetails.appendChild($fragment)
 
-  // Agregar totales por consulta
-  d.querySelector(".search-period").innerText = dateTimeToLocalString(filters.dateStart) + " al " + dateTimeToLocalString(filters.dateEnd)
+  // Totales
   d.querySelector(".search-sales").innerText = vnSearchSales.toFixed(2)
   ////d.querySelector(".search-barber-commissions").innerText = vnSearchBarberCommissions.toFixed(2)
   d.querySelector(".search-barber-commissions-tmp").innerText = vnSearchBarberCommissionsTmp.toFixed(2)
   d.querySelector(".search-sales-result").innerText = "= " + (vnSearchSales - vnSearchBarberCommissionsTmp).toFixed(2)
 }
-
-function calculatePeriod() {
-  if (!filters.period) return
-
-  let baseDate = hoyEC()
-  let truncPeriod = "month"
-  switch (filters.period) {
-    case "CURRENTMONTH":
-      break
-    case "CURRENTWEEK":
-      truncPeriod = "week"
-      break
-    case "TODAY":
-      truncPeriod = "day"
-      break
-    case "LASTWEEK":
-      baseDate = baseDate.minus({ weeks: 1 })
-      truncPeriod = "week"
-      break
-    case "LASTMONTH":
-      baseDate = baseDate.minus({ months: 1 })
-      break
-  }
-  filters.dateStart = baseDate.startOf(truncPeriod)
-  filters.dateEnd = baseDate.endOf(truncPeriod)
-}
-
-// --------------------------
-// Database operations
-// --------------------------
-
-async function findExpenses() {
-  let rangeStart = dateTimeToKeyDateString(filters.dateStart),
-    rangeEnd = dateTimeToKeyDateString(filters.dateEnd),
-    arryTmp
-
-  filters.barberAdvancePayment = new Map()
-  filters.barberDrinks = new Map()
-  filters.barberPaidCommissions = new Map()
-  filters.barberPaidTips = new Map()
-  filters.barberSales = new Map()
-
-  await expensesRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff").once('value')
-    .then(snap => snap.forEach(child => {
-      const dta = child.val()
-      if (filters.seller === "TODOS" || filters.seller === dta.responsable) {
-        switch (dta.type) {
-          case 'ADELANTO':
-            arryTmp = filters.barberAdvancePayment.get(dta.responsable) || []
-            arryTmp.push(dta)
-            filters.barberAdvancePayment.set(dta.responsable, arryTmp)
-            break
-          case 'BEBIDA':
-            arryTmp = filters.barberDrinks.get(dta.responsable) || []
-            arryTmp.push(dta)
-            filters.barberDrinks.set(dta.responsable, arryTmp)
-            break
-          case 'COMISION':
-            arryTmp = filters.barberPaidCommissions.get(dta.responsable) || []
-            arryTmp.push(dta)
-            filters.barberPaidCommissions.set(dta.responsable, arryTmp)
-            break
-          case 'PROPINA':
-            arryTmp = filters.barberPaidTips.get(dta.responsable) || []
-            arryTmp.push(dta)
-            filters.barberPaidTips.set(dta.responsable, arryTmp)
-            break
-        }
-      }
-    }))
-    .catch(error => ntf.tecnicalError("Busqueda de adelantos y comisiones pagadas con error", error))
-
-  await salesRef.orderByKey().startAt(rangeStart + "T").endAt(rangeEnd + "\uf8ff").once('value')
-    .then(snap => snap.forEach(child => {
-      const dta = child.val()
-      if (filters.seller === "TODOS" || filters.seller === dta.seller) {
-        console.log(dta.responsable)
-        arryTmp = filters.barberSales.get(dta.seller) || []
-        arryTmp.push(child.val())
-        filters.barberSales.set(dta.seller, arryTmp)
-      }
-    }))
-    .catch(error => ntf.tecnicalError("Busqueda de ventas con error", error))
-
-  renderCommissionsPayment()
-}
-

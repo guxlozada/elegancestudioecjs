@@ -113,15 +113,16 @@ d.getElementById("bank-transactions").addEventListener("change", e => {
 // EVENTO=change RAIZ=section<section> ACCION=detectar cambios en inputs 
 d.querySelector(".reconciliation-save").addEventListener("click", e => {
   e.preventDefault()
-  let month = DateTime.fromMillis(reconciliation.date).setLocale('ec').toFormat('MMMM yyyy')
+  let reconciliation = JSON.parse(localStorage.getItem(localdb.tmpBankReconciliation)),
+    month = DateTime.fromMillis(reconciliation.date).setLocale('ec').toFormat('MMMM yyyy')
 
   if (confirm(`Al guardar la conciliacion mensual de ${month}, no podra realizar modificaciones posteriores. 
   Esta seguro que la informacion esta lista para continuar?`)) {
-    insertMonthlyReconciliation(JSON.parse(localStorage.getItem(localdb.tmpBankReconciliation)),
+    insertMonthlyReconciliation(reconciliation,
       vdMonth => {
+        search()
         let monthString = vdMonth.setLocale('ec').toFormat('MMMM yyyy')
         ntf.okey(`Conciliacion mensual de ${monthString} registrada`)
-        search()
       },
       error => ntf.errorAndLog("Registro de conciliacion mensual con error", error))
   }

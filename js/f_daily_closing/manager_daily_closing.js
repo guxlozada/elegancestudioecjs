@@ -489,9 +489,9 @@ function renderDailyCashClosing(voBeforeClosingDay, voAfterClosingDay) {
   let $btnSave = d.querySelector(".daily-closing-save")
   $btnSave.dataset.existBefore = voBeforeClosingDay ? true : false
   $btnSave.dataset.existAfter = voAfterClosingDay ? true : false
-  // if (!voBeforeClosingDay || voAfterClosingDay) {
-  //   $btnSave.setAttribute("disabled", true)
-  // } else {
-  $btnSave.removeAttribute("disabled")
-  // }
+  if (!voBeforeClosingDay || voAfterClosingDay) {
+    $btnSave.setAttribute("disabled", true)
+  } else {
+    $btnSave.removeAttribute("disabled")
+  }
 }

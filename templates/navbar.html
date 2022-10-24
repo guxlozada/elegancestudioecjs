@@ -1,7 +1,7 @@
 <nav class="navbar is-fixed-top is-black">
   <div class="navbar-brand">
     <a class="navbar-inner" href="#home">
-      <img src="/assets/logo-rectangulo.png" alt="Elegance Studio EC" width="200">
+      <img src="/assets/logo-rectangulo.png" alt="Elegance Studio EC" width="180">
     </a>
     <div class="navbar-burger burger" data-target="navMenu">
       <span></span>
@@ -12,58 +12,67 @@
 
   <div id="navMenu" class="navbar-menu">
 
-    <div class="navbar-start">
-      <a class="navbar-item is-size-6" href="sales.html?#clients"
-        onblur="document.querySelector('.client-search-text').focus()">
-        <span class="bd-emoji is-size-4">🧔</span>Clientes
+    <div class="navbar-start is-size-6">
+      <a class="navbar-item " href="sales.html?#clients" onblur="document.querySelector('.client-search-text').focus()">
+        <span class="bd-emoji is-size-5">🧔</span>Clientes
       </a>
-      <a class="navbar-item is-size-6" href="sales.html?#sales">
-        <span class="bd-emoji is-size-4">💈</span>Ventas
+      <a class="navbar-item " href="sales.html?#sales">
+        <span class="bd-emoji is-size-5">💈</span>Ventas
       </a>
-      <a class="navbar-item is-size-6" href="expenses.html" title="Egresos de caja en la barberia">
-        <span class="bd-emoji is-size-4">💸</span>Egresos
+      <a class="navbar-item " href="expenses.html" title="Egresos de caja en la barberia">
+        <span class="bd-emoji is-size-5">💸</span>Egresos
       </a>
-      <a class="navbar-item is-size-6" href="bank-transactions-barber.html"
-        title="Depositos y transferencias en la barberia">
-        <span class="bd-emoji is-size-4">🏧</span>Banco
+      <a class="navbar-item " href="bank-transactions-barber.html" title="Depositos y transferencias en la barberia">
+        <span class="bd-emoji is-size-5">🏧</span>Banco
       </a>
-      <a class="navbar-item is-size-6" href="daily-closing.html#summary" title="Cierre diario de caja">
-        <span class="bd-emoji is-size-4">📙</span>Cierre diario
+      <a class="navbar-item " href="daily-closing.html#summary" title="Cierre diario de caja">
+        <span class="bd-emoji is-size-5">📙</span>Cierre diario
       </a>
 
     </div>
 
-    <div class="navbar-end">
-      <div class="navbar-item has-dropdown is-hoverable is-size-6">
+    <div class="navbar-end is-size-7">
+      <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link">
-          <span class="bd-emoji is-size-4">👨‍🔧</span>Administracion
+          <span class="bd-emoji is-size-5">👨‍🔧</span>Administracion
         </a>
 
-        <div class="navbar-dropdown">
+        <div class="navbar-dropdown  is-size-7">
           <a class="navbar-item" href="commissions-payment.html" title="Reporte de comisiones por barbero">
-            <span class="bd-emoji">📈</span>Liquidacion comisiones
+            <span class="bd-emoji is-size-6">📈</span>Liquidacion comisiones
           </a>
           <hr class="navbar-divider">
           <a class="navbar-item" href="expenses-report.html" title="Consulta de egresos por periodo de tiempo">
-            <span class="bd-emoji">💸</span>Consulta de egresos
+            <span class="bd-emoji is-size-6">💸</span>Consulta de egresos
           </a>
           <hr class="navbar-divider">
           <a class="navbar-item" href="bank-transactions.html"
             title="Registro de transaccion bancaria fuera de la barberia">
-            <span class="bd-emoji">🏧</span>Transaccion bancaria
+            <span class="bd-emoji is-size-6">🏧</span>Transaccion bancaria
           </a>
           <a class="navbar-item" href="bank-reconciliation.html" title="Conciliación bancaria">
-            <span class="bd-emoji">📙</span>Conciliacion bancaria
+            <span class="bd-emoji is-size-6">📙</span>Conciliacion bancaria
           </a>
-
           <hr class="navbar-divider">
           <a class="navbar-item is-hidden" href="balance-sheet.html"
             title="Registro de transaccion bancaria fuera de la barberia">
-            <span class="bd-emoji">📙</span>Balance general
+            <span class="bd-emoji is-size-6">📙</span>Balance general
           </a>
         </div>
       </div>
-      <a class="navbar-item" href="https://www.facebook.com/elegancestudioec/" target="_blank" rel="noopener">
+
+      <div class="navbar-item has-dropdown is-hoverable is-size-7 pr-6 is-hidden">
+        <a class="navbar-link">
+          <span class="bd-emoji is-size-5">🛒</span>Inventario
+        </a>
+        <div class="navbar-dropdown  is-size-7">
+          <a class="navbar-item" href="catalog-products.html" title="Mantenimiento de productos">
+            <span class="bd-emoji is-size-6">📦</span>Productos
+          </a>
+        </div>
+      </div>
+
+      <!--<a class="navbar-item" href="https://www.facebook.com/elegancestudioec/" target="_blank" rel="noopener">
         <span class="icon has-background-white" style="color: #3B5998;">
           <i class="fa-brands fa-facebook-square is-size-3"></i>
         </span>
@@ -73,7 +82,7 @@
           <i class="fa-brands fa-instagram-square is-size-3"></i>
         </span>
       </a>
-      <!--div class="navbar-item">
+      div class="navbar-item">
           <div class="field is-grouped">
             <p class="control">
               <a class="bd-tw-button button is-primary" data-social-network="Twitter" data-social-action="tweet"

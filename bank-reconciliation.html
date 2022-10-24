@@ -173,7 +173,8 @@
               <div class="reconciliation-blocked-msj has-background-primary has-text-white has-text-centered is-hidden">
                 Conciliacion mensual solo para consulta
               </div>
-              <div class="reconciliation-blocked-error has-background-danger has-text-white has-text-centered is-hidden">
+              <div
+                class="reconciliation-blocked-error has-background-danger has-text-white has-text-centered is-hidden">
                 Conciliacion mensual solo para consulta, revise nuevas transacciones registradas sin verificar
               </div>
             </form>
@@ -214,13 +215,17 @@
         <footer class="card-footer">
           <a href="#" class="card-footer-item"></a>
           <a href="#" class="card-footer-item"></a>
-          <input type="button" class="reconciliation-save card-footer-item button is-small is-primary p-0"
-            value="Finalizar conciliacion mensual" title="Recuerde que para que se active el boton debe cumplir lo siguiente: 
-            seleccione el periodo mensual, 
-            todos los filtros deben estar seleccionado la opcion 'TODOS', 
-            debe existir el saldo inicial, 
-            todas las transacciones del mes deben estar verificadas y 
-            el saldo total VERIFICADO de cada cuenta bancaria debe ser mayor o igual a cero." disabled></input>
+          <button class="reconciliation-save card-footer-item button is-small is-primary is-outlined" title="RECUERDE: para que se active el boton debe cumplir lo siguiente: 
+            - seleccione el periodo mensual, 
+            - todos los filtros deben estar seleccionado la opcion 'TODOS', 
+            - debe existir el saldo inicial, 
+            - todas las transacciones del mes deben estar verificadas y 
+            - el saldo total VERIFICADO de cada cuenta bancaria debe ser mayor o igual a cero." disabled>
+            <span>Guardar conciliacion mensual</span>
+            <span class="icon is-small">
+              <i class="fa-solid fa-floppy-disk"></i>
+            </span>
+          </button>
         </footer>
       </div>
     </section>

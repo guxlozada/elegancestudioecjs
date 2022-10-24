@@ -16,6 +16,8 @@ const d = document,
 w.addEventListener("load", () => {
   //migrarDepositos()
   //migrarVentas()
+
+
 })
 
 d.getElementById("migrar").addEventListener("click", () => migrar())
@@ -132,5 +134,56 @@ function guardarMigracion(uid, sale, details, tx) {
     }
   })
 }
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Manejo de propiedades INICIO
+
+function addProperty() {
+  const collection = "removed-from-sales-details"
+  newProperties = { "provider": "ELEGANCE" }
+  crudProperties(collection, newProperties)
+}
+
+/**
+ * AGREGAR, ACTUALIZAR PROPIEDADES DE UNA COLLECCION, PARA ELIMINAR ENVIAR null en el valor de la propiedad
+ * @param {string} vsCollection 
+ * @param {Object} voProperties 
+ * @returns 
+ */
+function crudProperties(vsCollection, voProperties) {
+  if (!vsCollection || !voProperties) return
+
+  dbRef.child(vsCollection).orderByKey().once('value')
+    .then(snap => {
+      console.log(`vsCollection ${vsCollection}, snap exists=${snap.exists()}`)
+      if (snap.exists()) {
+        snap.forEach(child => {
+          let tmpUid = child.key
+          console.log(` reg ${tmpUid}`)
+          updatePropertiesBD(vsCollection, tmpUid, voProperties)
+        })
+      }
+    })
+    .catch(error => console.error(`Busqueda en ${vsCollection} con error`, error))
+}
+
+function updatePropertiesBD(vsCollection, uid, voProperties) {
+  let updates = {}
+  for (const key in voProperties) {
+    updates[`${vsCollection}/${uid}/${key}`] = voProperties[key]
+  }
+
+  // Registrar cambios en la BD
+  dbRef.update(updates, error => {
+    if (error) {
+      console.error(`ERROR: ${vsCollection}/${uid} `, error)
+    } else {
+      console.log(`OK: ${vsCollection}/${uid}`)
+    }
+  })
+}
+
+// Manejo de propiedades FIN
+//////////////////////////////////////////////////////////////////////////////////////
 
 

@@ -414,20 +414,20 @@ d.addEventListener("DOMContentLoaded", e => {
   products = JSON.parse(localStorage.getItem(localdb.catalogProducts))
   services = JSON.parse(localStorage.getItem(localdb.catalogServices))
   if (products === null) {
-    findCatalog(collections.catalogProducts,
+    findCatalog(collections.catalogProducts, "description",
       res => {
         products = [...res]
         localStorage.setItem(localdb.catalogProducts, JSON.stringify(products))
       },
-      error => ntf.errorAndLog("Busqueda de catalogo de productos con error", error))
+      error => ntf.errorAndLog("Cache de catalogo de productos con error", error))
   }
   if (services === null) {
-    findCatalog(collections.catalogServices,
+    findCatalog(collections.catalogServices, "description",
       res => {
         services = [...res]
         localStorage.setItem(localdb.catalogServices, JSON.stringify(services))
       },
-      error => ntf.errorAndLog("Busqueda de catalogo de servicios con error", error))
+      error => ntf.errorAndLog("Cache de catalogo de servicios con error", error))
   }
 
   modalToggle(".trigger-services-modal", () => loadCatalog($servicesModalContainer,

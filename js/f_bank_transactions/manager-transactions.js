@@ -78,16 +78,16 @@ d.addEventListener("submit", e => {
       break
   }
 
-  if (!ntf.enabled) {
-    insertBankTx(bankTx,
-      (bankTxData) => {
-        ntf.ok("Transaccion bancaria registrada",
-          `Se guardo correctamente la informacion: ${bankTxData.type} Nro.${bankTxData.voucher || bankTxData.date}`)
-        $form.reset()
-      },
-      (error) => { ntf.tecnicalError("Transaccion bancaria no registrada", error) },
-      (msjError) => { ntf.error("Transaccion bancaria no registrada", msjError, 10000) }
-    )
-  }
+  if (ntf.enabled) return
+
+  insertBankTx(bankTx,
+    (bankTxData) => {
+      ntf.okey(`Transaccion bancaria registrada: ${bankTxData.type} Nro.${bankTxData.voucher || bankTxData.date}`)
+      $form.reset()
+    },
+    (error) => ntf.errorAndLog("Transaccion bancaria NO registrada", error),
+    (msjError) => { ntf.error("Transaccion bancaria NO registrada", msjError, 10000) }
+  )
+
 
 })

@@ -42,9 +42,10 @@ export default class NotificationBulma {
 
   // TODO: Cambiar el orden de los parametros
   tecnicalError(title, error, message) {
-    let msg = message || "Se produjo un error inesperado, consulte con el administrador del sistema."
+    let msg = message || "Se produjo un error inesperado."
     if (error) {
-      msg = `${msg}
+      msg = `IMPORTANTE: comunique este error al administrador del sistema
+      ${msg}
       A continuación el detalle del error: 
       ${error}`
       console.error(`Error [${title}]`, error)

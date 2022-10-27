@@ -122,9 +122,9 @@ d.querySelector(".reconciliation-save").addEventListener("click", e => {
       vdMonth => {
         search()
         let monthString = vdMonth.setLocale('ec').toFormat('MMMM yyyy')
-        ntf.okey(`Conciliacion mensual de ${monthString} registrada`)
+        ntf.okey(`Conciliacion mensual registrada: ${monthString} `)
       },
-      error => ntf.errorAndLog("Registro de conciliacion mensual con error", error))
+      error => ntf.errorAndLog("Conciliacion mensual NO registrada", error))
   }
 })
 
@@ -136,48 +136,50 @@ function search() {
   // Borrar la conciliacion mensual previamente generada
   localStorage.removeItem(localdb.tmpBankReconciliation)
 
-  if (validAdminAccess()) {
-    let filters = convertFormToObject($form)
+  // Validar acceso de administrador
+  if (!validAdminAccess()) return
 
-    // Se ha seleccionado al menos una fecha
-    if (filters.periodStart || filters.periodEnd) {
-      if (!filters.periodEnd) {
-        filters.periodEnd = filters.periodStart
-      }
-      if (!filters.periodStart) {
-        filters.periodStart = filters.periodEnd
-      }
+  let filters = convertFormToObject($form)
 
-      // Validar rango y fecha maxima de consulta
-      let hoy = hoyEC()
-      if (filters.periodStart > hoy || filters.periodEnd > hoy) {
-        ntf.validation("No puede seleccionar una fecha mayor a la actual")
-      } else if (filters.periodStart > filters.periodEnd) {
-        ntf.validation("La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
-      }
-
-    } else if (!filters.period && !filters.periodMonth) {
-      ntf.validation("Seleccione un periodo, mes o un rango de fechas")
+  // Se ha seleccionado al menos una fecha
+  if (filters.periodStart || filters.periodEnd) {
+    if (!filters.periodEnd) {
+      filters.periodEnd = filters.periodStart
+    }
+    if (!filters.periodStart) {
+      filters.periodStart = filters.periodEnd
     }
 
-    // Si hay msj de error finaliza
-    if (ntf.enabled) return
-
-    // Cuando se desmarcan todas las casillas de 'name=typePayment', se coloca la opcion 'TODOS'
-    if (!filters.typePayment) {
-      filters.typePayment = ["TODOS"]
-      d.getElementById("type-payment-all").checked = true
+    // Validar rango y fecha maxima de consulta
+    let hoy = hoyEC()
+    if (filters.periodStart > hoy || filters.periodEnd > hoy) {
+      ntf.validation("No puede seleccionar una fecha mayor a la actual")
+    } else if (filters.periodStart > filters.periodEnd) {
+      ntf.validation("La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
     }
 
-    // Ejecutar consulta de informacion
-    filters = calculatePeriod(filters)
-    findBankTxs(filters,
-      (voFilters, vaTransactions, vaBalances) => {
-        const [last, current] = vaBalances || [];
-        renderBankTransactions(voFilters, vaTransactions, last, current)
-      },
-      error => ntf.errorAndLog("Busqueda de transacciones bancarias con error", error))
+  } else if (!filters.period && !filters.periodMonth) {
+    ntf.validation("Seleccione un periodo, mes o un rango de fechas")
   }
+
+  // Si hay msj de error finaliza
+  if (ntf.enabled) return
+
+  // Cuando se desmarcan todas las casillas de 'name=typePayment', se coloca la opcion 'TODOS'
+  if (!filters.typePayment) {
+    filters.typePayment = ["TODOS"]
+    d.getElementById("type-payment-all").checked = true
+  }
+
+  // Ejecutar consulta de informacion
+  filters = calculatePeriod(filters)
+  findBankTxs(filters,
+    (voFilters, vaTransactions, vaBalances) => {
+      const [last, current] = vaBalances || [];
+      renderBankTransactions(voFilters, vaTransactions, last, current)
+    },
+    error => ntf.errorAndLog("Busqueda de transacciones bancarias con error", error))
+
 }
 
 function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurrentBalance) {

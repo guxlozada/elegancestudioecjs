@@ -69,13 +69,13 @@ d.addEventListener("submit", e => {
         break;
     }
   }
-  if (!ntf.enabled) {
-    insertExpenseDB(expense,
-      (expenseData) => {
-        ntf.ok("Egreso de caja registrado",
-          `Se guardo correctamente la informacion: ${expenseData.type} Nro.${expenseData.voucher || expenseData.date}`)
-        $form.reset()
-      },
-      (error) => { ntf.tecnicalError("Egreso de caja no registrado", error) })
-  }
+  if (ntf.enabled) return
+
+  insertExpenseDB(expense,
+    (expenseData) => {
+      ntf.okey(`Egreso de caja registrado: ${expenseData.type} Nro.${expenseData.voucher || expenseData.date}`)
+      $form.reset()
+    },
+    error => ntf.errorAndLog("Egreso de caja NO registrado", error))
+
 })

@@ -66,48 +66,50 @@ d.getElementById("filters").addEventListener("change", e => {
 //------------------------------------------------------------------------------------------------
 
 function search() {
-  if (validAdminAccess()) {
-    let filters = convertFormToObject($form)
+  // Validar acceso de administrador
+  if (!validAdminAccess()) return
 
-    // Se ha seleccionado al menos una fecha
-    if (filters.periodStart || filters.periodEnd) {
-      if (!filters.periodEnd) {
-        filters.periodEnd = filters.periodStart
-      }
-      if (!filters.periodStart) {
-        filters.periodStart = filters.periodEnd
-      }
+  let filters = convertFormToObject($form)
 
-      // Validar rango y fecha maxima de consulta
-      let hoy = hoyEC()
-      if (filters.periodStart > hoy || filters.periodEnd > hoy) {
-        ntf.validation("No puede seleccionar una fecha mayor a la actual")
-      } else if (filters.periodStart > filters.periodEnd) {
-        ntf.validation("La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
-      }
-
-      // Desactivar los periodos del filtro
-      d.getElementsByName("period").forEach($el => $el.checked = false)
-      delete filters.period
-    } else if (!filters.period && !filters.periodMonth) {
-      ntf.validation("Seleccione una fecha o un rango de fechas")
+  // Se ha seleccionado al menos una fecha
+  if (filters.periodStart || filters.periodEnd) {
+    if (!filters.periodEnd) {
+      filters.periodEnd = filters.periodStart
+    }
+    if (!filters.periodStart) {
+      filters.periodStart = filters.periodEnd
     }
 
-    // Si hay msj de error finaliza
-    if (ntf.enabled) return
-
-    // Cuando se desmarcan todas las casillas, se coloca la opcion 'TODOS'
-    if (!filters.type) {
-      filters.type = ["TODOS"]
-      d.getElementById("type-all").checked = true
+    // Validar rango y fecha maxima de consulta
+    let hoy = hoyEC()
+    if (filters.periodStart > hoy || filters.periodEnd > hoy) {
+      ntf.validation("No puede seleccionar una fecha mayor a la actual")
+    } else if (filters.periodStart > filters.periodEnd) {
+      ntf.validation("La fecha del primer campo no puede ser mayor a la fecha del segundo campo")
     }
 
-    // Ejecutar consulta de informacion
-    filters = calculatePeriod(filters)
-    findExpensesReport(filters,
-      (vmExpenses, voFilters) => renderExpense(vmExpenses, voFilters),
-      error => ntf.errorAndLog("Busqueda de egresos con error", error))
+    // Desactivar los periodos del filtro
+    d.getElementsByName("period").forEach($el => $el.checked = false)
+    delete filters.period
+  } else if (!filters.period && !filters.periodMonth) {
+    ntf.validation("Seleccione una fecha o un rango de fechas")
   }
+
+  // Si hay msj de error finaliza
+  if (ntf.enabled) return
+
+  // Cuando se desmarcan todas las casillas, se coloca la opcion 'TODOS'
+  if (!filters.type) {
+    filters.type = ["TODOS"]
+    d.getElementById("type-all").checked = true
+  }
+
+  // Ejecutar consulta de informacion
+  filters = calculatePeriod(filters)
+  findExpensesReport(filters,
+    (vmExpenses, voFilters) => renderExpense(vmExpenses, voFilters),
+    error => ntf.errorAndLog("Busqueda de egresos con error", error))
+
 }
 
 function renderExpense(vmExpenses, voFilters) {

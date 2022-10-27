@@ -1,8 +1,11 @@
 export const collections = {
+  catalogProducts: "inv-products",
+  catalogProductsCategory: "inv-products-category",
+  catalogProviders: "inv-providers",
+  catalogServices: "inv-services",
+  catalogServicesCategory: "inv-services-category",
   bankingTransactions: "prod-banking-transaction",
   bankReconciliation: "prod-bank-reconciliation",
-  catalogProducts: "prod-catalog-products",
-  catalogServices: "prod-catalog-services",
   clients: "prodseller-clients",
   dailyClosing: "prod-daily-closing",
   expenses: "prod-cash-outflows",

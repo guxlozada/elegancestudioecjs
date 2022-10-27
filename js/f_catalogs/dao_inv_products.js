@@ -1,10 +1,9 @@
 
 import { collections } from "../persist/firebase_collections.js";
 import { db, dbRef } from "../persist/firebase_conexion.js";
+import { IVA } from "../repo-browser.js";
 import { ahoraEC } from "../util/fecha-util.js";
 import { roundTwo } from "../util/numbers-util.js";
-
-const IVA = 0.12
 
 /**
  * Consulta de productos
@@ -16,31 +15,30 @@ export function findProducts(voFilters, callback, callbackError) {
   db.ref(collections.catalogProducts).orderByKey()
     .once('value')
     .then(snap => {
-      let products = []
+      let res = []
       snap.forEach(child => {
         let keywordExp = voFilters.keyword ? new RegExp(voFilters.keyword, "i") : null,
-          prod = child.val()
-        if ((voFilters.active === "TODOS" || voFilters.active === prod.active.toString())
-          && (!voFilters.provider || voFilters.provider === prod.provider)
-          && (!voFilters.category || voFilters.category === prod.category)
-          && (!voFilters.keyword || prod.code.match(keywordExp) || prod.description.match(keywordExp))) {
-          products.push(prod)
+          item = child.val()
+        if ((voFilters.active === "TODOS" || voFilters.active === item.active.toString())
+          && (!voFilters.provider || voFilters.provider === item.provider)
+          && (!voFilters.category || voFilters.category === item.category)
+          && (!voFilters.keyword || item.code.match(keywordExp) || item.description.match(keywordExp))) {
+          res.push(item)
         }
       })
-      callback(products)
+      callback(res)
     })
     .catch(error => callbackError(error))
 }
 
 /**
- * 
+ * Registrar o actualizar un producto
  * @param {Object} voProduct 
  * @param {Function} callback 
  * @param {Function} callbackError 
  */
 export function insertProduct(voProduct, callback, callbackError) {
   let product = {
-    active: voProduct.active || true,
     date: voProduct.date || ahoraEC().toMillis(),
     retentionIVA: true,
     type: "P",
@@ -59,18 +57,4 @@ export function insertProduct(voProduct, callback, callbackError) {
   dbRef.child(collections.catalogProducts).child(product.code).set(product)
     .then(() => callback(product))
     .catch(error => callbackError(voProduct, error))
-}
-
-/**
- * Actualiza el campo 'active' de la colleccion correspondiente a un catalogo: products, services.
- * @param {object} voData Objeto con informacion de la tx bancaria  con los atributos: collection, uid, active
- * @param {Function} callback 
- * @param {Function} callbackError 
- */
-export function updateActive(voData, callback, callbackError) {
-  var updates = {}
-  updates[`${voData.collection}/${voData.code}/active`] = voData.active
-
-  console.log(updates)
-  dbRef.update(updates, error => { error ? callbackError(voData.code, error) : callback(voData.code) })
 }

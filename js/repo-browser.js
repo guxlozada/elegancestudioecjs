@@ -10,3 +10,4 @@ export const localdb = {
   tmpBankReconciliation: "TMPBR"
 }
 
+export const IVA = 0.12

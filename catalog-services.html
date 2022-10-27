@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Productos</title>
+  <title>Servicios</title>
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
   <link rel="stylesheet" href="/css/main.css" />
   <link rel="stylesheet" href="/css/report.css" />
@@ -36,7 +36,7 @@
               <span class="icon">
                 <i class="fa-solid fa-file-pen"></i>
               </span>
-              <span>Catalogo de productos</span>
+              <span>Catalogo de servicios</span>
             </span>
           </p>
           <p class="card-header-icon has-text-white">
@@ -63,14 +63,17 @@
                 </p>
                 <p class="control">
                 <div class="select is-small">
-                  <select class="providers prop-input" name="provider" title="Proveedor">
-                    <option value="">Proveedor...</option>
+                  <select class="barbers prop-input" name="barber" title="barber">
+                    <option value="">Barbero...</option>
+                    <option value="ENEGLIMAR">Eneglimar</option>
+                    <option value="ERICK">Erick</option>
+                    <option value="ESTIBERSON">Estiberson</option>
                   </select>
                 </div>
                 </p>
                 <p class="control">
                 <div class="select is-small">
-                  <select class="categories prop-input" name="category" title="Categoria de producto">
+                  <select class="categories prop-input" name="category" title="Categoria de servicios">
                     <option value="">Categoria...</option>
                   </select>
                 </div>
@@ -102,12 +105,11 @@
                   <thead>
                     <tr class="has-background-link">
                       <th class="has-text-white" style="width:3rem">Codigo</th>
-                      <th class="has-text-white" style="width:3rem">Prove.</th>
-                      <th class="has-text-white" style="width:3rem">Categ.</th>
+                      <th class="has-text-white" style="width:3rem">Categoria</th>
+                      <th class="has-text-white" style="width:3rem">Barbero</th>
                       <th class="has-text-white" style="width:8rem">Descripcion</th>
                       <th class="has-text-white" style="width:3rem">Valor</th>
-                      <th class="has-text-white" style="width:3rem">Xmayor</th>
-                      <th class="has-text-white" style="width:3rem">% com</th>
+                      <th class="has-text-white" style="width:3rem">% Comision</th>
                       <th class="has-text-white" style="width:2rem"></th>
                     </tr>
                   </thead>
@@ -123,7 +125,7 @@
           <a href="#" class="card-footer-item"></a>
           <a href="#" class="card-footer-item"></a>
           <a href="#" class="card-footer-item"></a>
-          <a href="#edition" class="update card-footer-item button is-small is-link" title="Agregar producto"
+          <a href="#edition" class="update card-footer-item button is-small is-link" title="Agregar servicio"
             onblur="document.getElementById('code').focus()">
             <span>Agregar</span>
             <span class="icon is-small">
@@ -141,9 +143,9 @@
           <p class="card-header-title has-text-white is-size-6">
             <span class="icon-text">
               <span class="icon">
-                <i class="fa-solid fa-box-open"></i>
+                <i class="fa-solid fa-scissors"></i>
               </span>
-              <span>Producto</span>
+              <span>Servicio</span>
             </span>
           </p>
         </header>
@@ -159,7 +161,7 @@
                   <div class="field is-narrow">
                     <p class="control has-icons-left">
                       <input type="text" id="code" class="code prop-input input is-small" name="code" maxlength="20"
-                        placeholder="Codigo del producto" title="Codigo del producto" style="width: 10rem"
+                        placeholder="Codigo del servicio" title="Codigo del servicio" style="width: 10rem"
                         onkeyup="this.value = this.value.toUpperCase();" required />
                       <span class="icon is-small is-left">
                         <i class="fa-solid fa-barcode"></i>
@@ -177,7 +179,7 @@
                   <div class="field">
                     <p class="control has-icons-left">
                       <input type="text" class="description prop-input input is-small" name="description" maxlength="50"
-                        placeholder="Descricion del producto" title="Descricion del producto" required />
+                        placeholder="Descricion del servicio" title="Descricion del servicio" required />
                       <span class="icon is-small is-left">
                         <i class="fa-solid fa-info"></i>
                       </span>
@@ -188,19 +190,9 @@
 
               <div class="field is-horizontal">
                 <div class="field-label is-normal is-hidden-mobile">
-                  <label class="label">Proveedor:</label>
+                  <label class="label">Categoria:</label>
                 </div>
                 <div class="field-body">
-                  <div class="field is-narrow">
-                    <div class="control">
-                      <div class="select is-small">
-                        <select class="providers-edit prop-input" name="provider" title="Proveedor" style="width: 10rem"
-                          required>
-                          <option value="">Proveedor...</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
                   <div class="field">
                     <div class="control">
                       <div class="select is-fullwidth is-small">
@@ -228,16 +220,6 @@
                       </span>
                     </p>
                   </div>
-                  <div class="field is-narrow">
-                    <p class="control has-icons-left">
-                      <input type="number" class="wholesale-value prop-input input is-small has-text-right"
-                        name="wholesaleValue" step="0.25" min="1" max="100" placeholder="Valor por mayor"
-                        title="Valor de venta al por mayor" style="width: 10rem" />
-                      <span class="icon is-small is-left">
-                        <i class="fa-solid fa-dollar-sign"></i>
-                      </span>
-                    </p>
-                  </div>
                 </div>
               </div>
 
@@ -249,7 +231,7 @@
                   <div class="field is-narrow">
                     <p class="control has-icons-left">
                       <input type="number" class="seller-commission prop-input input is-small has-text-right"
-                        name="sellerCommission" step="0.5" min="0.5" max="60" value="10.0"
+                        name="sellerCommission" step="0.5" min="0.5" max="60" value="40.0"
                         placeholder="Comision de vendedor" title="Comision de vendedor" style="width: 10rem" required />
                       <span class="icon is-small is-left">
                         <i class="fa-solid fa-percent"></i>
@@ -261,18 +243,20 @@
 
               <div class="field is-horizontal">
                 <div class="field-label is-normal is-hidden-mobile">
-                  <label class="label">Precio compra:</label>
+                  <label class="label">Barbero:</label>
                 </div>
                 <div class="field-body">
                   <div class="field is-narrow">
-                    <p class="control has-icons-left">
-                      <input type="number" class="purchase-price prop-input input is-small has-text-right"
-                        name="purchasePrice" step="0.25" min="0.00" max="100" placeholder="Precio de compra"
-                        title="Precio de compra referencial" style="width: 10rem" required />
-                      <span class="icon is-small is-left">
-                        <i class="fa-solid fa-dollar-sign"></i>
-                      </span>
-                    </p>
+                    <div class="control">
+                      <div class="select is-small">
+                        <select class="barber prop-input" name="barber" title="Barbero" style="width: 10rem">
+                          <option value="">Barbero...</option>
+                          <option value="ENEGLIMAR">Eneglimar</option>
+                          <option value="ERICK">Erick</option>
+                          <option value="ESTIBERSON">Estiberson</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -282,14 +266,14 @@
           </div>
           <footer class="card-footer has-background-info-light p-1">
             <button type="reset" class="reset card-footer-item button is-danger ml-3 mr-2"
-              title="Descartar y no guardar los cambios del producto">
+              title="Descartar y no guardar los cambios del servicio">
               <span class="is-hidden-mobile">Cancelar</span>
               <span class="icon is-small">
                 <i class="fa-solid fa-xmark"></i>
               </span>
             </button>
             <button type="submit" class="save card-footer-item button is-primary ml-2 mr-3"
-              title="Guardar informacion del producto">
+              title="Guardar informacion del servicio">
               <span class="is-hidden-mobile">Guardar</span>
               <span class="icon is-small">
                 <i class="fa-solid fa-check"></i>
@@ -305,20 +289,18 @@
   <template id="row">
     <tr class="is-size-7" style="font-size: 0.7rem !important">
       <td class="code"></td>
-      <td class="provider text-ellipsis"></td>
       <td class="category text-ellipsis"></td>
+      <td class="barber text-ellipsis"></td>
       <td class="description text-ellipsis"></td>
       <td class="retail-value"></td>
-      <td class="wholesale-value"></td>
       <td class="commission"></td>
       <td>
         <div class="field has-addons">
           <div class="control">
-            <input type="checkbox" class="active m-0 mr-2"
-              title="Indica si el producto esta activo y disponible. Marcar SOLO cuando el producto tenga stock.">
+            <input type="checkbox" class="active m-0 mr-2" title="Indica si el servicio esta activo y disponible">
           </div>
           <div class="control">
-            <a href="#edition" class="edit" title="Editar informacion del producto" data-key="UID">
+            <a href="#edition" class="edit" title="Editar informacion del servicio" data-key="UID">
               <span class="icon is-small has-text-limk">
                 <i class="fa-solid fa-pen-to-square fa-xs"></i>
               </span>
@@ -332,7 +314,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
-  <script src="./js/f_catalogs/manager_catalog_product.js" type="module"></script>
+  <script src="./js/f_catalogs/manager_catalog_service.js" type="module"></script>
 </body>
 
 </html>

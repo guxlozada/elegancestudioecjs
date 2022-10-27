@@ -4,7 +4,7 @@ import NotificationBulma from '../dom/NotificacionBulma.js'
 import convertFormToObject from "../util/form_util.js"
 import { findCatalogKeyValue, updateActive } from "./dao_catalog.js"
 import { collections } from "../persist/firebase_collections.js"
-import { findProducts, insertProduct } from "./dao_inv_products.js"
+import { findServices, insertService } from "./dao_inv_services.js"
 import { localdb } from "../repo-browser.js"
 import { findByUid } from "../persist/dao_generic.js"
 
@@ -53,9 +53,9 @@ d.getElementById("details").addEventListener("click", e => {
   if ($el.matches(".edit") || $el.closest(".edit")) {
     const $edit = e.target.closest(".edit")
 
-    findByUid(collections.catalogProducts, $edit.dataset.key,
+    findByUid(collections.catalogServices, $edit.dataset.key,
       voRecord => callUpdate(voRecord),
-      (vsUid, error) => ntf.errorAndLog(`No existe un producto registrado con el codigo: ${vsUid}`, error))
+      (vsUid, error) => ntf.errorAndLog(`No existe un servicio registrado con el codigo: ${vsUid}`, error))
 
   }
 })
@@ -74,24 +74,15 @@ d.querySelector("#registration").addEventListener("submit", e => {
 // Funcionalidad
 //------------------------------------------------------------------------------------------------
 function filtersInit() {
-  let $providers = d.querySelector(".providers"),
-    $providersEdit = d.querySelector(".providers-edit"),
-    $categories = d.querySelector(".categories"),
+  let $categories = d.querySelector(".categories"),
     $categoriesEdit = d.querySelector(".categories-edit")
-  // Agregar proveedores
-  findCatalogKeyValue(collections.catalogProviders,
-    (vaProviders) => vaProviders.forEach(p => {
-      $providers.add(new Option(p.value, p.value), undefined)
-      $providersEdit.add(new Option(p.value, p.value), undefined)
-    }),
-    (error) => ntf.errorAndLog("Busqueda de proveedores con error", error))
   // Agregar categorias
-  findCatalogKeyValue(collections.catalogProductsCategory,
+  findCatalogKeyValue(collections.catalogServicesCategory,
     (vaCategories) => vaCategories.forEach(c => {
       $categories.add(new Option(c.value, c.value), undefined)
       $categoriesEdit.add(new Option(c.value, c.value), undefined)
     }),
-    (error) => ntf.errorAndLog("Busqueda de categorias de productos con error", error))
+    (error) => ntf.errorAndLog("Busqueda de categorias de servicios con error", error))
   search()
 }
 
@@ -102,9 +93,9 @@ function search() {
   let filters = convertFormToObject($filtersForm)
   if (filters.keyword) filters.keyword.trim()
   // Ejecutar consulta de informacion
-  findProducts(filters,
+  findServices(filters,
     (vaRecords) => renderCatalog(vaRecords),
-    error => ntf.errorAndLog("Busqueda de productos con error", error))
+    error => ntf.errorAndLog("Busqueda de servicios con error", error))
 
 }
 
@@ -115,11 +106,10 @@ function renderCatalog(vaRecords) {
   vaRecords.forEach(item => {
     let $rowTmp = d.getElementById("row").content.cloneNode(true)
     $rowTmp.querySelector(".code").innerText = item.code
-    $rowTmp.querySelector(".provider").innerText = item.provider
     $rowTmp.querySelector(".category").innerText = item.category
+    $rowTmp.querySelector(".barber").innerText = item.barber || "TODOS"
     $rowTmp.querySelector(".description").innerText = item.description
     $rowTmp.querySelector(".retail-value").innerText = item.retailValue.toFixed(2)
-    $rowTmp.querySelector(".wholesale-value").innerText = item.wholesaleValue.toFixed(2)
     $rowTmp.querySelector(".commission").innerText = item.sellerCommission.toFixed(2)
     let $active = $rowTmp.querySelector(".active")
     $active.checked = item.active === true
@@ -141,17 +131,17 @@ function saveForm() {
   registration.active = registration.activeString === "true"
   delete registration.activeString
 
-  insertProduct(registration,
+  insertService(registration,
     voRecord => {
       $registerForm.reset()
       $registerForm.querySelector(".code").removeAttribute("readonly")// Desactivado para edicion
       search()
-      // Eliminar cache de catalogo de productos de la funcionalidad de 'ventas',
+      // Eliminar cache de catalogo de servicios de la funcionalidad de 'ventas',
       // para que se reconsulte al ingresar a 'ventas'
-      localStorage.removeItem(localdb.catalogProducts)
-      ntf.okey(`Producto registrado: "${voRecord.code} / ${voRecord.description}"`)
+      localStorage.removeItem(localdb.catalogServices)
+      ntf.okey(`Servicio registrado: "${voRecord.code} / ${voRecord.description}"`)
     },
-    (voRecord, error) => ntf.errorAndLog(`Producto "${voRecord.code}" NO registrado`, error))
+    (voRecord, error) => ntf.errorAndLog(`Servicio "${voRecord.code}" NO registrado`, error))
 }
 
 function changeStatus(vsCode, vbActive) {
@@ -161,15 +151,15 @@ function changeStatus(vsCode, vbActive) {
   }
 
   // Actualizar la informacion del estado del registro en la BD
-  updateActive(collections.catalogProducts, data,
+  updateActive(collections.catalogServices, data,
     vsCode => {
       search()
-      // Eliminar cache de catalogo de productos de la funcionalidad de 'ventas',
+       // Eliminar cache de catalogo de servicios de la funcionalidad de 'ventas',
       // para que se reconsulte al ingresar a 'ventas'
-      localStorage.removeItem(localdb.catalogProducts)
-      ntf.okey(`El producto "${vsCode}" fue actualizado correctamente`, 1500)
+      localStorage.removeItem(localdb.catalogServices)
+      ntf.okey(`El servicio "${vsCode}" fue actualizado correctamente`, 1500)
     },
-    (vsCode, error) => ntf.errorAndLog(`El producto "${vsCode}" NO fue actualizado.
+    (vsCode, error) => ntf.errorAndLog(`El servicio "${vsCode}" NO fue actualizado.
       Intente consultar nuevamente la informacion y reintente 'activar/inactivar' el registro.`, error)
   )
 }
@@ -181,11 +171,9 @@ function callUpdate(voRecord) {
   $code.value = voRecord.code
   $code.setAttribute("readonly", true)
   $registerForm.querySelector(".description").value = voRecord.description
-  $registerForm.querySelector(".providers-edit").value = voRecord.provider
+  $registerForm.querySelector(".barber").value = voRecord.barber
   $registerForm.querySelector(".categories-edit").value = voRecord.category
   $registerForm.querySelector(".retail-value").value = voRecord.retailValue || voRecord.baseValue
-  $registerForm.querySelector(".wholesale-value").value = voRecord.wholesaleValue
   $registerForm.querySelector(".seller-commission").value = voRecord.sellerCommission
-  $registerForm.querySelector(".purchase-price").value = voRecord.purchasePrice
   $registerForm.querySelector(".active-string").value = voRecord.active
 }

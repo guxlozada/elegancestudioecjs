@@ -1,5 +1,5 @@
 
-import { db } from "../persist/firebase_conexion.js";
+import { db, dbRef } from "../persist/firebase_conexion.js";
 
 /**
  * Consulta de catalogos por nombre 
@@ -54,4 +54,18 @@ export function findCatalogKeyValue(vsCollection, callback, callbackError) {
       snap.forEach(child => { res.push({ "key": child.key, "value": child.val() }) })
       callback(res)
     }).catch(error => callbackError(error))
+}
+
+/**
+ * Actualiza el campo 'active' de la colleccion correspondiente a un catalogo: products, services.
+ * @param {string} vsCollection Colleccion relacionada al catalogo
+ * @param {object} voData Objeto con informacion de la tx bancaria  con los atributos: collection, uid, active
+ * @param {Function} callback 
+ * @param {Function} callbackError 
+ */
+export function updateActive(vsCollection, voData, callback, callbackError) {
+  var updates = {}
+  updates[`${vsCollection}/${voData.code}/active`] = voData.active
+
+  dbRef.update(updates, error => { error ? callbackError(voData.code, error) : callback(voData.code) })
 }

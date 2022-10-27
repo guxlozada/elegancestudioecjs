@@ -318,12 +318,12 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
     // todas las casillas de verificacion marcadas y los filtros deben permitir presentar todos los registros
     $reconciliationSave.removeAttribute("disabled")
     // Generar la conciliacion mensual
-    generateBankReconciliation(voFilters.periodStart, vaTransactions, voLastBalance)
+    generateBankReconciliation(voFilters.periodEnd, vaTransactions, voLastBalance)
   }
 
 }
 
-function generateBankReconciliation(vdPeriodStart, vaTransactions, voLastBalance) {
+function generateBankReconciliation(vdPeriodEnd, vaTransactions, voLastBalance) {
   // Almacenar la reonciliacion mensual verificada, para generar el saldo mensual
   const reconciliation = new Map()
 
@@ -400,6 +400,6 @@ function generateBankReconciliation(vdPeriodStart, vaTransactions, voLastBalance
     cta.debits = roundFour(cta.debits)
   }
 
-  voReconciliation.date = vdPeriodStart.toMillis()
+  voReconciliation.date = vdPeriodEnd.toMillis()
   localStorage.setItem(localdb.tmpBankReconciliation, JSON.stringify(voReconciliation))
 }

@@ -48,27 +48,28 @@ d.addEventListener("submit", e => {
     ntf.error("Informacion requerida", "Para los egresos 'Para barbero' no es permitido 'Beneficiario=Admin'")
   }
 
-  if (!ntf.enabled) {
-    switch (expense.type) {
-      case "COMPRA":
-        if (!expense.details) {
-          ntf.error("Informacion requerida", "En 'Detalles' describa brevemente lo que se compro")
-        }
-        break;
-      case "GASTO":
-        if (!expense.details) {
-          ntf.error("Informacion requerida", "En 'Detalles' describa brevemente el gasto")
-        }
-        break;
-      case "BEBIDA":
-        if (!expense.details) {
-          ntf.error("Informacion requerida", "En 'Detalles' describa el numero y tipo de bebida: 1 agua, 1 pepsi")
-        }
-        break;
-      default:
-        break;
-    }
+  if (ntf.enabled) return
+
+  switch (expense.type) {
+    case "COMPRA":
+      if (!expense.details) {
+        ntf.error("Informacion requerida", "En 'Detalles' describa brevemente lo que se compro")
+      }
+      break;
+    case "GASTO":
+      if (!expense.details) {
+        ntf.error("Informacion requerida", "En 'Detalles' describa brevemente el gasto")
+      }
+      break;
+    case "BEBIDA":
+      if (!expense.details) {
+        ntf.error("Informacion requerida", "En 'Detalles' describa el numero y tipo de bebida: 1 agua, 1 pepsi")
+      }
+      break;
+    default:
+      break;
   }
+
   if (ntf.enabled) return
 
   insertExpenseDB(expense,

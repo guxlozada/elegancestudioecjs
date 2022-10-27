@@ -1,4 +1,4 @@
-import { hoyEC} from "../util/fecha-util.js";
+import { hoyEC } from "../util/fecha-util.js";
 import { dbRef } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
 import { renderClients } from "./manager_clients.js";
@@ -108,10 +108,10 @@ export default function handlerClientEdit() {
     } else if (!client.registeredBy) {
       ntf.error("Información requerida", "Seleccione quien registra al cliente")
     }
-    if (!ntf.enabled) {
-      let clientData = JSON.parse(JSON.stringify(client))
-      insertClientDB(clientData)
-    }
+    if (ntf.enabled) return
+
+    let clientData = JSON.parse(JSON.stringify(client))
+    insertClientDB(clientData)
   })
 
   // EVENTO=click RAIZ=button<client-cancel> ACCION=Reset form

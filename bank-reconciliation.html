@@ -162,10 +162,19 @@
                       <input type="month" class="prop-input input is-small" id="period-month" name="periodMonth"
                         min="2022-08" data-type="datetime" onkeydown="return false" style="max-width: 8rem" />
                       <input type="date" class="prop-input input is-small" id="period-start" name="periodStart"
-                        data-type="datetime" style="max-width: 8rem" required />
+                        data-type="datetime" style="max-width: 8rem" />
                       <input type="date" class="prop-input input is-small" id="period-end" name="periodEnd"
                         data-type="datetime" style="max-width: 8rem" />
-                      <input type="submit" class="button is-small is-primary" value="Buscar">
+                      <button type="submit" class="button is-small is-primary" title="Buscar">
+                        <span class="icon is-small">
+                          <i class="fa-solid fa-magnifying-glass"></i>
+                        </span>
+                      </button>
+                      <button class="clean button is-small is-link is-outlined" title="Limpiar filtros">
+                        <span class="icon is-small">
+                          <i class="fa-solid fa-eraser"></i>
+                        </span>
+                      </button>
                     </td>
                   </tr>
                 </tbody>
@@ -212,18 +221,18 @@
             </article>
           </div>
         </div>
-        <footer class="card-footer">
+        <footer class="card-footer has-background-grey-lighter p-1">
           <a href="#" class="card-footer-item"></a>
           <a href="#" class="card-footer-item"></a>
-          <button class="reconciliation-save card-footer-item button is-small is-primary is-outlined" title="RECUERDE: para que se active el boton debe cumplir lo siguiente: 
+          <button class="reconciliation-save card-footer-item button is-small is-link" title="RECUERDE: para que se active el boton debe cumplir lo siguiente: 
             - seleccione el periodo mensual, 
-            - todos los filtros deben estar seleccionado la opcion 'TODOS', 
+            - todos los filtros deben tener seleccionado la opcion 'TODOS' (Limpie los filtros), 
             - debe existir el saldo inicial, 
             - todas las transacciones del mes deben estar verificadas y 
             - el saldo total VERIFICADO de cada cuenta bancaria debe ser mayor o igual a cero." disabled>
             <span>Guardar conciliacion mensual</span>
             <span class="icon is-small">
-              <i class="fa-solid fa-floppy-disk"></i>
+              <i class="fa-solid fa-check"></i>
             </span>
           </button>
         </footer>

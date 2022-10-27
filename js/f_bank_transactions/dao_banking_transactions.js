@@ -153,26 +153,22 @@ export function findBankTxs(voFilters, callback, callbackError) {
           transactions.push(tx)
         }
       })
-      if (voFilters.periodMonth) {
-        let lastMonth = dateTimeToKeyMonthString(voFilters.periodStart.minus({ month: 1 })),
-          currentMonth = dateTimeToKeyMonthString(voFilters.periodStart)
-        db.ref(collections.bankReconciliation).orderByKey().startAt(lastMonth).endAt(currentMonth)
-          .once('value')
-          .then(snap => {
-            let balances=[]
-            snap.forEach((child, index) => {
-              let item= child.val()
-                item.tmpUid = child.key
-              balances.push(item)
-            })
-            callback(voFilters, transactions, balances)
+
+      let lastMonth = dateTimeToKeyMonthString(voFilters.periodStart.minus({ month: 1 })),
+        currentMonth = dateTimeToKeyMonthString(voFilters.periodStart)
+      db.ref(collections.bankReconciliation).orderByKey().startAt(lastMonth).endAt(currentMonth)
+        .once('value')
+        .then(snap => {
+          let balances = []
+          snap.forEach(child => {
+            let item = child.val()
+            item.tmpUid = child.key
+            balances.push(item)
           })
-      } else {
-        callback(voFilters, transactions)
-      }
+          callback(voFilters, transactions, balances)
+        })
+
     })
-    .catch((error) => {
-      callbackError(error)
-    })
+    .catch(error => callbackError(error))
 
 }

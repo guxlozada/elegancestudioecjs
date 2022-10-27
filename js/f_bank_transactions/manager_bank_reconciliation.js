@@ -30,6 +30,12 @@ w.addEventListener("unload", () => tmpDataCleaning())
 // EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
 d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 
+// EVENTO=reset RAIZ=form#filters ACCION=Realizar busqueda
+d.querySelector(".clean").addEventListener("click", () => {
+  $form.reset()
+  search()
+})
+
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
 d.addEventListener("submit", e => {
   e.preventDefault()
@@ -199,7 +205,7 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
 
   // El saldo inicial solo se presenta cuando se despliega todas las formas de pago y el periodo es mensual
   // para la conciliacion mensual
-  if (voFilters.periodMonth && voFilters.typePayment.includes("TODOS")) {
+  if (voFilters.typePayment.includes("TODOS")) {
     const $initialRow = d.getElementById("bank-initial-balance").content.cloneNode(true)
     // Agregar saldo inicial cuando existe la reconcialiacion del mes anterior
     if (voLastBalance) {

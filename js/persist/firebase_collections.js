@@ -12,6 +12,7 @@ export const collections = {
   sales: "prod-sales",
   salesDetails: "prod-sales-details",
   deletedBankTx: "removed-from-banking-transaction",
+  deletedExpense: "removed-from-cash-outflows",
   deletedSales: "removed-from-sales",
   deletedSalesDetails: "removed-from-sales-details"
 }

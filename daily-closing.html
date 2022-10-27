@@ -30,7 +30,7 @@
               <span class="icon">
                 <i class="fa-solid fa-list-check"></i>
               </span>
-              <span>Resumen diario de ventas</span>
+              <span>Resumen diario de ingresos</span>
             </span>
           </p>
         </header>
@@ -44,7 +44,7 @@
                     <input type="date" class="summary-day input is-small" onkeydown="return false" required />
                   </td>
                   <td>
-                    <button class="summary-day-update button is-small" title="Actualizar">
+                    <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
                       <span class="icon is-small">
                         <i class="fa-solid fa-arrows-rotate"></i>
                       </span>
@@ -67,7 +67,6 @@
                   <th class="has-text-white" style="width:7rem">Comisiones 1.12</th>
                   <th class="has-text-white" style="width:5rem">Propinas</th>
                   <th style="width:1rem"></th>
-
                 </tr>
               </thead>
               <tbody id="summary-body">
@@ -127,7 +126,7 @@
                     <input type="date" class="summary-day input is-small" onkeydown="return false" required />
                   </td>
                   <td>
-                    <button class="summary-day-update button is-small" title="Actualizar">
+                    <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
                       <span class="icon is-small">
                         <i class="fa-solid fa-arrows-rotate"></i>
                       </span>
@@ -167,7 +166,7 @@
               <span class="icon">
                 <i class="fa-solid fa-money-bill-trend-up"></i>
               </span>
-              <span>Resumen diario de ingresos y egresos</span>
+              <span>Resumen diario de egresos de caja</span>
             </span>
           </p>
         </header>
@@ -181,7 +180,7 @@
                     <input type="date" class="summary-day input is-small" onkeydown="return false" required />
                   </td>
                   <td>
-                    <button class="summary-day-update button is-small" title="Actualizar">
+                    <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
                       <span class="icon is-small">
                         <i class="fa-solid fa-arrows-rotate"></i>
                       </span>
@@ -199,6 +198,7 @@
                   <th class="has-text-white" style="width:8rem">Comprobante</th>
                   <th class="has-text-white">Detalles</th>
                   <th class="has-text-white has-text-right" style="width:7rem">Valor</th>
+                  <th style="width:1rem"></th>
                 </tr>
               </thead>
               <tbody id="expenses-body">
@@ -224,81 +224,97 @@
         </header>
         <div class="card-content has-background-info-light p-2">
           <div class="content">
-            <table class="summary-filters" style="max-width: 200px;">
-              <tbody>
-                <tr>
-                  <th style="vertical-align:middle;">Fecha:</th>
-                  <td>
-                    <input type="date" class="summary-day input is-small" onkeydown="return false" required />
-                  </td>
-                  <td>
-                    <button class="summary-day-update button is-small" title="Actualizar">
+
+            <div class="field is-horizontal m-0">
+              <div class="field-label is-normal has-text-right is-hidden-mobile">
+                <label class="label">Fecha:</label>
+              </div>
+              <div class="field-body  pl-4">
+                <div class="field is-narrow">
+                  <p class="control">
+                    <input type="date" class="summary-day input is-small" onkeydown="return false" style="width: 8rem"
+                      required />
+                    <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
                       <span class="icon is-small">
                         <i class="fa-solid fa-arrows-rotate"></i>
                       </span>
                     </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="field is-horizontal mt-2">
+              <div class="field-label is-normal is-hidden-mobile pt-0">
+                <label class="label">Responsable:</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <p class="control is-size-7">
+                    <label class="radio">
+                      <input type="radio" name="responsable" value="ESTIBERSON">
+                      Estiberson
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="responsable" value="ERICK">
+                      Erick
+                    </label>
+                    <label class="radio">
+                      <input type="radio" name="responsable" value="ADMIN">
+                      Admin
+                    </label>
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <table>
-              <thead class="has-background-link">
-                <tr>
-                  <th class="has-text-white">Concepto</th>
-                  <th class="has-text-white has-text-right" style="width:10px"></th>
-                  <th class="has-text-white" style="text-align: center;width:50px">Valor</th>
-                </tr>
-              </thead>
               <tbody id="daily-closing">
-                <tr>
-                  <th>Saldo en caja inicial (día anterior)</th>
-                  <td></td>
-                  <td class="initial-balance has-text-right pr-5">
-                    <!--input class="initial-balance input is-small" id="initial-balance" type="number"
-                      style="width: 70px; margin: 0; text-align: right;" step="0.10" min="0.00" placeholder="00.00" /-->
-                  </td>
+                <tr class="has-background-grey-lighter is-size-6">
+                  <th colspan="2">Saldo en caja inicial (día anterior)</th>
+                  <th class="initial-balance has-text-right pr-5">0.00</th>
                 </tr>
-                <tr class="has-background-grey-lighter">
+                <tr>
                   <th>Ventas en efectivo</th>
                   <td>+</td>
                   <td class="cash-sales has-text-right pr-5">0.00</td>
                 </tr>
-                <tr>
+                <tr class="has-background-grey-lighter">
                   <th>Adelantos</th>
                   <td>-</td>
                   <td class="advances has-text-right pr-5">0.00</td>
                 </tr>
-                <tr class="has-background-grey-lighter">
+                <tr>
                   <th>Depositos</th>
                   <td>-</td>
                   <td class="deposits has-text-right pr-5">0.00</td>
                 </tr>
-                <tr>
+                <tr class="has-background-grey-lighter">
                   <th>Compras</th>
                   <td>-</td>
                   <td class="shopping has-text-right pr-5">0.00</td>
                 </tr>
-                <tr class="has-background-grey-lighter">
+                <tr>
                   <th>Gastos</th>
                   <td>-</td>
                   <td class="expenses has-text-right pr-5">0.00</td>
                 </tr>
-                <tr>
+                <tr class="has-background-grey-lighter">
                   <th>Comisiones anticipadas</th>
                   <td>-</td>
                   <td class="commissions has-text-right pr-5">0.00</td>
                 </tr>
-                <tr class="has-background-grey-lighter">
+                <tr>
                   <th>Devolucion de propinas tarjeta/transferencia</th>
                   <td>-</td>
                   <td class="tips-by-bank has-text-right pr-5">0.00</td>
                 </tr>
-                <tr>
+                <tr class="has-background-grey-lighter">
                   <th>Pago salarios</th>
                   <td>-</td>
                   <td class="salaries has-text-right pr-5">0.00</td>
                 </tr>
-                <tr class="has-background-grey-lighter">
+                <tr>
                   <th>Ajuste</th>
                   <td class="fit-symbol "></td>
                   <td class="fit has-text-right pr-5">0.00</td>
@@ -307,49 +323,25 @@
                   <th colspan="2">Saldo en caja al cierre</th>
                   <th class="total-sales has-text-right pr-5">0.00</th>
                 </tr>
-                <tr>
-                  <th>Ventas con tarjeta (CxC)</th>
-                  <td></td>
+                <tr class="has-background-grey-lighter is-size-6">
+                  <th colspan="2">Ventas con tarjeta (CxC)</th>
                   <td class="card-sales has-text-right pr-5">0.00</td>
                 </tr>
-                <tr class="has-background-grey-lighter">
-                  <th>Transferencias</th>
-                  <td></td>
+                <tr class="has-background-grey-light is-size-6">
+                  <th colspan="2">Transferencias</th>
                   <td class="transfer-sales has-text-right pr-5">0.00</td>
                 </tr>
-                <tr>
-                  <th colspan="3">Responsable:</td>
-                </tr>
-                <tr>
-                  <th colspan="3">
-                    <div class="control is-size-7">
-                      <label class="radio">
-                        <input type="radio" name="responsable" value="ESTIBERSON">
-                        Estiberson
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="responsable" value="ERICK">
-                        Erick
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="responsable" value="ADMIN">
-                        Admin
-                      </label>
-                    </div>
-                  </th>
-                </tr>
+
               </tbody>
             </table>
           </div>
-          <footer class="card-footer">
-          
-              <button class="daily-closing-save card-footer-item button is-primary" href="#clientes">
-                <span>Guardar</span>
-                <span class="icon">
-                  <i class="fa-solid fa-floppy-disk"></i>
-                </span>
-              </button>
-
+          <footer class="card-footer as-background-info-light">
+            <button class="daily-closing-save card-footer-item button is-primary" href="#">
+              <span>Guardar</span>
+              <span class="icon">
+                <i class="fa-solid fa-check"></i>
+              </span>
+            </button>
           </footer>
         </div>
       </div>
@@ -425,6 +417,13 @@
       <td class="voucher"></td>
       <td class="details" title=""></td>
       <td class="value has-text-right"></td>
+      <td>
+        <a class="expense-delete is-hidden" title="Eliminar egreso" data-key="UID">
+          <span class="icon is-small has-text-danger">
+            <i class="fa-solid fa-trash-can"></i>
+          </span>
+        </a>
+      </td>
     </tr>
   </template>
 
@@ -432,6 +431,7 @@
     <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
       <th class="type" colspan="5"></th>
       <th class="total"></th>
+      <th></th>
     </tr>
   </template>
 

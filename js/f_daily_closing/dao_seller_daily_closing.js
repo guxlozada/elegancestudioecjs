@@ -73,7 +73,9 @@ export async function findSalesExpensesBankTxsByDay(vdDateTime, callback, callba
   await dbRef.child(collections.expenses).orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
     .once('value')
     .then(snap => snap.forEach(child => {
-      expensesData.push(child.val())
+      let exp = child.val()
+      exp.tmpUid = child.key
+      expensesData.push(exp)
     }))
     .catch(error => callbackError(`Busqueda de egresos de caja del dia ${searchDay}`, error))
 
@@ -96,7 +98,7 @@ export async function findSalesExpensesBankTxsByDay(vdDateTime, callback, callba
  * @param {Function} callback 
  * @param {Function} callbackError 
  */
-export function saveDailyClosing(voDailyClosing, callback, callbackError) {
+export function insertDailyClosing(voDailyClosing, callback, callbackError) {
   // Copia inmutable
   const dailyClosingAux = JSON.parse(JSON.stringify(voDailyClosing)),
     dailyClosing = generateDateProperties(dailyClosingAux),

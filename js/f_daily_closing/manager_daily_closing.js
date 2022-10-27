@@ -2,11 +2,11 @@ import { compareTruncDay, dateIsValid, hoyEC, inputDateToDateTime, localStringTo
 import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { roundFour, roundTwo } from "../util/numbers-util.js";
-import { deleteSaleByUid } from "../f_sales/dao_selller_sales.js";
+import { deleteExpenseByUid, deleteSaleByUid } from "../f_sales/dao_selller_sales.js";
 import { localdb } from "../repo-browser.js";
 import { isAdmin } from "../dom/manager_user.js";
 import { addMinMaxPropsWithCashOutflowDates, inyectDailyData, updateDailyData } from "../util/daily-data-cache.js";
-import { findSalesExpensesBankTxsByDay, inyectBeforeAfterDailyCashClosing, saveDailyClosing } from "./dao_seller_daily_closing.js";
+import { findSalesExpensesBankTxsByDay, inyectBeforeAfterDailyCashClosing, insertDailyClosing } from "./dao_seller_daily_closing.js";
 
 const d = document,
   w = window,
@@ -61,16 +61,14 @@ d.addEventListener("click", e => {
 
   // Eliminar venta 
   if ($el.matches(".sale-delete") || $el.closest(".sale-delete")) {
-    const $link = $el.closest(".sale-delete"),
-      saleUid = $link.dataset.key
-    if (confirm(`Esta seguro que desea eliminar la Venta ${saleUid}`)) {
-      deleteSaleByUid(saleUid,
-        (saleUid) => {
-          ntf.ok("venta eliminada", `Se elimino correctamente la Venta ${saleUid}`)
-          changeDailyClosing(dailyClosing.tmpDateTime)
-        },
-        error => ntf.tecnicalError("No se pudo eliminar la venta", error))
-    }
+    const saleUid = $el.closest(".sale-delete").dataset.key
+    deleteSale(saleUid)
+  }
+
+  // Eliminar egreso 
+  if ($el.matches(".expense-delete") || $el.closest(".expense-delete")) {
+    const expenseUid = $el.closest(".expense-delete").dataset.key
+    deleteExpense(expenseUid)
   }
 
   //Guardar cierre diario
@@ -78,33 +76,20 @@ d.addEventListener("click", e => {
     const $btnSave = e.target.closest(".daily-closing-save")
     if ($btnSave.disabled) {
       if ($btnSave.dataset.existBefore === "false") {
-        ntf.error("Cierre diario de caja", "No puede realizar el cierre de caja porque no se ha realizado el cierre del dia anterior.", 10000)
+        ntf.validation("No puede realizar el cierre de caja porque no se ha realizado el cierre del dia anterior.")
       } else if ($btnSave.dataset.existAfter) {
-        ntf.error("Cierre diario de caja", "No puede realizar el cierre de caja porque ya existe cierre de caja de dias posteriores.", 10000)
+        ntf.validation("No puede realizar el cierre de caja porque ya existe cierre de caja de dias posteriores.")
       }
-    } else if (!dailyClosing.responsable) {
-      ntf.error("Informacion requerida", "Seleccione el responsable")
-    }
-
-    if (ntf.enabled) return
-
-    if (dailyClosing.tmpTipsAlert &&
+    } else if (dailyClosing.tmpTipsAlert &&
       !confirm(`ALERTA: Existen propinas pagadas por un valor mayor a las registradas.
       Para guardar el cierre de caja de todas formas de clic <<Aceptar>>, 
       Para NO guardar el cierre de caja de clic en <<Cancelar>> `)) {
       return
     }
-    // Insertar el cierre diario en la base de datos
-    saveDailyClosing(dailyClosing,
-      dateString => {
-        // Actualiza el rango con fecha minima y maxima para registro de informacion de ingresos y egresos de caja
-        updateDailyData()
-        changeDailyClosing(dailyClosing.tmpDateTime)
-        ntf.ok("Cierre de caja diario registrado",
-          `Se guardo correctamente la informacion del cierre diario del dia ${dateString}`)
-      },
-      error => ntf.tecnicalError("Cierre de caja diario no registrado", error))
 
+    if (ntf.enabled) return
+
+    saveDailyClosing()
   }
 
 })
@@ -139,19 +124,22 @@ function changeDailyClosing(vdDateTime) {
 }
 
 function renderSections(salesData, expensesData, depositsData) {
-  renderSummary(salesData)
+  // Validacion para habilitar la opcion de eliminacion de ventas y egresos
+  const base = localStringToDateTime(localStorage.getItem(localdb.cashOutflowMinDay)),
+    deletedEnabled = compareTruncDay(dailyClosing.tmpDateTime, "ge", base)
+
+  renderSummary(salesData, deletedEnabled)
   // Se procesa primero los egresos porque se requiere data para las ventas por barbero
-  renderExpenses(expensesData, depositsData)
+  renderExpenses(expensesData, depositsData, deletedEnabled)
   renderSummaryBySeller(salesData)
   // Consulta si existe los cierres de caja diario anterior y posterior, luego actualiza la vista
   inyectBeforeAfterDailyCashClosing(dailyClosing.tmpDateTime,
     (voBeforeClosingDay, voAfterClosingDay) => renderDailyCashClosing(voBeforeClosingDay, voAfterClosingDay),
-    (vsClosingDay, error) => ntf.tecnicalError(`Busqueda de cierre diario del dia ${vsClosingDay}`, error))
+    (vsClosingDay, error) => ntf.errorAndLog(`Busqueda de cierre diario del dia ${vsClosingDay}`, error))
 }
 
-function renderSummary(salesData) {
-  const $template = d.getElementById("sale-row").content,
-    $fragment = d.createDocumentFragment(),
+function renderSummary(salesData, deletedEnabled) {
+  const $fragment = d.createDocumentFragment(),
     $body = d.getElementById("summary-body"),
     $footer = d.getElementById("summary-footer")
 
@@ -171,12 +159,6 @@ function renderSummary(salesData) {
   if (salesData.length == 0) {
     $body.innerHTML = `<tr><td class="is-size-6" colspan="8">No existen ventas para la fecha seleccionada</td></tr>`
   } else {
-
-    // Validacion para habilitar la opcion de eliminacion de venta
-    const base = localStringToDateTime(localStorage.getItem(localdb.cashOutflowMinDay)),
-      deletedEnabled = compareTruncDay(dailyClosing.tmpDateTime, "ge", base)
-
-    $body.innerHTML = ""
 
     salesData.forEach((sale, index) => {
       vnTaxableIncome = roundTwo(sale.taxableIncome)
@@ -200,23 +182,21 @@ function renderSummary(salesData) {
       vnTotalTipsByBank += sale.tmpTipByBank
       vnTotalBarberCommissions += sale.tmpBarberCommission
       vnTotalBarberCommissionsTmp += sale.tmpBarberCommissionTmp
-      $template.querySelector(".index").innerText = index + 1
-      $template.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
-      $template.querySelector(".seller").innerText = sale.seller
-      $template.querySelector(".payment").innerText = sale.typePayment.toLowerCase()
-      $template.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
-      $template.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
-      $template.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank > 0 ? sale.tmpTipByBank.toFixed(2) : ''
-      $template.querySelector(".value").innerText = vnValueSale.toFixed(2)
-      $template.querySelector(".barber-commission").innerText = sale.tmpBarberCommission.toFixed(2)
-      $template.querySelector(".barber-commission-tmp").innerText = sale.tmpBarberCommissionTmp.toFixed(2)
-      let $removeSale = $template.querySelector(".sale-delete")
+      let $saleRow = d.getElementById("sale-row").content.cloneNode(true)
+      $saleRow.querySelector(".index").innerText = index + 1
+      $saleRow.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
+      $saleRow.querySelector(".seller").innerText = sale.seller
+      $saleRow.querySelector(".payment").innerText = sale.typePayment.toLowerCase()
+      $saleRow.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
+      $saleRow.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
+      if (sale.tmpTipByBank > 0) $saleRow.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank.toFixed(2)
+      $saleRow.querySelector(".value").innerText = vnValueSale.toFixed(2)
+      $saleRow.querySelector(".barber-commission").innerText = sale.tmpBarberCommission.toFixed(2)
+      $saleRow.querySelector(".barber-commission-tmp").innerText = sale.tmpBarberCommissionTmp.toFixed(2)
       if (deletedEnabled) {
-        $removeSale.classList.remove("is-hidden")
-        $removeSale.dataset.key = sale.tmpUid
-      } else {
-        $removeSale.classList.add("is-hidden")
-        delete $removeSale.dataset.key
+        let $saleDelete = $saleRow.querySelector(".sale-delete")
+        $saleDelete.classList.remove("is-hidden")
+        $saleDelete.dataset.key = sale.tmpUid
       }
 
       if (sale.typePayment === "EFECTIVO") {
@@ -226,9 +206,9 @@ function renderSummary(salesData) {
       } else {
         vnTotalCard += vnValueSale
       }
-      let $clone = d.importNode($template, true)
-      $fragment.appendChild($clone)
+      $fragment.appendChild($saleRow)
     })
+    $body.innerHTML = ""
     $body.appendChild($fragment)
   }
   $footer.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
@@ -249,9 +229,7 @@ function renderSummary(salesData) {
 }
 
 function renderSummaryBySeller(salesData) {
-  const $rowTmp = d.getElementById("seller-row").content,
-    $totalsTmp = d.getElementById("seller-totals").content,
-    $fragment = d.createDocumentFragment(),
+  const $fragment = d.createDocumentFragment(),
     $body = d.getElementById("seller-body")
 
   if (salesData.length == 0) {
@@ -277,8 +255,7 @@ function renderSummaryBySeller(salesData) {
     vnTaxableIncome,
     vnValueSale,
     vnPaidBarberCommission,
-    vnPaidBarberTip,
-    $clone
+    vnPaidBarberTip
 
   const barberCommissions = JSON.parse(localStorage.getItem("COMMISSIONS")) || {},
     barberTips = JSON.parse(localStorage.getItem("TIPS")) || {}
@@ -297,22 +274,23 @@ function renderSummaryBySeller(salesData) {
     vnTotalBarberTips += sale.tmpTipByBank
     vnTotalBarberCommissions += sale.tmpBarberCommission
     vnTotalBarberCommissionsTmp += sale.tmpBarberCommissionTmp
+    let $rowTmp = d.getElementById("seller-row").content.cloneNode(true)
     $rowTmp.querySelector(".index").innerText = index
     $rowTmp.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
     $rowTmp.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
     $rowTmp.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
-    $rowTmp.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank > 0 ? sale.tmpTipByBank.toFixed(2) : ''
+    if (sale.tmpTipByBank > 0) $rowTmp.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank.toFixed(2)
     $rowTmp.querySelector(".value").innerText = vnValueSale.toFixed(2)
     $rowTmp.querySelector(".barber-commission").innerText = sale.tmpBarberCommission.toFixed(2)
     $rowTmp.querySelector(".barber-commission-tmp").innerText = sale.tmpBarberCommissionTmp.toFixed(2)
-    $clone = d.importNode($rowTmp, true)
-    $fragment.appendChild($clone)
+    $fragment.appendChild($rowTmp)
 
     // verificar si cambia de vendedor o ya no existen registros
     sale = salesData[++i]
     index++
 
     if (!sale || seller !== sale.seller) {// Cambio de vendedor
+      let $totalsTmp = d.getElementById("seller-totals").content.cloneNode(true)
       $totalsTmp.querySelector(".seller").innerText = seller
       $totalsTmp.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
       $totalsTmp.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
@@ -334,11 +312,8 @@ function renderSummaryBySeller(salesData) {
         // Alertar que se ha pagado propinas bancarias sin transaccion bancaria de sustento
         dailyClosing.tmpTipsAlert = true
         $pendingBarberTips.classList.add("has-background-danger")
-      } else {
-        $pendingBarberTips.classList.remove("has-background-danger")
       }
-      $clone = d.importNode($totalsTmp, true)
-      $fragment.appendChild($clone)
+      $fragment.appendChild($totalsTmp)
 
       if (!sale) {
         break
@@ -353,32 +328,27 @@ function renderSummaryBySeller(salesData) {
   $body.appendChild($fragment)
 }
 
-function renderExpenses(expensesData, depositsData) {
-  const $rowTmp = d.getElementById("expense-row").content,
-    $totalsTmp = d.getElementById("expense-totals").content,
-    $fragment = d.createDocumentFragment(),
+function renderExpenses(expensesData, depositsData, deletedEnabled) {
+  const $fragment = d.createDocumentFragment(),
     $body = d.getElementById("expenses-body")
 
-  $body.innerHTML = ""
-  let data = expensesData.concat(depositsData)
-
-  if (data.length == 0) {
+  if (expensesData.length == 0 && depositsData.length == 0) {
     $body.innerHTML = `<tr><td class="is-size-6" colspan="6">No existen registros para la fecha seleccionada</td></tr>`
     return
   }
 
-  data.sort((a, b) => {
+  expensesData.sort((a, b) => {
     if (a.type > b.type) return 1
     if (a.type < b.type) return -1
     return 0
   })
 
-  let vnTotal = 0,
+  let data = expensesData.concat(depositsData),
+    vnTotal = 0,
     index = 1,
     vnValue,
     vnCommission,
-    vnTip,
-    $clone
+    vnTip
 
   const barberCommissions = {},
     barberTips = {}
@@ -391,15 +361,21 @@ function renderExpenses(expensesData, depositsData) {
     vnValue = roundTwo(item.value)
     vnCommission = roundTwo(item.barberCommission)
     vnTotal += vnValue
+    let $rowTmp = d.getElementById("expense-row").content.cloneNode(true)
     $rowTmp.querySelector(".index").innerText = index
     $rowTmp.querySelector(".type").innerText = item.type.toLowerCase()
     $rowTmp.querySelector(".responsable").innerText = item.responsable
     $rowTmp.querySelector(".voucher").innerText = item.voucher || "N/A"
-    $rowTmp.querySelector(".details").innerText = item.details || "N/A"
-    $rowTmp.querySelector(".details").title = item.details || ""
+    let $details = $rowTmp.querySelector(".details")
+    $details.innerText = item.details || "N/A"
+    $details.title = item.details || ""
     $rowTmp.querySelector(".value").innerText = vnValue.toFixed(2)
-    $clone = d.importNode($rowTmp, true)
-    $fragment.appendChild($clone)
+    if (deletedEnabled) {
+      let $expenseDelete = $rowTmp.querySelector(".expense-delete")
+      $expenseDelete.classList.remove("is-hidden")
+      $expenseDelete.dataset.key = item.tmpUid
+    }
+    $fragment.appendChild($rowTmp)
 
     if (type === 'COMISION') {
       vnCommission = (barberCommissions[item.responsable] || 0) + item.value
@@ -414,10 +390,10 @@ function renderExpenses(expensesData, depositsData) {
     index++
 
     if (!item || type !== item.type) {// Cambio de tipo de ingreso/egreso
+      let $totalsTmp = d.getElementById("expense-totals").content.cloneNode(true)
       $totalsTmp.querySelector(".type").innerText = `Total ${type.toLowerCase()}s`
       $totalsTmp.querySelector(".total").innerText = vnTotal.toFixed(2)
-      $clone = d.importNode($totalsTmp, true)
-      $fragment.appendChild($clone)
+      $fragment.appendChild($totalsTmp)
       switch (type) {//ADELANTO,AJUSTE,COMPRA,DEPOSITO,GASTO,COMISION, SUELDO
         case "ADELANTO":
           dailyClosing.advances = vnTotal
@@ -458,7 +434,7 @@ function renderExpenses(expensesData, depositsData) {
       index = 1
     }
   } while (i < 1000)
-
+  $body.innerHTML = ""
   $body.appendChild($fragment)
 }
 
@@ -494,4 +470,44 @@ function renderDailyCashClosing(voBeforeClosingDay, voAfterClosingDay) {
   } else {
     $btnSave.removeAttribute("disabled")
   }
+}
+
+function deleteSale(vsSaleUid) {
+  if (confirm(`Esta seguro que desea eliminar la Venta ${vsSaleUid}`)) {
+    deleteSaleByUid(vsSaleUid,
+      (vsSaleUid) => {
+        ntf.okey(`Venta eliminada correctamente: ${vsSaleUid}`)
+        changeDailyClosing(dailyClosing.tmpDateTime)
+      },
+      error => ntf.errorAndLog("Venta NO eliminada", error))
+  }
+}
+
+function deleteExpense(vsExpenseUid) {
+  if (confirm(`Esta seguro que desea eliminar el Egreso ${vsExpenseUid}`)) {
+    deleteExpenseByUid(vsExpenseUid,
+      (vsExpenseUid) => {
+        ntf.okey(`Egreso eliminadao correctamente: ${vsExpenseUid}`)
+        changeDailyClosing(dailyClosing.tmpDateTime)
+      },
+      error => ntf.errorAndLog("Egreso NO eliminado", error))
+  }
+}
+
+function saveDailyClosing() {
+  if (!dailyClosing.responsable) {
+    ntf.errors("Seleccione el responsable")
+  }
+
+  if (ntf.enabled) return
+
+  // Insertar el cierre diario en la base de datos
+  insertDailyClosing(dailyClosing,
+    dateString => {
+      // Actualiza el rango con fecha minima y maxima para registro de informacion de ingresos y egresos de caja
+      updateDailyData()
+      changeDailyClosing(dailyClosing.tmpDateTime)
+      ntf.okey(`Cierre de caja diario registrado: ${dateString}`)
+    },
+    error => ntf.errorAndLog("Cierre de caja diario NO registrado", error))
 }

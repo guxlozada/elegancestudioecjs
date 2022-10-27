@@ -36,7 +36,7 @@ export default class NotificationBulma {
     document.body.appendChild(this.nodoContenedor);
   }
 
-  errorAndLog(message, error) {
+  async errorAndLog(message, error) {
     this.tecnicalError("Error del sistema", error, message)
   }
 
@@ -55,7 +55,7 @@ export default class NotificationBulma {
 
   }
 
-  okey(mensaje, duracion) {
+ async  okey(mensaje, duracion) {
     this.show("OK", mensaje, "link", duracion)
   }
 
@@ -67,7 +67,7 @@ export default class NotificationBulma {
     this.show("Validacion no superada", mensaje, "danger", duracion)
   }
 
-  errors(mensaje, duracion) {
+  async errors(mensaje, duracion) {
     this.show("Revise", mensaje, "danger", duracion)
   }
 

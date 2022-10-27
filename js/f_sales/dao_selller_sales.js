@@ -81,8 +81,31 @@ function deleteSaleDetailsBankTx(voSale, vaSaleDetails, callback, callbackError)
         updates[`${collections.deletedBankTx}/${bankTx.uid}`] = bankTx
         updates[`${collections.bankingTransactions}/${bankTx.uid}`] = null
       }
-      console.log(updates)
+      ////console.log(updates)
       dbRef.update(updates, error => error ? callbackError(error) : callback(voSale.uid))
+    })
+    .catch(error => callbackError(error))
+}
+
+
+/**
+ * Elimina la informacion relacionada a un egreso.
+ * @param {string} vsUid Clave del nodo relacionado al egreso
+ * @param {Function} callback 
+ * @param {Function} callbackError 
+ */
+export async function deleteExpenseByUid(vsUid, callback, callbackError) {
+  // TODO: Validar que no se borre de fechas con cierre de caja
+
+  dbRef.child(collections.expenses).child(vsUid).get()
+    .then(snap => {
+      if (snap.exists()) {
+        var updates = {}
+        // Eliminar y respaldar el egreso
+        updates[`${collections.expenses}/${vsUid}`] = null
+        updates[`${collections.deletedExpense}/${vsUid}`] = snap.val()
+        dbRef.update(updates, error => error ? callbackError(error) : callback(vsUid))
+      }
     })
     .catch(error => callbackError(error))
 }

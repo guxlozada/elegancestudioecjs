@@ -75,7 +75,7 @@
               <table>
                 <tbody>
                   <tr class="list-inline">
-                    <td colspan="2">
+                    <td colspan="3">
                       <div class="control is-size-7">
                         <label class="checkbox">
                           <input type="checkbox" class="prop-input" id="type-payment-all" name="typePayment"
@@ -126,6 +126,15 @@
                     </td>
                     <td>
                       <div class="control is-size-7">
+                        <label class="checkbox">
+                          <input type="checkbox" class="prop-input" name="initialBalance"
+                            title="Ver saldo inicial del mes" checked>
+                          Ver saldo inicial mes
+                        </label>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="control is-size-7">
                         <label class="radio">
                           <input type="radio" class="prop-input" name="verified" value="TODOS" checked>
                           Todos
@@ -158,9 +167,11 @@
                         </label>
                       </div>
                     </td>
-                    <td class="list-inline">
+                    <td>
                       <input type="month" class="prop-input input is-small" id="period-month" name="periodMonth"
                         min="2022-08" data-type="datetime" onkeydown="return false" style="max-width: 8rem" />
+                    </td>
+                    <td class="list-inline">
                       <input type="date" class="prop-input input is-small" id="period-start" name="periodStart"
                         data-type="datetime" style="max-width: 8rem" />
                       <input type="date" class="prop-input input is-small" id="period-end" name="periodEnd"

@@ -203,9 +203,8 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
   d.querySelector(".search-period").innerText = dateTimeToLocalString(voFilters.periodStart)
     + " al " + dateTimeToLocalString(voFilters.periodEnd)
 
-  // El saldo inicial solo se presenta cuando se despliega todas las formas de pago y el periodo es mensual
-  // para la conciliacion mensual
-  if (voFilters.typePayment.includes("TODOS")) {
+  // El saldo inicial solo se presenta cuando esta marcada la casilla 'Ver saldo inicial mensual'
+  if (voFilters.initialBalance) {
     const $initialRow = d.getElementById("bank-initial-balance").content.cloneNode(true)
     // Agregar saldo inicial cuando existe la reconcialiacion del mes anterior
     if (voLastBalance) {

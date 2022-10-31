@@ -15,7 +15,8 @@ const d = document,
   ntf = new NotificationBulma(),
   $form = d.querySelector("#filters")
 
-const unverifiableTypes = ["DEPOSITO", "TRANSFERENCIA", "DEBITO_TRANSFERENCIA"]
+const unverifiableTypes = ["DEPOSITO", "TRANSFERENCIA", "DEBITO_TRANSFERENCIA"],
+  datafastTypes = ["TCREDITO", "TDEBITO"]
 
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
@@ -194,9 +195,10 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
 
   let vnTxValue,
     vnVerifiedTxValue,
-    vnTotalTx = 0,
-    vnVerifiedTotalTx = 0,
     vnSaleTotalTx = 0,
+    vnDatafastTotalTx = 0,
+    vnVerifiedTotalTx = 0,
+    vnBankBalance = 0,
     vbAllVerified = true
 
   //Periodo de consulta
@@ -214,10 +216,8 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
       $initialRow.querySelector(".type-payment").innerText = "Saldo inicial"
 
       let initialBalance = accountStatus.availableBalanceVerified
-      vnTotalTx += initialBalance
-      vnVerifiedTotalTx += initialBalance
-      $initialRow.querySelector(".original-value").innerText = initialBalance.toFixed(2)
-      $initialRow.querySelector(".verified-value").innerText = initialBalance.toFixed(2)
+      vnBankBalance += initialBalance
+      $initialRow.querySelector(".bank-balance").innerText = initialBalance.toFixed(2)
     } else {
       let $typePayment = $initialRow.querySelector(".type-payment")
       $typePayment.innerText = "No existe saldo inicial"
@@ -234,31 +234,37 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
     if (tx.type === "DEBITO_TRANSFERENCIA") {
       vnTxValue *= -1
       vnVerifiedTxValue *= -1
+      let $typeBankTransaction = $rowTmp.querySelector(".type-bank-transaction")
+      $typeBankTransaction.innerText = "D"
+      $typeBankTransaction.classList.add("has-text-danger")
+      $typeBankTransaction.classList.add("has-text-weight-semibold")
     }
-    vnTotalTx += vnTxValue
-    vnVerifiedTotalTx += vnVerifiedTxValue
-    vnSaleTotalTx += tx.saleValue || 0
 
-    $rowTmp.querySelector(".index").innerText = index + 1
-    $rowTmp.querySelector(".date").innerText = tx.searchDateTime
+    vnSaleTotalTx += tx.saleValue || 0
+    vnVerifiedTotalTx += vnVerifiedTxValue
+    vnBankBalance += vnVerifiedTxValue
+
+    $rowTmp.querySelector(".date").innerText = tx.searchDateTime.slice(0, -10)
+    $rowTmp.querySelector(".responsable").innerText = tx.responsable.replace("ADM_","").slice(0, 5)
     $rowTmp.querySelector(".bank").innerText = tx.bank
     let $typeAndVoucher = $rowTmp.querySelector(".type-payment"),
-      docRelacionado = tx.saleUid ? "Vta:" + tx.saleUid : (tx.rubro ? "Rub:" + tx.rubro : (tx.voucher ? "Com:" + tx.voucher : ""))
+      docRelacionado = tx.saleUid ? "Vta:" + tx.saleUid : (tx.rubro ? "Rub:" + tx.rubro : (tx.voucher ? "Comp:" + tx.voucher : ""))
 
-    $typeAndVoucher.innerText = tx.type + (docRelacionado ? " [" + docRelacionado + "] " : " ") + tx.responsable
+    $typeAndVoucher.innerText = tx.type + (docRelacionado ? " [" + docRelacionado + "] " : " ")  
     $typeAndVoucher.title = tx.details || "Sin detalles"
     if (tx.saleUid && tx.saleValue) $rowTmp.querySelector(".sale-value").innerText = tx.saleValue.toFixed(2)
-    if (tx.dfCommission) {
-      $rowTmp.querySelector(".datafast-commission").innerText = tx.dfCommission.toFixed(4)
-      $rowTmp.querySelector(".datafast-iva").innerText = tx.dfTaxWithholdingIVA.toFixed(4)
-      $rowTmp.querySelector(".datafast-renta").innerText = tx.dfTaxWithholdingRENTA.toFixed(4)
-    }
-    let $originalValue = $rowTmp.querySelector(".original-value")
 
-    $originalValue.id = tx.tmpUid + "-original"
-    $originalValue.innerText = tx.value.toFixed(2)
-    if (tx.verifiedValue && tx.value.toFixed(2) !== tx.verifiedValue.toFixed(2)) {
-      $originalValue.classList.add("has-background-warning")
+    if (datafastTypes.includes(tx.type)) {
+      vnDatafastTotalTx += vnTxValue
+      $rowTmp.querySelector(".datafast-commission").innerText = tx.dfCommission.toFixed(2)
+      $rowTmp.querySelector(".datafast-iva").innerText = tx.dfTaxWithholdingIVA.toFixed(2)
+      $rowTmp.querySelector(".datafast-renta").innerText = tx.dfTaxWithholdingRENTA.toFixed(2)
+      let $originalValue = $rowTmp.querySelector(".original-value")
+      $originalValue.id = tx.tmpUid + "-original"
+      $originalValue.innerText = tx.value.toFixed(2)
+      if (tx.verifiedValue && tx.value.toFixed(2) !== tx.verifiedValue.toFixed(2)) {
+        $originalValue.classList.add("has-background-warning")
+      }
     }
 
     let verifiedValueDisplay = tx.verified === true ? tx.verifiedValue.toFixed(2) : tx.value.toFixed(2)
@@ -271,6 +277,8 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
       $verifiedValue.classList.remove("is-hidden")
       $verifiedValue.value = verifiedValueDisplay
     }
+
+    $rowTmp.querySelector(".bank-balance").innerText = vnBankBalance.toFixed(2)
 
     let $checkbox = $rowTmp.querySelector(".verified")
     if (voCurrentBalance) $checkbox.setAttribute("disabled", true)
@@ -292,7 +300,7 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
 
   // Agregar totales por consulta
   d.querySelector(".total-sale").innerText = vnSaleTotalTx.toFixed(2)
-  d.querySelector(".total-value").innerText = vnTotalTx.toFixed(2)
+  d.querySelector(".total-datafast").innerText = vnDatafastTotalTx.toFixed(2)
   d.querySelector(".total-verified").innerText = vnVerifiedTotalTx.toFixed(2)
 
   $transactionsDetails.innerHTML = "";

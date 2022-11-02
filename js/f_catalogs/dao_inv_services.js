@@ -15,10 +15,10 @@ export function findServices(voFilters, callback, callbackError) {
   db.ref(collections.catalogServices).orderByKey()
     .once('value')
     .then(snap => {
-      let res = []
+      let keywordExp = voFilters.keyword ? new RegExp(voFilters.keyword, "i") : null,
+        res = []
       snap.forEach(child => {
-        let keywordExp = voFilters.keyword ? new RegExp(voFilters.keyword, "i") : null,
-          item = child.val()
+        let item = child.val()
         if ((voFilters.active === "TODOS" || voFilters.active === item.active.toString())
           && (!voFilters.barber || voFilters.barber === item.barber)
           && (!voFilters.category || voFilters.category === item.category)

@@ -96,21 +96,24 @@
                     </span>
                   </button>
                 </p>
-                </p>
               </div>
             </form>
             <article class="pt-2">
               <section>
-                <table>
+                <table class="table is-striped is-narrow is-hoverable is-fullwidth">
                   <thead>
-                    <tr class="has-background-link">
-                      <th class="has-text-white" style="width:3rem">Codigo</th>
-                      <th class="has-text-white" style="width:3rem">Categoria</th>
-                      <th class="has-text-white" style="width:3rem">Barbero</th>
-                      <th class="has-text-white" style="width:8rem">Descripcion</th>
-                      <th class="has-text-white" style="width:3rem">Valor</th>
-                      <th class="has-text-white" style="width:3rem">% Comision</th>
-                      <th class="has-text-white" style="width:2rem"></th>
+                    <tr>
+                      <th><abbr title="Servicio exclusivo a barberos especificos">Barb</abbr></th>
+                      <th>Categoria</th>
+                      <th>Codigo</th>
+                      <th>Descripcion</th>
+                      <th><abbr title="Valor unitario de venta">Venta</abbr></th>
+                      <th><abbr title="Porcentaje de comision de barberos">%</abbr></th>
+                      <th title="Acciones sobre el registro: activar, editar">
+                        <span class="icon ">
+                          <i class="fa-solid fa-gear"></i>
+                        </span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody id="details">
@@ -196,7 +199,8 @@
                   <div class="field is-narrow">
                     <div class="control">
                       <div class="select is-fullwidth is-small">
-                        <select class="categories-edit prop-input" name="category" title="Categoria" style="min-width: 10rem" required>
+                        <select class="categories-edit prop-input" name="category" title="Categoria"
+                          style="min-width: 10rem" required>
                           <option value="">...</option>
                         </select>
                       </div>
@@ -287,14 +291,14 @@
   </main>
 
   <template id="row">
-    <tr class="is-size-7" style="font-size: 0.7rem !important">
-      <td class="code"></td>
-      <td class="category text-ellipsis"></td>
-      <td class="barber text-ellipsis"></td>
-      <td class="description text-ellipsis"></td>
-      <td class="retail-value"></td>
-      <td class="commission"></td>
-      <td>
+    <tr>
+      <td class="barber text-ellipsis" style="max-width: 2rem"></td>
+      <td class="category is-narrow"></td>
+      <td class="code is-narrow"></td>
+      <td class="description text-ellipsis" style="max-width: 20rem"></td>
+      <td class="retail-value has-text-right is-narrow"></td>
+      <td class="commission has-text-right is-narrow"></td>
+      <td class="is-narrow">
         <div class="field has-addons">
           <div class="control">
             <input type="checkbox" class="active m-0 mr-2" title="Indica si el servicio esta activo y disponible">

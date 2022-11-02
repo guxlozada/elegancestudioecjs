@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Consulta de ventas</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/report.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    article {
+      height: 55vh;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <iframe src="./templates/navbar.html"
+      onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+  </header>
+  <main>
+    <section class="section" style="max-width: 1000px !important; margin:auto;">
+      <div class="card is-size-7">
+        <header class="card-header has-background-info is-size-6">
+          <p class="card-header-title has-text-white">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-list-check"></i>
+              </span>
+              <span>Ventas de productos y servicios</span>
+            </span>
+          </p>
+          <p class="card-header-icon has-text-white">
+            <span class="search-period "></span>
+          </p>
+        </header>
+        <div class="card-content has-background-info-light p-2">
+          <div class="content m-0">
+            <form id="filters">
+              <div class="field is-horizontal m-1">
+                <div class="field-body">
+                  <div class="field is-narrow">
+                    <p class="control is-size-7 pt-2" title="Productos y/o servicios">
+                      <label class="radio">
+                        <input type="radio" class="prop-input" name="type" value="TODOS" checked>
+                        Todos
+                      </label>
+                      <label class="radio">
+                        <input type="radio" class="prop-input" name="type" value="P">
+                        Productos
+                      </label>
+                      <label class="radio">
+                        <input type="radio" class="prop-input" name="type" value="S">
+                        Servicios
+                      </label>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field is-horizontal">
+                <div class="field-body">
+                  <div class="field is-extended pr-5" title="Codigo o palabras claves en el codigo para filtrar">
+                    <p class="control is-small">
+                      <input type="text" class="prop-input input is-small" name="keyword"
+                        placeholder="Codigo o palabras claves en el codigo" />
+                    </p>
+                  </div>
+                  <div class="field is-narrow pr-5" title="Periodo mensual de consulta">
+                    <div class="field">
+                      <p class="control">
+                        <input type="month" class="prop-input input is-small" id="period-month" name="periodMonth"
+                          min="2022-08" data-type="datetime" onkeydown="return false" style="max-width: 8rem" />
+                      </p>
+                    </div>
+                  </div>
+                  <div class="field is-narrow pr-3" title="Periodo mensual de consulta">
+                    <div class="field has-addons">
+                      <p class="control">
+                        <input type="date" class="prop-input input is-small" id="period-start" name="periodStart"
+                          data-type="datetime" style="max-width: 8rem" />
+                      </p>
+                      <p class="control">
+                        <input type="date" class="prop-input input is-small" id="period-end" name="periodEnd"
+                          data-type="datetime" style="max-width: 8rem" />
+                      </p>
+                      <p class="control">
+                        <button type="submit" class="button is-small is-primary" title="Buscar">
+                          <span class="icon is-small">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                          </span>
+                        </button>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="field is-narrow">
+                    <div class="field">
+                      <p class="control" title="Limpiar filtros">
+                        <button class="clean button is-small is-link is-outlined">
+                          <span class="icon is-small">
+                            <i class="fa-solid fa-eraser"></i>
+                          </span>
+                        </button>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <article>
+              <section>
+                <table class="table is-narrow is-hoverable is-fullwidth">
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Codigo</th>
+                      <th>Descripcion</th>
+                      <th><abbr title="Numero de unidades vendidas">Cant</abbr></th>
+                      <th><abbr title="Valor total bruto">TBruto</abbr></th>
+                      <th><abbr title="Impuestos IVA">IVA</abbr></th>
+                      <th><abbr title="Comision de barbero/vendedor">Comi</abbr></th>
+                      <th><abbr title="Valor de compra de los productos aproximado">Compra</abbr></th>
+                      <th><abbr title="Valor total neto">TNeto</abbr></th>
+                    </tr>
+                  </thead>
+                  <tbody id="details">
+                    <!-- render details-->
+                  </tbody>
+                  <tfoot>
+                    <tr class="has-text-right">
+                      <th colspan="4">Totales:</th>
+                      <th class="total-gross-value">0.00</th>
+                      <th class="total-taxes">0.00</th>
+                      <th class="total-commissions">0.00</th>
+                      <th class="total-purchase-price">0.00</th>
+                      <th class="total-net-value" colspan="3">0.00</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </section>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <template id="row">
+    <tr class="has-text-right">
+      <td class="type is-narrow" title="P=Producto, S=Servicio"></td>
+      <td class="code has-text-left is-narrow"></td>
+      <td class="description has-text-left"></td>
+      <td class="amount"></td>
+      <td class="gross-value is-narrow"></td>
+      <td class="taxes is-narrow"></td>
+      <td class="commisions is-narrow"></td>
+      <td class="purchase-price is-narrow">0.00</td>
+      <td class="net-value is-narrow"></td>
+    </tr>
+  </template>
+
+  <template id="row-summary">
+    <tr class="has-background-grey-lighter has-text-right">
+      <th class="type" colspan="4"></th>
+      <th class="gross-value is-narrow"></th>
+      <th class="taxes is-narrow"></th>
+      <th class="commisions is-narrow"></th>
+      <th class="purchase-price is-narrow">0.00</th>
+      <th class="net-value is-narrow"></th>
+    </tr>
+  </template>
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/f_sales/manager_sales_report.js" type="module"></script>
+</body>
+
+</html>

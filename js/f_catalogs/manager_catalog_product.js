@@ -114,10 +114,11 @@ function renderCatalog(vaRecords) {
 
   vaRecords.forEach(item => {
     let $rowTmp = d.getElementById("row").content.cloneNode(true)
-    $rowTmp.querySelector(".code").innerText = item.code
     $rowTmp.querySelector(".provider").innerText = item.provider
     $rowTmp.querySelector(".category").innerText = item.category
+    $rowTmp.querySelector(".code").innerText = item.code
     $rowTmp.querySelector(".description").innerText = item.description
+    $rowTmp.querySelector(".purchase-price").innerText = item.purchasePrice.toFixed(2)
     $rowTmp.querySelector(".retail-value").innerText = item.retailValue.toFixed(2)
     $rowTmp.querySelector(".wholesale-value").innerText = item.wholesaleValue.toFixed(2)
     $rowTmp.querySelector(".commission").innerText = item.sellerCommission.toFixed(2)

@@ -9,6 +9,8 @@ table {
 
 thead th {
   background: hsl(217, 71%, 45%);
+  color: white !important;
+  text-align: center !important;
   position: sticky;
   top: 0;
   /* Don't forget this, that is required for the stickiness */
@@ -17,7 +19,7 @@ thead th {
 
 tfoot th {
   background: hsl(217, 71%, 45%);
-  color: white;
+  color: white !important;
   position: sticky;
   bottom: 0;
   /* Don't forget this, that is required for the stickiness */

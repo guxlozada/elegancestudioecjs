@@ -48,7 +48,9 @@ export function saleToBanktransaction(voSale, vsBank) {
     tx.dfTaxWithholdingRENTA = roundFour(tx.saleTaxableIncome * TAX_WITHHOLDING_RENTA)
     tx.value = roundFour(tx.saleValue - tx.dfCommission - tx.dfTaxWithholdingIVA - tx.dfTaxWithholdingRENTA)
     if (voSale.tipByBank && voSale.tipByBank > 0) {
-      tx.tipByBank = roundFour(voSale.tipByBank * tx.value / tx.saleValue)
+      const dfTipCommission = roundFour(voSale.tipByBank * DATAFAST_COMMISSION),
+        dfTipTaxWithholdingRENTA = roundFour(voSale.tipByBank * TAX_WITHHOLDING_RENTA)
+      tx.tipByBank = roundFour(voSale.tipByBank - dfTipCommission - dfTipTaxWithholdingRENTA)
     }
   }
   return tx

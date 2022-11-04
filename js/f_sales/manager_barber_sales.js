@@ -572,7 +572,7 @@ d.getElementById("sales").addEventListener("change", e => {
     sale.date = vdOther.getTime()
     //// console.log("despues sale.date=", new Date(sale.date))
   } else if ($input.name === "tipValue") {
-    console.log("sale.tipByBank=", $input.value)
+    ////console.log("sale.tipByBank=", $input.value)
     // Cambio valor de propina bancaria
     sale.tipByBank = $input.valueAsNumber || 0
     sale.update = true

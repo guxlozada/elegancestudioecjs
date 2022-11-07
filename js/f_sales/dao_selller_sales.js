@@ -89,27 +89,7 @@ function deleteSaleDetailsBankTx(voSale, vaSaleDetails, callback, callbackError)
 }
 
 
-/**
- * Elimina la informacion relacionada a un egreso.
- * @param {string} vsUid Clave del nodo relacionado al egreso
- * @param {Function} callback 
- * @param {Function} callbackError 
- */
-export async function deleteExpenseByUid(vsUid, callback, callbackError) {
-  // TODO: Validar que no se borre de fechas con cierre de caja
 
-  dbRef.child(collections.expenses).child(vsUid).get()
-    .then(snap => {
-      if (snap.exists()) {
-        var updates = {}
-        // Eliminar y respaldar el egreso
-        updates[`${collections.expenses}/${vsUid}`] = null
-        updates[`${collections.deletedExpense}/${vsUid}`] = snap.val()
-        dbRef.update(updates, error => error ? callbackError(error) : callback(vsUid))
-      }
-    })
-    .catch(error => callbackError(error))
-}
 
 /**
  * Obtiene el resumen de ventas por producto y/o servicio para el reporte de ventas.

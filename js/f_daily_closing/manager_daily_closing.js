@@ -2,7 +2,9 @@ import { compareTruncDay, dateIsValid, hoyEC, inputDateToDateTime, localStringTo
 import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { roundFour, roundTwo } from "../util/numbers-util.js";
-import { deleteExpenseByUid, deleteSaleByUid } from "../f_sales/dao_selller_sales.js";
+import { deleteSaleByUid } from "../f_sales/dao_selller_sales.js";
+import { deleteExpenseByUid } from "../f_expenses/dao_cash_outflows.js";
+import { deleteDepositByUid } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
 import { isAdmin } from "../dom/manager_user.js";
 import { addMinMaxPropsWithCashOutflowDates, inyectDailyData, updateDailyData } from "../util/daily-data-cache.js";
@@ -41,9 +43,9 @@ let dailyClosing
 w.addEventListener("load", () => {
   inyectDailyData()
   //TODO: Temporalmente desactivado restriccion de rango de fechas
-  // if (!isAdmin()) {
-  //   addMinMaxPropsWithCashOutflowDates(".summary-day")
-  // }
+  if (!isAdmin()) {
+    addMinMaxPropsWithCashOutflowDates(".summary-day")
+  }
   changeDailyClosing(hoyEC())
 })
 
@@ -92,6 +94,18 @@ d.addEventListener("click", e => {
     saveDailyClosing()
   }
 
+  //Eliminar cierre diario
+  if ($el.matches(".daily-closing-delete") || $el.closest(".daily-closing-delete")) {
+    const $btnDelete = e.target.closest(".daily-closing-delete")
+    if ($btnDelete.disabled) return
+
+    if (!confirm(`ALERTA: Esta seguro de eliminar el cierre de caja del dia actual?`)) {
+      return
+    }
+
+    deleteDailyClosing()
+  }
+
 })
 
 // EVENTO=change RAIZ=document ACCION=cambio de fecha de operacion, y responsable de cierre de caja
@@ -134,7 +148,7 @@ function renderSections(salesData, expensesData, depositsData) {
   renderSummaryBySeller(salesData)
   // Consulta si existe los cierres de caja diario anterior y posterior, luego actualiza la vista
   inyectBeforeAfterDailyCashClosing(dailyClosing.tmpDateTime,
-    (voBeforeClosingDay, voAfterClosingDay) => renderDailyCashClosing(voBeforeClosingDay, voAfterClosingDay),
+    (voBeforeClosingDay, voActualClosingDay, voAfterClosingDay) => renderDailyCashClosing(voBeforeClosingDay, voActualClosingDay, voAfterClosingDay),
     (vsClosingDay, error) => ntf.errorAndLog(`Busqueda de cierre diario del dia ${vsClosingDay}`, error))
 }
 
@@ -438,7 +452,7 @@ function renderExpenses(expensesData, depositsData, deletedEnabled) {
   $body.appendChild($fragment)
 }
 
-function renderDailyCashClosing(voBeforeClosingDay, voAfterClosingDay) {
+function renderDailyCashClosing(voBeforeClosingDay, voActualClosingDay, voAfterClosingDay) {
   dailyClosing.initialBalance = voBeforeClosingDay ? voBeforeClosingDay.finalBalance : 0
 
   // Calcular saldo en caja
@@ -462,13 +476,20 @@ function renderDailyCashClosing(voBeforeClosingDay, voAfterClosingDay) {
   $contenedor.querySelector(".total-sales").innerText = dailyClosing.finalBalance.toFixed(2)
   $contenedor.querySelector(".card-sales").innerText = dailyClosing.cardSales.toFixed(2)
   $contenedor.querySelector(".transfer-sales").innerText = dailyClosing.transferSales.toFixed(2)
-  let $btnSave = d.querySelector(".daily-closing-save")
+  let $btnSave = d.querySelector(".daily-closing-save"),
+    $btnDelete = d.querySelector(".daily-closing-delete")
   $btnSave.dataset.existBefore = voBeforeClosingDay ? true : false
   $btnSave.dataset.existAfter = voAfterClosingDay ? true : false
-  if (!voBeforeClosingDay || voAfterClosingDay) {
-    $btnSave.setAttribute("disabled", true)
-  } else {
+  $btnSave.setAttribute("disabled", true)
+  $btnDelete.setAttribute("disabled", true)
+
+  // Habilitar botones para guardar y eliminar
+  if (voBeforeClosingDay && !voAfterClosingDay) {
     $btnSave.removeAttribute("disabled")
+    // Existe el registro del cierre contable del dia seleccionado
+    if (voActualClosingDay) {
+      $btnDelete.removeAttribute("disabled")
+    }
   }
 }
 
@@ -485,12 +506,22 @@ function deleteSale(vsSaleUid) {
 
 function deleteExpense(vsExpenseUid) {
   if (confirm(`Esta seguro que desea eliminar el Egreso ${vsExpenseUid}`)) {
-    deleteExpenseByUid(vsExpenseUid,
-      (vsExpenseUid) => {
-        ntf.okey(`Egreso eliminadao correctamente: ${vsExpenseUid}`)
-        changeDailyClosing(dailyClosing.tmpDateTime)
-      },
-      error => ntf.errorAndLog("Egreso NO eliminado", error))
+    if(vsExpenseUid.includes("-DEP")){
+      deleteDepositByUid(vsExpenseUid,
+        (vsDepositUid) => {
+          ntf.okey(`Deposito eliminadao correctamente: ${vsDepositUid}`)
+          changeDailyClosing(dailyClosing.tmpDateTime)
+        },
+        error => ntf.errorAndLog("Deposito NO eliminado", error))
+    }else{
+      deleteExpenseByUid(vsExpenseUid,
+        (vsExpenseUid) => {
+          ntf.okey(`Egreso eliminadao correctamente: ${vsExpenseUid}`)
+          changeDailyClosing(dailyClosing.tmpDateTime)
+        },
+        error => ntf.errorAndLog("Egreso NO eliminado", error))
+    }
+    
   }
 }
 
@@ -510,4 +541,16 @@ function saveDailyClosing() {
       ntf.okey(`Cierre de caja diario registrado: ${dateString}`)
     },
     error => ntf.errorAndLog("Cierre de caja diario NO registrado", error))
+}
+
+function deleteDailyClosing() {
+
+  // elimina el cierre diario en la base de datos
+  deleteDailyClosing(dailyClosing.tmpDateTime,
+    dateString => {
+      // Actualiza el rango con fecha minima y maxima para registro de informacion de ingresos y egresos de caja
+      updateDailyData()
+      ntf.okey(`Cierre de caja diario eliminado: ${dateString}`)
+    },
+    error => ntf.errorAndLog("Cierre de caja diario NO eliminado", error))
 }

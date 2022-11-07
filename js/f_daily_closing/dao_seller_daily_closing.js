@@ -33,7 +33,8 @@ export function maxClosingDay(callback) {
 export async function inyectBeforeAfterDailyCashClosing(vdDateTime, callback, callbackError) {
 
   const beforeKey = dateTimeToKeyDateString(vdDateTime.minus({ days: 1 })),
-    afterKey = dateTimeToKeyDateString(vdDateTime.plus({ days: 1 }))
+    afterKey = dateTimeToKeyDateString(vdDateTime.plus({ days: 1 })),
+    actualKey = dateTimeToKeyDateString(vdDateTime)
 
   let beforeDay = await dbRef.child(collections.dailyClosing).child(beforeKey).get()
     .then(snap => snap.exists() ? snap.val() : undefined)
@@ -41,8 +42,11 @@ export async function inyectBeforeAfterDailyCashClosing(vdDateTime, callback, ca
   let afterDay = await dbRef.child(collections.dailyClosing).child(afterKey).get()
     .then(snap => snap.exists() ? snap.val() : undefined)
     .catch(error => callbackError(afterKey, error))
+  let actualDay = await dbRef.child(collections.dailyClosing).child(actualKey).get()
+    .then(snap => snap.exists() ? snap.val() : undefined)
+    .catch(error => callbackError(afterKey, error))
 
-  callback(beforeDay, afterDay)
+  callback(beforeDay, actualDay, afterDay)
 }
 
 /**
@@ -73,9 +77,9 @@ export async function findSalesExpensesBankTxsByDay(vdDateTime, callback, callba
   await dbRef.child(collections.expenses).orderByKey().startAt(vsDate + "T").endAt(vsDate + "\uf8ff")
     .once('value')
     .then(snap => snap.forEach(child => {
-      let exp = child.val()
-      exp.tmpUid = child.key
-      expensesData.push(exp)
+      let dta = child.val()
+      dta.tmpUid = child.key
+      expensesData.push(dta)
     }))
     .catch(error => callbackError(`Busqueda de egresos de caja del dia ${searchDay}`, error))
 
@@ -84,7 +88,10 @@ export async function findSalesExpensesBankTxsByDay(vdDateTime, callback, callba
     .then(snap => {
       snap.forEach(child => {
         const dta = child.val()
-        if (dta.type === "DEPOSITO") depositsData.push(dta)
+        if (dta.type === "DEPOSITO") {
+          dta.tmpUid = child.key
+          depositsData.push(dta)
+        }
       })
     })
     .catch(error => callbackError(`Busqueda de depositos del dia ${searchDay}`, error))

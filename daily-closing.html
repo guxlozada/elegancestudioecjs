@@ -22,7 +22,7 @@
       onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
   </header>
   <main>
-    <section class="section" style="max-width: 1000px !important; margin:auto;">
+    <section class="section" style="max-width: 700px !important;margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -30,81 +30,96 @@
               <span class="icon">
                 <i class="fa-solid fa-list-check"></i>
               </span>
-              <span>Resumen diario de ingresos</span>
+              <span>Ingresos</span>
             </span>
           </p>
         </header>
-        <div class="card-content has-background-info-light p-2">
+        <div class="card-content has-background-info-light m-0 p-0">
           <div class="content">
-            <table class="summary-filters" style="max-width: 200px;">
-              <tbody>
-                <tr>
-                  <th style="vertical-align:middle">Fecha:</th>
-                  <td>
-                    <input type="date" class="summary-day input is-small" onkeydown="return false" required />
-                  </td>
-                  <td>
-                    <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
-                      <span class="icon is-small">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                      </span>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <table>
-              <thead class="has-background-link">
-                <tr class="has-text-right">
-                  <th style="width:1rem"></th>
-                  <th class="has-text-white" style="text-align:center;width:4rem">Hora</th>
-                  <th class="has-text-white has-text-left">Vendedor</th>
-                  <th class="has-text-white" style="width:5.5rem">Forma pago</th>
-                  <th class="has-text-white" style="width:5.5rem">Valor Venta</th>
-                  <th class="has-text-white" style="width:5.5rem">Impuestos</th>
-                  <th class="has-text-white" style="width:7rem">Base Imponible</th>
-                  <th class="has-text-white" style="width:5.5rem">Comisiones</th>
-                  <th class="has-text-white" style="width:7rem">Comisiones 1.12</th>
-                  <th class="has-text-white" style="width:5rem">Propinas</th>
-                  <th style="width:1rem"></th>
-                </tr>
-              </thead>
-              <tbody id="summary-body">
-                <!-- render summary-->
-              </tbody>
-              <tfoot id="summary-footer" class="has-text-weight-semibold ">
-                <tr class="has-background-grey-light">
-                  <th class="total-value has-text-right" colspan="5">0.00</th>
-                  <th class="total-taxes has-text-right">0.00</th>
-                  <th class="total-taxable-income has-text-right">0.00</th>
-                  <th class="total-barber-commissions has-text-right">0.00</th>
-                  <th class="total-barber-commissions-tmp has-text-right">0.00</th>
-                  <th class="total-tips-by-bank has-text-right">0.00</th>
-                  <th></th>
-                </tr>
-                <tr class="has-background-grey-lighter">
-                  <th class="has-text-right" colspan="4">Tarjetas Débito y Crédito ( - )</th>
-                  <th class="total-card has-text-right">0.00</th>
-                  <td colspan="6"></td>
-                </tr>
-                <tr class="has-background-grey-lighter">
-                  <th class="has-text-right" colspan="4">Transferencias ( - )</th>
-                  <th class="total-transfer has-text-right">0.00</th>
-                  <td colspan="6"></td>
-                </tr>
-                <tr class="has-background-grey-light">
-                  <th class="has-text-right" colspan="4">Efectivo</th>
-                  <th class="total-cash has-text-right">0.00</th>
-                  <td colspan="6"></td>
-                </tr>
-              </tfoot>
-            </table>
+
+            <div class="summary-filters field is-horizontal m-0 pt-2 pl-2">
+              <div class="field-label is-normal is-hidden-mobile">
+                <label class="label">Fecha:</label>
+              </div>
+              <div class="field-body">
+                <div class="field is-expanded">
+                  <div class="field has-addons">
+                    <p class="control is-narrow" title="Fecha de cierre de caja diario">
+                      <input type="date" class="summary-day input is-small" onkeydown="return false" required />
+                    </p>
+                    <p class="control">
+                      <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
+                        <span class="icon is-small">
+                          <i class="fa-solid fa-arrows-rotate"></i>
+                        </span>
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="table is-striped is-narrow is-hoverable">
+                <thead class="has-background-link">
+                  <tr>
+                    <th class="is-hidden-mobile"></th>
+                    <th class="has-text-left">Hora</th>
+                    <th>Vendedor</th>
+                    <th class="has-text-left"><abbr title="Forma de pago">Pago</abbr></th>
+                    <th><abbr title="Valor de venta">Venta</abbr></th>
+                    <th class="is-hidden-mobile"><abbr title="Impuestos">Imp</abbr></th>
+                    <th class="is-hidden-mobile"><abbr title="Base Imponible para impuestos">Base</abbr></th>
+                    <th class="is-hidden-mobile"><abbr title="Comision sobre base imponible">%</abbr></th>
+                    <th class="is-hidden-mobile" style="white-space: nowrap"><abbr
+                        title="Comision sobre valor de venta">% 1.12</abbr></th>
+                    <th><abbr title="Propinas">Prop</abbr></th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="summary-body">
+                  <!-- render summary-->
+                </tbody>
+                <tfoot id="summary-footer" class="has-text-weight-semibold ">
+                  <tr class="has-background-grey-light has-text-right">
+                    <td class="is-hidden-mobile"></td>
+                    <th class="total-value" colspan="4">0.00</th>
+                    <th class="total-taxes is-hidden-mobile">0.00</th>
+                    <th class="total-taxable-income is-hidden-mobile">0.00</th>
+                    <th class="total-barber-commissions is-hidden-mobile">0.00</th>
+                    <th class="total-barber-commissions-tmp is-hidden-mobile">0.00</th>
+                    <th class="total-tips-by-bank">0.00</th>
+                    <td></td>
+                  </tr>
+                  <tr class="has-background-grey-lighter">
+                    <td class="is-hidden-mobile"></td>
+                    <th class="has-text-right" colspan="3">Tarjetas Débito y Crédito ( - )</th>
+                    <th class="total-card has-text-right">0.00</th>
+                    <td class="is-hidden-mobile" colspan="4"></td>
+                    <td colspan="2"></td>
+                  </tr>
+                  <tr class="has-background-grey-lighter">
+                    <td class="is-hidden-mobile"></td>
+                    <th class="has-text-right" colspan="3">Transferencias ( - )</th>
+                    <th class="total-transfer has-text-right">0.00</th>
+                    <td class="is-hidden-mobile" colspan="4"></td>
+                    <td colspan="2"></td>
+                  </tr>
+                  <tr class="has-background-grey-light">
+                    <td class="is-hidden-mobile"></td>
+                    <th class="has-text-right" colspan="3">Efectivo</th>
+                    <th class="total-cash has-text-right">0.00</th>
+                    <td class="is-hidden-mobile" colspan="4"></td>
+                    <td colspan="2"></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="by-seller section" style="max-width: 1000px !important; margin:auto;">
+    <section class="by-seller section" style="max-width: 700px !important;margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -112,53 +127,59 @@
               <span class="icon">
                 <i class="fa-solid fa-scissors"></i>
               </span>
-              <span>Resumen diario de ventas por vendedor</span>
+              <span>Ventas por vendedor</span>
             </span>
           </p>
         </header>
-        <div class="card-content has-background-info-light p-2">
+        <div class="card-content has-background-info-light m-0 p-0">
           <div class="content">
-            <table class="summary-filters" style="max-width: 200px;">
-              <tbody>
-                <tr>
-                  <th style="vertical-align:middle">Fecha:</th>
-                  <td>
-                    <input type="date" class="summary-day input is-small" onkeydown="return false" required />
-                  </td>
-                  <td>
-                    <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
-                      <span class="icon is-small">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                      </span>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <table>
-              <thead class="has-background-link">
-                <tr class="has-text-right">
-                  <th style="width:1rem"></th>
-                  <th class="has-text-white" style="width:4rem;text-align:center;">Hora</th>
-                  <th class="has-text-white has-text-left"></th>
-                  <th class="has-text-white" style="width:6rem">Valor Venta</th>
-                  <th class="has-text-white" style="width:6rem">Impuestos</th>
-                  <th class="has-text-white" style="width:7rem">Base Imponible</th>
-                  <th class="has-text-white" style="width:6rem">Comisiones</th>
-                  <th class="has-text-white" style="width:7rem">Comisiones 1.12</th>
-                  <th class="has-text-white" style="width:6rem">Propinas</th>
-                </tr>
-              </thead>
-              <tbody id="seller-body">
-                <!-- render summary by seller-->
-              </tbody>
-            </table>
+            <div class="summary-filters field is-horizontal m-0 pt-2 pl-2">
+              <div class="field-label is-normal is-hidden-mobile">
+                <label class="label">Fecha:</label>
+              </div>
+              <div class="field-body">
+                <div class="field is-expanded">
+                  <div class="field has-addons">
+                    <p class="control is-narrow" title="Fecha de cierre de caja diario">
+                      <input type="date" class="summary-day input is-small" onkeydown="return false" required />
+                    </p>
+                    <p class="control">
+                      <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
+                        <span class="icon is-small">
+                          <i class="fa-solid fa-arrows-rotate"></i>
+                        </span>
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="table is-striped is-narrow is-hoverable">
+                <thead class="has-background-link">
+                  <tr>
+                    <th class="is-hidden-mobile"></th>
+                    <th class="has-text-left">Hora</th>
+                    <th class="has-text-left">Vendedor</th>
+                    <th><abbr title="Valor de venta">Venta</abbr></th>
+                    <th class="is-hidden-mobile"><abbr title="Impuestos">Imp</abbr></th>
+                    <th class="is-hidden-mobile"><abbr title="Base Imponible para impuestos">Base</abbr></th>
+                    <th class="is-hidden-mobile"><abbr title="Comision sobre base imponible">%</abbr></th>
+                    <th style="white-space: nowrap"><abbr title="Comision sobre valor de venta">% 1.12</abbr></th>
+                    <th><abbr title="Propinas">Prop</abbr></th>
+                  </tr>
+                </thead>
+                <tbody id="seller-body">
+                  <!-- render summary by seller-->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="expenses section" style="max-width: 1000px !important; margin:auto;">
+    <section class="expenses section" style="max-width: 700px !important;margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -166,51 +187,57 @@
               <span class="icon">
                 <i class="fa-solid fa-money-bill-trend-up"></i>
               </span>
-              <span>Resumen diario de egresos de caja</span>
+              <span>Egresos de caja</span>
             </span>
           </p>
         </header>
-        <div class="card-content has-background-info-light p-2">
+        <div class="card-content has-background-info-light m-0 p-0">
           <div class="content">
-            <table class="summary-filters" style="max-width: 200px;">
-              <tbody>
-                <tr>
-                  <th style="vertical-align:middle">Fecha:</th>
-                  <td>
-                    <input type="date" class="summary-day input is-small" onkeydown="return false" required />
-                  </td>
-                  <td>
-                    <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
-                      <span class="icon is-small">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                      </span>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <table>
-              <thead class="has-background-link">
-                <tr>
-                  <th style="width:1rem"></th>
-                  <th class="has-text-white" style="text-align:center;width:4rem;">Tipo</th>
-                  <th class="has-text-white" style="width:6rem">Responsable</th>
-                  <th class="has-text-white" style="width:8rem">Comprobante</th>
-                  <th class="has-text-white">Detalles</th>
-                  <th class="has-text-white has-text-right" style="width:7rem">Valor</th>
-                  <th style="width:1rem"></th>
-                </tr>
-              </thead>
-              <tbody id="expenses-body">
-                <!-- render expenses-->
-              </tbody>
-            </table>
+            <div class="summary-filters field is-horizontal m-0 pt-2 pl-2">
+              <div class="field-label is-normal is-hidden-mobile">
+                <label class="label">Fecha:</label>
+              </div>
+              <div class="field-body">
+                <div class="field is-expanded">
+                  <div class="field has-addons">
+                    <p class="control is-narrow" title="Fecha de cierre de caja diario">
+                      <input type="date" class="summary-day input is-small" onkeydown="return false" required />
+                    </p>
+                    <p class="control">
+                      <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
+                        <span class="icon is-small">
+                          <i class="fa-solid fa-arrows-rotate"></i>
+                        </span>
+                      </button>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="table is-striped is-narrow is-hoverable">
+                <thead class="has-background-link">
+                  <tr class="has-text-left">
+                    <th class="is-hidden-mobile"></th>
+                    <th class="is-hidden-mobile">Tipo</th>
+                    <th class="is-hidden-mobile">Comprobante</th>
+                    <th style="white-space: nowrap"><abbr title="Responsable o beneficiario">Resp/Benef</abbr></th>
+                    <th>Detalles</th>
+                    <th>Valor</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="expenses-body">
+                  <!-- render expenses-->
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="daily-closing section" style="max-width: 500px !important; margin:auto;">
+    <section class="daily-closing section"  style="max-width: 700px !important;margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -222,29 +249,30 @@
             </span>
           </p>
         </header>
-        <div class="card-content has-background-info-light p-2">
+        <div class="card-content has-background-info-light m-0 p-0">
           <div class="content">
-
-            <div class="field is-horizontal m-0">
-              <div class="field-label is-normal has-text-right is-hidden-mobile">
+            <div class="summary-filters field is-horizontal m-0 p-0 pt-2 pl-2">
+              <div class="field-label is-normal is-hidden-mobile">
                 <label class="label">Fecha:</label>
               </div>
-              <div class="field-body  pl-4">
-                <div class="field is-narrow">
-                  <p class="control">
-                    <input type="date" class="summary-day input is-small" onkeydown="return false" style="width: 8rem"
-                      required />
-                    <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
-                      <span class="icon is-small">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                      </span>
-                    </button>
-                  </p>
+              <div class="field-body">
+                <div class="field is-expanded">
+                  <div class="field has-addons">
+                    <p class="control is-narrow" title="Fecha de cierre de caja diario">
+                      <input type="date" class="summary-day input is-small" onkeydown="return false" required />
+                    </p>
+                    <p class="control">
+                      <button class="summary-day-update button is-small is-link is-outlined" title="Actualizar">
+                        <span class="icon is-small">
+                          <i class="fa-solid fa-arrows-rotate"></i>
+                        </span>
+                      </button>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-
-            <div class="field is-horizontal mt-2">
+            <div class="field is-horizontal" title="Responsable del cierre de caja">
               <div class="field-label is-normal is-hidden-mobile pt-0">
                 <label class="label">Responsable:</label>
               </div>
@@ -268,85 +296,85 @@
               </div>
             </div>
 
-            <table>
+            <table class="table">
               <tbody id="daily-closing">
                 <tr class="has-background-grey-lighter is-size-6">
-                  <th colspan="2">Saldo en caja inicial (día anterior)</th>
-                  <th class="initial-balance has-text-right pr-5">0.00</th>
+                  <th colspan="2">Saldo en caja inicial</th>
+                  <th class="initial-balance has-text-right">0.00</th>
                 </tr>
                 <tr>
                   <th>Ventas en efectivo</th>
-                  <td>+</td>
-                  <td class="cash-sales has-text-right pr-5">0.00</td>
+                  <td class="is-narrow">+</td>
+                  <td class="cash-sales is-narrow has-text-right">0.00</td>
                 </tr>
                 <tr class="has-background-grey-lighter">
                   <th>Adelantos</th>
                   <td>-</td>
-                  <td class="advances has-text-right pr-5">0.00</td>
+                  <td class="advances has-text-right">0.00</td>
                 </tr>
                 <tr>
                   <th>Depositos</th>
                   <td>-</td>
-                  <td class="deposits has-text-right pr-5">0.00</td>
+                  <td class="deposits has-text-right">0.00</td>
                 </tr>
                 <tr class="has-background-grey-lighter">
                   <th>Compras</th>
                   <td>-</td>
-                  <td class="shopping has-text-right pr-5">0.00</td>
+                  <td class="shopping has-text-right">0.00</td>
                 </tr>
                 <tr>
                   <th>Gastos</th>
                   <td>-</td>
-                  <td class="expenses has-text-right pr-5">0.00</td>
+                  <td class="expenses has-text-right">0.00</td>
                 </tr>
                 <tr class="has-background-grey-lighter">
                   <th>Comisiones anticipadas</th>
                   <td>-</td>
-                  <td class="commissions has-text-right pr-5">0.00</td>
+                  <td class="commissions has-text-right">0.00</td>
                 </tr>
                 <tr>
                   <th>Devolucion de propinas tarjeta/transferencia</th>
                   <td>-</td>
-                  <td class="tips-by-bank has-text-right pr-5">0.00</td>
+                  <td class="tips-by-bank has-text-right">0.00</td>
                 </tr>
                 <tr class="has-background-grey-lighter">
                   <th>Pago salarios</th>
                   <td>-</td>
-                  <td class="salaries has-text-right pr-5">0.00</td>
+                  <td class="salaries has-text-right">0.00</td>
                 </tr>
                 <tr>
                   <th>Ajuste</th>
                   <td class="fit-symbol "></td>
-                  <td class="fit has-text-right pr-5">0.00</td>
+                  <td class="fit has-text-right">0.00</td>
                 </tr>
                 <tr class="has-background-grey-light is-size-6">
                   <th colspan="2">Saldo en caja al cierre</th>
-                  <th class="total-sales has-text-right pr-5">0.00</th>
+                  <th class="total-sales has-text-right">0.00</th>
                 </tr>
                 <tr class="has-background-grey-lighter is-size-6">
                   <th colspan="2">Ventas con tarjeta (CxC)</th>
-                  <td class="card-sales has-text-right pr-5">0.00</td>
+                  <td class="card-sales has-text-right">0.00</td>
                 </tr>
                 <tr class="has-background-grey-light is-size-6">
                   <th colspan="2">Transferencias</th>
-                  <td class="transfer-sales has-text-right pr-5">0.00</td>
+                  <td class="transfer-sales has-text-right">0.00</td>
                 </tr>
 
               </tbody>
             </table>
           </div>
-          <footer class="card-footer as-background-info-light p-1">
-            <button class="daily-closing-delete card-footer-item button is-danger mr-2">
+          <footer class="card-footer as-background-info-light">
+            <button class="daily-closing-delete card-footer-item button is-danger mr-4 is-hidden">
               <span>Eliminar</span>
               <span class="icon">
                 <i class="fa-solid fa-xmark"></i>
               </span>
             </button>
-            <button class="daily-closing-save card-footer-item button is-primary ml-2">
+            <button class="daily-closing-save card-footer-item button is-primary">
               <span>Guardar</span>
               <span class="icon">
                 <i class="fa-solid fa-check"></i>
-              </span> 
+              </span>
             </button>
           </footer>
         </div>
@@ -358,17 +386,17 @@
 
   <template id="sale-row">
     <tr class="has-text-right">
-      <td class="index"></td>
-      <td class="time" style="text-align:center"></td>
-      <td class="seller has-text-left"></td>
-      <td class="payment"></td>
-      <th class="value"></th>
-      <td class="taxes"></td>
-      <td class="taxable-income"></td>
-      <td class="barber-commission"></td>
-      <td class="barber-commission-tmp"></td>
-      <td class="tips-by-bank"></td>
-      <td>
+      <td class="index is-narrow is-hidden-mobile"></td>
+      <td class="time is-narrow has-text-left pl-1"></td>
+      <td class="seller is-narrow has-text-left"></td>
+      <td class="payment has-text-left"></td>
+      <th class="value is-narrow"></th>
+      <td class="taxes is-narrow is-hidden-mobile"></td>
+      <td class="taxable-income is-narrow is-hidden-mobile"></td>
+      <td class="barber-commission is-narrow is-hidden-mobile"></td>
+      <td class="barber-commission-tmp is-narrow is-hidden-mobile"></td>
+      <td class="tips-by-bank is-narrow"></td>
+      <td class="is-narrow">
         <a class="sale-delete is-hidden" title="Eliminar venta" data-key="UID">
           <span class="icon is-small has-text-danger ">
             <i class="fa-solid fa-trash-can"></i>
@@ -380,36 +408,42 @@
 
   <template id="seller-row">
     <tr class="has-text-right">
-      <td class="index"></td>
-      <td class="time" style="text-align:center"></td>
-      <td class="value" colspan="2"></td>
-      <td class="taxes"></td>
-      <td class="taxable-income"></td>
-      <td class="barber-commission"></td>
-      <td class="barber-commission-tmp"></td>
-      <td class="tips-by-bank"></td>
+      <td class="index is-narrow is-hidden-mobile"></td>
+      <td class="time is-narrow  has-text-left pl-1"></td>
+      <td class="seller has-text-left"></td>
+      <td class="value is-narrow"></td>
+      <td class="taxes is-narrow is-hidden-mobile"></td>
+      <td class="taxable-income is-narrow is-hidden-mobile"></td>
+      <td class="barber-commission is-narrow is-hidden-mobile"></td>
+      <td class="barber-commission-tmp is-narrow"></td>
+      <td class="tips-by-bank is-narrow"></td>
     </tr>
   </template>
 
   <template id="seller-totals">
     <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
-      <th class="seller" colspan="3"></th>
+      <td class="is-hidden-mobile"></td>
+      <th colspan="2">Total</th>
       <th class="total-value"></th>
-      <th class="total-taxes"></th>
-      <th class="total-taxable-income"></th>
-      <th class="total-barber-commissions"></th>
+      <th class="total-taxes is-hidden-mobile"></th>
+      <th class="total-taxable-income is-hidden-mobile"></th>
+      <th class="total-barber-commissions is-hidden-mobile"></th>
       <th class="total-barber-commissions-tmp"></th>
       <th class="total-barber-tips"></th>
     </tr>
-    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
-      <th colspan="6">Pagado</th>
-      <th class="paid-barber-commissions"></th>
-      <th class="paid-barber-commissions-tmp"></th>
-      <th class="paid-barber-tips"></th>
+    <tr class="has-background-grey-lighter has-text-right">
+      <td class="is-hidden-mobile"></td>
+      <th colspan="2">Pagado</th>
+      <td></td>
+      <td class="paid-barber-commissions is-hidden-mobile" colspan="3"></td>
+      <td class="paid-barber-commissions-tmp"></td>
+      <td class="paid-barber-tips"></td>
     </tr>
     <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
-      <th colspan="6">Pendiente pago</th>
-      <th class="pending-barber-commissions"></th>
+      <td class="is-hidden-mobile"></td>
+      <th colspan="2">Pendiente pago</th>
+      <td></td>
+      <th class="pending-barber-commissions is-hidden-mobile" colspan="3"></th>
       <th class="pending-barber-commissions-tmp"></th>
       <th class="pending-barber-tips"></th>
     </tr>
@@ -417,13 +451,13 @@
 
   <template id="expense-row">
     <tr>
-      <td class="index has-text-right"></td>
-      <td class="type"></td>
-      <td class="responsable"></td>
-      <td class="voucher"></td>
-      <td class="details" title=""></td>
-      <td class="value has-text-right"></td>
-      <td>
+      <td class="index is-narrow has-text-right is-hidden-mobile"></td>
+      <td class="type is-narrow is-hidden-mobile"></td>
+      <td class="voucher is-narrow is-hidden-mobile"></td>
+      <td class="responsable is-narrow"></td>
+      <td class="details"></td>
+      <td class="value is-narrow has-text-right"></td>
+      <td class="is-narrow">
         <a class="expense-delete is-hidden" title="Eliminar egreso" data-key="UID">
           <span class="icon is-small has-text-danger">
             <i class="fa-solid fa-trash-can"></i>
@@ -435,9 +469,10 @@
 
   <template id="expense-totals">
     <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
-      <th class="type" colspan="5"></th>
+      <td class="is-hidden-mobile" colspan="3"></td>
+      <th class="type" colspan="2"></th>
       <th class="total"></th>
-      <th></th>
+      <td></td>
     </tr>
   </template>
 

@@ -6,9 +6,9 @@ import { deleteSaleByUid } from "../f_sales/dao_selller_sales.js";
 import { deleteExpenseByUid } from "../f_expenses/dao_cash_outflows.js";
 import { deleteDepositByUid } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
-import { isAdmin } from "../dom/manager_user.js";
+import validAdminAccess, { isAdmin } from "../dom/manager_user.js";
 import { addMinMaxPropsWithCashOutflowDates, inyectDailyData, updateDailyData } from "../util/daily-data-cache.js";
-import { findSalesExpensesBankTxsByDay, inyectBeforeAfterDailyCashClosing, insertDailyClosing } from "./dao_seller_daily_closing.js";
+import { findSalesExpensesBankTxsByDay, inyectBeforeAfterDailyCashClosing, insertDailyClosing, deleteDailyClosing } from "./dao_seller_daily_closing.js";
 
 const d = document,
   w = window,
@@ -42,10 +42,7 @@ let dailyClosing
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
 w.addEventListener("load", () => {
   inyectDailyData()
-  //TODO: Temporalmente desactivado restriccion de rango de fechas
-  if (!isAdmin()) {
-    addMinMaxPropsWithCashOutflowDates(".summary-day")
-  }
+  enabledChangeDate()
   changeDailyClosing(hoyEC())
 })
 
@@ -103,7 +100,7 @@ d.addEventListener("click", e => {
       return
     }
 
-    deleteDailyClosing()
+    removeDailyClosing()
   }
 
 })
@@ -112,7 +109,12 @@ d.addEventListener("click", e => {
 d.addEventListener("change", e => {
   let $input = e.target
   if ($input.matches(".summary-day") && dateIsValid($input.value)) {
-    changeDailyClosing(inputDateToDateTime($input.value))
+    if (validAdminAccess()) {
+      enabledChangeDate()
+      changeDailyClosing(inputDateToDateTime($input.value))
+    } else {
+      changeDailyClosing()
+    }
   }
   if ($input.name === "responsable") {
     dailyClosing.responsable = $input.value
@@ -200,7 +202,7 @@ function renderSummary(salesData, deletedEnabled) {
       $saleRow.querySelector(".index").innerText = index + 1
       $saleRow.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
       $saleRow.querySelector(".seller").innerText = sale.seller
-      $saleRow.querySelector(".payment").innerText = sale.typePayment.toLowerCase()
+      $saleRow.querySelector(".payment").innerText = sale.typePayment.toLowerCase().slice(0,8)
       $saleRow.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
       $saleRow.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
       if (sale.tmpTipByBank > 0) $saleRow.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank.toFixed(2)
@@ -291,6 +293,7 @@ function renderSummaryBySeller(salesData) {
     let $rowTmp = d.getElementById("seller-row").content.cloneNode(true)
     $rowTmp.querySelector(".index").innerText = index
     $rowTmp.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
+    $rowTmp.querySelector(".seller").innerText = sale.seller
     $rowTmp.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
     $rowTmp.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
     if (sale.tmpTipByBank > 0) $rowTmp.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank.toFixed(2)
@@ -305,7 +308,6 @@ function renderSummaryBySeller(salesData) {
 
     if (!sale || seller !== sale.seller) {// Cambio de vendedor
       let $totalsTmp = d.getElementById("seller-totals").content.cloneNode(true)
-      $totalsTmp.querySelector(".seller").innerText = seller
       $totalsTmp.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
       $totalsTmp.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
       $totalsTmp.querySelector(".total-barber-tips").innerText = vnTotalBarberTips.toFixed(2)
@@ -506,14 +508,14 @@ function deleteSale(vsSaleUid) {
 
 function deleteExpense(vsExpenseUid) {
   if (confirm(`Esta seguro que desea eliminar el Egreso ${vsExpenseUid}`)) {
-    if(vsExpenseUid.includes("-DEP")){
+    if (vsExpenseUid.includes("-DEP")) {
       deleteDepositByUid(vsExpenseUid,
         (vsDepositUid) => {
           ntf.okey(`Deposito eliminadao correctamente: ${vsDepositUid}`)
           changeDailyClosing(dailyClosing.tmpDateTime)
         },
         error => ntf.errorAndLog("Deposito NO eliminado", error))
-    }else{
+    } else {
       deleteExpenseByUid(vsExpenseUid,
         (vsExpenseUid) => {
           ntf.okey(`Egreso eliminadao correctamente: ${vsExpenseUid}`)
@@ -521,7 +523,7 @@ function deleteExpense(vsExpenseUid) {
         },
         error => ntf.errorAndLog("Egreso NO eliminado", error))
     }
-    
+
   }
 }
 
@@ -543,8 +545,7 @@ function saveDailyClosing() {
     error => ntf.errorAndLog("Cierre de caja diario NO registrado", error))
 }
 
-function deleteDailyClosing() {
-
+function removeDailyClosing() {
   // elimina el cierre diario en la base de datos
   deleteDailyClosing(dailyClosing.tmpDateTime,
     dateString => {
@@ -553,4 +554,12 @@ function deleteDailyClosing() {
       ntf.okey(`Cierre de caja diario eliminado: ${dateString}`)
     },
     error => ntf.errorAndLog("Cierre de caja diario NO eliminado", error))
+}
+
+function enabledChangeDate() {
+  //Habilita el boton de eliminacion de cierre de caja solo para administradores
+  if (isAdmin()) {
+    const $btnDelete = d.querySelector(".daily-closing-delete")
+    $btnDelete.classList.remove("is-hidden")
+  }
 }

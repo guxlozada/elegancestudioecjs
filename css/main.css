@@ -5,6 +5,13 @@ body {
   font-size: 11px;
 }
 
+
+thead th {
+  background: hsl(217, 71%, 45%);
+  color: white !important;
+  text-align: center !important;
+}
+
 /***** Notificaciones - Inicio - BulmaNotification.js *****/
 .note {
   visibility: hidden;
@@ -49,3 +56,5 @@ body {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+

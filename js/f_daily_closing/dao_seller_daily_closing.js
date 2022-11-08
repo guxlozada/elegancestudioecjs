@@ -119,3 +119,19 @@ export function insertDailyClosing(voDailyClosing, callback, callbackError) {
     .then(snap => callback(dailyClosing.searchDate))
     .catch(error => callbackError(error))
 }
+
+
+/**
+ * Elimina la informacion del cierre diario de caja.
+ * @param {string} vdDate Fecha a eliminar
+ * @param {Function} callback 
+ * @param {Function} callbackError 
+ */
+export async function deleteDailyClosing(vdDate, callback, callbackError) {
+  const dailyKey = dateTimeToKeyDateString(vdDate)
+  var updates = {}
+  // Eliminar y respaldar el egreso
+  updates[`${collections.dailyClosing}/${dailyKey}`] = null
+  dbRef.update(updates, error => error ? callbackError(error) : callback(dailyKey))
+
+}

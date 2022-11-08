@@ -134,7 +134,7 @@ function renderExpense(vmExpenses, voFilters) {
       $rowTmp.querySelector(".type").innerText = type
       $rowTmp.querySelector(".responsable").innerText = exp.responsable
       $rowTmp.querySelector(".value").innerText = exp.value.toFixed(2)
-      $rowTmp.querySelector(".details").innerText = exp.voucher ? "Comprobante Nro. exp.voucher" : (exp.details || "")
+      $rowTmp.querySelector(".details").innerText = (exp.details || "")+ (exp.voucher ? ", Comprobante Nro." +exp.voucher : "") 
       $fragment.appendChild($rowTmp)
       vnTotalValueByType += exp.value
     })

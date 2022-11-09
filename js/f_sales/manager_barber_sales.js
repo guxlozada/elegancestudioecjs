@@ -212,6 +212,7 @@ function renderSaleItems(changeTypePayment) {
 
   if (sale.valid) {
     const $template = d.getElementById("sale-item-template").content,
+      $descMobile = $template.querySelector(".sale-item-description-mobile"),
       $desc = $template.querySelector(".sale-item-description"),
       $amount = $template.querySelector(".sale-item-amount"),
       $unitValue = $template.querySelector(".sale-item-unit-value"),
@@ -276,6 +277,7 @@ function renderSaleItems(changeTypePayment) {
       sale.barberCommission += item.barberCommission
 
       // crear detalle de carrito (fila de tabla)
+      $descMobile.innerText = item.description
       $desc.innerText = item.description
       $amount.value = item.numberOfUnits
       $amount.dataset.key = item.tmpUid

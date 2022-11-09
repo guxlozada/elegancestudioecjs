@@ -47,7 +47,7 @@
   </header>
   <main>
 
-    <section id="sales" class="section is-medium" style="max-width: 1000px !important; margin:auto;">
+    <section id="sales" class="section" style="max-width: 700px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -77,11 +77,11 @@
                       onblur="document.querySelector('.client-search-text').focus()">Seleccione un cliente</a>
                   </th>
                 </tr>
-                <tr class="has-background-warning">
+                <tr class="has-background-warning is-hidden">
                   <th>Último servicio:</th>
                   <th><span id="sale-client-lastserv">No existe</span></td>
                 </tr>
-                <tr class="has-background-warning">
+                <tr class="has-background-warning is-hidden">
                   <th>Referidos:</th>
                   <th><span id="sale-client-referrals">0</span></th>
                 </tr>
@@ -158,110 +158,113 @@
                       </label>
                       <label class="radio">
                         <input type="radio" name="typeSale" value="PORMAYOR">
-                        Al por mayor (SOLO para productos)
+                        Al por mayor <span class="is-hidden-mobile">(SOLO para productos)</span>
                       </label>
                     </div>
                   </th>
                 </tr>
               </tbody>
             </table>
-            <table id="sale-details">
-              <thead class="has-background-grey-lighter">
-                <tr>
-                  <th><button class="trigger-services-modal button is-small is-link is-rounded"
-                      data-target="services-modal">
-                      <span class="icon">
-                        <i class="fa-solid fa-scissors"></i>
-                      </span>
-                      <span class="is-hidden-mobile">Agregar Servicio</span>
-                    </button>
-                    <button class="trigger-services-modal-eneglimar button is-small is-link is-rounded is-hidden"
-                      data-target="services-modal-eneglimar">
-                      <span class="icon">
-                        <i class="fa-solid fa-scissors"></i>
-                      </span>
-                      <span class="is-hidden-mobile">Agregar Servicio</span>
-                    </button>
-                  </th>
-                  <th style="width:1rem"><span title="Cantidad">Cant.</span></th>
-                  <th class="has-text-right" style="width:2.5rem"><span title="Valor por unidad">Val/Unid</span></th>
-                  <th style="width:1rem"><span title="Descuento por unidad">Desc/Unid</span></th>
-                  <th class="has-text-right" style="width:2.5rem">Valor</th>
-                  <th style="width:1rem"></th>
-                </tr>
-              </thead>
-              <tbody id="sale-details-services">
-                <!-- Agregar detalles de servicios-->
+            <div class="table-container">
+              <table class="table is-striped is-narrow is-hoverable" id="sale-details">
+                <thead class="has-background-grey-lighter">
+                  <tr>
+                    <th><button class="trigger-services-modal button is-small is-link is-rounded"
+                        data-target="services-modal">
+                        <span class="icon">
+                          <i class="fa-solid fa-scissors"></i>
+                        </span>
+                        <span class="is-hidden-mobile">Agregar Servicio</span>
+                      </button>
+                      <button class="trigger-services-modal-eneglimar button is-small is-link is-rounded is-hidden"
+                        data-target="services-modal-eneglimar">
+                        <span class="icon">
+                          <i class="fa-solid fa-scissors"></i>
+                        </span>
+                        <span class="is-hidden-mobile">Agregar Servicio</span>
+                      </button>
+                    </th>
+                    <th><abbr title="Cantidad">Cant</span></th>
+                    <th><abbr title="Valor unitario">VxU</span></th>
+                    <th><abbr title="Descuento por unidad">DxU</span></th>
+                    <th><abbr title="Subtotal">Subt</span></th>
+                    <td></td>
+                  </tr>
+                </thead>
+                <tbody id="sale-details-services">
+                  <!-- Agregar detalles de servicios-->
 
-              </tbody>
-              <thead class="has-background-grey-lighter">
-                <tr>
-                  <th><button href="#" class="trigger-products-modal button is-small is-link is-rounded"
-                      data-target="products-modal">
-                      <span class="icon">
-                        <i class="fa-solid fa-basket-shopping"></i>
-                      </span>
-                      <span class="is-hidden-mobile">Agregar Producto</span>
-                    </button></th>
-                  <th colspan="5"></th>
-                </tr>
-              </thead>
-              <tbody id="sale-details-products">
-                <!-- Agregar detalles de productos-->
-              </tbody>
-              <tfoot id="sale-summary">
-                <tr class="has-background-grey-lighter">
-                  <th>Propina (SOLO transferencia/tarjeta credito/debito)</th>
-                  <th class=" has-text-right" colspan="5">
-                    <input class="sale-summary-tip" id="tip-value" name="tipValue" type="number" step="0.1" min="0.0"
-                      placeholder="0.00" />
-                  </th>
-                </tr>
-                <tr class="has-background-white">
-                  <th>Base imponible</th>
-                  <td class="sale-summary-taxableincome has-text-right" colspan="4">0.00</td>
-                  <td></td>
-                </tr>
-                <tr class="has-background-white">
-                  <th>Impuestos (IVA, etc.)</th>
-                  <td class="sale-summary-taxes has-text-right" colspan="4">0.00</td>
-                  <td></td>
-                </tr>
-                <tr class="has-background-grey-lighter">
-                  <th>Venta Total</th>
-                  <th class="sale-summary-totalsale has-text-right" colspan="4">0.00</th>
-                  <td></td>
-                </tr>
+                </tbody>
+                <tbody class="has-background-grey-lighter">
+                  <tr>
+                    <th><button class="trigger-products-modal button is-small is-link is-rounded"
+                        data-target="products-modal">
+                        <span class="icon">
+                          <i class="fa-solid fa-basket-shopping"></i>
+                        </span>
+                        <span class="is-hidden-mobile">Agregar Producto</span>
+                      </button></th>
+                    <td colspan="5"></td>
+                  </tr>
+                </tbody>
+                <tbody id="sale-details-products">
+                  <!-- Agregar detalles de productos-->
+                </tbody>
+                <tfoot id="sale-summary">
+                  <tr class="has-background-grey-lighter">
+                    <th colspan="3">
+                      Propina <span class="is-hidden-mobile">(SOLO transferencia/tarjeta credito/debito)</span></th>
+                    <th class="has-text-right pr-5" colspan="3">
+                      <input type="number" class="sale-summary-tip" id="tip-value" name="tipValue" step="0.1" min="0.0"
+                        placeholder="0.00" />
+                    </th>
+                  </tr>
+                  <tr class="has-background-white">
+                    <th colspan="3">Base imponible</th>
+                    <td class="sale-summary-taxableincome has-text-right" colspan="2">0.00</td>
+                    <td></td>
+                  </tr>
+                  <tr class="has-background-white">
+                    <th colspan="3">Impuestos (IVA, etc.)</th>
+                    <td class="sale-summary-taxes has-text-right" colspan="2">0.00</td>
+                    <td></td>
+                  </tr>
+                  <tr class="has-background-grey-lighter">
+                    <th colspan="3">Venta Total</th>
+                    <th class="sale-summary-totalsale has-text-right" colspan="2">0.00</th>
+                    <td></td>
+                  </tr>
 
-                <!--tr>
+                  <!--tr>
                   <th>Descuento</th>
                   <td class="sale-summary-discounts has-text-right" colspan="4">0.00</td>
                   <td></td>
                 </tr-->
-              </tfoot>
-            </table>
+                </tfoot>
+              </table>
+            </div>
           </div>
         </div>
-        <footer class="card-footer">
-          <div class="buttons is-right" style="width: 100%;">
-            <a class="sale-save card-footer-item button is-primary">
-              <span class="icon">
-                <i class="fa-solid fa-check"></i>
-              </span>
-              <span>Guardar</span>
-            </a>
-            <a class="sale-cancel card-footer-item button is-danger">
-              <span class="icon">
-                <i class="fa-solid fa-xmark"></i>
-              </span>
-              <span>Cancelar</span>
-            </a>
-          </div>
+        <footer class="card-footer has-background-info-light p-1">
+          <button type="button" class="sale-cancel card-footer-item button is-danger mr-4"
+            title="Descartar y no guardar los cambios de la venta">
+            <span>Cancelar</span>
+            <span class="icon is-small">
+              <i class="fa-solid fa-xmark"></i>
+            </span>
+          </button>
+          <button type="button" class="sale-save card-footer-item button is-primary"
+            title="Guardar informacion de la venta">
+            <span>Guardar</span>
+            <span class="icon is-small">
+              <i class="fa-solid fa-check"></i>
+            </span>
+          </button>
         </footer>
       </div>
     </section>
 
-    <section id="clients" class="section is-medium" style="max-width: 1000px !important; margin:auto;">
+    <section id="clients" class="section is-medium" style="max-width: 700px !important; margin:auto;">
       <article class="panel is-info is-size-7 has-background-info-light">
         <p class="panel-heading  is-size-6">
           <span class="panel-icon has-text-white">
@@ -307,7 +310,7 @@
       </article>
     </section>
 
-    <section id="client-edit" class="section is-large" style="max-width: 1000px !important; margin:auto;">
+    <section id="client-edit" class="section is-large" style="max-width: 700px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -320,9 +323,9 @@
           </p>
         </header>
         <form id="client-edit-form">
-          <div class="card-content has-background-info-light">
+          <div class="card-content has-background-info-light m-0 pb-0">
             <div class="content px-7">
-              <div class="field">
+              <div class="field" title="Primer nombre y primer apellido">
                 <label class="label is-small is-hidden-mobile is-inline">Primer nombre y primer apellido</label>
                 <div class="control has-icons-left">
                   <input class="client-input input is-small" id="client-name" type="text" data-key="name"
@@ -333,7 +336,7 @@
                 </div>
               </div>
               <div class="field">
-                <div class="control is-size-7">
+                <div class="control is-size-7" title="Tipo de identificacion">
                   <label class="radio">
                     <input class="client-input" type="radio" name="idType" value="CEDULA" data-key="idType" checked>
                     Cédula
@@ -349,19 +352,19 @@
                   <label class="radio">
                     <input class="client-input" type="radio" name="idType" value="OTRO" data-key="idType"> Otro</label>
                 </div>
-                <div class="control has-icons-left">
+                <div class="control has-icons-left" title="Numero de identificacion">
                   <input class="client-input input is-small" id="client-idnumber" type="text" data-key="idNumber"
-                    style="max-width: 250px; margin: 0;" placeholder="Número de identificación..." />
+                    style="max-width: 250px; margin: 0;" placeholder="Numero de identificacion..." />
                   <span class="icon is-small is-left">
                     <i class="far fa-id-card"></i>
                   </span>
                 </div>
               </div>
               <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Correo electrónico</label>
-                <div class="control has-icons-left">
+                <label class="label is-small is-hidden-mobile is-inline">Correo electronico</label>
+                <div class="control has-icons-left" title="Correo electronico">
                   <input class="client-input input is-small" id="client-email" type="email" data-key="email"
-                    style="max-width: 500px; margin: 0;" placeholder="Correo electrónico...">
+                    style="max-width: 500px; margin: 0;" placeholder="Correo electronico...">
                   <span class="icon is-small is-left">
                     <i class="fas fa-envelope"></i>
                   </span>
@@ -369,7 +372,7 @@
               </div>
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Ciudad donde vive</label>
-                <div class="control has-icons-left">
+                <div class="control has-icons-left" title="Ciudad donde vive">
                   <input class="client-input input is-small" id="client-city" type="text" data-key="city"
                     style="max-width: 250px; margin: 0;" placeholder="Ciudad donde vive..." value="Manta" />
                   <span class="icon is-small is-left">
@@ -379,7 +382,7 @@
               </div>
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Fecha de nacimiento :</label>
-                <div class="control has-icons-left">
+                <div class="control has-icons-left" title="Fecha de nacimiento">
                   <input class="client-input input is-small" id="client-birthdate" type="date" data-key="birthdate"
                     style="max-width: 250px; margin: 0;" placeholder="Fecha de nacimiento..." />
                   <span class="icon is-small is-left">
@@ -388,8 +391,8 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Teléfono celular</label>
-                <div class="control has-icons-left">
+                <label class="label is-small is-hidden-mobile is-inline">Telefono celular</label>
+                <div class="control has-icons-left" title="Telefono celular">
                   <input class="client-input input is-small" id="client-cellphone" type="tel" data-key="cellphone"
                     style="max-width: 250px; margin: 0;" placeholder="Teléfono celular..." />
                   <span class="icon is-small is-left">
@@ -399,7 +402,7 @@
               </div>
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Presentado / Referido por :</label>
-                <div class="control has-icons-left">
+                <div class="control has-icons-left" title="Referido por">
                   <input class="client-input input is-small" id="client-referred" type="text" data-key="referred"
                     style="max-width: 250px; margin: 0;" placeholder="Identificación de quien referencia..." />
                   <span class="icon is-small is-left">
@@ -409,7 +412,7 @@
               </div>
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Registrado por</label>
-                <div class="control is-size-7">
+                <div class="control is-size-7" title="Registrado por">
                   <label class="radio">
                     <input class="client-input" type="radio" name="registeredBy" value="ADMIN" data-key="registeredBy">
                     Admin
@@ -432,23 +435,24 @@
               </div>
               <input class="input" id="client-uid" type="hidden" name="uid" data-key="uid" />
             </div>
-            <footer class="card-footer">
-              <div class="buttons is-right" style="width: 100%;">
-                <a class="client-save card-footer-item button is-primary">
-                  <span class="icon">
-                    <i class="fa-solid fa-check"></i>
-                  </span>
-                  <span>Guardar</span>
-                </a>
-                <a class="client-cancel card-footer-item button is-danger">
-                  <span class="icon">
-                    <i class="fa-solid fa-xmark"></i>
-                  </span>
-                  <span>Cancelar</span>
-                </a>
-              </div>
-            </footer>
           </div>
+          <footer class="card-footer has-background-info-light p-1">
+            <button type="button" class="client-cancel card-footer-item button is-danger mr-4"
+              title="Descartar y no guardar el cliente">
+              <span>Cancelar</span>
+              <span class="icon is-small">
+                <i class="fa-solid fa-xmark"></i>
+              </span>
+            </button>
+            <button type="button" class="client-save card-footer-item button is-primary"
+              title="Guardar informacion del cliente">
+              <span>Guardar</span>
+              <span class="icon is-small">
+                <i class="fa-solid fa-check"></i>
+              </span>
+            </button>
+          </footer>
+
         </form>
       </div>
     </section>
@@ -548,16 +552,17 @@
 
   <template id="sale-item-template">
     <tr>
-      <td class="sale-item-description" style="vertical-align: bottom;">No name</td>
-      <td>
+      <td class="sale-item-description-mobile is-hidden-mobile" style="vertical-align: top;">No name</td>
+      <td class="sale-item-description is-hidden-tablet" style="max-width: 6rem">No name</td>
+      <td class="is-narrow">
         <input type="number" class="sale-item-amount" value="1" step="1" min="1" max="99" data-key="UID">
       </td>
-      <td class="sale-item-unit-value has-text-right" style="vertical-align: bottom;">0.00</td>
-      <td>
+      <td class="sale-item-unit-value has-text-right is-narrow pt-2" style="vertical-align: top;">0.00</td>
+      <td class="is-narrow">
         <input type="number" class="sale-item-unit-discount" value="0" step="0.1" min="0.0" max="100.0" data-key="UID">
       </td>
-      <td class="sale-item-value has-text-right" style="vertical-align: bottom;">0.00</td>
-      <td><a class="sale-item-delete" title="X Remover" data-key="UID">
+      <td class="sale-item-value has-text-right is-narrow pt-2" style="vertical-align: top;">0.00</td>
+      <td class="is-narrow"><a class="sale-item-delete" title="Remover de la venta" data-key="UID">
           <span class="icon is-small has-text-danger">
             <i class="fa-solid fa-trash-can"></i>
           </span>

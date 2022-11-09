@@ -186,19 +186,15 @@ function renderSaleItems(changeTypePayment) {
     $servicesContainer = d.getElementById("sale-details-services"),
     $productsFragment = d.createDocumentFragment(),
     $servicesFragment = d.createDocumentFragment(),
-    $btnServicios = d.querySelector(".trigger-services-modal"),
-    $btnServiciosEneglimar = d.querySelector(".trigger-services-modal-eneglimar"),
+    $btnServicios = d.querySelector(sale.seller === "ENEGLIMAR" ? ".trigger-services-modal-eneglimar" : ".trigger-services-modal"),
     $btnProductos = d.querySelector(".trigger-products-modal"),
     $btnCancel = d.querySelector(".sale-cancel")
 
-  // Manejo de catalogo de servicios diferenciado para ENEGLIMAR
-  if (sale.seller === "ENEGLIMAR") {
-    $btnServicios.classList.add("is-hidden")
-    $btnServiciosEneglimar.classList.remove("is-hidden")
-  } else {
-    $btnServicios.classList.remove("is-hidden")
-    $btnServiciosEneglimar.classList.add("is-hidden")
-  }
+  // Deshabilitar los botones de catalogos
+  d.querySelector(".trigger-services-modal").classList.add("is-hidden")
+  d.querySelector(".trigger-services-modal-eneglimar").classList.add("is-hidden")
+  $btnProductos.classList.add("is-hidden")
+  $btnCancel.setAttribute("disabled", true)
 
   let vnCountProducts = 0,
     vnCountServices = 0
@@ -306,14 +302,9 @@ function renderSaleItems(changeTypePayment) {
     sale.barberCommission = roundFour(sale.barberCommission)
 
     // Habilitar los botones de catalogos
-    $btnServicios.removeAttribute("disabled")
-    $btnProductos.removeAttribute("disabled")
+    $btnServicios.classList.remove("is-hidden")
+    $btnProductos.classList.remove("is-hidden")
     $btnCancel.removeAttribute("disabled")
-  } else {
-    // Deshabilitar los botones de catalogos
-    $btnServicios.setAttribute("disabled", true)
-    $btnProductos.setAttribute("disabled", true)
-    $btnCancel.setAttribute("disabled", true)
   }
 
   $servicesContainer.innerHTML = "";
@@ -453,6 +444,10 @@ d.querySelector("#services-modal .items-container").addEventListener("click", e 
   // Servicio seleccionado 
   if (e.target.matches(".catalog-item") || e.target.closest(".catalog-item")) {
     e.target.closest(".modal").classList.remove("is-active") // Cerrar modal
+    if (!sale.seller) {
+      ntf.validation("Seleccione un vendedor")
+      return
+    }
     const $item = e.target.closest(".catalog-item")
     addToSale($item.dataset.key, $item.dataset.type)// Ejecutar accion al seleccionar el servicio
   }
@@ -464,6 +459,10 @@ d.querySelector("#services-modal-eneglimar .items-container").addEventListener("
   // Servicio seleccionado 
   if (e.target.matches(".catalog-item") || e.target.closest(".catalog-item")) {
     e.target.closest(".modal").classList.remove("is-active") // Cerrar modal
+    if (!sale.seller) {
+      ntf.validation("Seleccione un vendedor")
+      return
+    }
     const $item = e.target.closest(".catalog-item")
     addToSale($item.dataset.key, $item.dataset.type)// Ejecutar accion al seleccionar el servicio
   }

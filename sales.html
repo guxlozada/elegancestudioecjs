@@ -169,26 +169,27 @@
               <table class="table is-striped is-narrow" id="sale-details">
                 <thead class="has-background-grey-lighter">
                   <tr>
-                    <th><button class="trigger-services-modal button is-small is-link is-rounded"
-                        data-target="services-modal" title="Agregar servicio a la venta">
-                        <span class="icon is-small">
-                          <i class="fa-solid fa-plus"></i>
+                    <td class="is-narrow m-0 pl-0 pr-0">
+                      <a class="trigger-services-modal is-hidden" title="Agregar servicio a la venta" data-target="services-modal"
+                        href="#" value="Agregar">
+                        <span class="icon is-small fa-stack fa-xs" style="color: hsl(171, 100%, 41%)">
+                          <i class="fa-solid fa-square fa-stack-2x"></i>
+                          <i class="fab fa-plus fa-stack-1x fa-inverse"></i>
                         </span>
-                        <span>Servicio</span>
-                      </button>
-                      <button class="trigger-services-modal-eneglimar button is-small is-link is-rounded is-hidden"
-                        data-target="services-modal-eneglimar" title="Agregar servicio a la venta">
-                        <span class="icon is-small">
-                          <i class="fa-solid fa-plus"></i>
+                      </a>
+                      <a class="trigger-services-modal-eneglimar is-hidden" title="Agregar servicio a la venta"
+                        data-target="services-modal-eneglimar" href="#">
+                        <span class="icon is-small fa-stack fa-xs" style="color: hsl(171, 100%, 41%)">
+                          <i class="fa-solid fa-square fa-stack-2x"></i>
+                          <i class="fab fa-plus fa-stack-1x fa-inverse"></i>
                         </span>
-                        <span>Servicio</span>
-                      </button>
-                    </th>
+                      </a>
+                    </td>
+                    <th>Servicios</th>
                     <th><abbr title="Cantidad">Cant</span></th>
-                    <th><abbr title="Valor unitario">VxU</span></th>
-                    <th><abbr title="Descuento por unidad">DxU</span></th>
+                    <th><abbr title="Valor unitario">Valor</span></th>
+                    <th><abbr title="Descuento unitario">Desc</span></th>
                     <th><abbr title="Subtotal">Subt</span></th>
-                    <td></td>
                   </tr>
                 </thead>
                 <tbody id="sale-details-services">
@@ -197,14 +198,17 @@
                 </tbody>
                 <tbody class="has-background-grey-lighter">
                   <tr>
-                    <th><button class="trigger-products-modal button is-small is-link is-rounded"
-                        data-target="products-modal" title="Agregar producto a la venta">
-                        <span class="icon is-small">
-                          <i class="fa-solid fa-plus"></i>
+                    <th class="is-narrow m-0 pl-0 pr-0">
+                      <a class="trigger-products-modal is-hidden" title="Agregar producto a la venta"
+                        data-target="products-modal" href="#">
+                        <span class="icon is-small fa-stack fa-xs" style="color: hsl(171, 100%, 41%)">
+                          <i class="fa-solid fa-square fa-stack-2x"></i>
+                          <i class="fab fa-plus fa-stack-1x fa-inverse"></i>
                         </span>
-                        <span> Producto</span>
-                      </button></th>
-                    <td colspan="5"></td>
+                      </a>
+                    </th>
+                    <th>Productos</th>
+                    <td colspan="4"></td>
                   </tr>
                 </tbody>
                 <tbody id="sale-details-products">
@@ -212,27 +216,24 @@
                 </tbody>
                 <tfoot id="sale-summary">
                   <tr class="has-background-grey-lighter">
-                    <th colspan="3">
+                    <th colspan="4">
                       Propina <span class="is-hidden-mobile">(SOLO transferencia/tarjeta credito/debito)</span></th>
-                    <th class="has-text-right pr-5" colspan="3">
+                    <th class="has-text-right m-0 p-0" colspan="2">
                       <input type="number" class="sale-summary-tip" id="tip-value" name="tipValue" step="0.1" min="0.0"
                         placeholder="0.00" />
                     </th>
                   </tr>
                   <tr class="has-background-white">
-                    <th colspan="3">Base imponible</th>
+                    <th colspan="4">Base imponible</th>
                     <td class="sale-summary-taxableincome has-text-right" colspan="2">0.00</td>
-                    <td></td>
                   </tr>
                   <tr class="has-background-white">
-                    <th colspan="3">Impuestos (IVA, etc.)</th>
+                    <th colspan="4">Impuestos (IVA, etc.)</th>
                     <td class="sale-summary-taxes has-text-right" colspan="2">0.00</td>
-                    <td></td>
                   </tr>
                   <tr class="has-background-grey-lighter">
-                    <th colspan="3">Venta Total</th>
+                    <th colspan="4">Venta Total</th>
                     <th class="sale-summary-totalsale has-text-right" colspan="2">0.00</th>
-                    <td></td>
                   </tr>
 
                   <!--tr>
@@ -552,8 +553,14 @@
 
   <template id="sale-item-template">
     <tr>
+      <td class="is-narrow m-0 pl-0 pr-0"><a class="sale-item-delete" title="Remover de la venta" data-key="UID">
+          <span class="icon is-small has-text-danger">
+            <i class="fa-solid fa-trash-can"></i>
+          </span>
+        </a>
+      </td>
       <td class="sale-item-description-mobile is-hidden-mobile" style="vertical-align: top;">No name</td>
-      <td class="sale-item-description is-hidden-tablet" style="max-width: 6rem">No name</td>
+      <td class="sale-item-description is-hidden-tablet" style="max-width: 5rem">No name</td>
       <td class="is-narrow">
         <input type="number" class="sale-item-amount" value="1" step="1" min="1" max="99" data-key="UID">
       </td>
@@ -562,12 +569,7 @@
         <input type="number" class="sale-item-unit-discount" value="0" step="0.1" min="0.0" max="100.0" data-key="UID">
       </td>
       <td class="sale-item-value has-text-right is-narrow pt-2" style="vertical-align: top;">0.00</td>
-      <td class="is-narrow"><a class="sale-item-delete" title="Remover de la venta" data-key="UID">
-          <span class="icon is-small has-text-danger">
-            <i class="fa-solid fa-trash-can"></i>
-          </span>
-        </a>
-      </td>
+
     </tr>
   </template>
 

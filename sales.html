@@ -59,9 +59,9 @@
             </span>
           </p>
         </header>
-        <div class="card-content has-background-info-light p-2">
+        <div class="card-content has-background-info-light m-0 p-0">
           <div class="content" id="sale-content">
-            <table id="sale-header">
+            <table class="table has-background-info-light m-1" id="sale-header">
               <tbody>
                 <tr>
                   <th>Cliente:</th>
@@ -166,22 +166,22 @@
               </tbody>
             </table>
             <div class="table-container">
-              <table class="table is-striped is-narrow is-hoverable" id="sale-details">
+              <table class="table is-striped is-narrow" id="sale-details">
                 <thead class="has-background-grey-lighter">
                   <tr>
                     <th><button class="trigger-services-modal button is-small is-link is-rounded"
-                        data-target="services-modal">
-                        <span class="icon">
-                          <i class="fa-solid fa-scissors"></i>
+                        data-target="services-modal" title="Agregar servicio a la venta">
+                        <span class="icon is-small">
+                          <i class="fa-solid fa-plus"></i>
                         </span>
-                        <span class="is-hidden-mobile">Agregar Servicio</span>
+                        <span>Servicio</span>
                       </button>
                       <button class="trigger-services-modal-eneglimar button is-small is-link is-rounded is-hidden"
-                        data-target="services-modal-eneglimar">
-                        <span class="icon">
-                          <i class="fa-solid fa-scissors"></i>
+                        data-target="services-modal-eneglimar" title="Agregar servicio a la venta">
+                        <span class="icon is-small">
+                          <i class="fa-solid fa-plus"></i>
                         </span>
-                        <span class="is-hidden-mobile">Agregar Servicio</span>
+                        <span>Servicio</span>
                       </button>
                     </th>
                     <th><abbr title="Cantidad">Cant</span></th>
@@ -198,11 +198,11 @@
                 <tbody class="has-background-grey-lighter">
                   <tr>
                     <th><button class="trigger-products-modal button is-small is-link is-rounded"
-                        data-target="products-modal">
-                        <span class="icon">
-                          <i class="fa-solid fa-basket-shopping"></i>
+                        data-target="products-modal" title="Agregar producto a la venta">
+                        <span class="icon is-small">
+                          <i class="fa-solid fa-plus"></i>
                         </span>
-                        <span class="is-hidden-mobile">Agregar Producto</span>
+                        <span> Producto</span>
                       </button></th>
                     <td colspan="5"></td>
                   </tr>

@@ -168,7 +168,7 @@
             <div class="table-container">
               <table class="table is-striped is-narrow" id="sale-details">
                 <thead class="has-background-grey-lighter">
-                  <tr>
+                  <tr class="has-text-centered">
                     <td class="is-narrow m-0 pl-0 pr-0">
                       <a class="trigger-services-modal is-hidden" title="Agregar servicio a la venta" data-target="services-modal"
                         href="#" value="Agregar">
@@ -185,11 +185,11 @@
                         </span>
                       </a>
                     </td>
-                    <th>Servicios</th>
+                    <th class="has-text-left">Servicios</th>
                     <th><abbr title="Cantidad">Cant</span></th>
-                    <th><abbr title="Valor unitario">Valor</span></th>
+                    <th><abbr title="Valor unitario">VxU</span></th>
                     <th><abbr title="Descuento unitario">Desc</span></th>
-                    <th><abbr title="Subtotal">Subt</span></th>
+                    <th><abbr title="Subtotal">Sub</span></th>
                   </tr>
                 </thead>
                 <tbody id="sale-details-services">
@@ -561,14 +561,14 @@
       </td>
       <td class="sale-item-description-mobile is-hidden-mobile" style="vertical-align: top;">No name</td>
       <td class="sale-item-description is-hidden-tablet" style="max-width: 5rem">No name</td>
-      <td class="is-narrow">
+      <td class="is-narrow m-0 p-0">
         <input type="number" class="sale-item-amount" value="1" step="1" min="1" max="99" data-key="UID">
       </td>
-      <td class="sale-item-unit-value has-text-right is-narrow pt-2" style="vertical-align: top;">0.00</td>
-      <td class="is-narrow">
+      <td class="sale-item-unit-value has-text-right is-narrow pt-1" style="vertical-align: top;">0.00</td>
+      <td class="is-narrow m-0 p-0">
         <input type="number" class="sale-item-unit-discount" value="0" step="0.1" min="0.0" max="100.0" data-key="UID">
       </td>
-      <td class="sale-item-value has-text-right is-narrow pt-2" style="vertical-align: top;">0.00</td>
+      <td class="sale-item-value has-text-right is-narrow pt-1" style="vertical-align: top;">0.00</td>
 
     </tr>
   </template>

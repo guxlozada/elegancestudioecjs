@@ -30,8 +30,7 @@
       onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
   </header>
   <main>
-
-    <section class="section" style="max-width: 800px !important; margin:auto;">
+    <section class="section" style="max-width: 700px !important; margin:auto;">
       <div class="card is-size-7">
         <header class="card-header has-background-info">
           <p class="card-header-title has-text-white is-size-6">
@@ -44,11 +43,11 @@
           </p>
         </header>
         <form>
-          <div class="card-content has-background-info-light">
+          <div class="card-content has-background-info-light m-0">
             <div class="content px-7">
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Fecha</label>
-                <p class="control has-icons-left">
+                <p class="control has-icons-left" title="Fecha">
                   <input type="date" class="expense-date prop-input input is-small" name="date" data-type="timestamp"
                     required />
                   <span class="icon is-small is-left">
@@ -59,7 +58,7 @@
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Para barberia (Seleccione el
                   responsable)</label>
-                <div class="control is-size-7">
+                <div class="control is-size-7" title="Tipo de egreso de la barberia">
                   <label class="radio">
                     <input type="radio" class="prop-input" name="type" value="GASTO" checked>
                     Gasto
@@ -77,7 +76,7 @@
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Para barbero (Seleccione el
                   beneficiario)</label>
-                <div class="control is-size-7">
+                <div class="control is-size-7" title="Tipo de egreso para barbero">
                   <label class="radio">
                     <input type="radio" class="prop-input" name="type" value="ADELANTO">
                     Adelanto
@@ -103,7 +102,7 @@
               </div>
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Responsable o Beneficiario</label>
-                <div class="control is-size-7">
+                <div class="control is-size-7" title="Responsable o Beneficiario">
                   <label class="radio">
                     <input type="radio" class="prop-input" name="responsable" value="ESTIBERSON" autofocus>
                     Estiberson
@@ -128,7 +127,7 @@
               </div>
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Valor</label>
-                <p class="control has-icons-left">
+                <p class="control has-icons-left" title="Valor">
                   <input type="number" class="prop-input input is-small" name="value" step="0.01" min="-100.00"
                     placeholder="00.00" required />
                   <span class="icon is-small is-left">
@@ -139,7 +138,7 @@
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Nro.Comprobante /
                   Factura</label>
-                <p class="control has-icons-left">
+                <p class="control has-icons-left" title="# Comprobante o Factura">
                   <input type="text" class="prop-input input is-small" name="voucher"
                     placeholder="# Comprobante o Factura..." />
                   <span class="icon is-small is-left">
@@ -149,29 +148,27 @@
               </div>
               <div class="field">
                 <label class="label is-small is-hidden-mobile is-inline">Detalles</label>
-                <div class="control">
+                <div class="control" title="Breve detalle del egreso">
                   <textarea class="prop-input textarea is-small" name="details" rows="2"
                     placeholder="Breve detalle del egreso..."></textarea>
                 </div>
               </div>
             </div>
-            <footer class="card-footer">
-              <div class="buttons is-right" style="width: 100%;">
-                <button type="submit" class="expense-save card-footer-item button is-primary">
-                  <span class="icon">
-                    <i class="fa-solid fa-check"></i>
-                  </span>
-                  <span>Guardar</span>
-                </button>
-                <button type="reset" class="expense-cancel card-footer-item button is-danger">
-                  <span class="icon">
-                    <i class="fa-solid fa-xmark"></i>
-                  </span>
-                  <span>Cancelar</span>
-                </button>
-              </div>
-            </footer>
           </div>
+          <footer class="card-footer has-background-info-light p-1">
+            <button type="reset" class="expense-cancel card-footer-item button is-danger mr-4">
+              <span>Cancelar</span>
+              <span class="icon is-small">
+                <i class="fa-solid fa-xmark"></i>
+              </span>
+            </button>
+            <button type="submit" class="expense-save card-footer-item button is-primary">
+              <span>Guardar</span>
+              <span class="icon is-small">
+                <i class="fa-solid fa-check"></i>
+              </span>
+            </button>
+          </footer>
         </form>
       </div>
     </section>

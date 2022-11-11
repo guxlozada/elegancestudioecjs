@@ -16,12 +16,12 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Roboto+Condensed:wght@300;400;700&display=swap"
     rel="stylesheet">
-    <style>
-      .tile button:hover {
-        background-color: black;
-        color: white;
-      }
-    </style>
+  <style>
+    .tile button:hover {
+      background-color: black;
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
@@ -29,8 +29,8 @@
   <main class="pt-4">
     <div class=" mx-auto mg-0 p-2 is-size-5" style="max-width:1000px;">
       <div class="tile is-ancestor" style="font-family: 'Fjalla One', sans-serif;">
-        <div class="tile is-5 is-vertical is-parent mg-0 p-2">
-          <div class="tile is-child " >
+        <div class="tile is-5 is-vertical is-parent mg-0 p-5">
+          <div class="tile is-child ">
             <div class="is-size-4 pb-1" style="font-family: 'Roboto Condensed', sans-serif;font-weight:700">Bienvenido a
             </div>
             <figure class="image">
@@ -55,12 +55,12 @@
               <span class="icon is-small">
                 <i class="fa-solid fa-star"></i>
               </span>
-              <span>Beneficios de clientes</span> 
+              <span>Beneficios de clientes</span>
             </button>
           </div>
         </div>
         <div class="tile is-parent">
-          <div class="tile is-child m-0 p-0" >
+          <div class="tile is-child m-0 p-0 pt-3">
             <figure class="image">
               <img alt="Barber welcome" src="/assets/index/client-doing-hair-cut-barber-shop-salon.jpg">
             </figure>
@@ -115,7 +115,7 @@
   <footer class="footer p-5">
     <div class="content has-text-centered">
       <div class="columns ">
-        <div class="column">
+        <div class="column is-hidden-mobile">
           <h5>Creado por</h5>
           <span class="has-text-center is-size-7" style="color:lightslategrey">
             <i class="fa-brands fa-space-awesome "></i>
@@ -141,14 +141,16 @@
           <div class="field is-grouped has-text-center">
             <p class="control is-expanded"></p>
             <p class="control">
-              <a class="navbar-item pt-1" href="https://www.facebook.com/elegancestudioec/" target="_blank" rel="noopener">
+              <a class="navbar-item pt-1" href="https://www.facebook.com/elegancestudioec/" target="_blank"
+                rel="noopener">
                 <span class="icon has-background-white" style="color: #3B5998;">
                   <i class="fa-brands fa-facebook-square is-size-3"></i>
                 </span>
               </a>
             </p>
             <p class="control">
-              <a class="navbar-item pt-1" href="https://www.instagram.com/elegancestudioec" target="_blank" rel="noopener">
+              <a class="navbar-item pt-1" href="https://www.instagram.com/elegancestudioec" target="_blank"
+                rel="noopener">
                 <span class="icon has-background-white" style="color: #DD2A7B;">
                   <i class="fa-brands fa-instagram-square is-size-3"></i>
                 </span>
@@ -157,11 +159,18 @@
             <p class="control is-expanded"></p>
           </div>
         </div>
+        <div class="column is-hidden-tablet">
+          <h5>Creado por</h5>
+          <span class="has-text-center is-size-7" style="color:lightslategrey">
+            <i class="fa-brands fa-space-awesome "></i>
+            gustavorlozada@gmail.com
+          </span>
+        </div>
       </div>
     </div>
 
   </footer>
-  <header class="main-header is-hidden">
+  <header class="main-header is-hidden-desktop">
     <a class="main-logo" href="#"></a>
     <nav id="nav" class="main-nav"></nav>
     <button id="button-menu" class="button-menu"></button>

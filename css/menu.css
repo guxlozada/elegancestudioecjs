@@ -34,7 +34,7 @@
 }
 
 .nav-links {
-  background-color: rgb(250, 250, 250, 0.8);
+  background-color:  rgb(255, 255, 255, 0.9);
   display: flex;
   flex-direction: column;
   width: 80%;

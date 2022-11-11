@@ -39,6 +39,12 @@ function generate() {
 function generateCli() {
   $mainNav.innerHTML = `
     <div class="nav-links">
+      <div class="is-size-4 pt-0" style="font-family: 'Roboto Condensed', sans-serif;font-weight:700">
+      <span>MENU</span>
+      <span class="icon">
+      <i class="fa-solid fa-layer-group"></i>
+      </span>
+      </div>
       <a class="link-item" href="#">
         <span class="icon" style="color:indigo">
           <i class="fa-solid fa-gift"></i>

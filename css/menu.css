@@ -1,0 +1,138 @@
+.main-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 0 0.4rem;
+}
+
+.main-logo {
+  color: black;
+  font-size: 32px;
+  text-decoration: none;
+  padding-top: 5px;
+}
+
+.main-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  margin-left: -100%;
+  transition: all 0.2s linear;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 100;
+}
+
+.main-nav.show {
+  margin-left: 0;
+}
+
+.nav-links {
+  background-color: rgb(250, 250, 250, 0.8);
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  height: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 24px;
+}
+
+.link-item {
+  margin-top: 2rem;
+  color: #444444;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: bold;
+  position: relative;
+}
+
+.link-item::after {
+  position: absolute;
+  content: "";
+  background-color: black;
+  bottom: -5px;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  transition: 0.3s ease all;
+}
+
+.link-item:hover::after {
+  width: 100%;
+}
+
+.button-menu {
+  z-index: 200;
+  width: 40px;
+  height: 40px;
+  border: none;
+  display: flex;
+  background: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.button-menu span {
+  width: 30px;
+  height: 3px;
+  margin-bottom: 5px;
+  position: relative;
+  background: #000;
+  border-radius: 3px;
+  transform-origin: 4px 0px;
+  transition: all 0.2s linear;
+}
+
+.button-menu.close span {
+  opacity: 1;
+  transform: rotate(45deg) translate(0px, 0px);
+  background: #ffffff;
+}
+
+.button-menu.close span:nth-child(2) {
+  transform: rotate(-45deg) translate(-8px, 5px);
+}
+
+.button-menu.close span:nth-child(3) {
+  display: none;
+}
+
+/** https://devxdev.net/menu-hamburguesa/ */
+
+/* Elimina el disco de las listas del pie de pagina*/
+footer .content ul {
+  list-style-type: none;
+}
+
+footer .link-item {
+  margin-top: 2rem;
+  color: #485fc7;
+  text-decoration: none;
+  font-size: 0.75rem;
+  position: relative;
+  list-style-type: none;
+}
+
+footer .link-item::after {
+  position: absolute;
+  content: "";
+  background-color: #485fc7;
+  bottom: -3px;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  transition: 0.3s ease all;
+}
+
+footer .link-item:hover::after {
+  width: 100%;
+}

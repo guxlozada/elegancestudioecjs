@@ -83,11 +83,12 @@ function deleteSaleDetailsBankTx(voSale, vaSaleDetails, callback, callbackError)
         updates[`${collections.bankingTransactions}/${bankTx.uid}`] = null
       }
 
-      // Actualizar infomacion para promociones de barberia
+      //TODO: Eliminar luego de validacion en produccion
       console.log("voSale.stLastTotalServices !== undefined=",voSale.stLastTotalServices !== undefined)
       console.log("voSale.stLastTotalServices=",voSale.stLastTotalServices)
       console.log("voSale.stLastFreeSixthCut=",voSale.stLastFreeSixthCut)
       console.log("voSale.stLastRaffleCupons=",voSale.stLastRaffleCupons)
+      // Actualizar infomacion para promociones de barberia
       if (voSale.clientId !== "9999999999999" && voSale.stLastTotalServices !== undefined) {
         updates[`${collections.clients}/${voSale.clientUid}/stTotalServices`] = voSale.stLastTotalServices
         //TODO: Promo del sexto corte gratis

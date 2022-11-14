@@ -704,7 +704,7 @@ function insertSalesDB(callback, vnLastNumber) {
     }
 
     // TODO: Promo sorteo navidad 2022
-    if (saleHeader.totalSale > 10) {
+    if (saleHeader.totalSale > 9.99) {
       let numberCupons = Math.trunc(saleHeader.totalSale / 10)
       do {
         stRaffleCupons = stRaffleCupons + " " + vnLastNumber

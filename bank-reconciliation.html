@@ -7,45 +7,8 @@
   <title>Conciliacion bancaria</title>
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
   <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/report.css" />
   <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
-  <style>
-    .content table td,
-    .content table th {
-      padding: 2px;
-    }
-
-    table {
-      position: relative;
-    }
-
-    thead th {
-      background: hsl(217, 71%, 45%);
-      position: sticky;
-      top: 0;
-      /* Don't forget this, that is required for the stickiness */
-      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-    }
-
-    tfoot th {
-      background: hsl(217, 71%, 45%);
-      color: white;
-      position: sticky;
-      bottom: 0;
-      /* Don't forget this, that is required for the stickiness */
-      box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
-    }
-
-    article {
-      height: 50vh;
-    }
-
-    article section {
-      height: 100%;
-      display: flex;
-      overflow-y: auto;
-      flex-direction: column;
-    }
-  </style>
 </head>
 
 <body>
@@ -62,7 +25,7 @@
               <span class="icon">
                 <i class="fa-solid fa-list-check"></i>
               </span>
-              <span>Consulta de transacciones bancarias</span>
+              <span>Transacciones bancarias</span>
             </span>
           </p>
           <p class="card-header-icon has-text-white">
@@ -190,50 +153,56 @@
                   </tr>
                 </tbody>
               </table>
+            </form>
+            <article class="pt-2 pb-2">
               <div class="reconciliation-blocked-msj has-background-primary has-text-white has-text-centered is-hidden">
                 Conciliacion mensual solo para consulta
               </div>
-              <div
-                class="reconciliation-blocked-error has-background-danger has-text-white has-text-centered is-hidden">
+              <div class="reconciliation-blocked-error has-background-danger has-text-white has-text-centered is-hidden">
                 Conciliacion mensual solo para consulta, revise nuevas transacciones registradas sin verificar
               </div>
-            </form>
-            <article>
               <section>
-                <table>
+                <table class="table is-narrow is-hoverable is-fullwidth">
                   <thead>
                     <tr class="has-text-centered">
-                      <th class="has-text-white" style="width:4rem">Fecha</th>
-                      <th class="has-text-white" style="width:3rem" title="Responsable del registro de la operacon">Resp
+                      <th>Fecha</th>
+                      <th><abbr title="Responsable  del registro o beneficiario de la transaccion">R/B</abbr></th>
+                      <th>Banco</th>
+                      <th><abbr
+                          title="Tipo de transaccion bancaria y el origen: venta, deposito, pago con transferencia de debito, etc.">Tipo
+                          [Origen]</abbr>
                       </th>
-                      <th class="has-text-white" style="width:3rem">Banco</th>
-                      <th class="has-text-white"
-                        title="Tipo de transaccion bancaria y el origen: venta, deposito, pago con transferencia de debito, etc.">
-                        Tipo [Origen]</th>
-                      <th class="has-text-white" style="width:3rem" title="Valor total de la venta relacionada">Venta
+                      <th class="is-hidden-mobile"><abbr title="Valor total de la venta relacionada">Venta</abbr></th>
+                      <th class="is-hidden-mobile">
+                        <abbr title="Valor de descuento por comision del datafast">DC</abbr>
                       </th>
-                      <th class="has-text-white" colspan="3"
-                        title="Valores del datafast: comision, retencion IVA, retencion Renta">Datafast com/iva/renta
+                      <th class="is-hidden-mobile">
+                        <abbr title="Valores de descuento retencion IVA del datafast">DI</abbr>
                       </th>
-                      <th class="has-text-white" style="width:3rem" title="Valor referencial calculado por el sistema">
-                        Calc</th>
-                      <th style="width:0.3rem"></th>
-                      <th class="has-text-white" style="width:3rem" title="Valor real verificado y acreditado banco">
-                        Real</th>
-                      <th class="has-text-white" style="width:3rem" title="Saldo verificado">Saldo</th>
-                      <th class="has-text-white" style="width:1.5rem"></th>
+                      <th class="is-hidden-mobile">
+                        <abbr title="Valores de descuento retencion RENTA del datafast">DR</abbr>
+                      </th>
+                      <th class="is-hidden-mobile"><abbr title="Valor referencial calculado por el sistema">
+                          Calc</abbr></th>
+                      <th></th>
+                      <th><abbr title="Valor real verificado y acreditado banco">
+                          Real</abbr></th>
+                      <th><abbr title="Saldo verificado/conciliado">Saldo</abbr></th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody id="bank-transactions">
                     <!-- render bank transactions-->
                   </tbody>
                   <tfoot>
-                    <tr class="has-text-white has-text-right">
-                      <th class="total-sale has-text-white" colspan="5"></th>
-                      <th class="total-datafast has-text-white" colspan="4"></th>
+                    <tr class=" has-text-right">
+                      <th colspan="4"></th>
+                      <th class="total-sale is-hidden-mobile"></th>
+                      <th class="total-datafast is-hidden-mobile" colspan="4"></th>
                       <th></th>
-                      <th class="total-verified has-text-white pr-4"></th>
-                      <th colspan="2"></th>
+                      <th class="total-verified pr-4"></th>
+                      <th class="total-bank-balance"></th>
+                      <th></th>
                     </tr>
                   </tfoot>
                 </table>
@@ -258,39 +227,39 @@
         </footer>
       </div>
     </section>
-    </article>
   </main>
 
   <template id="bank-initial-balance">
     <tr>
-      <td class="date has-text-left"></td>
-      <td></td>
-      <td class="bank"></td>
+      <td class="date is-narrow"></td>
+      <td class="is-narrow"></td>
+      <td class="bank is-narrow"></td>
       <td class="type-payment"></td>
-      <td class="bank-balance has-text-right" colspan="8"></td>
-      <td></td>
+      <td class="is-hidden-mobile is-narrow" colspan="5"></td>
+      <td class="bank-balance has-text-right is-narrow" colspan="3"></td>
+      <td class="is-narrow"></td>
     </tr>
   </template>
 
   <template id="bank-tx-row">
-    <tr class="tx-row">
-      <td class="date has-text-left"></td>
-      <td class="responsable"></td>
-      <td class="bank"></td>
-      <td class="type-payment"></td>
-      <td class="sale-value has-text-right"></td>
-      <td class="datafast-commission has-text-right" style="width:2rem"></td>
-      <td class="datafast-iva has-text-right" style="width:2rem"></td>
-      <td class="datafast-renta has-text-right" style="width:2rem"></td>
-      <td class="original-value has-text-right"></td>
-      <td class="type-bank-transaction" title="C=Credito o D=Debito">C</td>
-      <td class="has-text-right">
+    <tr class="tx-row  has-text-right">
+      <td class="date has-text-left is-narrow"></td>
+      <td class="responsable has-text-left is-narrow"></td>
+      <td class="bank has-text-left is-narrow"></td>
+      <td class="type-payment has-text-left"></td>
+      <td class="sale-value is-narrow is-hidden-mobile"></td>
+      <td class="datafast-commission is-narrow  is-hidden-mobile"></td>
+      <td class="datafast-iva is-narrow  is-hidden-mobile"></td>
+      <td class="datafast-renta is-narrow  is-hidden-mobile"></td>
+      <td class="original-value is-narrow  is-hidden-mobile"></td>
+      <td class="type-bank-transaction is-narrow" title="C=Credito o D=Debito">C</td>
+      <td class="has-text-right is-narrow">
         <input type="number" class="verified-value is-size-7 has-text-right m-0 p-0 is-hidden" style="width:3.4rem"
           min="0.01" step="0.01" required />
         <div class="verified-value-readonly pr-4"></div>
       </td>
-      <td class="bank-balance has-text-right" style="width:3rem"></td>
-      <td class="validate">
+      <td class="bank-balance is-narrow"></td>
+      <td class="validate is-narrow">
         <input type="checkbox" class="verified m-1 is-hidden" value="true"
           title="Marcar SOLO cuando la transaccion bancaria ha sido verificada en el estado de cuenta.">
       </td>

@@ -302,6 +302,7 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
   d.querySelector(".total-sale").innerText = vnSaleTotalTx.toFixed(2)
   d.querySelector(".total-datafast").innerText = vnDatafastTotalTx.toFixed(2)
   d.querySelector(".total-verified").innerText = vnVerifiedTotalTx.toFixed(2)
+  d.querySelector(".total-bank-balance").innerText = vnBankBalance.toFixed(2)
 
   $transactionsDetails.innerHTML = "";
   $transactionsDetails.appendChild($fragment)

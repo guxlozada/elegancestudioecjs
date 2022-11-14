@@ -11,6 +11,7 @@ export const collections = {
   expenses: "prod-cash-outflows",
   sales: "prod-sales",
   salesDetails: "prod-sales-details",
+  tmpRaffle: "tmp-raffle",
   deletedBankTx: "removed-from-banking-transaction",
   deletedExpense: "removed-from-cash-outflows",
   deletedSales: "removed-from-sales",

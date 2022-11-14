@@ -13,6 +13,7 @@ import timestampToDatekey, { generateDateProperties } from "../persist/dao_gener
 import { BANCO_PICHINCHA, BANCO_PRODUBANCO, saleToBanktransaction } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
 import { findCatalog } from "../f_catalogs/dao_catalog.js";
+import { findLastNumber } from "../f_promos/dao_tmp_raffle.js";
 
 const d = document,
   ntf = new NotificationBulma(),
@@ -24,6 +25,7 @@ const d = document,
       uid: "",
       description: "",
       lastService: null,//TODO: Cuando se guarde la factura hay que actualizar esta fecha
+      stFreeSixthCut: null,
       referrals: null//TODO: Cuando se registra clientes, se debe actualizar el num referidos buscando por identificacion
     },
     seller: null,
@@ -98,6 +100,11 @@ export function changeSaleClient($client) {
     sale.client.description = `${$client.dataset.name} _ ${$client.dataset.idtype}: ${$client.dataset.idnumber}`
     sale.client.lastService = $client.dataset.lastserv
     sale.client.referrals = $client.dataset.referrals
+    sale.client.stTotalServices = parseFloat($client.dataset.stTotalServices || 0)
+    //TODO: Promo del sexto corte gratis
+    sale.client.stFreeSixthCut = parseFloat($client.dataset.stFreeSixthCut || 0)
+    //TODO: Promo sorteo navidad 2022
+    sale.client.stRaffleCupons = $client.dataset.stRaffleCupons || ""// Cupones con separador de espacios
     sale.valid = true
     updateSale()
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -171,6 +178,18 @@ function renderSaleHeader() {
 
   d.getElementById("sale-client").innerText = cli.description
   d.getElementById("sale-client-lastserv").innerText = cli.lastService
+  let $freeSixthCut = d.querySelector(".sale-client-free-sixth-cut"),
+    $freeSixthCutMessage = d.querySelector(".free-sixth-cut-message")
+  $freeSixthCut.innerText = cli.stFreeSixthCut
+  if (cli.stFreeSixthCut > 5) {
+    $freeSixthCut.classList.add("has-background-primary")
+    $freeSixthCut.classList.add("has-text-white")
+    $freeSixthCutMessage.classList.remove("is-hidden")
+  } else {
+    $freeSixthCut.classList.remove("has-background-primary")
+    $freeSixthCut.classList.remove("has-text-white")
+    $freeSixthCutMessage.classList.add("is-hidden")
+  }
   d.getElementById("sale-client-referrals").innerText = cli.referrals
   d.querySelector(".sale-date-input").valueAsDate = hoyEC().toJSDate()
   // Control de fechas minimo y maximo para ing/egr caja
@@ -504,8 +523,9 @@ d.getElementById("sales").addEventListener("click", e => {
     } else if (sale.items.length === 0) {
       ntf.validation("No ha registrado ningún producto o servicio")
     } else {
-      // Insertar la venta en la base de datos
-      insertSalesDB(resetSale)
+      //TODO: Promo sorteo navidad 2022 temporalmente primero se llama la consulta de numeros de sorteo
+      findLastNumber(vnLastNumber => insertSalesDB(resetSale, vnLastNumber),
+        error => ntf.errorAndLog("Existe un problema al guardar la venta con los cupones del sorteo de navidad.", error))
     }
   }
   // Cancelar la venta
@@ -594,7 +614,7 @@ d.getElementById("sales").addEventListener("focusout", e => {
 // Database operations
 // --------------------------
 
-function insertSalesDB(callback) {
+function insertSalesDB(callback, vnLastNumber) {
 
   // Cabecera de la venta
   let saleHeader = {
@@ -638,9 +658,69 @@ function insertSalesDB(callback) {
       clientId: saleHeader.clientId,
       order: i++,
       saleUid: saleKey,
-      paymentTotal: roundFour(item.total * saleHeader.paymentEffectiveSale / effectiveSale)
+      paymentTotal: item.total === 0 ? 0 : roundFour(item.total * saleHeader.paymentEffectiveSale / effectiveSale)
     }
   })
+
+  // Generar bloque de transaccion
+  let updates = {}
+
+  // Registrar los detalles de la venta
+  //TODO: Promo del sexto corte gratis
+  let totalServices = 0
+  saleDetails.forEach(item => {
+    // Los servicios gratuitos son con valor 0
+    if (item.type === "S") totalServices += 1
+    let detailKey = saleKey + '-' + zeroPad(item.order, 2);
+    updates[`${collections.salesDetails}/${detailKey}`] = item
+  })
+
+  // Actualizar datos del cliente
+  if (saleHeader.clientId !== "9999999999999") {
+
+    updates[`${collections.clients}/${saleHeader.clientUid}/lastService`] = saleHeader.searchDate
+
+    // Se almacena  los valores previos de las promociones para restablecer cuando se elimina la venta
+    let stFreeSixthCut = saleHeader.client.stFreeSixthCut || 0,
+      stTotalServices = saleHeader.client.stTotalServices || 0,
+      stRaffleCupons = saleHeader.client.stRaffleCupons || ""
+
+    saleHeader.stLastFreeSixthCut = stFreeSixthCut
+    saleHeader.stLastTotalServices = stTotalServices
+    saleHeader.stLastRaffleCupons = stRaffleCupons
+
+    //TODO: Promo del sexto corte gratis, solo para servicios con valor mayor a 10 usd
+    if (totalServices > 0) {
+      // Verifica si corresponde a un sexto servicio
+      if (stFreeSixthCut > 5) {
+        stFreeSixthCut = stFreeSixthCut - 6
+        saleHeader.stFreeSixthCutDiscount = true
+      }
+
+      // Al saldo de cortes agrega el total de servicios de la venta
+      stFreeSixthCut += totalServices
+      updates[`${collections.clients}/${saleHeader.clientUid}/stFreeSixthCut`] = stFreeSixthCut
+      updates[`${collections.clients}/${saleHeader.clientUid}/stTotalServices`] = stTotalServices + totalServices
+    }
+
+    // TODO: Promo sorteo navidad 2022
+    if (saleHeader.totalSale > 10) {
+      let numberCupons = Math.trunc(saleHeader.totalSale / 10)
+      do {
+        stRaffleCupons = stRaffleCupons + " " + vnLastNumber
+        vnLastNumber++
+        numberCupons--
+      } while (numberCupons > 0)
+      updates[`${collections.clients}/${saleHeader.clientUid}/stRaffleCupons`] = stRaffleCupons.trim()
+      updates[`${collections.tmpRaffle}/lastNumber`] = vnLastNumber
+
+    }
+  }
+
+  // Registrar si existe la transaccion bancaria
+  if (tx) {
+    updates[`${collections.bankingTransactions}/${txKey}`] = tx
+  }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
   // TODO: Cambiar propiedades con el prefijo tmpXYZ para eliminar propiedades temporales
@@ -650,24 +730,8 @@ function insertSalesDB(callback) {
   delete saleHeader.valid
   delete saleHeader.update
 
-  // Generar bloque de transaccion
-  let updates = {}
   // Registrar la venta
   updates[`${collections.sales}/${saleKey}`] = saleHeader
-  // Registrar los detalles de la venta
-  saleDetails.forEach(item => {
-    let detailKey = saleKey + '-' + zeroPad(item.order, 2);
-    updates[`${collections.salesDetails}/${detailKey}`] = item
-  })
-  // Actualizar datos del cliente
-  if (saleHeader.clientId !== "9999999999999") {
-    updates[`${collections.clients}/${saleHeader.clientUid}/lastService`] = saleHeader.searchDate
-  }
-
-  // Registrar si existe la transaccion bancaria
-  if (tx) {
-    updates[`${collections.bankingTransactions}/${txKey}`] = tx
-  }
 
   // Registrar la venta en la BD
   dbRef.update(updates, (error) => {

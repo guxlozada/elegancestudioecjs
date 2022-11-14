@@ -27,6 +27,10 @@ export function renderClients(clientsDB) {
       $trigger.dataset.idnumber = c.idNumber || "NULO"
       $trigger.dataset.lastserv = c.lastService || "Ninguno"
       $trigger.dataset.referrals = c.referrals || 0
+      //TODO: Promocion del sexto corte gratis
+      $trigger.dataset.stFreeSixthCut = c.stFreeSixthCut || 0
+      $trigger.dataset.stTotalServices = c.stTotalServices || 0
+      $trigger.dataset.stRaffleCupons = c.stRaffleCupons || ""
       $template.querySelector(".client-description").textContent = `${c.name} _ ${c.idType}: ${c.idNumber}`
 
       let $clone = d.importNode($template, true)

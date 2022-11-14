@@ -140,6 +140,8 @@ function insertClientDB(clientData) {
     name: names.map((el) => el.capitalizarPrimeraLetra()).join(" "),
     active: true,
     referrals: 0,
+    stTotalServices: 0,
+    stFreeSixthCut: 0,//TODO: Promocion del sexto corte gratis
     aud: [{
       date: firebase.database.ServerValue.TIMESTAMP,
       registeredBy: client.registeredBy || "LOCAL"

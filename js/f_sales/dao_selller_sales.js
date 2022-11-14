@@ -82,6 +82,16 @@ function deleteSaleDetailsBankTx(voSale, vaSaleDetails, callback, callbackError)
         updates[`${collections.deletedBankTx}/${bankTx.uid}`] = bankTx
         updates[`${collections.bankingTransactions}/${bankTx.uid}`] = null
       }
+
+      // Actualizar infomacion para promociones de barberia
+      if (voSale.clientId !== "9999999999999" && voSale.stLastTotalServices !== undefined) {
+        updates[`${collections.clients}/${voSale.clientUid}/stTotalServices`] = voSale.stLastTotalServices
+        //TODO: Promo del sexto corte gratis
+        updates[`${collections.clients}/${voSale.clientUid}/stFreeSixthCut`] = voSale.stLastFreeSixthCut
+        //TODO: Promo sorteo navidad 2022
+        updates[`${collections.clients}/${voSale.clientUid}/stRaffleCupons`] = voSale.stLastRaffleCupons
+      }
+
       ////console.log(updates)
       dbRef.update(updates, error => error ? callbackError(error) : callback(voSale.uid))
     })

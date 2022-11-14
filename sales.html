@@ -37,6 +37,18 @@
       width: 2.8rem;
       text-align: center;
     }
+
+    @media screen and (max-width: 768px) {
+      .section {
+        padding: 3rem 0.5rem;
+      }
+    }
+
+    @media screen and (min-width: 769px) {
+      .section {
+        padding: initial;
+      }
+    }
   </style>
 </head>
 
@@ -77,9 +89,18 @@
                       onblur="document.querySelector('.client-search-text').focus()">Seleccione un cliente</a>
                   </th>
                 </tr>
-                <tr class="has-background-warning is-hidden">
+                <tr>
                   <th>Último servicio:</th>
-                  <th><span id="sale-client-lastserv">No existe</span></td>
+                  <th><span id="sale-client-lastserv">No existe</span></th>
+                </tr>
+                <tr>
+                  <th>Numero cortes:</th>
+                  <th class="sale-client-free-sixth-cut">0</th>
+                </tr>
+                <tr class="free-sixth-cut-message has-background-primary has-text-centered is-hidden has-text-white">
+                  <td colspan="2">APLICA PROMOCION SEXTO CORTE GRATIS. Registre un descuento por un valor maximo de 10
+                    USD a cualquier servicio.
+                  </td>
                 </tr>
                 <tr class="has-background-warning is-hidden">
                   <th>Referidos:</th>
@@ -295,7 +316,7 @@
               <i class="fa-solid fa-user-slash"></i>
             </span>
             Búsqueda finalizada con 0 resultados. Ingrese correctamente la identificación o apellido del cliente
-            <br>RECUERDE: Si el cliente no se encuentra registrado de clic en el botón Agregar Cliente
+            <br>RECUERDE: Si el cliente no se encuentra registrado de clic en el botón Nuevo Cliente
           </a>
         </div>
 
@@ -305,7 +326,7 @@
             <span class="icon">
               <i class="fa-solid fa-user-plus"></i>
             </span>
-            <span>Agregar Cliente</span>
+            <span>Nuevo Cliente</span>
           </a>
         </div>
       </article>

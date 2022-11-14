@@ -49,9 +49,9 @@ let services, products, sale
 //------------------------------------------------------------------------------------------------
 
 const loadCatalog = ($container, vaItems) => {
-  console.log($container, $container.childElementCount)
+  ////console.log($container, $container.childElementCount)
   if ($container.childElementCount == 0) {
-    console.log("Cargando items al modal")
+    ////console.log("Cargando items al modal")
     const $fragment = d.createDocumentFragment()
 
     if (!vaItems) {

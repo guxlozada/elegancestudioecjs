@@ -8,16 +8,11 @@
 body {
   font-family: "Comfortaa", cursive;
   font-size: 11px;
-  min-height: 100vh; 
-
+  min-height: 100vh;
 }
 
-footer{
+footer {
   background-color: rgba(0, 0, 0, 0.1) !important;
-}
-
-main{
-  padding-top: 50px;
 }
 
 /***** Notificaciones - Inicio - BulmaNotification.js *****/

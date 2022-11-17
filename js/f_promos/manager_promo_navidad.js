@@ -41,9 +41,9 @@ function renderExpense(vsRaffleCupons) {
     d.querySelector(".congratulations").classList.add("is-hidden")
     $raffleCupons.innerHTML = `<div class="column has-text-white is-size-5-desktop is-size-6-touch m-0 p-0">
     <p>
-      <span style="display: inline-block;">Aún no tienes cupones😔,</span>
-      <span style="display: inline-block;"> pero te esperamos en</span>
-      <span style="display: inline-block;"> <b>ELEGANCE</b> STUDIO para cambiar tu suerte😉</span>
+      <span style="display: inline-block;">Aún no tienes cupones😔, pero te </span>
+      <span style="display: inline-block;">esperamos en <b>ELEGANCE</b> STUDIO </span>
+      <span style="display: inline-block;">para cambiar tu suerte😉</span>
     </p>
   </div>`
   }

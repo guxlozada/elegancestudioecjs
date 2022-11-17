@@ -15,6 +15,35 @@ footer {
   background-color: rgba(0, 0, 0, 0.1) !important;
 }
 
+/* Elimina el disco de las listas del pie de pagina*/
+footer .content ul {
+  list-style-type: none;
+}
+
+footer .link-item {
+  margin-top: 2rem;
+  color: #485fc7;
+  text-decoration: none;
+  font-size: 0.75rem;
+  position: relative;
+  list-style-type: none;
+}
+
+footer .link-item::after {
+  position: absolute;
+  content: "";
+  background-color: #485fc7;
+  bottom: -3px;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  transition: 0.3s ease all;
+}
+
+footer .link-item:hover::after {
+  width: 100%;
+}
+
 /***** Notificaciones - Inicio - BulmaNotification.js *****/
 .note {
   visibility: hidden;

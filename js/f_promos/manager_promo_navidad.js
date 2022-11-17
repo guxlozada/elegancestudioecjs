@@ -41,7 +41,7 @@ function renderExpense(vsIdClient, vsRaffleCupons) {
     $raffleCupons.appendChild($fragment)
   } else {
     $raffleCupons.innerHTML = `<div class="column is-expanded">
-    <p class="has-text-white is-size-4">
+    <p class="has-text-white is-size-5">
       Aún no tienes cupones😔, pero te esperamos en <b>ELEGANCE</b> STUDIO para cambiar tu suerte😉
     </p>
   </div>`

@@ -16,6 +16,7 @@ import { findCatalog } from "../f_catalogs/dao_catalog.js";
 import { findLastNumber } from "../f_promos/dao_tmp_raffle.js";
 
 const d = document,
+  w = window,
   ntf = new NotificationBulma(),
   $productsModalContainer = d.querySelector("#products-modal .items-container"),
   $servicesModalContainer = d.querySelector("#services-modal .items-container"),

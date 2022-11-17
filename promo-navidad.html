@@ -78,7 +78,8 @@
         <div class="container">
 
           <div class="tile is-ancestor">
-            <div class="tile is-6 is-vertical is-parent p-5 has-text-white has-text-right">
+            <div class="tile is-1 is-parent is-hidden-mobile"></div>
+            <div class="tile is-5 is-vertical is-parent p-5 has-text-white has-text-right">
               <div class="tile is-child" style="font-family: 'Roboto Condensed', sans-serif;position:relative;">
                 <div class="is-size-2-desktop is-size-4-touch">POR CADA</div>
                 <div class="m-0 p-0 is-hidden-mobile"
@@ -97,7 +98,7 @@
                 <form>
                   <div class="field has-addons">
                     <div class="control is-expanded">
-                      <input class="identification input is-focused" style="max-width:18rem;" type="text"
+                      <input class="identification input is-focused" type="text"
                         placeholder="Número de identificación..." title="Número de identificación" required>
                     </div>
                     <div class="control">
@@ -110,21 +111,33 @@
                     </div>
                   </div>
                 </form>
-                <div class="raffle-cupons columns is-mobile is-multiline is-centered pt-5 is-hidden">
-
+                <div class="raffle-cupons columns is-centered is-mobile is-multiline m-0 p-0 pt-5">
+                  <div class="column is-narrow m-0 p-0">
+                    <p class="cupon p-4"
+                      style="background-image: url('/assets/promo_navidad/golden_coupon.png'); background-repeat: no-repeat;background-size: 100% 100%;">
+                      <span class="is-narrow is-size-6 pr-0 has-text-dark">Nro.00000</span>
+                    </p>
+                  </div>
+                  <div class="column is-narrow m-0 p-0">
+                    <p class="cupon p-4"
+                      style="background-image: url('/assets/promo_navidad/golden_coupon.png'); background-repeat: no-repeat;background-size: 100% 100%;">
+                      <span class="is-narrow is-size-6 pr-0 has-text-dark">Nro.00000</span>
+                    </p>
+                  </div>
                 </div>
+              </div>
+              <div class="has-text-white is-size-6-desktop is-size-6-touch m-0 p-0 pr-2">
+                <p class="congratulations is-hidden">
+                  🥳Fabuloso! ya estas participando en el sorteo.
+                </p>
               </div>
             </div>
             <div class="tile is-6 is-parent is-hidden-mobile">
               <div class="tile is-child ">
                 <figure class="image">
-                  <img class="is-hidden-widescreen" alt="Cliente emocionado"
-                    src="/assets/promo_navidad/excited_man.png">
-                  <img class="is-hidden-touch is-hidden-desktop-only is-hidden-fullhd" alt="Cliente emocionado"
-                    src="/assets/promo_navidad/excited_man.png" style="max-width: 35vw;">
-                  <img class="is-hidden-touch is-hidden-desktop-only is-hidden-widescreen-only" alt="Cliente emocionado"
-                    src="/assets/promo_navidad/excited_man.png" style="max-width: 30vw;">
-                  <img class="is-hidden-tablet" alt="Cliente emocionado" src="/assets/promo_navidad/man_exited.png">
+                  <img class="is-hidden-fullhd" alt="Cliente emocionado" src="/assets/promo_navidad/excited_man.png">
+                  <img class="is-hidden-tablet-only is-hidden-desktop-only is-hidden-widescreen-only"
+                    alt="Cliente emocionado" src="/assets/promo_navidad/excited_man.png" style="max-width: 32vw;">
                 </figure>
               </div>
             </div>
@@ -133,7 +146,7 @@
       </div>
     </div>
 
-    <div class="hero" style="background-color: black;; position: relative;">
+    <div class="hero is-fullheight" style="background-color: black; position: relative;">
       <div class="hero-body">
         <div class="is-fullwidth pl-5 is-hidden-mobile is-hidden"
           style="font-size: 6rem; line-height: 5.5rem;position: absolute; top:3rem">PREMIOS</div>
@@ -192,10 +205,10 @@
         </div>
       </div>
     </div>
-
-
   </main>
-  <footer class="footer p-5">
+
+  <footer class="footer p-4"
+    style="position: unset;  bottom: unset;background-color: rgba(255, 255, 255, 0.9) !important; ">
     <div class="content has-text-centered">
       <div class="columns ">
         <div class="column is-hidden-mobile">
@@ -208,15 +221,14 @@
         <div class="column">
           <h5>Elegance para mi</h5>
           <ul class="link-item-ul">
-            <li><a href="intro.html" class="link-item is-size-7">Inicio</a></li>
             <li><a href="#" class="link-item is-size-7">Más promociones</a></li>
+            <li><a href="#" class="link-item is-size-7">Servicios</a></li>
           </ul>
         </div>
         <div class="column">
           <h5>Barberia</h5>
           <ul>
-            <li><a href="#" class="link-item is-size-7">Soy Barbero</a></li>
-            <li><a href="#" class="link-item is-size-7">Soy Administrador</a></li>
+            <li><a href="intro.html" class="link-item is-size-7">Inicio</a></li>
           </ul>
         </div>
         <div class="column">
@@ -261,21 +273,15 @@
   <script src="./js/util/menu.js" type="module"></script-->
 
   <template id="cupon">
-    <div class="column is-narrow p-1">
-      <p class="cupon has-background-warning py-3">
-        <code
-          class="html has-background-white has-text-black is-size-6 ">Cupon Nro 00<span class="cupon-number">100</span></code><br>
+    <div class="column is-narrow m-0 p-0">
+      <p class="cupon p-4"
+        style="background-image: url('/assets/promo_navidad/golden_coupon.png'); background-repeat: no-repeat;background-size: 100% 100%;">
+        <span class="is-narrow is-size-6 pr-0 has-text-dark">Nro.00<span
+            class="cupon-number">100</span>&nbsp;&nbsp;</span>
       </p>
     </div>
   </template>
 
-  <template id="no-cupon">
-    <div class="column is-expanded">
-      <p class="has-text-white is-size-4">
-        Aún no tienes cupones😔, pero te esperamos en <b>ELEGANCE</b> STUDIO para cambiar tu suerte 😉.
-      </p>
-    </div>
-  </template>
 
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>

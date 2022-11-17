@@ -15,20 +15,17 @@ d.addEventListener("submit", e => {
   e.preventDefault()
   const idClient = d.querySelector(".identification").value
   findClientByIdNumber(idClient,
-    (idClient, vsRaffleCupons) => renderExpense(idClient, vsRaffleCupons),
-    (idClient, error) => {
+    vsRaffleCupons => renderExpense(vsRaffleCupons),
+    error => {
       console.log("Errro en consulta de cupones", error)
-      renderExpense(idClient)
+      renderExpense()
     })
 })
 
 
-function renderExpense(vsIdClient, vsRaffleCupons) {
-
-  let $raffleCupons = d.querySelector(".raffle-cupons")
-  let vaCupons = vsRaffleCupons && vsRaffleCupons.length > 1 ? vsRaffleCupons.split(" ") : []
-
-  $raffleCupons.classList.remove("is-hidden")
+function renderExpense(vsRaffleCupons) {
+  let $raffleCupons = d.querySelector(".raffle-cupons"),
+    vaCupons = vsRaffleCupons && vsRaffleCupons.length > 1 ? vsRaffleCupons.split(" ") : []
 
   if (vaCupons.length > 0) {
     const $fragment = d.createDocumentFragment()
@@ -39,10 +36,14 @@ function renderExpense(vsIdClient, vsRaffleCupons) {
     })
     $raffleCupons.innerHTML = ""
     $raffleCupons.appendChild($fragment)
+    d.querySelector(".congratulations").classList.remove("is-hidden")
   } else {
-    $raffleCupons.innerHTML = `<div class="column is-expanded">
-    <p class="has-text-white is-size-5">
-      Aún no tienes cupones😔, pero te esperamos en <b>ELEGANCE</b> STUDIO para cambiar tu suerte😉
+    d.querySelector(".congratulations").classList.add("is-hidden")
+    $raffleCupons.innerHTML = `<div class="column has-text-white is-size-5-desktop is-size-6-touch m-0 p-0">
+    <p>
+      <span style="display: inline-block;">Aún no tienes cupones😔,</span>
+      <span style="display: inline-block;"> pero te esperamos en</span>
+      <span style="display: inline-block;"> <b>ELEGANCE</b> STUDIO para cambiar tu suerte😉</span>
     </p>
   </div>`
   }

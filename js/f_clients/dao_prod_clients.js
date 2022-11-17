@@ -16,11 +16,11 @@ export function findClientByIdNumber(vsIdNumber, callback, callbackError) {
       if (snap.exists()) {
         snap.forEach(child => {
           let cli = child.val()
-          callback(vsIdNumber, cli.stRaffleCupons)
+          callback(cli.stRaffleCupons)
         })
       } else {
-        callback(vsIdNumber)
+        callback()
       }
     })
-    .catch(error => callbackError(vsIdNumber, error))
+    .catch(error => callbackError(error))
 }

@@ -1,5 +1,5 @@
-main {
-  padding-top: 50px;
+main.has-menu {
+  padding-top: 40px;
 }
 
 .main-header {
@@ -111,3 +111,9 @@ main {
 }
 
 /** https://devxdev.net/menu-hamburguesa/ */
+
+@media screen and (max-width: 768px) {
+  ::placeholder {
+    color: #47b6af !important;
+  }
+}

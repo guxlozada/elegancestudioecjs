@@ -9,7 +9,8 @@ const d = document,
   ntf = new NotificationBulma()
 
 const clientInit = {
-  name: null,
+  names: null,
+  surnames: null,
   idType: "CEDULA",// [CEDULA,PASAPORTE,RUC,OTRO]
   idNumber: null,
   email: null,
@@ -55,7 +56,8 @@ export function changeClient(reset) {
 
 // Actualizar el formulario del cliente
 function updateClient() {
-  d.getElementById("client-name").value = client.name
+  d.getElementById("client-names").value = client.names
+  d.getElementById("client-surnames").value = client.surnames
   d.getElementsByName("idType").forEach($el => $el.checked = $el.value === client.idType)
   d.getElementById("client-idnumber").value = client.idNumber
   d.getElementById("client-email").value = client.email
@@ -101,12 +103,18 @@ export default function handlerClientEdit() {
     }
     // Ya se realizo al menos primer volcado de data
     client.valid = true
-    if (!client.name) {
-      ntf.error("Información requerida", "Ingrese el nombre y apellido del cliente")
+    if (!client.names) {
+      ntf.validation("Ingrese el nombre del cliente")
+    } else if (!client.surnames) {
+      ntf.validation("Ingrese el apellido del cliente")
     } else if (!client.idNumber) {
-      ntf.error("Información requerida", "Ingrese la identificación del cliente")
+      ntf.validation("Ingrese la identificación del cliente")
+    } else if (!client.cellphone) {
+      ntf.validation("Ingrese el telefono de contacto")
     } else if (!client.registeredBy) {
-      ntf.error("Información requerida", "Seleccione quien registra al cliente")
+      ntf.validation("Seleccione quien registra al cliente")
+    } else if (client.idType === "CEDULA" && client.idNumber.length !== 10) {
+      ntf.validation("La cedula debe ser de 10 digitos y solo debe ingresar los numeros omitiendo cualquier guion.", 7000)
     }
     if (ntf.enabled) return
 
@@ -131,13 +139,17 @@ export default function handlerClientEdit() {
 // --------------------------
 
 function insertClientDB(clientData) {
-  let names = clientData.name.toLowerCase().split(/\s+/)
+  let names = clientData.names.toLowerCase().trim().split(/\s+/),
+    surnames = clientData.surnames.toLowerCase().trim().split(/\s+/),
+    nameSurname = [names[0], surnames[0]]
 
   //Complementar informacion por omision
-  clientData = {
+  let clientDB = {
     ...clientData,
-    searchLastname: names.length > 1 ? names[1] : names[0],
-    name: names.map((el) => el.capitalizarPrimeraLetra()).join(" "),
+    names: names.map(el => el.capitalizarPrimeraLetra()).join(" "),
+    surnames: surnames.map(el => el.capitalizarPrimeraLetra()).join(" "),
+    searchLastname: surnames[0],
+    name: nameSurname.map(el => el.capitalizarPrimeraLetra()).join(" "),
     active: true,
     referrals: 0,
     stTotalServices: 0,
@@ -147,16 +159,16 @@ function insertClientDB(clientData) {
       registeredBy: client.registeredBy || "LOCAL"
     }]
   }
-  delete clientData.valid
-  delete clientData.registeredBy
+  delete clientDB.valid
+  delete clientDB.registeredBy
 
   // Obtener la clave del cliente
-  const key = clientData.idNumber + '-' + (clientData.searchLastname.toUpperCase() || hoyEC().toUnixInteger())
-  clientData.uid = key
+  const key = clientDB.idNumber + '-' + (clientDB.searchLastname.toUpperCase() || hoyEC().toUnixInteger())
+  clientDB.uid = key
 
   let updates = {}
   // Registrar datos del cliente
-  updates[`${collections.clients}/${key}`] = clientData
+  updates[`${collections.clients}/${key}`] = clientDB
   // TODO  Actualizar referido si aplica
 
   // Registrar el cliente en la BD
@@ -166,8 +178,8 @@ function insertClientDB(clientData) {
     } else {
       d.getElementById("client-edit-form").reset()
       changeClient(true)
-      renderClients([clientData])
-      ntf.show("Registro de cliente", `Se guardó correctamente la información del cliente: ${clientData.name}`)
+      renderClients([clientDB])
+      ntf.show("Registro de cliente", `Se guardó correctamente la información del cliente: ${clientDB.name}`)
       d.querySelector('.client-search-text').focus()
     }
   })

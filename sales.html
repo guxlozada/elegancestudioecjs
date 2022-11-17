@@ -347,11 +347,21 @@
         <form id="client-edit-form">
           <div class="card-content has-background-info-light m-0 pb-0">
             <div class="content px-7">
-              <div class="field" title="Primer nombre y primer apellido">
-                <label class="label is-small is-hidden-mobile is-inline">Primer nombre y primer apellido</label>
+              <div class="field" title="Nombres">
+                <label class="label is-small is-inline">Nombre</label>
                 <div class="control has-icons-left">
-                  <input class="client-input input is-small" id="client-name" type="text" data-key="name"
-                    style="max-width: 500px; margin: 0;" placeholder="Primer nombre y apellido..." />
+                  <input class="client-input input is-small" id="client-names" type="text" data-key="names"
+                    style="max-width: 250px; margin: 0;" placeholder="Nombre o nombres..." />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-signature"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field" title="Apellidos">
+                <label class="label is-small is-inline">Apellido</label>
+                <div class="control has-icons-left">
+                  <input class="client-input input is-small" id="client-surnames" type="text" data-key="surnames"
+                    style="max-width: 250px; margin: 0;" placeholder="Apellido o apellidos..." />
                   <span class="icon is-small is-left">
                     <i class="fa-solid fa-signature"></i>
                   </span>
@@ -383,7 +393,17 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Correo electronico</label>
+                <label class="label is-small is-inline">Telefono celular</label>
+                <div class="control has-icons-left" title="Telefono celular">
+                  <input class="client-input input is-small" id="client-cellphone" type="tel" data-key="cellphone"
+                    style="max-width: 250px; margin: 0;" placeholder="Telefono celular..." />
+                  <span class="icon is-small is-left">
+                    <i class="fas fa-phone"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-inline">Correo electronico</label>
                 <div class="control has-icons-left" title="Correo electronico">
                   <input class="client-input input is-small" id="client-email" type="email" data-key="email"
                     style="max-width: 500px; margin: 0;" placeholder="Correo electronico...">
@@ -393,7 +413,7 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Ciudad donde vive</label>
+                <label class="label is-small is-inline">Ciudad donde vive</label>
                 <div class="control has-icons-left" title="Ciudad donde vive">
                   <input class="client-input input is-small" id="client-city" type="text" data-key="city"
                     style="max-width: 250px; margin: 0;" placeholder="Ciudad donde vive..." value="Manta" />
@@ -403,7 +423,7 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Fecha de nacimiento :</label>
+                <label class="label is-small is-inline">Fecha de nacimiento :</label>
                 <div class="control has-icons-left" title="Fecha de nacimiento">
                   <input class="client-input input is-small" id="client-birthdate" type="date" data-key="birthdate"
                     style="max-width: 250px; margin: 0;" placeholder="Fecha de nacimiento..." />
@@ -413,17 +433,7 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Telefono celular</label>
-                <div class="control has-icons-left" title="Telefono celular">
-                  <input class="client-input input is-small" id="client-cellphone" type="tel" data-key="cellphone"
-                    style="max-width: 250px; margin: 0;" placeholder="Teléfono celular..." />
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-phone"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Presentado / Referido por :</label>
+                <label class="label is-small is-inline">Presentado / Referido por :</label>
                 <div class="control has-icons-left" title="Referido por">
                   <input class="client-input input is-small" id="client-referred" type="text" data-key="referred"
                     style="max-width: 250px; margin: 0;" placeholder="Identificación de quien referencia..." />
@@ -433,7 +443,7 @@
                 </div>
               </div>
               <div class="field">
-                <label class="label is-small is-hidden-mobile is-inline">Registrado por</label>
+                <label class="label is-small is-inline">Registrado por</label>
                 <div class="control is-size-7" title="Registrado por">
                   <label class="radio">
                     <input class="client-input" type="radio" name="registeredBy" value="ADMIN" data-key="registeredBy">

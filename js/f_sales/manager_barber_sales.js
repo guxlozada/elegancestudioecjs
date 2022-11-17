@@ -426,7 +426,7 @@ d.addEventListener("DOMContentLoaded", e => {
   products = JSON.parse(localStorage.getItem(localdb.catalogProducts))
   services = JSON.parse(localStorage.getItem(localdb.catalogServices))
   if (products === null) {
-    findCatalog(collections.catalogProducts, "description",
+    findCatalog(collections.catalogProducts, "baseValue",
       res => {
         products = [...res]
         localStorage.setItem(localdb.catalogProducts, JSON.stringify(products))
@@ -434,7 +434,7 @@ d.addEventListener("DOMContentLoaded", e => {
       error => ntf.errorAndLog("Cache de catalogo de productos con error", error))
   }
   if (services === null) {
-    findCatalog(collections.catalogServices, "description",
+    findCatalog(collections.catalogServices, "baseValue",
       res => {
         services = [...res]
         localStorage.setItem(localdb.catalogServices, JSON.stringify(services))

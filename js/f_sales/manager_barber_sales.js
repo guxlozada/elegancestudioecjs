@@ -452,7 +452,7 @@ d.addEventListener("DOMContentLoaded", e => {
   handlerClientEdit()
 
 
-  // Verificar si se debe cargar una venta almacenada o una nueva
+  // Verificar si se debe cargar una venta almacenada o una nueva venta
   sale = JSON.parse(localStorage.getItem(localdb.sale) ? localStorage.getItem(localdb.sale) : JSON.stringify(saleInit))
   updateSale()
 })

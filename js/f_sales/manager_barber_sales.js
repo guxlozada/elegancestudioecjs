@@ -8,7 +8,7 @@ import { dbRef } from "../persist/firebase_conexion.js";
 import { addHours, dateIsValid, hoyEC, nowEc } from "../util/fecha-util.js";
 import { roundFour, roundTwo, truncFour } from "../util/numbers-util.js";
 import { zeroPad } from "../util/text-util.js";
-import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js";
+import { addMinMaxPropsWithCashOutflowDates, inyectDailyData } from "../util/daily-data-cache.js";
 import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
 import { BANCO_PICHINCHA, BANCO_PRODUBANCO, saleToBanktransaction } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
@@ -417,6 +417,8 @@ function changeItemDiscount(vsCode, vnUnitDiscount) {
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
 //------------------------------------------------------------------------------------------------
+// EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
+w.addEventListener("load", () => inyectDailyData())
 
 // EVENTO=DOMContentLoaded RAIZ=document 
 d.addEventListener("DOMContentLoaded", e => {

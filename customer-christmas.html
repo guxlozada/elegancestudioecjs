@@ -1,0 +1,303 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sorteo navidad</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/main-new.css" />
+  <!--link rel="stylesheet" href="/css/menu.css" /-->
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Secular+One&family=Open+Sans:wght@300&family=Roboto:wght@900&family=Roboto+Condensed:wght@300;400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    .hero.has-background {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-background {
+      position: absolute;
+      object-fit: cover;
+      object-position: center center;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* .hero-background.is-transparent {
+      --opacity: 0.3;
+    } */
+
+    .logo {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      max-height: 1.75rem;
+    }
+
+    .cupon {
+      min-width: 100px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .hero.block-one {
+        height: 50vh !important;
+      }
+
+      .hero-background {
+        height: 50vh;
+      }
+    }
+
+    ::placeholder {
+      color: grey !important;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section id="navidad">
+      <div class="hero block-one is-fullheight has-background is-hidden-mobile" style="background-color: #C30F16">
+        <img class="hero-background" alt="Promocion navidad 2022" src="/assets/promo_navidad/bg_navidad.png" />
+        <img class="logo" src="/assets/logo-blanco.png" alt="Logo">
+        <div class="hero-body">
+          <div class="container"></div>
+        </div>
+      </div>
+      <div class="hero block-one has-background is-hidden-tablet" style="background-color: #C30F16">
+        <img class="hero-background" alt="Promocion navidad 2022" src="/assets/promo_navidad/bg_navidad.png" />
+        <img class="logo" src="/assets/logo-blanco.png" alt="Logo">
+        <div class="hero-body">
+          <div class="container"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="coupons">
+      <div class="hero" style="background-color: #db545a">
+        <div class="hero-body">
+          <div class="container">
+            <div class="tile is-ancestor">
+              <div class="tile is-5 is-offset-1 is-parent p-5 has-text-white ">
+                <div class="tile is-child" style="font-family: 'Roboto Condensed', sans-serif;position:relative;">
+                  <div class="columns is-multiline is-mobile">
+                    <div class="column m-0 p-0 has-text-centered  is-hidden-tablet">
+                      <figure class="image is-inline-block">
+                        <img class="is-hidden-tablet" style="max-width:150px" alt="Cliente emocionado"
+                          src="/assets/promo_navidad/man_exited.png">
+                      </figure>
+                    </div>
+                    <div class="column m-0 p-0 has-text-centered">
+                      <div class="is-size-2-desktop is-size-4-touch">POR CADA</div>
+                      <div class="m-0 p-0 is-hidden-mobile"
+                        style="font-family: Roboto, sans-serif;font-weight: 900;font-size: 9rem; line-height: 7.8rem">
+                        $10
+                      </div>
+                      <div class="m-0 p-0 is-hidden-tablet"
+                        style="font-family: Roboto, sans-serif;font-weight: 900;font-size: 5rem; line-height: 4.5rem">
+                        $10
+                      </div>
+                      <div class="is-size-4-desktop is-size-5-touch pb-5">EN CONSUMOS</div>
+                    </div>
+                  </div>
+                  <div class="is-size-4-desktop is-size-5-touch has-text-justified pb-5" style="line-height: 1.5rem">
+                    Automaticamente se te acredita un cupón para el sorteo de fabulosos premios en esta navidad.
+                  </div>
+                  <div class="is-size-5-desktop is-size-6-touch m-0 p-0 pr-2">
+                    <p>
+                      <span style="display: inline-block;">Si ya eres cliente, </span>
+                      <span style="display: inline-block;">consulta aquí tus cupones</span>
+                    </p>
+                  </div>
+                  <form>
+                    <div class="field has-addons">
+                      <div class="control is-expanded">
+                        <input class="identification input is-focused" type="text" placeholder="Tú identificación..."
+                          title="Número de identificación" required>
+                      </div>
+                      <div class="control">
+                        <button type="submit" class="button is-dark">
+                          <span>Buscar</span>
+                          <span class="icon is-small">
+                            <i class="fa-solid fa-gift"></i>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="raffle-cupons columns is-centered is-mobile is-multiline m-0 p-0 pt-5">
+                    <div class="column is-narrow m-0 p-0">
+                      <p class="cupon p-4"
+                        style="background-image: url('/assets/promo_navidad/golden_coupon.png'); background-repeat: no-repeat;background-size: 100% 100%;">
+                        <span class="is-narrow is-size-6 pr-0 has-text-dark">Nro.00000</span>
+                      </p>
+                    </div>
+                    <div class="column is-narrow m-0 p-0">
+                      <p class="cupon p-4"
+                        style="background-image: url('/assets/promo_navidad/golden_coupon.png'); background-repeat: no-repeat;background-size: 100% 100%;">
+                        <span class="is-narrow is-size-6 pr-0 has-text-dark">Nro.00000</span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="has-text-white has-text-centered is-size-6-desktop is-size-6-touch m-0 p-0 pr-2">
+                    <p class="congratulations is-hidden">
+                      🥳Fabuloso!👏 ya estas participando en el sorteo.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="tile is-6 is-parent is-hidden-mobile">
+                <div class="tile is-child ">
+                  <figure class="image">
+                    <img class="is-hidden-fullhd" alt="Cliente emocionado" src="/assets/promo_navidad/excited_man.png">
+                    <img class="is-hidden-tablet-only is-hidden-desktop-only is-hidden-widescreen-only"
+                      alt="Cliente emocionado" src="/assets/promo_navidad/excited_man.png" style="max-width: 32vw;">
+                  </figure>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="prizes">
+      <div class="hero" style="background-color: black;">
+        <div class="hero-body">
+          <div class="container">
+            <div class="tile is-ancestor">
+              <div class="tile is-5 is-offset-1 is-parent has-text-white p-5">
+                <div class="tile is-child" style="font-family: 'Roboto Condensed', sans-serif;">
+                  <div class="m-0 pl-5 is-hidden-mobile" style="font-weight: 900;font-size: 8rem;line-height: 7.8rem">2
+                  </div>
+                  <div class="m-0 pl-5 is-hidden-tablet" style="font-weight: 900;font-size: 5rem; line-height: 4.5rem">2
+                  </div>
+                  <div class="is-size-3-desktop is-size-5-touch m-0 p-0" style="line-height: 1.2rem">MEMBRESIAS</div>
+                  <div class="is-size-2-desktop is-size-4-touch m-0 p-0 pl-3">
+                    <span class="has-text-weight-bold">ELEGANCE</span>
+                    <span style="font-family: 'Open Sans', sans-serif;">STUDIO</span>
+                  </div>
+                  <div class="is-size-5 py-4" style="font-family: 'Open Sans', sans-serif;line-height: 1.5rem">
+                    <p>Dos ganadores, membresías de 6 y 3 meses de <b>ELEGANCE</b> STUDIO.</p>
+                    <hr class="my-2" style="background-color:#363636">
+                    <p class="is-size-7" style="line-height: 0.85rem">* Aplica para un servicio cada mes por un valor de
+                      10 USD.</p>
+                    <p class="is-size-7" style="line-height: 0.85rem">* No aplica para productos.</p>
+                    <p class="is-size-7" style="line-height: 0.85rem">* No aplica sexto corte gratis durante el periodo
+                      de
+                      la membresía.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="tile is-5 is-offset-1 is-parent has-text-white-ter p-5">
+                <div class="tile is-child" style="font-family: 'Roboto Condensed', sans-serif;">
+                  <div class="m-0 pl-5 is-hidden-mobile" style="font-weight: 900;font-size: 8rem;line-height: 7.8rem">1
+                  </div>
+                  <div class="m-0 pl-5 is-hidden-tablet" style="font-weight: 900;font-size: 5rem; line-height: 4.5rem">1
+                  </div>
+                  <div class="is-size-3-desktop is-size-5-touch m-0 p-0" style="line-height: 1.2rem">KIT DE PRODUCTOS
+                  </div>
+                  <div class="is-size-2-desktop is-size-4-touch has-text-weight-bold m-0 p-0 pl-3">ELEGANCE</div>
+                  <div class="is-size-5 py-4" style="font-family: 'Open Sans', sans-serif;line-height: 1.5rem">
+                    <p>Un ganador de una orden de canje en productos <b>ELEGANCE</b> por 30 USD.</p>
+                    <hr class="my-2" style="background-color:#363636">
+                    <p class="is-size-7" style="line-height: 0.85rem">* Aplica para productos disponibles en la barbería
+                      al momento del canje.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer p-4"
+    style="position: unset;  bottom: unset;background-color: rgba(255, 255, 255, 0.9) !important; ">
+    <div class="content has-text-centered">
+      <div class="columns ">
+        <div class="column is-hidden-mobile">
+          <h5>Creado por</h5>
+          <span class="has-text-center is-size-7" style="color:lightslategrey">
+            <i class="fa-brands fa-space-awesome "></i>
+            gustavorlozada@gmail.com
+          </span>
+        </div>
+        <div class="column">
+          <h5>Elegance para mi</h5>
+          <ul class="link-item-ul">
+            <li><a href="/customer-promotions.html" class="link-item is-size-7">Más promociones</a></li>
+            <li><a href="#" class="link-item is-size-7">Servicios</a></li>
+          </ul>
+        </div>
+        <div class="column">
+          <h5>Barberia</h5>
+          <ul>
+            <li><a href="intro.html" class="link-item is-size-7">Inicio</a></li>
+          </ul>
+        </div>
+        <div class="column">
+          <h2 style="font-family: 'Roboto Condensed', sans-serif;font-weight:900; color: #363636">SIGUENOS!</h2>
+          <div class="field is-grouped has-text-center m-0 p-0">
+            <p class="control is-expanded"></p>
+            <p class="control">
+              <a class="navbar-item pt-1" href="https://www.facebook.com/elegancestudioec/" target="_blank"
+                rel="noopener">
+                <span class="icon has-background-white" style="color: #3B5998;">
+                  <i class="fa-brands fa-facebook-square is-size-3"></i>
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="navbar-item pt-1" href="https://www.instagram.com/elegancestudioec" target="_blank"
+                rel="noopener">
+                <span class="icon has-background-white" style="color: #DD2A7B;">
+                  <i class="fa-brands fa-instagram-square is-size-3"></i>
+                </span>
+              </a>
+            </p>
+            <p class="control is-expanded"></p>
+          </div>
+        </div>
+        <div class="column is-hidden-tablet">
+          <h5>Creado por</h5>
+          <span class="has-text-center is-size-7" style="color:lightslategrey">
+            <i class="fa-brands fa-space-awesome "></i>
+            gustavorlozada@gmail.com
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!--header class="main-header is-hidden-desktop">
+    <a class="main-logo" href="#"></a>
+    <nav id="nav" class="main-nav"></nav>
+    <button id="button-menu" class="button-menu"></button>
+  </header>
+  <script src="./js/util/menu.js" type="module"></script-->
+
+  <template id="cupon">
+    <div class="column is-narrow m-0 p-0">
+      <p class="cupon p-4"
+        style="background-image: url('/assets/promo_navidad/golden_coupon.png'); background-repeat: no-repeat;background-size: 100% 100%;">
+        <span class="is-narrow is-size-6 pr-0 has-text-dark">Nro.00<span
+            class="cupon-number">100</span>&nbsp;&nbsp;</span>
+      </p>
+    </div>
+  </template>
+
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/f_promos/manager_promo_navidad.js" type="module"></script>
+</body>
+
+</html>

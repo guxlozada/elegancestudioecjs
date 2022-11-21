@@ -1,5 +1,10 @@
 @import "https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css";
 @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;500;700&display=swap");
+
+:root {
+  --primary-color: #2cccc4;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -11,7 +16,7 @@ body {
 }
 
 footer {
-  background-color: rgba(216, 216, 216, 0.5) !important;
+  background-color: rgba(216, 216, 216, 0.8) !important;
   position: fixed;
   width: 100%;
   bottom: 0;

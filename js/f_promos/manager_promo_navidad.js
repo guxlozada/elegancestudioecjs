@@ -7,15 +7,12 @@ const d = document,
 // Delegacion de eventos
 //------------------------------------------------------------------------------------------------
 
-// EVENTO=load RAIZ=window 
-w.addEventListener("load", () => console.log("Available Screen Width: " + screen.availWidth + ", Height: " + screen.availHeight))
-
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
 d.addEventListener("submit", e => {
   e.preventDefault()
-  const idClient = d.querySelector(".identification").value
+  const idClient = d.querySelector(".identification").value.trim()
   findClientByIdNumber(idClient,
-    vsRaffleCupons => renderExpense(vsRaffleCupons),
+    voCliente => renderExpense(voCliente || {}),
     error => {
       console.log("Errro en consulta de cupones", error)
       renderExpense()
@@ -23,7 +20,7 @@ d.addEventListener("submit", e => {
 })
 
 
-function renderExpense(vsRaffleCupons) {
+function renderExpense({ stRaffleCupons: vsRaffleCupons }) {
   let $raffleCupons = d.querySelector(".raffle-cupons"),
     vaCupons = vsRaffleCupons && vsRaffleCupons.length > 1 ? vsRaffleCupons.split(" ") : []
 
@@ -41,8 +38,10 @@ function renderExpense(vsRaffleCupons) {
     d.querySelector(".congratulations").classList.add("is-hidden")
     $raffleCupons.innerHTML = `<div class="column has-text-white is-size-5-desktop is-size-6-touch m-0 p-0">
     <p>
-      <span style="display: inline-block;">Aún no tienes cupones😔, pero te </span>
-      <span style="display: inline-block;">esperamos en <b>ELEGANCE</b> STUDIO </span>
+      <span style="display: inline-block;">Aún no tienes cupones😔, </span>
+      <span style="display: inline-block;">pero te </span>
+      <span style="display: inline-block;">esperamos en </span>
+      <span style="display: inline-block;"><b>ELEGANCE</b> STUDIO </span>
       <span style="display: inline-block;">para cambiar tu suerte😉</span>
     </p>
   </div>`

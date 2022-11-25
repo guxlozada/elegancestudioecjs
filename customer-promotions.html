@@ -30,6 +30,7 @@
       background-color: #061220;
     }
 
+
     /* .hero-background.is-transparent {
       --opacity: 0.3;
     } */
@@ -41,10 +42,8 @@
       max-height: 1.75rem;
     }
 
-
-
     #new-client {
-      background: -webkit-linear-gradient(180deg, #2cccc4 30%, 30%);
+      background: -webkit-linear-gradient(180deg, white 30%, #2cccc4 30%);
       background: -o-linear-gradient(180deg, white 30%, #2cccc4 30%);
       background: -moz-linear-gradient(180deg, white 30%, #2cccc4 30%);
       background: linear-gradient(180deg, white 30%, #2cccc4 30%);
@@ -57,8 +56,28 @@
       background: linear-gradient(0deg, rgba(0, 0, 0, 0) 87%, #ffffff 87%), linear-gradient(270deg, #333333 88%, #2cccc4 88%);
     }
 
+    #sixth-cut {
+      background: -webkit-linear-gradient(180deg, white 50%, #2cccc4 50%);
+      background: -o-linear-gradient(180deg, white 50%, #2cccc4 50%);
+      background: -moz-linear-gradient(180deg, white 50%, #2cccc4 50%);
+      background: linear-gradient(180deg, white 50%, #2cccc4 50%);
+    }
 
-    @media screen and (max-width: 768px) {}
+    #sixth-cut .has-background {
+      background-image: url(/assets/promos/stylish-man-sitting-barbershop.jpg);
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      padding: 9rem 0;
+    }
+
+    @media screen and (max-width: 768px) {
+      #sixth-cut .has-background {
+        background-size: contain;
+        padding: 6rem 0;
+      }
+
+    }
 
     ::placeholder {
       color: grey !important;
@@ -67,19 +86,19 @@
   </style>
 </head>
 
-<body>
+<body class="has-text-white">
   <main>
 
     <div id="main" class="hero is-fullheight has-background is-size-5 is-size-6-mobile"
       style="font-family: 'Open Sans', sans-serif;">
-      <img class="hero-background" alt="Beneficios cliente"
+      <img class="hero-background" alt="Promociones para clientes"
         src="/assets/promo_navidad/close-up-bearded-male-grey-background-50.png" />
       <img class="logo" src="/assets/logo-blanco.png" alt="Logo">
       <div class="hero-body">
         <div class="container">
 
           <div class="columns p-3">
-            <div class="column is-full-mobile is-half is-two-fifths-fullhd has-text-white"
+            <div class="column is-full-mobile is-half is-two-fifths-fullhd"
               style="border: 0.5rem solid #2cccc4; background-color: rgba(0, 0, 0, 0.4);">
               <div class="is-size-2 is-size-3-mobile has-text-centered"
                 style="font-family: Roboto, sans-serif;font-weight:400">Promociones
@@ -118,51 +137,169 @@
       </div>
     </div>
 
-    <!-- FIn section main-->
+    <!-- Fin section main-->
     <div id="new-client" class="hero is-fullheight is-size-5 is-size-6-mobile" style="font-family: Roboto, sans-serif;">
       <div class="hero-body">
         <div class="container">
-          <div style="background-color: darkgray; width: 40vw;height:100%; z-index: 900;"></div>
-
-          <div class="columns is-mobile is-centered  m-0 p-0">
-            <div class="column is-11-mobile is-6-tablet is-5-desktop is-4-fullhd has-text-white m-0 p-0">
+          <div class="columns is-mobile is-centered m-0 p-0">
+            <div class="column is-11-mobile is-6-tablet is-5-desktop is-4-fullhd m-0 p-0">
               <figure class="image is-fullwidth">
                 <img alt="Nuevo cliente" src="/assets/promos/new-client.png">
               </figure>
-
               <div class="is-size-2 is-size-3-mobile has-text-centered" style="color:goldenrod;font-weight:300">Nuevo
                 cliente
               </div>
               <div style="padding: 1rem 1rem 1rem 4rem;">
-                Tenemos un presente de bienvenida a nuestro selecto grupo de clientes.
+                Estamos encantados de conocerte y tenemos preparado para ti un obsequio de bienvenida a nuestro selecto
+                grupo de clientes.
               </div>
-              <div class="is-size-6 is-size-7-mobile" style="padding: 1rem 1rem 1rem 4rem;font-weight: 300;">
-                <p>
-                  * Presenta tu identificación y registrar tus datos con tu barbero
-                </p>
-                <p>
-                  * No aplica para compra de productos
-                </p>
+              <div class="is-size-7" style="padding: 1rem 1rem 1rem 4rem;font-weight: 300;">
+                <p>* Aplica para clientes que nos visitan por primera vez.</p>
+                <p>* Presenta tu identificación y registrar tus datos con tu barbero.</p>
+                <p>* No aplica en compra de productos.</p>
+                <p>* Sujeto a disponibilidad de obsequios.</p>
               </div>
-
             </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- Fin section new cliente-->
+
+    <div id="sixth-cut" class="hero is-fullheight is-size-5 is-size-6-mobile" style="font-family: Roboto, sans-serif;">
+      <div class="hero-body" style="align-items: start;">
+        <div class="container">
+
+          <div class="tile is-ancestor">
+            <div class="tile is-vertical">
+              <div class="tile">
+                <div class="tile is-4 is-parent">
+                  <article class="tile is-child " style="display: flex;align-items: center;justify-content: center;">
+                    <div class="content is-size-3  has-text-right" style="color:#2cccc4;font-weight:700">
+                      Sexto corte gratis
+                    </div>
+                  </article>
+                </div>
+                <div class="tile is-8 is-parent">
+                  <article class="tile is-child p-5 has-text-dark">
+                    <div class="content is-size-4 is-size-6-mobile" style="font-weight:400">
+                      <p>
+                        <span style="display: inline-block;">¡Pensamos en ti y premiamos tu fidelidad! </span>
+                        <span style="display: inline-block;">Por eso, el sexto corte va por nuestra cuenta</span>
+                      </p>
+                    </div>
+                    <div class="is-size-7" style="font-weight: 300;">
+                      <p>* Registra tus datos con tu barbero.</p>
+                      <p>* Aplica para un solo servicio con un descuento de hasta 10 USD en horario de lunes a jueves.
+                      </p>
+                      <p>* Una vez aplicada la promoción, empieza un nuevo ciclo de conteo de servicios.</p>
+                    </div>
+
+                  </article>
+                </div>
+              </div>
+              <div class="tile is-parent">
+                <article class="tile is-child has-background">
+                  <div class="columns is-mobile is-centered">
+                    <div class="column is-full-mobile is-half-tablet">
+                      <div class="is-fullwidth is-size-5-desktop is-size-6-touch has-text-centered"
+                        style="background-color: rgba(0, 0, 0, 0.1)">
+                        <p>
+                          <span style="display: inline-block;">Si ya eres cliente, </span>
+                          <span style="display: inline-block;">consulta aquí tu próximo corte gratis</span>
+                        </p>
+                      </div>
+                      <form>
+                        <div class="field has-addons">
+                          <div class="control is-expanded">
+                            <input class="identification input is-focused" type="text"
+                              placeholder="Tú identificación..." title="Número de identificación" required>
+                          </div>
+                          <div class="control">
+                            <button type="submit" class="button is-dark">
+                              <span>Buscar</span>
+                              <span class="icon is-small is-hidden-mobile">
+                                <i class="fa-solid fa-scissors"></i>
+                              </span>
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                      <div class="cuts is-fullwidth is-size-4-tablet is-size-6-mobile has-text-centered pt-3 is-hidden"
+                        style="background-color: rgba(0, 0, 0, 0.2)">
+                        <span class="icon-text">
+                          <span class="icon has-text-primary">
+                            <i class="fa-solid fa-flag-checkered fa-lg"></i>
+                          </span>
+                          <span class="cut-1 icon has-text-grey-light">
+                            <i class="fas fa-scissors fa-lg"></i>
+                          </span>
+                          <span class="cut-2 icon has-text-grey-light">
+                            <i class="fas fa-scissors fa-lg"></i>
+                          </span>
+                          <span class="cut-3 icon has-text-grey-light">
+                            <i class="fas fa-scissors fa-lg"></i>
+                          </span>
+                          <span class="cut-4 icon has-text-grey-light">
+                            <i class="fas fa-scissors fa-lg"></i>
+                          </span>
+                          <span class="cut-5 icon has-text-grey-light">
+                            <i class="fas fa-scissors fa-lg"></i>
+                          </span>
+                          <span class="cut-6 icon has-text-grey-light">
+                            <i class="fa-solid fa-trophy fa-lg"></i>
+                          </span>
+                        </span>
+                        <div class="cut-msg has-text-primary"></div>
+                      </div>
+                      <div
+                        class="not-registered is-fullwidth has-text-white is-size-5-desktop is-size-6-touch p-2 is-hidden"
+                        style="background-color: rgba(0, 0, 0, 0.2)">
+                        <p>
+                          <span style="display: inline-block;">Aún no estas registrado😔, </span>
+                          <span style="display: inline-block;">pero te </span>
+                          <span style="display: inline-block;">esperamos en </span>
+                          <span style="display: inline-block;"><b>ELEGANCE</b> STUDIO </span>
+                          <span style="display: inline-block;">para resaltar tu imagen😉</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+
+                </article>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fin section sixth cut-->
 
   </main>
 
-  <footer class="footer p-4"
-    style="position: unset;  bottom: unset;background-color: rgba(255, 255, 255, 0.9) !important; ">
+  <footer class="footer p-4" style="position: unset;">
     <div class="content has-text-centered">
       <div class="columns ">
         <div class="column is-hidden-mobile">
           <h5>Creado por</h5>
-          <span class="has-text-center is-size-7" style="color:lightslategrey">
-            <i class="fa-brands fa-space-awesome "></i>
-            gustavorlozada@gmail.com
-          </span>
+          <ul class="link-item-ul">
+            <li>
+              <a href="mailto:gustavorlozada@gmail.com?subject=Contactar con Elegance Studio Ec&body=Gracias por contactarnos. Saludos Gustavo"
+                class="link-item is-size-7" style="color:lightslategrey">
+                <span class="icon is-small">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </span>
+                <span>gustavorlozada@gmail.com</span>
+              </a>
+            </li>
+            <li style="color:lightslategrey">Images from
+              <a href="https://www.freepik.com/photos/people" target="_blank" rel="noopener" class="link-item is-size-7"
+                style="color:lightslategrey">Freepik</a>
+            </li>
+          </ul>
         </div>
         <div class="column">
           <h5>Elegance para mi</h5>
@@ -202,10 +339,21 @@
         </div>
         <div class="column is-hidden-tablet">
           <h5>Creado por</h5>
-          <span class="has-text-center is-size-7" style="color:lightslategrey">
-            <i class="fa-brands fa-space-awesome "></i>
-            gustavorlozada@gmail.com
-          </span>
+          <ul class="link-item-ul">
+            <li>
+              <a href="mailto:gustavorlozada@gmail.com?subject=Contactar con Elegance Studio Ec&body=Gracias por contactarnos. Saludos Gustavo"
+                class="link-item is-size-7" style="color:lightslategrey">
+                <span class="icon is-small">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </span>
+                <span>gustavorlozada@gmail.com</span>
+              </a>
+            </li>
+            <li style="color:lightslategrey">Images from
+              <a href="https://www.freepik.com/photos/people" target="_blank" rel="noopener" class="link-item is-size-7"
+                style="color:lightslategrey">Freepik</a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -231,7 +379,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
-  <script src="./js/f_promos/manager_promo_navidad.js" type="module"></script>
+  <script src="./js/f_promos/manager_customer_promotions.js" type="module"></script>
 </body>
 
 </html>

@@ -1,6 +1,6 @@
 import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js"
 import { collections } from "../persist/firebase_collections.js"
-import { db } from "../persist/firebase_conexion.js"
+import { db, dbRef } from "../persist/firebase_conexion.js"
 import { dateTimeToKeyDateString } from "../util/fecha-util.js"
 
 /**

@@ -1,7 +1,3 @@
-.hero.is-fullheight {
-  min-height: 95vh !important;
-}
-
 .main-header {
   position: fixed;
   top: 0;
@@ -10,7 +6,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: none;/*original  rgba(0, 0, 0, 0.1);*/
+  background-color: none; /*original  rgba(0, 0, 0, 0.1);*/
   padding: 0 0.4rem;
 }
 
@@ -90,7 +86,7 @@
   height: 3px;
   margin-bottom: 5px;
   position: relative;
-  background: #2cccc4;/*Original#000000;*/
+  background: #2cccc4; /*Original#000000;*/
   border-radius: 3px;
   transform-origin: 4px 0px;
   transition: all 0.2s linear;
@@ -99,7 +95,7 @@
 .button-menu.close span {
   opacity: 1;
   transform: rotate(45deg) translate(0px, 0px);
-  background: #2cccc4;/*Original#ffffff;*/
+  background: #2cccc4; /*Original#ffffff;*/
 }
 
 .button-menu.close span:nth-child(2) {
@@ -113,6 +109,10 @@
 /** https://devxdev.net/menu-hamburguesa/ */
 
 @media screen and (max-width: 768px) {
+  .hero.is-fullheight {
+    min-height: 90vh !important;
+  }
+
   ::placeholder {
     color: #47b6af !important;
   }

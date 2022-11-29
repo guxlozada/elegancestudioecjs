@@ -39,29 +39,29 @@ function generate() {
 function generateCli() {
   $mainNav.innerHTML = `
     <div class="nav-links">
-      <div class="is-size-4 pt-0" style="font-family: 'Roboto Condensed', sans-serif;font-weight:700">
+      <div class="is-size-4 pt-0" style="font-family: 'Roboto Condensed', sans-serif;font-weight:700;color:black">
       <span>MENU</span>
       <span class="icon">
       <i class="fa-solid fa-layer-group"></i>
       </span>
       </div>
-      <a class="link-item" href="#">
-        <span class="icon" style="color:indigo">
-          <i class="fa-solid fa-gift"></i>
-        </span>
-        <span>Beneficios de clientes</span>
-      </a>
-      <a class="link-item" href="#">
+      <a class="link-item" href="main.html">
+      <span class="icon" style="color:#2cccc4">
+        <i class="fa-solid fa-home"></i>
+      </span>
+      <span>Inicio</span>
+    </a>
+      <a class="link-item" href="customer-promotions.html">
         <span class="icon" style="color:goldenrod">
-          <i class="fa-solid fa-scissors"></i>
+          <i class="fa-solid fa-star"></i>
         </span>
-        <span>Soy barbero</span>
+        <span>Promociones</span>
       </a>
-      <a class="link-item" href="#">
-        <span class="icon" style="color:crimson">
-          <i class="fa-solid fa-screwdriver-wrench"></i>
+      <a class="link-item" href="customer-christmas.html" style="color:#f14668">
+        <span class="icon" style="color:#2cccc4">
+        <i class="fa-solid fa-gift"></i>
         </span>
-        <span>Soy administrador</span>
+        <span>Sorteo <span style="color:#2cccc4">Navidad</span> 2022</span>
       </a>
     </div>
   `

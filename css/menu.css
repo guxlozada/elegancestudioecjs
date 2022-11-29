@@ -10,7 +10,7 @@ main.has-menu {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: none;/*original  rgba(0, 0, 0, 0.1);*/
   padding: 0 0.4rem;
 }
 
@@ -43,13 +43,13 @@ main.has-menu {
   flex-direction: column;
   width: 80%;
   height: 100%;
-  align-items: center;
+  align-items: left;
   justify-content: flex-start;
-  padding-top: 24px;
+  padding: 1rem;
 }
 
 .link-item {
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   color: #444444;
   text-decoration: none;
   font-size: 0.85rem;
@@ -90,7 +90,7 @@ main.has-menu {
   height: 3px;
   margin-bottom: 5px;
   position: relative;
-  background: #000;
+  background: #2cccc4;/*Original#000000;*/
   border-radius: 3px;
   transform-origin: 4px 0px;
   transition: all 0.2s linear;
@@ -99,7 +99,7 @@ main.has-menu {
 .button-menu.close span {
   opacity: 1;
   transform: rotate(45deg) translate(0px, 0px);
-  background: #ffffff;
+  background: #2cccc4;/*Original#ffffff;*/
 }
 
 .button-menu.close span:nth-child(2) {

@@ -7,7 +7,7 @@
   <title>Sorteo navidad</title>
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
   <link rel="stylesheet" href="/css/main-new.css" />
-  <!--link rel="stylesheet" href="/css/menu.css" /-->
+  <link rel="stylesheet" href="/css/menu.css" />
   <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,8 +24,10 @@
       position: absolute;
       object-fit: cover;
       object-position: center center;
+      background-origin: content-box;
       width: 100vw;
       height: 100vh;
+      background-color: #C30F16;
     }
 
     /* .hero-background.is-transparent {
@@ -43,7 +45,7 @@
       min-width: 100px;
     }
 
-    @media screen and (max-width: 768px) {
+    /* @media screen and (max-width: 768px) {
       .hero.block-one {
         height: 50vh !important;
       }
@@ -51,7 +53,7 @@
       .hero-background {
         height: 50vh;
       }
-    }
+    }*/
 
     ::placeholder {
       color: grey !important;
@@ -62,156 +64,165 @@
 
 <body>
   <main>
-    <section id="navidad">
-      <div class="hero block-one is-fullheight has-background is-hidden-mobile" style="background-color: #C30F16">
-        <img class="hero-background" alt="Promocion navidad 2022" src="/assets/promo_navidad/bg_navidad.png" />
-        <img class="logo" src="/assets/logo-blanco.png" alt="Logo">
-        <div class="hero-body">
-          <div class="container"></div>
-        </div>
-      </div>
-      <div class="hero block-one has-background is-hidden-tablet" style="background-color: #C30F16">
-        <img class="hero-background" alt="Promocion navidad 2022" src="/assets/promo_navidad/bg_navidad.png" />
-        <img class="logo" src="/assets/logo-blanco.png" alt="Logo">
-        <div class="hero-body">
-          <div class="container"></div>
-        </div>
+    <section id="main" class="hero block-one is-fullheight has-background">
+      <img class="hero-background" alt="Promocion navidad 2022" src="/assets/promo_navidad/bg_navidad.png" />
+      <img class="logo" src="/assets/logo-blanco.png" alt="Logo">
+      <div class="hero-body"></div>
+      <div class="hero-foot">
+        <nav class="tabs">
+          <div class="container is-size-7-mobile">
+            <ul>
+              <li class="has-background-danger-dark"><a class="has-text-white" href="#coupons">Tus cupones</a></li>
+              <li class="has-background-danger"><a class="has-text-white" href="#prizes">Premios</a></li>
+              <li class="has-background-danger-dark">
+                <a class="has-text-white" href="customer-promotions.html">Más promociones</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
       </div>
     </section>
 
-    <section id="coupons">
-      <div class="hero" style="background-color: #db545a">
-        <div class="hero-body">
-          <div class="container">
-            <div class="tile is-ancestor">
-              <div class="tile is-5 is-offset-1 is-parent p-5 has-text-white ">
-                <div class="tile is-child" style="font-family: 'Roboto Condensed', sans-serif;position:relative;">
-                  <div class="columns is-multiline is-mobile">
-                    <div class="column m-0 p-0 has-text-centered  is-hidden-tablet">
-                      <figure class="image is-inline-block">
-                        <img class="is-hidden-tablet" style="max-width:150px" alt="Cliente emocionado"
-                          src="/assets/promo_navidad/man_exited.png">
-                      </figure>
+    <section id="coupons" class="hero is-fullheight" style="background-color: #db545a">
+      <div class="hero-body">
+        <div class="container">
+          <div class="tile is-ancestor">
+            <div class="tile is-5 is-offset-1 is-parent p-5 has-text-white ">
+              <div class="tile is-child" style="font-family: 'Roboto Condensed', sans-serif;position:relative;">
+                <div class="columns is-multiline is-mobile">
+                  <div class="column m-0 p-0 has-text-centered  is-hidden-tablet">
+                    <figure class="image is-inline-block">
+                      <img class="is-hidden-tablet" style="max-width:150px" alt="Cliente emocionado"
+                        src="/assets/promo_navidad/client_win.png">
+                    </figure>
+                  </div>
+                  <div class="column m-0 p-0 has-text-centered">
+                    <div class="is-size-2-desktop is-size-4-touch">POR CADA</div>
+                    <div class="m-0 p-0 is-hidden-mobile"
+                      style="font-family: Roboto, sans-serif;font-weight: 900;font-size: 9rem; line-height: 7.8rem">
+                      $10
                     </div>
-                    <div class="column m-0 p-0 has-text-centered">
-                      <div class="is-size-2-desktop is-size-4-touch">POR CADA</div>
-                      <div class="m-0 p-0 is-hidden-mobile"
-                        style="font-family: Roboto, sans-serif;font-weight: 900;font-size: 9rem; line-height: 7.8rem">
-                        $10
-                      </div>
-                      <div class="m-0 p-0 is-hidden-tablet"
-                        style="font-family: Roboto, sans-serif;font-weight: 900;font-size: 5rem; line-height: 4.5rem">
-                        $10
-                      </div>
-                      <div class="is-size-4-desktop is-size-5-touch pb-5">EN CONSUMOS</div>
+                    <div class="m-0 p-0 is-hidden-tablet"
+                      style="font-family: Roboto, sans-serif;font-weight: 900;font-size: 5rem; line-height: 4.5rem">
+                      $10
+                    </div>
+                    <div class="is-size-4-desktop is-size-5-touch pb-5">EN CONSUMOS</div>
+                  </div>
+                </div>
+                <div class="is-size-4-desktop is-size-5-touch has-text-justified pb-5" style="line-height: 1.5rem">
+                  Automáticamente se te acredita un cupón para el sorteo de fabulosos premios en esta navidad.
+                </div>
+                <div class="is-size-5-desktop is-size-6-touch m-0 p-0 pr-2">
+                  <p>
+                    <span style="display: inline-block;">Si ya eres cliente, </span>
+                    <span style="display: inline-block;">consulta aquí tus cupones</span>
+                  </p>
+                </div>
+                <form>
+                  <div class="field has-addons">
+                    <div class="control is-expanded">
+                      <input class="identification input is-focused" type="text" placeholder="Tú identificación..."
+                        title="Número de identificación" required>
+                    </div>
+                    <div class="control">
+                      <button type="submit" class="button is-dark">
+                        <span>Buscar</span>
+                        <span class="icon is-small is-hidden-mobile">
+                          <i class="fa-solid fa-gift"></i>
+                        </span>
+                      </button>
                     </div>
                   </div>
-                  <div class="is-size-4-desktop is-size-5-touch has-text-justified pb-5" style="line-height: 1.5rem">
-                    Automáticamente se te acredita un cupón para el sorteo de fabulosos premios en esta navidad.
-                  </div>
-                  <div class="is-size-5-desktop is-size-6-touch m-0 p-0 pr-2">
-                    <p>
-                      <span style="display: inline-block;">Si ya eres cliente, </span>
-                      <span style="display: inline-block;">consulta aquí tus cupones</span>
+                </form>
+                <div class="raffle-cupons columns is-centered is-mobile is-multiline m-0 p-0 pt-5">
+                  <div class="column is-narrow m-0 p-0">
+                    <p class="cupon p-4"
+                      style="background-image: url('/assets/promo_navidad/golden_coupon.png'); background-repeat: no-repeat;background-size: 100% 100%;">
+                      <span class="is-narrow is-size-6 pr-0 has-text-dark">Nro.00000</span>
                     </p>
                   </div>
-                  <form>
-                    <div class="field has-addons">
-                      <div class="control is-expanded">
-                        <input class="identification input is-focused" type="text" placeholder="Tú identificación..."
-                          title="Número de identificación" required>
-                      </div>
-                      <div class="control">
-                        <button type="submit" class="button is-dark">
-                          <span>Buscar</span>
-                          <span class="icon is-small is-hidden-mobile">
-                            <i class="fa-solid fa-gift"></i>
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-                  <div class="raffle-cupons columns is-centered is-mobile is-multiline m-0 p-0 pt-5">
-                    <div class="column is-narrow m-0 p-0">
-                      <p class="cupon p-4"
-                        style="background-image: url('/assets/promo_navidad/golden_coupon.png'); background-repeat: no-repeat;background-size: 100% 100%;">
-                        <span class="is-narrow is-size-6 pr-0 has-text-dark">Nro.00000</span>
-                      </p>
-                    </div>
-                    <div class="column is-narrow m-0 p-0">
-                      <p class="cupon p-4"
-                        style="background-image: url('/assets/promo_navidad/golden_coupon.png'); background-repeat: no-repeat;background-size: 100% 100%;">
-                        <span class="is-narrow is-size-6 pr-0 has-text-dark">Nro.00000</span>
-                      </p>
-                    </div>
-                  </div>
-                  <div class="has-text-white has-text-centered is-size-6-desktop is-size-6-touch m-0 p-0 pr-2">
-                    <p class="congratulations is-hidden">
-                      <span style="display: inline-block;">🥳Fabuloso!👏 </span>
-                      <span style="display: inline-block;">Ya estas participando </span>
-                      <span style="display: inline-block;">en el sorteo.</span>
+                  <div class="column is-narrow m-0 p-0">
+                    <p class="cupon p-4"
+                      style="background-image: url('/assets/promo_navidad/golden_coupon.png'); background-repeat: no-repeat;background-size: 100% 100%;">
+                      <span class="is-narrow is-size-6 pr-0 has-text-dark">Nro.00000</span>
                     </p>
                   </div>
+                </div>
+                <div class="has-text-white has-text-centered is-size-6-desktop is-size-6-touch m-0 p-0 pr-2">
+                  <p class="congratulations is-hidden">
+                    <span style="display: inline-block;">🥳Fabuloso!👏 </span>
+                    <span style="display: inline-block;">Ya estas participando </span>
+                    <span style="display: inline-block;">en el sorteo.</span>
+                  </p>
                 </div>
               </div>
-              <div class="tile is-6 is-parent is-hidden-mobile">
-                <div class="tile is-child ">
-                  <figure class="image">
-                    <img class="is-hidden-fullhd" alt="Cliente emocionado" src="/assets/promo_navidad/excited_man.png">
-                    <img class="is-hidden-tablet-only is-hidden-desktop-only is-hidden-widescreen-only"
-                      alt="Cliente emocionado" src="/assets/promo_navidad/excited_man.png" style="max-width: 32vw;">
-                  </figure>
-                </div>
+            </div>
+            <div class="tile is-6 is-parent is-hidden-mobile">
+              <div class="tile is-child ">
+                <figure class="image">
+                  <img class="is-hidden-fullhd" alt="Cliente emocionado" src="/assets/promo_navidad/excited_man.png">
+                  <img class="is-hidden-tablet-only is-hidden-desktop-only is-hidden-widescreen-only"
+                    alt="Cliente emocionado" src="/assets/promo_navidad/excited_man.png" style="max-width: 32vw;">
+                </figure>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="hero-foot">
+        <nav class="tabs">
+          <div class="container is-size-7-mobile">
+            <ul>
+              <li class="has-background-danger-dark"><a class="has-text-white" href="#prizes">Premios</a></li>
+              <li class="has-background-danger">
+                <a class="has-text-white" href="customer-promotions.html">Más promociones</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
     </section>
 
-    <section id="prizes">
-      <div class="hero" style="background-color: black;">
-        <div class="hero-body">
-          <div class="container">
-            <div class="tile is-ancestor">
-              <div class="tile is-5 is-offset-1 is-parent has-text-white p-5">
-                <div class="tile is-child" style="font-family: 'Roboto Condensed', sans-serif;">
-                  <div class="m-0 pl-5 is-hidden-mobile" style="font-weight: 900;font-size: 8rem;line-height: 7.8rem">2
-                  </div>
-                  <div class="m-0 pl-5 is-hidden-tablet" style="font-weight: 900;font-size: 5rem; line-height: 4.5rem">2
-                  </div>
-                  <div class="is-size-3-desktop is-size-5-touch m-0 p-0" style="line-height: 1.2rem">MEMBRESIAS</div>
-                  <div class="is-size-2-desktop is-size-4-touch m-0 p-0 pl-3">
-                    <span class="has-text-weight-bold">ELEGANCE</span>
-                    <span style="font-family: 'Open Sans', sans-serif;">STUDIO</span>
-                  </div>
-                  <div class="is-size-5 py-4" style="font-family: 'Open Sans', sans-serif;line-height: 1.5rem">
-                    <p>Dos ganadores, membresías de 6 y 3 meses de <b>ELEGANCE</b> STUDIO.</p>
-                    <hr class="my-2" style="background-color:#363636">
-                    <p class="is-size-7" style="line-height: 0.85rem">* Aplica para un servicio cada mes por un valor de
-                      10 USD.</p>
-                    <p class="is-size-7" style="line-height: 0.85rem">* No aplica para productos.</p>
-                    <p class="is-size-7" style="line-height: 0.85rem">* No aplica sexto corte gratis durante el periodo
-                      de
-                      la membresía.</p>
-                  </div>
+    <section id="prizes" class="hero" style="background-color: black;">
+      <div class="hero-body">
+        <div class="container">
+          <div class="tile is-ancestor">
+            <div class="tile is-5 is-offset-1 is-parent has-text-white p-5">
+              <div class="tile is-child" style="font-family: 'Roboto Condensed', sans-serif;">
+                <div class="m-0 pl-5 is-hidden-mobile" style="font-weight: 900;font-size: 8rem;line-height: 7.8rem">2
+                </div>
+                <div class="m-0 pl-5 is-hidden-tablet" style="font-weight: 900;font-size: 5rem; line-height: 4.5rem">2
+                </div>
+                <div class="is-size-3-desktop is-size-5-touch m-0 p-0" style="line-height: 1.2rem">MEMBRESIAS</div>
+                <div class="is-size-2-desktop is-size-4-touch m-0 p-0 pl-3">
+                  <span class="has-text-weight-bold">ELEGANCE</span>
+                  <span style="font-family: 'Open Sans', sans-serif;">STUDIO</span>
+                </div>
+                <div class="is-size-5 py-4" style="font-family: 'Open Sans', sans-serif;line-height: 1.5rem">
+                  <p>Dos ganadores, membresías de 6 y 3 meses de <b>ELEGANCE</b> STUDIO.</p>
+                  <hr class="my-2" style="background-color:#363636">
+                  <p class="is-size-7" style="line-height: 0.85rem">* Aplica para un servicio cada mes por un valor de
+                    10 USD.</p>
+                  <p class="is-size-7" style="line-height: 0.85rem">* No aplica para productos.</p>
+                  <p class="is-size-7" style="line-height: 0.85rem">* No aplica sexto corte gratis durante el periodo
+                    de
+                    la membresía.</p>
                 </div>
               </div>
-              <div class="tile is-5 is-offset-1 is-parent has-text-white-ter p-5">
-                <div class="tile is-child" style="font-family: 'Roboto Condensed', sans-serif;">
-                  <div class="m-0 pl-5 is-hidden-mobile" style="font-weight: 900;font-size: 8rem;line-height: 7.8rem">1
-                  </div>
-                  <div class="m-0 pl-5 is-hidden-tablet" style="font-weight: 900;font-size: 5rem; line-height: 4.5rem">1
-                  </div>
-                  <div class="is-size-3-desktop is-size-5-touch m-0 p-0" style="line-height: 1.2rem">KIT DE PRODUCTOS
-                  </div>
-                  <div class="is-size-2-desktop is-size-4-touch has-text-weight-bold m-0 p-0 pl-3">ELEGANCE</div>
-                  <div class="is-size-5 py-4" style="font-family: 'Open Sans', sans-serif;line-height: 1.5rem">
-                    <p>Un ganador de una orden de canje en productos <b>ELEGANCE</b> por 30 USD.</p>
-                    <hr class="my-2" style="background-color:#363636">
-                    <p class="is-size-7" style="line-height: 0.85rem">* Aplica para productos disponibles en la barbería
-                      al momento del canje.</p>
-                  </div>
+            </div>
+            <div class="tile is-5 is-offset-1 is-parent has-text-white-ter p-5">
+              <div class="tile is-child" style="font-family: 'Roboto Condensed', sans-serif;">
+                <div class="m-0 pl-5 is-hidden-mobile" style="font-weight: 900;font-size: 8rem;line-height: 7.8rem">1
+                </div>
+                <div class="m-0 pl-5 is-hidden-tablet" style="font-weight: 900;font-size: 5rem; line-height: 4.5rem">1
+                </div>
+                <div class="is-size-3-desktop is-size-5-touch m-0 p-0" style="line-height: 1.2rem">KIT DE PRODUCTOS
+                </div>
+                <div class="is-size-2-desktop is-size-4-touch has-text-weight-bold m-0 p-0 pl-3">ELEGANCE</div>
+                <div class="is-size-5 py-4" style="font-family: 'Open Sans', sans-serif;line-height: 1.5rem">
+                  <p>Un ganador de una orden de canje en productos <b>ELEGANCE</b> por 30 USD.</p>
+                  <hr class="my-2" style="background-color:#363636">
+                  <p class="is-size-7" style="line-height: 0.85rem">* Aplica para productos disponibles en la barbería
+                    al momento del canje.</p>
                 </div>
               </div>
             </div>
@@ -226,19 +237,19 @@
       <div class="columns ">
         <div class="column is-hidden-mobile">
           <h5>Creado por</h5>
-          <ul class="link-item-ul">
+          <ul class="link-item-ul" style="color:lightslategrey">
             <li>
               <a href="mailto:gustavorlozada@gmail.com?subject=Contactar con Elegance Studio Ec&body=Gracias por contactarnos. Saludos Gustavo"
-                class="link-item is-size-7" style="color:lightslategrey">
+                class="link-item is-size-7">
                 <span class="icon is-small">
                   <i class="fa-solid fa-paper-plane"></i>
                 </span>
                 <span>gustavorlozada@gmail.com</span>
               </a>
             </li>
-            <li style="color:lightslategrey">Images from
-              <a href="https://www.freepik.com/photos/people" target="_blank" rel="noopener" class="link-item is-size-7"
-                style="color:lightslategrey">Freepik</a>
+            <li>
+              <a href="https://www.freepik.com/photos/people" target="_blank" rel="noopener" class="link-item "
+                style="font-size:0.5rem;">Images from Freepik</a>
             </li>
           </ul>
         </div>
@@ -252,7 +263,7 @@
         <div class="column">
           <h5>Barberia</h5>
           <ul>
-            <li><a href="intro.html" class="link-item is-size-7">Inicio</a></li>
+            <li><a href="main.html" class="link-item is-size-7">Inicio</a></li>
           </ul>
         </div>
         <div class="column">
@@ -280,19 +291,19 @@
         </div>
         <div class="column is-hidden-tablet">
           <h5>Creado por</h5>
-          <ul class="link-item-ul">
+          <ul class="link-item-ul" style="color:lightslategrey">
             <li>
               <a href="mailto:gustavorlozada@gmail.com?subject=Contactar con Elegance Studio Ec&body=Gracias por contactarnos. Saludos Gustavo"
-                class="link-item is-size-7" style="color:lightslategrey">
+                class="link-item is-size-7">
                 <span class="icon is-small">
                   <i class="fa-solid fa-paper-plane"></i>
                 </span>
                 <span>gustavorlozada@gmail.com</span>
               </a>
             </li>
-            <li style="color:lightslategrey">Images from
-              <a href="https://www.freepik.com/photos/people" target="_blank" rel="noopener" class="link-item is-size-7"
-                style="color:lightslategrey">Freepik</a>
+            <li>
+              <a href="https://www.freepik.com/photos/people" target="_blank" rel="noopener" class="link-item "
+                style="font-size:0.5rem;">Images from Freepik</a>
             </li>
           </ul>
         </div>
@@ -300,12 +311,12 @@
     </div>
   </footer>
 
-  <!--header class="main-header is-hidden-desktop">
+  <header class="main-header is-hidden-desktop">
     <a class="main-logo" href="#"></a>
     <nav id="nav" class="main-nav"></nav>
     <button id="button-menu" class="button-menu"></button>
   </header>
-  <script src="./js/util/menu.js" type="module"></script-->
+  <script src="./js/util/menu.js" type="module"></script>
 
   <template id="cupon">
     <div class="column is-narrow m-0 p-0">

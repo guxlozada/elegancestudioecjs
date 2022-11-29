@@ -27,12 +27,8 @@
       background-origin: content-box;
       width: 100vw;
       height: 100vh;
-      background-color: #C30F16;
+      background: url(assets/promo_navidad/background.png);
     }
-
-    /* .hero-background.is-transparent {
-      --opacity: 0.3;
-    } */
 
     .logo {
       position: absolute;
@@ -45,15 +41,11 @@
       min-width: 100px;
     }
 
-    /* @media screen and (max-width: 768px) {
-      .hero.block-one {
-        height: 50vh !important;
-      }
-
+    @media screen and (max-width: 768px) {
       .hero-background {
-        height: 50vh;
+        object-fit: contain;
       }
-    }*/
+    }
 
     ::placeholder {
       color: grey !important;
@@ -65,7 +57,10 @@
 <body>
   <main>
     <section id="main" class="hero block-one is-fullheight has-background">
-      <img class="hero-background" alt="Promocion navidad 2022" src="/assets/promo_navidad/bg_navidad.png" />
+      <img class="hero-background is-hidden-mobile" alt="Promocion navidad 2022"
+        src="/assets/promo_navidad/bg_navidad.png" />
+      <img class="hero-background is-hidden-tablet" alt="Promocion navidad 2022"
+        src="/assets/promo_navidad/bg_navidad_mobile.png" />
       <img class="logo" src="/assets/logo-blanco.png" alt="Logo">
       <div class="hero-body"></div>
       <div class="hero-foot">
@@ -175,7 +170,8 @@
             <ul>
               <li class="has-background-danger-dark"><a class="has-text-white" href="#prizes">Premios</a></li>
               <li class="has-background-danger">
-                <a class="has-text-white" href="customer-promotions.html">Más promociones</a></li>
+                <a class="has-text-white" href="customer-promotions.html">Más promociones</a>
+              </li>
             </ul>
           </div>
         </nav>

@@ -1,5 +1,5 @@
-main.has-menu {
-  padding-top: 40px;
+.hero.is-fullheight {
+  min-height: 95vh !important;
 }
 
 .main-header {

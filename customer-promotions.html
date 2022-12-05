@@ -149,7 +149,8 @@
               <figure class="image is-fullwidth">
                 <img alt="Nuevo cliente" src="/assets/promos/new-client.png">
               </figure>
-              <div class="is-size-3 is-size-4-mobile has-text-centered" style="color:goldenrod;font-weight:300">Bienvenido
+              <div class="is-size-3 is-size-4-mobile has-text-centered" style="color:goldenrod;font-weight:300">
+                Bienvenido
               </div>
               <div style="padding: 1rem 1rem 1rem 4rem;">
                 Estamos encantados de conocerte y hemos preparado un obsequio de bienvenida por ser parte de nuestro
@@ -192,7 +193,8 @@
               <div class="tile">
                 <div class="tile is-6 is-parent">
                   <article class="tile is-child" style="display: flex;align-items: center;justify-content: center;">
-                    <div class="content is-size-3 is-size-4-mobile has-text-centered" style="color:#2cccc4;font-weight:700">
+                    <div class="content is-size-3 is-size-4-mobile has-text-centered"
+                      style="color:#2cccc4;font-weight:700">
                       <p>
                         <span style="display: inline-block;">¡El sexto corte </span>
                         <span style="display: inline-block;">va por nuestra cuenta!</span>
@@ -289,7 +291,17 @@
       </div>
     </section>
     <!-- Fin section sixth cut-->
-
+    <section id="poll" class="hero has-background-grey-darker " style="font-family: 'Roboto Condensed', sans-serif;">
+      <p class="title has-text-white has-text-centered is-size-4-desktop is-size-5-touch p-2">
+        ¿Te gustaría dos cupones adicionales para nuestro sorteo de navidad🎁?
+      </p>
+      <p class="subtitle has-text-white has-text-centered is-size-5-desktop is-size-6-touch p-2">
+        Solo debes llenar una encuesta de 5 preguntas sobre la calidad de nuestro servicio aqui
+        <span style="display: inline-block;">
+          <a href="customer-poll.html#poll" class="has-text-primary pl-2">👉Encuesta</a>
+        </span>
+      </p>
+    </section>
   </main>
 
   <footer class="footer p-4" style="position: unset;">
@@ -316,8 +328,8 @@
         <div class="column">
           <h5>Elegance para mi</h5>
           <ul class="link-item-ul">
-            <li><a href="/customer-christmas.html" class="link-item is-size-7">Sorteo navidad</a></li>
-            <li><a href="#" class="link-item is-size-7">Servicios</a></li>
+            <li><a href="/customer-christmas.html" class="link-item is-size-7">Sorteo de navidad</a></li>
+            <li><a href="/customer-poll.html" class="link-item is-size-7">Encuesta y comentarios</a></li>
           </ul>
         </div>
         <div class="column">
@@ -391,7 +403,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
-  <script src="./js/f_promos/manager_customer_promotions.js" type="module"></script>
+  <script src="./js/f_customers/manager_promotions.js" type="module"></script>
 </body>
 
 </html>

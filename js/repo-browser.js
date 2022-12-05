@@ -7,7 +7,8 @@ export const localdb = {
   accesskey: "ACCESSTOKEN",
   catalogProducts: "PRODS",
   catalogServices: "SERVS",
-  tmpBankReconciliation: "TMPBR"
+  tmpBankReconciliation: "TMPBR",
+  tmpPollQA: "QA"
 }
 
 export const IVA = 0.12

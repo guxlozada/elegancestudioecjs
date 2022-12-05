@@ -1,4 +1,4 @@
-import { findClientByIdNumber } from "../f_clients/dao_prod_clients.js"
+import { findClientByIdNumber } from "./dao_prod_clients.js"
 
 const d = document,
   w = window
@@ -14,7 +14,7 @@ d.addEventListener("submit", e => {
   findClientByIdNumber(idClient,
     voCliente => renderExpense(voCliente || {}),
     error => {
-      console.log("Errro en consulta de cupones", error)
+      console.log("Error en consulta de cupones", error)
       renderExpense()
     })
 })

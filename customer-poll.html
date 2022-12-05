@@ -1,0 +1,703 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Encuesta</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/main-new.css" />
+  <link rel="stylesheet" href="/css/menu.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fjalla+One&family=Secular+One&family=Open+Sans:wght@300;500;700&family=Roboto:wght@100;300;400;700&family=Roboto+Condensed:wght@300;400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    .hero.has-background {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-background {
+      position: absolute;
+      object-fit: cover;
+      object-position: center center;
+      background-origin: content-box;
+      width: 100vw;
+      height: 100vh;
+      background: #061220;
+    }
+
+
+    /* .hero-background.is-transparent {
+      --opacity: 0.3;
+    } */
+
+    .logo {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      max-height: 1.75rem;
+    }
+
+    #poll {
+      background: -webkit-linear-gradient(0deg, #2cccc4 2%, white 7%, white 90%, #2cccc4 100%);
+      background: -o-linear-gradient(0deg, #2cccc4 2%, white 7%, white 90%, #2cccc4 100%);
+      background: -moz-linear-gradient(0deg, #2cccc4 2%, white 7%, white 90%, #2cccc4 100%);
+      background: linear-gradient(0deg, #2cccc4 2%, white 7%, white 90%, #2cccc4 100%);
+    }
+
+    .radios {
+      background: -webkit-linear-gradient(90deg, rgba(255, 165, 0, 0.1) 1%, rgba(0, 255, 0, 0.1) 75%);
+      background: -o-linear-gradient(90deg, rgba(255, 165, 0, 0.1) 1%, rgba(0, 255, 0, 0.1) 75%);
+      background: -moz-linear-gradient(90deg, rgba(255, 165, 0, 0.1) 1%, rgba(0, 255, 0, 0.1) 75%);
+      background: linear-gradient(90deg, rgba(255, 165, 0, 0.1) 1%, rgba(0, 255, 0, 0.1) 75%);
+    }
+
+    .radios input[type=radio] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* IMAGE STYLES */
+    .radios input[type=radio]+figure {
+      cursor: pointer;
+      opacity: 0.5;
+    }
+
+    /* CHECKED STYLES */
+    .radios input[type=radio]:checked+figure {
+      opacity: 1;
+      border: 2px dashed black;
+      border-radius: 45%;
+      transition: all 0.4s;
+      -webkit-transition: all 0.4s;
+    }
+
+    .radios label:hover::before {
+      content: attr(data-msg);
+      font-family: Roboto, -apple-system, sans-serif;
+      text-transform: capitalize;
+      font-size: 11px;
+      position: absolute;
+      top: -40%;
+      left: 0;
+      right: 0;
+      opacity: 0.75;
+      /*background-color: #323232;*/
+      color: #000;
+      padding: 0;
+      border-radius: 3px;
+      display: block;
+    }
+
+    .table tbody td {
+      text-align: center;
+      vertical-align: middle !important;
+    }
+
+    @media screen and (min-width: 769px) {
+      .field-label {
+        flex-basis: 0;
+        flex-grow: 2;
+        flex-shrink: 0;
+        margin-right: 1rem;
+        text-align: right;
+      }
+    }
+
+    ::placeholder {
+      color: grey !important;
+      font-size: 0.75rem;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+
+    <section id="main" class="hero is-fullheight has-background is-size-5 is-size-6-mobile"
+      style="font-family: 'Open Sans', sans-serif;">
+      <img class="hero-background" alt="Promociones para clientes"
+        src="/assets/poll/diverse-people-holding-happy-emoticons.png" />
+      <img class="logo" src="/assets/logo-negro.png" alt="Logo">
+      <div class="hero-body">
+        <div class="container  has-text-white">
+          <div class="columns p-3">
+            <div class="column is-full-mobile is-half is-two-fifths-fullhd"
+              style="border: 0.5rem solid #2cccc4; background-color: rgba(0, 0, 0, 0.4);">
+              <div class="is-size-2 is-size-3-mobile has-text-centered"
+                style="font-family: Roboto, sans-serif;font-weight:400">
+                Calidad de servicios
+              </div>
+              <div class="has-text-justified pt-3 ">
+                <span class="icon">
+                  <i class="fa-regular fa-face-smile"></i>
+                </span>
+                Tu opinión es importante, ayudanos a mejorar nuestro servicio
+              </div>
+              <div class="has-text-justified pt-3 ">
+                Si ya eres cliente, te regalamos dos cupones adicionales para nuestro sorteo de navidad
+                <span class="icon">
+                  <i class="fa-solid fa-face-smile-wink"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-foot">
+        <nav class="tabs">
+          <div class="container is-size-7-mobile">
+            <ul>
+              <li style="background-color: #2cccc4;"><a href="#poll" class="has-text-black">Encuesta</a></li>
+              <li class="has-background-grey-darker">
+                <a href="customer-promotions.html" class="has-text-white">Promociones</a>
+              </li>
+              <li class="has-background-black-ter">
+                <a href="customer-christmas.html" class="has-text-danger">Sorteo&nbsp<span
+                    style="color:#2cccc4">navidad</span>&nbsp2022</a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </section>
+    <!-- Fin section main-->
+
+    <section id="poll" class="hero is-size-5 is-size-6-mobile" style="font-family: Roboto, sans-serif;">
+      <div class="hero-body">
+        <p class="title has-text-centered is-size-4 p-0">
+          Calidad de servicios
+        </p>
+        <p class="subtitle has-text-centered is-size-5 px-2 pb-5">
+          Nuestro deseo es mejorar cada día para servirte mejor
+        </p>
+        <div class="container">
+          <div class="columns is-mobile is-centered m-0 p-0">
+            <div class="column is-10-tablet is-8-desktop is-6-fullhd m-0 p-0">
+
+              <form id="formPoll">
+                <div class="field">
+                  <label class="label">Tú identificación</label>
+                  <div class="control">
+                    <input type="text" class="prop-input input is-small" name="identificacion"
+                      placeholder="Número de identificación...">
+                  </div>
+                  <p class="help has-text-link">La encuesta puede ser anónima; pero, la identificación es requerida para
+                    asignar los dos cupones adicionales para el sorteo de navidad</p>
+                </div>
+                <div class="field">
+                  <label class="label">1. ¿Recuerdas el nombre del barbero que te atendió la última vez?</label>
+
+                  <div class="control is-size-7 is-flex is-flex-direction-column is-align-items-flex-start">
+                    <label class="radio m-0">
+                      <input type="radio" class="prop-input" name="barberoPresentacion" value="no-presentado">
+                      <span>No lo mencionó</span>
+                    </label>
+                    <label class="radio m-0">
+                      <input type="radio" class="prop-input" name="barberoPresentacion" value="no-recuerdo">
+                      <span>Se presentó, pero no lo recuerdo </span>
+                    </label>
+                    <label class="radio m-0">
+                      <input type="radio" class="prop-input" name="barberoPresentacion" value="si">
+                      <span>Si lo recuerdo, se llama...</span>
+                    </label>
+                  </div>
+                  <div class="control">
+                    <input type="text" class="prop-input input is-small" name="barberoNombre"
+                      placeholder="Nombre del barbero...">
+                  </div>
+
+                </div>
+
+                <div class="field ">
+                  <label class="label">2. ¿Hasta qué punto, nuestros servicios cumplieron tus expectativas?</label>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-small is-hidden-mobile">
+                      <label class="label has-text-grey-lighter">Selecciona un rostro</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control radios is-flex is-justify-content-space-between pt-1">
+                          <label class="radio" data-msg="Decepcionado">
+                            <input type="radio" class="prop-input" name="servicioExpectativa" value="decepcionado">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/minsatisfecho.png" alt="Decepcionado">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Malo">
+                            <input type="radio" class="prop-input" name="servicioExpectativa" value="malo">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/insatisfecho.png" alt="Malo">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Indiferente">
+                            <input type="radio" class="prop-input" name="servicioExpectativa" value="indiferente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/neutral.png" alt="Indiferente">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="satisfecho">
+                            <input type="radio" class="prop-input" name="servicioExpectativa" value="satisfecho">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/satisfecho.png" alt="satisfecho">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Excelente">
+                            <input type="radio" class="prop-input" name="servicioExpectativa" value="excelente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/msatisfecho.png" alt="Excelente">
+                            </figure>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field ">
+                  <label class="label">3. ¿Cómo calificarías nuestros servicios en las siguientes áreas?</label>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-small is-size-7-mobile">
+                      <label class="label">Tiempo de espera</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control radios is-flex is-justify-content-space-between pt-1">
+                          <label class="radio" data-msg="Decepcionado">
+                            <input type="radio" class="prop-input" name="barberiaTiempoEspera" value="decepcionado">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/minsatisfecho.png" alt="Decepcionado">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Malo">
+                            <input type="radio" class="prop-input" name="barberiaTiempoEspera" value="malo">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/insatisfecho.png" alt="Malo">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Indiferente">
+                            <input type="radio" class="prop-input" name="barberiaTiempoEspera" value="indiferente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/neutral.png" alt="Indiferente">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="satisfecho">
+                            <input type="radio" class="prop-input" name="barberiaTiempoEspera" value="satisfecho">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/satisfecho.png" alt="satisfecho">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Excelente">
+                            <input type="radio" class="prop-input" name="barberiaTiempoEspera" value="excelente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/msatisfecho.png" alt="Excelente">
+                            </figure>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="field is-horizontal">
+                    <div class="field-label is-small is-size-7-mobile">
+                      <label class="label">Creatividad y destreza del barbero</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control radios is-flex is-justify-content-space-between pt-1">
+                          <label class="radio" data-msg="Decepcionado">
+                            <input type="radio" class="prop-input" name="barberoCreatividad" value="decepcionado">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/minsatisfecho.png" alt="Decepcionado">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Malo">
+                            <input type="radio" class="prop-input" name="barberoCreatividad" value="malo">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/insatisfecho.png" alt="Malo">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Indiferente">
+                            <input type="radio" class="prop-input" name="barberoCreatividad" value="indiferente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/neutral.png" alt="Indiferente">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="satisfecho">
+                            <input type="radio" class="prop-input" name="barberoCreatividad" value="satisfecho">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/satisfecho.png" alt="satisfecho">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Excelente">
+                            <input type="radio" class="prop-input" name="barberoCreatividad" value="excelente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/msatisfecho.png" alt="Excelente">
+                            </figure>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-small is-size-7-mobile">
+                      <label class="label">Tiempo de atención</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control radios is-flex is-justify-content-space-between pt-1">
+                          <label class="radio" data-msg="Decepcionado">
+                            <input type="radio" class="prop-input" name="barberoTiempoAtencion" value="decepcionado">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/minsatisfecho.png" alt="Decepcionado">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Malo">
+                            <input type="radio" class="prop-input" name="barberoTiempoAtencion" value="malo">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/insatisfecho.png" alt="Malo">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Indiferente">
+                            <input type="radio" class="prop-input" name="barberoTiempoAtencion" value="indiferente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/neutral.png" alt="Indiferente">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="satisfecho">
+                            <input type="radio" class="prop-input" name="barberoTiempoAtencion" value="satisfecho">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/satisfecho.png" alt="satisfecho">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Excelente">
+                            <input type="radio" class="prop-input" name="barberoTiempoAtencion" value="excelente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/msatisfecho.png" alt="Excelente">
+                            </figure>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-small is-size-7-mobile">
+                      <label class="label">Satisfacción con el resultado</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control radios is-flex is-justify-content-space-between pt-1">
+                          <label class="radio" data-msg="Decepcionado">
+                            <input type="radio" class="prop-input" name="barberoResultado" value="decepcionado">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/minsatisfecho.png" alt="Decepcionado">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Malo">
+                            <input type="radio" class="prop-input" name="barberoResultado" value="malo">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/insatisfecho.png" alt="Malo">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Indiferente">
+                            <input type="radio" class="prop-input" name="barberoResultado" value="indiferente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/neutral.png" alt="Indiferente">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="satisfecho">
+                            <input type="radio" class="prop-input" name="barberoResultado" value="satisfecho">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/satisfecho.png" alt="satisfecho">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Excelente">
+                            <input type="radio" class="prop-input" name="barberoResultado" value="excelente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/msatisfecho.png" alt="Excelente">
+                            </figure>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-small is-size-7-mobile">
+                      <label class="label">Disponibilidad de productos</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control radios is-flex is-justify-content-space-between pt-1">
+                          <label class="radio" data-msg="Decepcionado">
+                            <input type="radio" class="prop-input" name="barberiaProductos" value="decepcionado">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/minsatisfecho.png" alt="Decepcionado">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Malo">
+                            <input type="radio" class="prop-input" name="barberiaProductos" value="malo">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/insatisfecho.png" alt="Malo">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Indiferente">
+                            <input type="radio" class="prop-input" name="barberiaProductos" value="indiferente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/neutral.png" alt="Indiferente">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="satisfecho">
+                            <input type="radio" class="prop-input" name="barberiaProductos" value="satisfecho">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/satisfecho.png" alt="satisfecho">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Excelente">
+                            <input type="radio" class="prop-input" name="barberiaProductos" value="excelente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/msatisfecho.png" alt="Excelente">
+                            </figure>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-small is-size-7-mobile">
+                      <label class="label">Limpieza y orden</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control radios is-flex is-justify-content-space-between pt-1">
+                          <label class="radio" data-msg="Decepcionado">
+                            <input type="radio" class="prop-input" name="barberiaLimpieza" value="decepcionado">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/minsatisfecho.png" alt="Decepcionado">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Malo">
+                            <input type="radio" class="prop-input" name="barberiaLimpieza" value="malo">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/insatisfecho.png" alt="Malo">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Indiferente">
+                            <input type="radio" class="prop-input" name="barberiaLimpieza" value="indiferente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/neutral.png" alt="Indiferente">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="satisfecho">
+                            <input type="radio" class="prop-input" name="barberiaLimpieza" value="satisfecho">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/satisfecho.png" alt="satisfecho">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Excelente">
+                            <input type="radio" class="prop-input" name="barberiaLimpieza" value="excelente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/msatisfecho.png" alt="Excelente">
+                            </figure>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="field is-horizontal">
+                    <div class="field-label is-small is-size-7-mobile">
+                      <label class="label">Ambiente en general</label>
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <div class="control radios is-flex is-justify-content-space-between pt-1">
+                          <label class="radio" data-msg="Decepcionado">
+                            <input type="radio" class="prop-input" name="barberiaAmbiente" value="decepcionado">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/minsatisfecho.png" alt="Decepcionado">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Malo">
+                            <input type="radio" class="prop-input" name="barberiaAmbiente" value="malo">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/insatisfecho.png" alt="Malo">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Indiferente">
+                            <input type="radio" class="prop-input" name="barberiaAmbiente" value="indiferente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/neutral.png" alt="Indiferente">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="satisfecho">
+                            <input type="radio" class="prop-input" name="barberiaAmbiente" value="satisfecho">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/satisfecho.png" alt="satisfecho">
+                            </figure>
+                          </label>
+                          <label class="radio" data-msg="Excelente">
+                            <input type="radio" class="prop-input" name="barberiaAmbiente" value="excelente">
+                            <figure class="image is-32x32">
+                              <img src="/assets/poll/msatisfecho.png" alt="Excelente">
+                            </figure>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="field ">
+                  <label class="label">4. ¿Qué te gusto de nuestro servicio?</label>
+                  <div class="control">
+                    <textarea class="prop-input textarea has-fixed-size is-small" rows="2" name="comentarioSatisfaccion"
+                      placeholder="Su comentario..."></textarea>
+                  </div>
+                </div>
+                <div class="field ">
+                  <label class="label">5. ¿Qué aspectos de nuestro servicio no fueron de tú agrado?</label>
+                  <div class="control">
+                    <textarea class="prop-input textarea has-fixed-size is-small" rows="2"
+                      name="comentarioInsatisfaccion" placeholder="Su comentario..."></textarea>
+                  </div>
+                </div>
+                <div class="field is-grouped is-grouped-right">
+                  <p class="control">
+                    <button type="reset" class="button">
+                      <span>Cancelar</span>
+                    </button>
+                  </p>
+                  <p class="control">
+                    <button type="submit" class="button is-primary">
+                      <span>Enviar</span>
+                      <span class="icon is-small">
+                        <i class="fa-solid fa-paper-plane"></i>
+                      </span>
+                    </button>
+                  </p>
+                </div>
+                <div class="field ">
+                  <p
+                    class="christmas-coupons help has-background-black has-text-white has-text-centered is-size-6 p-1 is-hidden">
+                    <span style="display: inline-block;">La encuesta ha sido enviada correctamente🙂 </span>
+                    <span style="display: inline-block;">Consulta todos tus cupones aquí:</span>
+                    <span style="display: inline-block;">
+                      <a href="customer-christmas.html#coupons" class="has-text-danger is-size-5 pl-2">Sorteo de
+                        navidad</a>
+                    </span>
+                  </p>
+                  <p class="help has-text-link"><span
+                    class="has-text-weight-semibold has-text-black">CONDICIONES:</span> Al enviar la encuesta,
+                  automáticamente se generan dos cupones adicionales para el sorteo de navidad. Aplica para <abbr
+                    title="El registro de clientes se realiza con los barberos.">clientes registrados</abbr>. Solo se
+                  generan dos cupones por cliente, la promoción no aplica por cada encuesta. </p>
+
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="title has-text-centered is-size-4 pb-5">
+        Gracias por tu ayuda 👍
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="footer p-4" style="position: unset;">
+    <div class="content has-text-centered">
+      <div class="columns ">
+        <div class="column is-hidden-mobile">
+          <h5>Creado por</h5>
+          <ul class="link-item-ul" style="color:lightslategrey">
+            <li>
+              <a href="mailto:gustavorlozada@gmail.com?subject=Contactar con Elegance Studio Ec&body=Gracias por contactarnos. Saludos Gustavo"
+                class="link-item is-size-7">
+                <span class="icon is-small">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </span>
+                <span>gustavorlozada@gmail.com</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.freepik.com/photos/people" target="_blank" rel="noopener" class="link-item "
+                style="font-size:0.5rem;">Images from Freepik</a>
+            </li>
+          </ul>
+        </div>
+        <div class="column">
+          <h5>Elegance para mi</h5>
+          <ul class="link-item-ul">
+            <li><a href="/customer-christmas.html" class="link-item is-size-7">Sorteo de navidad</a></li>
+            <li><a href="/customer-promotions.html" class="link-item is-size-7">Promociones</a></li>
+          </ul>
+        </div>
+        <div class="column">
+          <h5>Barberia</h5>
+          <ul>
+            <li><a href="main.html" class="link-item is-size-7">Inicio</a></li>
+          </ul>
+        </div>
+        <div class="column">
+          <h2 style="font-family: 'Roboto Condensed', sans-serif;font-weight:900; color: #363636">SIGUENOS!</h2>
+          <div class="field is-grouped has-text-center m-0 p-0">
+            <p class="control is-expanded"></p>
+            <p class="control">
+              <a class="navbar-item pt-1" href="https://www.facebook.com/elegancestudioec/" target="_blank"
+                rel="noopener">
+                <span class="icon has-background-white" style="color: #3B5998;">
+                  <i class="fa-brands fa-facebook-square is-size-3"></i>
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="navbar-item pt-1" href="https://www.instagram.com/elegancestudioec" target="_blank"
+                rel="noopener">
+                <span class="icon has-background-white" style="color: #DD2A7B;">
+                  <i class="fa-brands fa-instagram-square is-size-3"></i>
+                </span>
+              </a>
+            </p>
+            <p class="control is-expanded"></p>
+          </div>
+        </div>
+        <div class="column is-hidden-tablet">
+          <h5>Creado por</h5>
+          <ul class="link-item-ul" style="color:lightslategrey">
+            <li>
+              <a href="mailto:gustavorlozada@gmail.com?subject=Contactar con Elegance Studio Ec&body=Gracias por contactarnos. Saludos Gustavo"
+                class="link-item is-size-7">
+                <span class="icon is-small">
+                  <i class="fa-solid fa-paper-plane"></i>
+                </span>
+                <span>gustavorlozada@gmail.com</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://www.freepik.com/photos/people" target="_blank" rel="noopener" class="link-item "
+                style="font-size:0.5rem;">Images from Freepik</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <header class="main-header is-hidden-desktop">
+    <a class="main-logo" href="#"></a>
+    <nav id="nav" class="main-nav"></nav>
+    <button id="button-menu" class="button-menu"></button>
+  </header>
+  <script src="./js/util/menu.js" type="module"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/f_customers/manager_poll.js" type="module"></script>
+</body>
+
+</html>

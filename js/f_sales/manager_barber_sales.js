@@ -13,7 +13,7 @@ import timestampToDatekey, { generateDateProperties } from "../persist/dao_gener
 import { BANCO_PICHINCHA, BANCO_PRODUBANCO, saleToBanktransaction } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
 import { findCatalog } from "../f_catalogs/dao_catalog.js";
-import { findLastNumber } from "../f_promos/dao_tmp_raffle.js";
+import { findLastRaffleNumber } from "../f_customers/dao_tmp_raffle.js";
 
 const d = document,
   w = window,
@@ -527,7 +527,7 @@ d.getElementById("sales").addEventListener("click", e => {
       ntf.validation("No ha registrado ningún producto o servicio")
     } else {
       //TODO: Promo sorteo navidad 2022 temporalmente primero se llama la consulta de numeros de sorteo
-      findLastNumber(vnLastNumber => insertSalesDB(resetSale, vnLastNumber),
+      findLastRaffleNumber(vnLastNumber => insertSalesDB(resetSale, vnLastNumber),
         error => ntf.errorAndLog("Existe un problema al guardar la venta con los cupones del sorteo de navidad.", error))
     }
   }

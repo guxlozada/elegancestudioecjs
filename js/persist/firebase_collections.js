@@ -7,6 +7,7 @@ export const collections = {
   bankingTransactions: "prod-banking-transaction",
   bankReconciliation: "prod-bank-reconciliation",
   clients: "prodseller-clients",
+  qualityAssurance: "statistics-qa-poll",
   dailyClosing: "prod-daily-closing",
   expenses: "prod-cash-outflows",
   sales: "prod-sales",

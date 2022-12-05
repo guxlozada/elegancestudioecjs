@@ -1,4 +1,4 @@
-import { findClientByIdNumber } from "../f_clients/dao_prod_clients.js"
+import { findClientByIdNumber } from "../f_customers/dao_prod_clients.js"
 
 const d = document,
   w = window

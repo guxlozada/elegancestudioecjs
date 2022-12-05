@@ -27,6 +27,9 @@
       background-origin: content-box;
       width: 100vw;
       height: 100vh;
+    }
+
+    .block-one {
       background: url(assets/promo_navidad/background.png);
     }
 
@@ -42,7 +45,7 @@
     }
 
     @media screen and (max-width: 768px) {
-      .hero-background {
+      .block-one {
         object-fit: contain;
       }
     }
@@ -56,10 +59,10 @@
 
 <body>
   <main>
-    <section id="main" class="hero block-one is-fullheight has-background">
+    <section id="main" class="block-one hero has-background is-fullheight">
       <img class="hero-background is-hidden-mobile" alt="Promocion navidad 2022"
         src="/assets/promo_navidad/bg_navidad.png" />
-      <img class="hero-background is-hidden-tablet" alt="Promocion navidad 2022"
+      <img class="block-one hero-background is-hidden-tablet" alt="Promocion navidad 2022"
         src="/assets/promo_navidad/bg_navidad_mobile.png" />
       <img class="logo" src="/assets/logo-blanco.png" alt="Logo">
       <div class="hero-body"></div>
@@ -178,7 +181,9 @@
       </div>
     </section>
 
-    <section id="prizes" class="hero is-fullheight has-background-black">
+    <section id="prizes" class="hero has-background is-fullheight has-background-black">
+      <img class="hero-background" alt="Premios"
+        src="/assets/promo_navidad/prizes_background.png" />
       <div class="hero-body">
         <div class="container">
           <div class="tile is-ancestor">

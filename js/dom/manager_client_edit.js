@@ -168,7 +168,7 @@ function insertClientDB(clientData) {
 
   let updates = {}
   // Registrar datos del cliente
-  updates[`${collections.clients}/${key}`] = clientDB
+  updates[`${collections.customers}/${key}`] = clientDB
   // TODO  Actualizar referido si aplica
 
   // Registrar el cliente en la BD

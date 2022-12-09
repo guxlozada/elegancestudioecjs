@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Clientes</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/backoffice_main.css" />
+  <link rel="stylesheet" href="/css/backoffice_menu.css" />
+  <link rel="stylesheet" href="/css/backoffice_report.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar is-black is-fixed-top">
+      <div class="navbar-brand">
+        <a class="navbar-inner p-2" href="#home">
+          <img src="/assets/logo-blanco.png" alt="Elegance Studio EC" width="130">
+        </a>
+        <div class="navbar-burger burger" data-target="navMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <div id="navMenu" class="navbar-menu is-hidden-desktop">
+        <div class="navbar-start">
+          <a class="navbar-item" href="sales.html?#clients"
+            onblur="document.querySelector('.client-search-text').focus()">
+            <span class="icon"><i class="fa-solid fa-user-friends"></i></span>&nbsp;Clientes
+          </a>
+          <a class="navbar-item" href="sales.html?#sales">
+            <span class="icon"><i class="fa-solid fa-cash-register"></i></span>&nbsp;Ventas
+          </a>
+          <a class="navbar-item" href="expenses.html" title="Egresos de caja en la barberia">
+            <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span>&nbsp;Egresos
+          </a>
+          <a class="navbar-item" href="bank-transactions-barber.html" title="Depositos y transferencias en la barberia">
+            <span class="icon"><i class="fa-solid fa-building-columns"></i></span>&nbsp;Banco
+          </a>
+          <a class="navbar-item" href="daily-closing.html#summary" title="Cierre diario de caja">
+            <span class="icon"><i class="fa-solid fa-shop-lock"></i></span>&nbsp;Cierre diario
+          </a>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <aside class="menu-vertical is-2 is-fullheight has-background-white-bis is-hidden-touch p-4">
+    <p class="menu-label pl-3">Menú<span class="icon"> <i class="fa-solid fa-layer-group"></i></span></p>
+    <hr class="navbar-divider">
+    <ul class="menu-list is-size-7">
+      <li>
+        <a class="navbar-item" href="sales.html?#clients"
+          onblur="document.querySelector('.client-search-text').focus()">
+          <span class="icon"><i class="fa-solid fa-user-friends"></i></span> Clientes
+        </a>
+      </li>
+      <li>
+        <a class="navbar-item " href="sales.html?#sales">
+          <span class="icon"><i class="fa-solid fa-cash-register"></i></span> Ventas
+        </a>
+      </li>
+      <li><a class="navbar-item " href="expenses.html" title="Egresos de caja en la barberia">
+          <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span> Egresos
+        </a></li>
+      <li><a class="navbar-item " href="bank-transactions-barber.html"
+          title="Depositos y transferencias en la barberia">
+          <span class="icon"><i class="fa-solid fa-building-columns"></i></span> Banco
+        </a></li>
+      <li><a class="navbar-item " href="daily-closing.html#summary" title="Cierre diario de caja">
+          <span class="icon"><i class="fa-solid fa-shop-lock"></i></span> Cierre diario
+        </a></li>
+    </ul>
+
+  </aside>
+
+  <div class="main-content columns is-multiline">
+    <div class="column is-10-desktop is-offset-2-desktop ">
+      <div class="tabs is-small is-fullwidth p-2 mb-0">
+        <ul>
+          <li class="is-active has-text-weight-semibold is-size-5 is-size-6-touch">
+            Administracion de clientes
+            <span class="icon is-small is-hidden-mobile"><i class="fa-solid fa-user-friends"></i></span>
+          </li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+          <li>
+            <a class="add-record has-background-primary has-text-white is-small" title="Agregar cliente">
+              <span class="icon is-small"><i class="fa-solid fa-user-plus"></i></span>
+              <span class="is-hidden-mobile">Agregar</span></a>
+          </li>
+        </ul>
+      </div>
+
+      <section id="report" class="section p-2">
+
+        <form id="filters" class=" field is-horizontal">
+          <div class="field-body">
+            <div class="field">
+              <div class="field has-addons">
+                <p class="control">
+                  <a class="button is-small is-static">
+                    Ordenar por
+                  </a>
+                </p>
+                <p class="control">
+                <div class=" select is-small">
+                  <select class="filter-order prop-input is-hovered" name="orderBy">
+                    <option value="idNumber">Identificacion</option>
+                    <option value="surnames">Apellido</option>
+                    <!-- <option value="registrationDate">Fecha registro</option> -->
+                    <option value="stTotalServices">Numero de servicios</option>
+                    <option value="lastService">Fecha ultimo servicio</option>
+                  </select>
+                </div>
+                </p>
+              </div>
+            </div>
+            <div class="field has-addons has-addons-right">
+              <p class="control is-expanded">
+                <input type="text" id="keyword" class="prop-input input is-hovered is-small" name="keyword"
+                  placeholder="Identificacion, nombre o apellido..."
+                  title="Filtrar por palabras claves como la identificacion, nombre o apellido">
+              </p>
+              <p class="control ">
+                <button type="submit" class="button is-small is-primary " title=" Buscar">
+                  <span class="icon is-small">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                  </span>
+                  <span class="is-hidden-mobile">Buscar</span>
+                </button>
+                <button class="filter-clean button is-small is-link is-outlined" title="Limpiar filtros">
+                  <span class="icon is-small">
+                    <i class="fa-solid fa-eraser"></i>
+                  </span>
+                </button>
+              </p>
+            </div>
+          </div>
+        </form>
+
+        <div class="report card ">
+          <div class="report-content card-content p-0">
+            <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+              <thead>
+                <tr>
+                  <th><abbr title="Numero de identificacion">Id</abbr></th>
+                  <th><abbr title="Apelllidos y nombres">Nombre</abbr></th>
+                  <th><abbr title="Numero de celular">Celular</abbr></th>
+                  <th><abbr title="Fecha de registro">Registro</abbr></th>
+                  <th><abbr title="Fecha de ultimo servicio">Ult.Ser</abbr></th>
+                  <th><abbr title="Numero total de servicios">Tot.Ser</abbr></th>
+                  <th><abbr title="Sexto corte gratis">Sexto</abbr></th>
+                  <th><abbr title="Cupones sorteo navidad">Navidad</abbr></th>
+                  <th><abbr title="Cupones de encuesta">Encuesta</abbr></th>
+                  <th title="Acciones sobre el registro: activar, editar">
+                    <span class="icon ">
+                      <i class="fa-solid fa-gear"></i>
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="details">
+                <!-- render details-->
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td class="has-text-centered" colspan="10">Total clientes:<span class="customer-count">0</span></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+    </div>
+  </div>
+
+  <template id="row">
+    <tr>
+      <td class="id is-narrow"></td>
+      <td class="name is-narrow"></td>
+      <td class="cellphone is-narrow"></td>
+      <td class="registration has-text-right is-narrow"></td>
+      <td class="last-service has-text-right is-narrow"></td>
+      <td class="total-services has-text-right is-narrow"></td>
+      <td class="sixth-cut has-text-right is-narrow"></td>
+      <td class="raffle-cupons text-ellipsis"></td>
+      <td class="poll-cupons is-narrow"></td>
+      <td class="is-narrow">
+        <div class="field has-addons">
+          <div class="control">
+            <a href="#edition" class="edit" title="Editar informacion del cliente" data-key="UID">
+              <span class="icon is-small has-text-link">
+                <i class="fa-solid fa-pen-to-square fa-xs"></i>
+              </span>
+            </a>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </template>
+
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/interceptor/manager_user_rol.js" type="module"></script>
+  <script src="./js/f_catalogs/manager_customers.js" type="module"></script>
+</body>
+
+</html>

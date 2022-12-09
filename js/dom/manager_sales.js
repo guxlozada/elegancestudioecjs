@@ -567,7 +567,7 @@ function insertSalesDB(callback) {
   })
   // Actualizar datos del cliente
   if (saleHeader.clientId !== "9999999999999") {
-    updates[`${collections.clients}/${saleHeader.clientUid}/lastService`] = saleHeader.searchDate
+    updates[`${collections.customers}/${saleHeader.clientUid}/lastService`] = saleHeader.searchDate
   }
 
   // Registrar si existe la transaccion bancaria

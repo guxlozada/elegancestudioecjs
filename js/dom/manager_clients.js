@@ -5,7 +5,7 @@ import NotificationBulma from "./NotificacionBulma.js";
 
 const d = document,
   ntf = new NotificationBulma(),
-  clientsRef = db.ref(collections.clients),
+  clientsRef = db.ref(collections.customers),
   $container = d.querySelector(".clients-container")
 
 //------------------------------------------------------------------------------------------------

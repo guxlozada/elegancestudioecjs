@@ -1,0 +1,63 @@
+:root {
+  --primary-color: #00bfa5; /*--fire-color-success-on-dark: #00bfa5;--primary-color: #2cccc4;*/
+  --link-dark-color: hsl(217, 71%, 45%);
+
+  --text-primary: #3b577d; /*fire-color-old-navy-a400*/
+}
+
+.report-content table {
+  position: relative;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
+.report-content table td,
+.report-content table th {
+  padding: 2px !important;
+  line-height: 1.2rem;
+}
+
+.report-content thead {
+  background: linear-gradient(to bottom, #1a73e8 50%, #4285f4 100%);
+  position: sticky;
+  top: 0;
+  /* Don't forget this, that is required for the stickiness */
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.report-content thead th,
+.report-content thead td,
+.report-content tfoot th,
+.report-content tfoot td {
+  color: white !important;
+}
+
+.report-content thead th{
+  text-align: center !important;
+  font-weight: 500;
+}
+
+.report-content tfoot {
+  background: var(--link-dark-color);
+  color: white !important;
+  position: sticky;
+  bottom: 0;
+  /* Don't forget this, that is required for the stickiness */
+  box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.4);
+}
+
+.report-content tfoot th {
+  font-weight: 500;
+}
+
+.report {
+  height: 60vh;
+}
+
+.report .report-content {
+  height: 100%;
+  display: flex;
+  overflow-y: auto;
+  flex-direction: column;
+}

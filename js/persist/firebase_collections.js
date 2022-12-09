@@ -6,7 +6,7 @@ export const collections = {
   catalogServicesCategory: "inv-services-category",
   bankingTransactions: "prod-banking-transaction",
   bankReconciliation: "prod-bank-reconciliation",
-  clients: "prodseller-clients",
+  customers: "prodseller-clients",
   qualityAssurance: "statistics-qa-poll",
   dailyClosing: "prod-daily-closing",
   expenses: "prod-cash-outflows",

@@ -32,6 +32,10 @@ export const isAdmin = () => {
   return localStorage.getItem(localdb.accesskey) === hoyEC().toFormat(FD)
 }
 
+export const isBarber = () => {
+  return localStorage.getItem(localdb.accessBarberkey) === hoyEC().toFormat(FD)
+}
+
 export const cleanAdminAccess = () => {
   localStorage.removeItem(localdb.accesskey)
 }

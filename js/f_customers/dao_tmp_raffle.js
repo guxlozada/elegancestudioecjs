@@ -29,8 +29,8 @@ export function updatePollCupons(voClient, callback, callbackError) {
       stPollCupons = vnLastNumber + " " + (++vnLastNumber),
       stRaffleCupons = (voClient.stRaffleCupons || "") + " " + stPollCupons
 
-    updates[`${collections.clients}/${voClient.uid}/stPollCupons`] = stPollCupons.trim()
-    updates[`${collections.clients}/${voClient.uid}/stRaffleCupons`] = stRaffleCupons.trim()
+    updates[`${collections.customers}/${voClient.uid}/stPollCupons`] = stPollCupons.trim()
+    updates[`${collections.customers}/${voClient.uid}/stRaffleCupons`] = stRaffleCupons.trim()
     updates[`${collections.tmpRaffle}/lastNumber`] = ++vnLastNumber
 
     // Registrar los cupones en la BD

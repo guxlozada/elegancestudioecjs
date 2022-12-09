@@ -1,0 +1,97 @@
+@import "https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400;1,500&display=swap');
+
+:root {
+  --primary-color: #2cccc4;
+  --link-dark-color:hsl(217, 71%, 45%);
+  font-family: Roboto,Helvetica Neue,sans-serif;
+}
+
+.footer {
+  background-color: rgba(216, 216, 216, 0.8) !important;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  z-index: 900;
+}
+
+@media screen and (max-width: 768px) {
+  .footer {
+    position: unset;
+    bottom: unset;
+  }
+}
+
+/* Elimina el disco de las listas del pie de pagina*/
+.footer .content ul {
+  list-style-type: none;
+}
+
+.footer .link-item {
+  margin-top: 2rem;
+  color: #485fc7;
+  text-decoration: none;
+  font-size: 0.75rem;
+  position: relative;
+  list-style-type: none;
+}
+
+.footer .link-item::after {
+  position: absolute;
+  content: "";
+  background-color: #485fc7;
+  bottom: -3px;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  transition: 0.3s ease all;
+}
+
+.footer .link-item:hover::after {
+  width: 100%;
+}
+
+/***** Notificaciones - Inicio - BulmaNotification.js *****/
+.note {
+  visibility: hidden;
+  opacity: 0;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.33);
+  min-width: 300px; /*200px;*/
+  width: 50%;
+  margin: 3.5rem auto;
+  padding: 0.5em 2em;
+  top: -100px;
+  /*left: 0;*/
+  right: 0;
+  position: fixed;
+  transition: opacity 0.2s, top 0.2s, visibility 0.2s;
+  transition-timing-function: ease-in;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.note-visible {
+  top: 0px;
+  opacity: 1;
+  visibility: visible;
+}
+
+.note-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.note-content {
+  font-size: 1.25em;
+}
+
+/***** Notificaciones - Fin *****/
+
+.text-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

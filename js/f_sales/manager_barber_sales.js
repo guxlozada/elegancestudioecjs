@@ -681,15 +681,18 @@ function insertSalesDB(callback, vnLastNumber) {
   // Actualizar datos del cliente
   if (saleHeader.clientId !== "9999999999999") {
 
-    updates[`${collections.clients}/${saleHeader.clientUid}/lastService`] = saleHeader.searchDate
+    updates[`${collections.customers}/${saleHeader.clientUid}/stLastService`] = saleHeader.date
+    updates[`${collections.customers}/${saleHeader.clientUid}/aud/${saleKey}/seller`] = saleHeader.seller
 
     // Se almacena  los valores previos de las promociones para restablecer cuando se elimina la venta
     let stFreeSixthCut = saleHeader.client.stFreeSixthCut || 0,
       stTotalServices = saleHeader.client.stTotalServices || 0,
+      stLastService = saleHeader.client.stLastService || 0,
       stRaffleCupons = saleHeader.client.stRaffleCupons || ""
 
     saleHeader.stLastFreeSixthCut = stFreeSixthCut
     saleHeader.stLastTotalServices = stTotalServices
+    saleHeader.stLastServices = stLastService
     saleHeader.stLastRaffleCupons = stRaffleCupons
 
     //TODO: Promo del sexto corte gratis, solo para servicios con valor mayor a 10 usd
@@ -702,8 +705,8 @@ function insertSalesDB(callback, vnLastNumber) {
 
       // Al saldo de cortes agrega el total de servicios de la venta
       stFreeSixthCut += totalServices
-      updates[`${collections.clients}/${saleHeader.clientUid}/stFreeSixthCut`] = stFreeSixthCut
-      updates[`${collections.clients}/${saleHeader.clientUid}/stTotalServices`] = stTotalServices + totalServices
+      updates[`${collections.customers}/${saleHeader.clientUid}/stFreeSixthCut`] = stFreeSixthCut
+      updates[`${collections.customers}/${saleHeader.clientUid}/stTotalServices`] = stTotalServices + totalServices
     }
 
     // TODO: Promo sorteo navidad 2022
@@ -714,7 +717,7 @@ function insertSalesDB(callback, vnLastNumber) {
         vnLastNumber++
         numberCupons--
       } while (numberCupons > 0)
-      updates[`${collections.clients}/${saleHeader.clientUid}/stRaffleCupons`] = stRaffleCupons.trim()
+      updates[`${collections.customers}/${saleHeader.clientUid}/stRaffleCupons`] = stRaffleCupons.trim()
       updates[`${collections.tmpRaffle}/lastNumber`] = vnLastNumber
 
     }

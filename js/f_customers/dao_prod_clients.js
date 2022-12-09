@@ -9,7 +9,7 @@ import { dbRef } from "../persist/firebase_conexion.js"
  * @param {funcion} callbackError 
  */
 export function findClientByIdNumber(vsIdNumber, callback, callbackError) {
-  dbRef.child(collections.clients).orderByChild("idNumber").equalTo(vsIdNumber)
+  dbRef.child(collections.customers).orderByChild("idNumber").equalTo(vsIdNumber)
     .once('value')
     .then(snap => {
       console.log("findByIdNumber exist=", snap.exists())

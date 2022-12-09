@@ -5,6 +5,7 @@ export const localdb = {
   cashOutflowMinDay: "CASHOUTFLOWMINDAY",
   operativeDay: "OPERATIVEDAY",
   accesskey: "ACCESSTOKEN",
+  accessBarberkey: "ACCESSBARTOKEN",
   catalogProducts: "PRODS",
   catalogServices: "SERVS",
   tmpBankReconciliation: "TMPBR",

@@ -16,25 +16,24 @@ export function renderClients(clientsDB) {
   $container.innerHTML = ""
   d.querySelector(".client-search-zero ").classList.add("is-hidden")
   if (clientsDB && clientsDB.length > 0) {
-    const $template = d.getElementById("cliente-template").content,
-      $fragment = d.createDocumentFragment();
+    const $fragment = d.createDocumentFragment()
     clientsDB.forEach(c => {
+      let $template = d.getElementById("cliente-template").content.cloneNode(true)
       $template.querySelector(".trigger-client-edit").dataset.uid = c.uid || "NULO"
       let $trigger = $template.querySelector(".trigger-sale")
       $trigger.dataset.uid = c.uid || "NULO"
       $trigger.dataset.name = c.name || "NULO"
       $trigger.dataset.idtype = c.idType || "NULO"
       $trigger.dataset.idnumber = c.idNumber || "NULO"
-      $trigger.dataset.lastserv = c.lastService || "Ninguno"
       $trigger.dataset.referrals = c.referrals || 0
       //TODO: Promocion del sexto corte gratis
       $trigger.dataset.stFreeSixthCut = c.stFreeSixthCut || 0
       $trigger.dataset.stTotalServices = c.stTotalServices || 0
+      if (c.stLastService) $trigger.dataset.stLastService = c.stLastService
       $trigger.dataset.stRaffleCupons = c.stRaffleCupons || ""
       $template.querySelector(".client-description").textContent = `${c.name} _ ${c.idType}: ${c.idNumber}`
 
-      let $clone = d.importNode($template, true)
-      $fragment.appendChild($clone)
+      $fragment.appendChild($template)
     })
     $container.appendChild($fragment)
   } else {

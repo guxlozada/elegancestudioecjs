@@ -89,17 +89,28 @@
                       onblur="document.querySelector('.client-search-text').focus()">Seleccione un cliente</a>
                   </th>
                 </tr>
-                <tr class="is-hidden-mobile">
-                  <th>Último servicio:</th>
-                  <th><span id="sale-client-lastserv">No existe</span></th>
-                </tr>
                 <tr>
-                  <th><abbr title="Numero de cortes acumulados">#Cortes:</abbr></th>
-                  <th class="sale-client-free-sixth-cut">0</th>
+                  <th><abbr title="Numero de servicios acumulados">#Servicios:</abbr></th>
+                  <th class="sale-client-cuts">0</th>
                 </tr>
-                <tr class="free-sixth-cut-message has-background-primary has-text-centered is-hidden has-text-white">
-                  <td colspan="2">APLICA PROMOCION SEXTO CORTE GRATIS. Registre un descuento por un valor maximo de 10
-                    USD a cualquier servicio.
+                <tr class="free-sixth-cut-message is-hidden">
+                  <th></th>
+                  <td class="has-background-primary">
+                    <label class="checkbox has-text-white">
+                      <input type="checkbox" class="prop-input" name="promoFreeSixthCut"
+                        title="Marcar para indicar que se aplica la promoción del sexto corte gratis." checked>
+                      Aplicar descuento por sexto corte gratis
+                    </label>
+                  </td>
+                </tr>
+                <tr class="new-customer-message">
+                  <th></th>
+                  <td class="has-background-primary">
+                    <label class="checkbox has-text-white">
+                      <input type="checkbox" class="prop-input" name="promoNewCustomer"
+                        title="Marcar para indicar que se entrego beneficio para nuevos clientes.">
+                      Recibió beneficio para nuevo cliente
+                    </label>
                   </td>
                 </tr>
                 <tr class="has-background-warning is-hidden">

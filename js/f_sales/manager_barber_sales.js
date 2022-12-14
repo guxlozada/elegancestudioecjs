@@ -99,8 +99,8 @@ export function changeSaleClient($client) {
     sale.client.uid = $client.dataset.uid
     sale.client.idNumber = $client.dataset.idnumber
     sale.client.description = `${$client.dataset.name} _ ${$client.dataset.idtype}: ${$client.dataset.idnumber}`
-    sale.client.lastService = $client.dataset.lastserv
     sale.client.referrals = $client.dataset.referrals
+    sale.client.stLastService = $client.dataset.stLastService || null
     sale.client.stTotalServices = parseFloat($client.dataset.stTotalServices || 0)
     //TODO: Promo del sexto corte gratis
     sale.client.stFreeSixthCut = parseFloat($client.dataset.stFreeSixthCut || 0)
@@ -178,18 +178,27 @@ function renderSaleHeader() {
   }
 
   d.getElementById("sale-client").innerText = cli.description
-  d.getElementById("sale-client-lastserv").innerText = cli.lastService
-  let $freeSixthCut = d.querySelector(".sale-client-free-sixth-cut"),
-    $freeSixthCutMessage = d.querySelector(".free-sixth-cut-message")
-  $freeSixthCut.innerText = cli.stFreeSixthCut
+  let $numberCuts = d.querySelector(".sale-client-cuts"),
+    $freeSixthCutMessage = d.querySelector(".free-sixth-cut-message"),
+    $newCustomerMessage = d.querySelector(".new-customer-message")
+
+  $numberCuts.innerText = cli.stFreeSixthCut
   if (cli.stFreeSixthCut > 5) {
-    $freeSixthCut.classList.add("has-background-primary")
-    $freeSixthCut.classList.add("has-text-white")
+    sale.stPromoFreeSixthCut = true
+    $numberCuts.classList.add("has-background-primary")
+    $numberCuts.classList.add("has-text-white")
     $freeSixthCutMessage.classList.remove("is-hidden")
   } else {
-    $freeSixthCut.classList.remove("has-background-primary")
-    $freeSixthCut.classList.remove("has-text-white")
+    $numberCuts.classList.remove("has-background-primary")
+    $numberCuts.classList.remove("has-text-white")
     $freeSixthCutMessage.classList.add("is-hidden")
+  }
+  if (cli.stTotalServices == 0 && cli.stLastService === null && cli.idNumber !== "9999999999999") {
+    sale.stPromoNewCustomer = false
+    $numberCuts.innerText = "NUEVO CLIENTE"
+    $newCustomerMessage.classList.remove("is-hidden")
+  } else {
+    $newCustomerMessage.classList.add("is-hidden")
   }
   d.getElementById("sale-client-referrals").innerText = cli.referrals
   d.querySelector(".sale-date-input").valueAsDate = hoyEC().toJSDate()
@@ -238,7 +247,8 @@ function renderSaleItems(changeTypePayment) {
 
     let vnUnitDiscount,
       vnBaseDiscount,
-      vnTaxDiscount
+      vnTaxDiscount,
+      vnPromoFreeSixthCut = 0
 
     sale.items.forEach(item => {
       ////console.log("Agregando item a la venta=", item.tmpUid)
@@ -259,7 +269,7 @@ function renderSaleItems(changeTypePayment) {
       vnUnitDiscount = item.unitDiscount
 
       // SOLO para servicios, se aplica los descuentos automaticos la primera vez o cuando cambia el metodo de pago
-      if (!item.unitDiscount || changeTypePayment) {
+      if (!item.unitDiscount || changeTypePayment || sale.stPromoFreeSixthCut === true) {
         vnUnitDiscount = 0
         // descuento IVA solo pagos en efectivo y transferencias
         if (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA") {
@@ -270,6 +280,15 @@ function renderSaleItems(changeTypePayment) {
           // ELIMINADO DESCUENTO DE MARTES
           ////if (item.promo.discountDay && todayEc().getDay() === 2)// Dia de descuento MARTES (2)
           ////  vnUnitDiscount += roundFour(item.promo.discountDay * baseValue / 100)
+          // PROMO SEXTO CORTE aplica para el primer servicio registrado
+          if (vnPromoFreeSixthCut === 0 && sale.stPromoFreeSixthCut === true) {
+            if (baseValue <= 10) {
+              vnUnitDiscount += baseValue
+            } else {
+              vnUnitDiscount += 10
+            }
+            vnPromoFreeSixthCut++
+          }
         }
         item.unitDiscount = vnUnitDiscount
       }
@@ -571,6 +590,11 @@ d.getElementById("sales").addEventListener("change", e => {
     }
     changeItemDiscount($input.dataset.key, newValue)
     sale.update = true
+  } else if ($input.name === "promoFreeSixthCut") {
+    sale.stPromoFreeSixthCut = $input.checked ? true : null
+    updateSaleDetails(true)
+  } else if ($input.name === "promoNewCustomer") {
+    sale.stPromoNewCustomer = $input.checked
   } else if ($input.name === "seller") {
     sale.seller = $input.value
     updateSaleDetails()
@@ -670,24 +694,28 @@ function insertSalesDB(callback, vnLastNumber) {
 
   // Registrar los detalles de la venta
   //TODO: Promo del sexto corte gratis
-  let totalServices = 0
+  let totalServices = 0,
+    totalFreeSixthCut = 0
   saleDetails.forEach(item => {
     // Los servicios gratuitos son con valor 0
-    if (item.type === "S") totalServices += 1
+    if (item.type === "S") {
+      totalServices++
+      if (item.total > 9.99) {
+        totalFreeSixthCut++
+      }
+    }
     let detailKey = saleKey + '-' + zeroPad(item.order, 2);
     updates[`${collections.salesDetails}/${detailKey}`] = item
   })
 
   // Actualizar datos del cliente
   if (saleHeader.clientId !== "9999999999999") {
-
-    updates[`${collections.customers}/${saleHeader.clientUid}/stLastService`] = saleHeader.date
     updates[`${collections.customers}/${saleHeader.clientUid}/aud/${saleKey}/seller`] = saleHeader.seller
 
     // Se almacena  los valores previos de las promociones para restablecer cuando se elimina la venta
     let stFreeSixthCut = saleHeader.client.stFreeSixthCut || 0,
       stTotalServices = saleHeader.client.stTotalServices || 0,
-      stLastService = saleHeader.client.stLastService || 0,
+      stLastService = saleHeader.client.stLastService || 1641013200000,
       stRaffleCupons = saleHeader.client.stRaffleCupons || ""
 
     saleHeader.stLastFreeSixthCut = stFreeSixthCut
@@ -695,18 +723,21 @@ function insertSalesDB(callback, vnLastNumber) {
     saleHeader.stLastServices = stLastService
     saleHeader.stLastRaffleCupons = stRaffleCupons
 
-    //TODO: Promo del sexto corte gratis, solo para servicios con valor mayor a 10 usd
     if (totalServices > 0) {
-      // Verifica si corresponde a un sexto servicio
-      if (stFreeSixthCut > 5) {
-        stFreeSixthCut = stFreeSixthCut - 6
-        saleHeader.stFreeSixthCutDiscount = true
+      // Verifica si se aplica la promocion del sexto corte gratis
+      if (saleHeader.stPromoFreeSixthCut === true && stFreeSixthCut > 5) {
+        stFreeSixthCut = stFreeSixthCut - 7 // Se descuenta los 6 cortes + el corte gratis de la venta actual
       }
-
       // Al saldo de cortes agrega el total de servicios de la venta
-      stFreeSixthCut += totalServices
-      updates[`${collections.customers}/${saleHeader.clientUid}/stFreeSixthCut`] = stFreeSixthCut
+      stFreeSixthCut += totalFreeSixthCut
+      updates[`${collections.customers}/${saleHeader.clientUid}/stFreeSixthCut`] = stFreeSixthCut < 0 ? 0 : stFreeSixthCut
       updates[`${collections.customers}/${saleHeader.clientUid}/stTotalServices`] = stTotalServices + totalServices
+      updates[`${collections.customers}/${saleHeader.clientUid}/stLastService`] = saleHeader.date
+
+      // registra si se ha entregado el beneficio para nuevos clientes
+      if (saleHeader.stPromoNewCustomer) {
+        updates[`${collections.customers}/${saleHeader.clientUid}/stPromoNewCustomer`] = saleHeader.stPromoNewCustomer
+      }
     }
 
     // TODO: Promo sorteo navidad 2022

@@ -294,6 +294,7 @@ function renderSummaryBySeller(salesData) {
     $rowTmp.querySelector(".index").innerText = index
     $rowTmp.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
     $rowTmp.querySelector(".seller").innerText = sale.seller
+    $rowTmp.querySelector(".customer").innerText = sale.clientId==="9999999999999"? "Cons Final": sale.clientId
     $rowTmp.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
     $rowTmp.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
     if (sale.tmpTipByBank > 0) $rowTmp.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank.toFixed(2)

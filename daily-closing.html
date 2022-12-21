@@ -70,7 +70,7 @@
                   <tr>
                     <th class="is-hidden-mobile"></th>
                     <th class="has-text-left">Hora</th>
-                    <th>Vendedor</th>
+                    <th>Vendedor</th>    
                     <th class="has-text-left"><abbr title="Forma de pago">Pago</abbr></th>
                     <th><abbr title="Valor de venta">Venta</abbr></th>
                     <th class="is-hidden-mobile"><abbr title="Impuestos">Imp</abbr></th>
@@ -166,12 +166,13 @@
                   <tr>
                     <th class="is-hidden-mobile"></th>
                     <th class="has-text-left">Hora</th>
-                    <th class="has-text-left">Vendedor</th>
+                    <th class="has-text-left"><abbr title="Vendedor o Barbero">Vende</abbr></th>
+                    <th><abbr title="Identificacion del cliente">Cliente</abbr></th>
                     <th><abbr title="Valor de venta">Venta</abbr></th>
                     <th class="is-hidden-mobile"><abbr title="Impuestos">Imp</abbr></th>
                     <th class="is-hidden-mobile"><abbr title="Base Imponible para impuestos">Base</abbr></th>
                     <th class="is-hidden-mobile"><abbr title="Comision sobre base imponible">%</abbr></th>
-                    <th style="white-space: nowrap"><abbr title="Comision sobre valor de venta">% 1.12</abbr></th>
+                    <th style="white-space: nowrap"><abbr title="Comision sobre valor de venta">%1.12</abbr></th>
                     <th><abbr title="Propinas">Prop</abbr></th>
                   </tr>
                 </thead>
@@ -416,7 +417,8 @@
     <tr class="has-text-right">
       <td class="index is-narrow is-hidden-mobile"></td>
       <td class="time is-narrow  has-text-left pl-1"></td>
-      <td class="seller has-text-left"></td>
+      <td class="seller is-narrow has-text-left"></td>
+      <td class="customer has-text-left" ></td>
       <td class="value is-narrow"></td>
       <td class="taxes is-narrow is-hidden-mobile"></td>
       <td class="taxable-income is-narrow is-hidden-mobile"></td>
@@ -429,7 +431,7 @@
   <template id="seller-totals">
     <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
       <td class="is-hidden-mobile"></td>
-      <th colspan="2">Total</th>
+      <th colspan="3">Total</th>
       <th class="total-value"></th>
       <th class="total-taxes is-hidden-mobile"></th>
       <th class="total-taxable-income is-hidden-mobile"></th>
@@ -439,7 +441,7 @@
     </tr>
     <tr class="has-background-grey-lighter has-text-right">
       <td class="is-hidden-mobile"></td>
-      <th colspan="2">Pagado</th>
+      <th colspan="3">Pagado</th>
       <td></td>
       <td class="paid-barber-commissions is-hidden-mobile" colspan="3"></td>
       <td class="paid-barber-commissions-tmp"></td>
@@ -447,7 +449,7 @@
     </tr>
     <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
       <td class="is-hidden-mobile"></td>
-      <th colspan="2">Pendiente pago</th>
+      <th colspan="3">Pendiente pago</th>
       <td></td>
       <th class="pending-barber-commissions is-hidden-mobile" colspan="3"></th>
       <th class="pending-barber-commissions-tmp"></th>

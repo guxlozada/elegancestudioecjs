@@ -9,6 +9,7 @@ export const localdb = {
   catalogProducts: "PRODS",
   catalogServices: "SERVS",
   tmpBankReconciliation: "TMPBR",
+  tmpCustomerId: "CUSTID",
   tmpPollQA: "QA"
 }
 

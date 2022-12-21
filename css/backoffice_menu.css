@@ -112,9 +112,15 @@
   position: fixed;
   /* vertical-align: top; */
   /* max-height: 100vh; */
-  /* overflow-y: auto; */
+  overflow-y: auto;
   /* width: 200px; */
   top: 3.25rem;
   bottom: 0;
   /* padding: 30px; */
+}
+
+/** Cambiar el padding vertical del menu para mobiles*/
+.navbar-item,
+.navbar-link {
+  padding: 0 0.75rem !important;
 }

@@ -1,29 +1,40 @@
 import { findClientByIdNumber } from "../f_customers/dao_prod_clients.js"
+import { localdb } from "../repo-browser.js"
 
-const d = document,
-  w = window
+const d = document
 
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
 //------------------------------------------------------------------------------------------------
 
-// EVENTO=load RAIZ=window 
-w.addEventListener("load", () => console.log("Available Screen Width: " + screen.availWidth + ", Height: " + screen.availHeight))
+// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
+d.addEventListener("DOMContentLoaded", () => {
+  let idClient = localStorage.getItem(localdb.tmpCustomerId)
+  if (idClient) {
+    d.querySelector(".identification").value = idClient
+    findClientByIdNumber(idClient,
+      voCliente => renderSearch(voCliente || {}),
+      error => {
+        console.log("Error en consulta de cupones", error)
+      })
+  }
+})
 
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
 d.addEventListener("submit", e => {
   e.preventDefault()
   const idClient = d.querySelector(".identification").value.trim()
+  localStorage.setItem(localdb.tmpCustomerId, idClient)
   findClientByIdNumber(idClient,
-    voCliente => renderExpense(voCliente || {}),
+    voCliente => renderSearch(voCliente || {}),
     error => {
-      console.log("Errro en consulta de cupones", error)
-      renderExpense()
+      console.log("Error en consulta de cupones", error)
+      renderSearch()
     })
 })
 
 
-function renderExpense({ stFreeSixthCut: vnFreeSixthCut = -1 }) {
+function renderSearch({ stFreeSixthCut: vnFreeSixthCut = -1 }) {
   let $cuts = d.querySelector(".cuts"),
     $notRegistered = d.querySelector(".not-registered")
 

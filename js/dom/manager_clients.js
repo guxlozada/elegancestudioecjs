@@ -19,7 +19,6 @@ export function renderClients(clientsDB) {
     const $fragment = d.createDocumentFragment()
     clientsDB.forEach(c => {
       let $template = d.getElementById("cliente-template").content.cloneNode(true)
-      $template.querySelector(".trigger-client-edit").dataset.uid = c.uid || "NULO"
       let $trigger = $template.querySelector(".trigger-sale")
       $trigger.dataset.uid = c.uid || "NULO"
       $trigger.dataset.name = c.name || "NULO"

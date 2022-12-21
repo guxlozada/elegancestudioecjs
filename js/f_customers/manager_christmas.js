@@ -1,26 +1,40 @@
+import { localdb } from "../repo-browser.js"
 import { findClientByIdNumber } from "./dao_prod_clients.js"
 
-const d = document,
-  w = window
+const d = document
 
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
 //------------------------------------------------------------------------------------------------
 
+// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
+d.addEventListener("DOMContentLoaded", () => {
+  let idClient = localStorage.getItem(localdb.tmpCustomerId)
+  if (idClient) {
+    d.querySelector(".identification").value = idClient
+    findClientByIdNumber(idClient,
+      voCliente => renderSearch(voCliente || {}),
+      error => {
+        console.log("Error en consulta de cupones", error)
+      })
+  }
+})
+
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
 d.addEventListener("submit", e => {
   e.preventDefault()
   const idClient = d.querySelector(".identification").value.trim()
+  localStorage.setItem(localdb.tmpCustomerId, idClient)
   findClientByIdNumber(idClient,
-    voCliente => renderExpense(voCliente || {}),
+    voCliente => renderSearch(voCliente || {}),
     error => {
       console.log("Error en consulta de cupones", error)
-      renderExpense()
+      renderSearch()
     })
 })
 
 
-function renderExpense({ stRaffleCupons: vsRaffleCupons }) {
+function renderSearch({ stRaffleCupons: vsRaffleCupons }) {
   let $raffleCupons = d.querySelector(".raffle-cupons"),
     vaCupons = vsRaffleCupons && vsRaffleCupons.length > 1 ? vsRaffleCupons.split(" ") : []
 

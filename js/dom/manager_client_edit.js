@@ -115,6 +115,12 @@ export default function handlerClientEdit() {
       ntf.validation("Seleccione quien registra al cliente")
     } else if (client.idType === "CEDULA" && client.idNumber.length !== 10) {
       ntf.validation("La cedula debe ser de 10 digitos y solo debe ingresar los numeros omitiendo cualquier guion.", 7000)
+    } else if (client.cellphone.length !== 10) {
+      if (!confirm(`El numero celular de Ecuador dede tener 10 digitos.
+      ACEPTAR: Si es otro tipo de telefono o
+      CANCELAR: Si desea corregir el numero de celular`)) {
+        return
+      }
     }
     if (ntf.enabled) return
 

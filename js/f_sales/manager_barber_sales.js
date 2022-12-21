@@ -546,6 +546,7 @@ d.getElementById("sales").addEventListener("click", e => {
       ntf.validation("No ha registrado ningún producto o servicio")
     } else {
       //TODO: Promo sorteo navidad 2022 temporalmente primero se llama la consulta de numeros de sorteo
+      localStorage.setItem(localdb.tmpCustomerId, sale.client.idNumber)
       findLastRaffleNumber(vnLastNumber => insertSalesDB(resetSale, vnLastNumber),
         error => ntf.errorAndLog("Existe un problema al guardar la venta con los cupones del sorteo de navidad.", error))
     }
@@ -774,9 +775,10 @@ function insertSalesDB(callback, vnLastNumber) {
   dbRef.update(updates, (error) => {
     if (error) {
       ntf.errorAndLog("Venta no registrada", error)
+      localStorage.removeItem(localdb.tmpCustomerId)
     } else {
-      ntf.okey(`Se guardó correctamente la información de la venta Nro. ${saleHeader.date}`)
-      callback()
+      ntf.okey(`Se guardó correctamente la información de la venta Nro. ${saleHeader.date}.`)
+      callback(saleHeader.idNumber)
     }
   })
 }

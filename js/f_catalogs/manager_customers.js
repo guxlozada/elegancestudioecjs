@@ -4,8 +4,9 @@ import convertFormToObject from "../util/form_util.js"
 import { collections } from "../persist/firebase_collections.js"
 import { findByUid } from "../persist/dao_generic.js"
 import { findCustomers } from "./dao_adm_customers.js"
-import { dateTimeToLocalString } from "../util/fecha-util.js"
+import { ahoraEC, dateTimeToKeyDateString, dateTimeToKeyDatetimeString, dateTimeToLocalString } from "../util/fecha-util.js"
 import { DateTime } from "../luxon.min.js"
+import { utils, writeFile } from "../xlsx.mjs";
 
 const d = document,
   w = window,
@@ -23,6 +24,16 @@ w.addEventListener("load", () => search())
 d.querySelector(".filter-clean").addEventListener("click", () => {
   $filters.reset()
   search()
+})
+
+// EVENTO=reset RAIZ=form#filters ACCION=Realizar busqueda
+d.querySelector(".tabs").addEventListener("click", e => {
+  const $el = e.target
+  if ($el.matches(".export-excel") || $el.closest(".export-excel")) {
+    const $export = e.target.closest(".export-excel")
+    exportTableToExcel($export.dataset.table, $export.dataset.filename)
+  }
+
 })
 
 // EVENTO=submit RAIZ=form#filters ACCION=Realizar busqueda
@@ -85,4 +96,11 @@ function renderReport(vaRecords) {
 
   $details.innerHTML = "";
   $details.appendChild($fragment)
+}
+
+function exportTableToExcel(vsTable, vsFilename) {
+  const $table = d.getElementById(vsTable),
+    wb = utils.table_to_book($table, { sheet: "sheet1", raw: true })
+  return writeFile(wb, (vsFilename || vsTable) + "_" + dateTimeToKeyDatetimeString(ahoraEC()) + ".xlsx")
+  // https://codepedia.info/javascript-export-html-table-data-to-excel
 }

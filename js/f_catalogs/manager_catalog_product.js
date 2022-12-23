@@ -7,6 +7,7 @@ import { collections } from "../persist/firebase_collections.js"
 import { findProducts, insertProduct } from "./dao_inv_products.js"
 import { localdb } from "../repo-browser.js"
 import { findByUid } from "../persist/dao_generic.js"
+import exportTableToExcel from "../util/excel-util.js"
 
 const d = document,
   w = window,
@@ -25,9 +26,17 @@ w.addEventListener("load", () => filtersInit())
 d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 
 // EVENTO=reset RAIZ=form#filters ACCION=Realizar busqueda
-d.querySelector("#filters").querySelector(".clean").addEventListener("click", () => {
-  $filtersForm.reset()
-  search()
+d.querySelector("#filters").addEventListener("click", e => {
+  const $el = e.target
+  if ($el.matches(".clean") || $el.closest(".clean")) {
+    $filtersForm.reset()
+    search()
+  }
+
+  if ($el.matches(".export-excel") || $el.closest(".export-excel")) {
+    const $export = e.target.closest(".export-excel")
+    exportTableToExcel($export.dataset.table, $export.dataset.filename)
+  }
 })
 
 // EVENTO=submit RAIZ=form#filters ACCION=Realizar busqueda

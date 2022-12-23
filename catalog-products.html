@@ -92,12 +92,16 @@
                       <i class="fa-solid fa-eraser"></i>
                     </span>
                   </button>
+                  <button class="export-excel button is-small is-link is-outlined" title="Exportar informacion a Excel"
+                    data-table="tb-products" data-filename="productos">
+                    <span class="icon is-small"><i class="fa-solid fa-file-excel"></i></span>
+                    <span class="is-hidden-mobile">Excel</span></button>
                 </p>
               </div>
             </form>
             <article class="pt-2">
               <section>
-                <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                <table class="table is-striped is-narrow is-hoverable is-fullwidth" id="tb-products">
                   <thead>
                     <tr>
                       <th><abbr title="Proveedor">Proveedor</abbr></th>

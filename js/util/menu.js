@@ -46,11 +46,17 @@ function generateCli() {
       </span>
       </div>
       <a class="link-item" href="main.html">
-      <span class="icon" style="color:#2cccc4">
-        <i class="fa-solid fa-home"></i>
-      </span>
-      <span>Inicio</span>
-    </a>
+        <span class="icon">
+          <i class="fa-solid fa-home"></i>
+        </span>
+        <span>Inicio</span>
+      </a>
+      <a class="link-item" href="customer-promotions.html">
+        <span class="icon">
+        <i class="fa-solid fa-wine-bottle"></i>
+        </span>
+        <span>Catálogo de productos</span>
+      </a>
       <a class="link-item" href="customer-promotions.html">
         <span class="icon" style="color:goldenrod">
           <i class="fa-solid fa-star"></i>

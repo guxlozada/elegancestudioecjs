@@ -22,17 +22,15 @@ const d = document,
 w.addEventListener("load", () => search())
 
 // EVENTO=reset RAIZ=form#filters ACCION=Realizar busqueda
-d.querySelector(".filter-clean").addEventListener("click", () => {
-  $filters.reset()
-  search()
-})
-
-// EVENTO=reset RAIZ=form#filters ACCION=Realizar busqueda
 d.querySelector(".tabs").addEventListener("click", e => {
   const $el = e.target
   if ($el.matches(".export-excel") || $el.closest(".export-excel")) {
     const $export = e.target.closest(".export-excel")
     exportTableToExcel($export.dataset.table, $export.dataset.filename)
+  }
+  if ($el.matches(".filter-clean") || $el.closest(".filter-clean")) {
+    $filters.reset()
+    search()
   }
 })
 

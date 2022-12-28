@@ -1,15 +1,15 @@
-import { calculatePeriod, dateTimeToLocalString, hoyEC } from "../util/fecha-util.js";
+import { calculatePeriod, dateTimeToPageDateString, hoyEC } from "../util/fecha-util.js";
 import validAdminAccess from "../dom/manager_user.js";
-import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { roundFour, roundTwo } from "../util/numbers-util.js";
 import convertFormToObject from "../util/form_util.js";
 import { findForCommissionsPayment } from "../f_expenses/dao_cash_outflows.js";
+import exportTableToExcel from "../util/excel-util.js";
 
 const d = document,
   w = window,
   ntf = new NotificationBulma(),
-  $form = d.querySelector("#filters")
+  $filters = d.querySelector("#filters")
 
 //------------------------------------------------------------------------------------------------
 // Delegacion de eventos
@@ -18,8 +18,18 @@ const d = document,
 // EVENTO=load RAIZ=window 
 w.addEventListener("load", () => search())
 
-// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => navbarBurgers())
+// EVENTO=reset RAIZ=form#filters ACCION=Realizar busqueda
+d.querySelector(".tabs").addEventListener("click", e => {
+  const $el = e.target
+  if ($el.matches(".export-excel") || $el.closest(".export-excel")) {
+    const $export = e.target.closest(".export-excel")
+    exportTableToExcel($export.dataset.table, $export.dataset.filename)
+  }
+  if ($el.matches(".filter-clean") || $el.closest(".filter-clean")) {
+    $filters.reset()
+    search()
+  }
+})
 
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
 d.addEventListener("submit", e => {
@@ -61,8 +71,8 @@ d.getElementById("filters").addEventListener("change", e => {
 function search() {
   // Validar acceso de administrador
   if (!validAdminAccess()) return
-  
-  let filters = convertFormToObject($form)
+
+  let filters = convertFormToObject($filters)
 
   // Se ha seleccionado al menos una fecha
   if (filters.periodStart || filters.periodEnd) {
@@ -123,7 +133,7 @@ function renderCommissionsPayment(voFilters, vmSales, voAdvancesToBarber) {
     barbers = [...vmSales.keys()]
 
   // Agregar totales por consulta
-  d.querySelector(".search-period").innerText = dateTimeToLocalString(voFilters.periodStart) + " al " + dateTimeToLocalString(voFilters.periodEnd)
+  d.querySelector(".search-period").innerText = dateTimeToPageDateString(voFilters.periodStart) + " a " + dateTimeToPageDateString(voFilters.periodEnd)
 
   barbers.forEach(barber => {
     vnTotalTaxes = vnTotalTaxableIncome = vnTotalSales = vnTotalBarberCommissions = vnTotalBarberCommissionsTmp = vnTotalBarberTips = 0
@@ -168,11 +178,11 @@ function renderCommissionsPayment(voFilters, vmSales, voAdvancesToBarber) {
       vnSearchBarberCommissionsTmp += vnBarberCommissionTmp
       $rowTmp.querySelector(".index").innerText = index + 1
       $rowTmp.querySelector(".date").innerText = sale.searchDateTime
-      $rowTmp.querySelector(".payment").innerText = sale.typePayment
+      $rowTmp.querySelector(".payment").innerText = sale.typePayment.toLowerCase().slice(0, 8)
       $rowTmp.querySelector(".value").innerText = vnValueSale.toFixed(2)
       $rowTmp.querySelector(".taxes").innerText = sale.taxes.toFixed(2)
       $rowTmp.querySelector(".taxable-income").innerText = sale.taxableIncome.toFixed(2)
-      $rowTmp.querySelector(".barber-commission").innerText = vnBarberCommission.toFixed(2)
+      //$rowTmp.querySelector(".barber-commission").innerText = vnBarberCommission.toFixed(2)
       $rowTmp.querySelector(".barber-commission-tmp").innerText = vnBarberCommissionTmp.toFixed(2)
       if (vnBarberTip > 0) $rowTmp.querySelector(".barber-tip").innerText = vnBarberTip.toFixed(2)
       $fragment.appendChild($rowTmp)
@@ -183,7 +193,7 @@ function renderCommissionsPayment(voFilters, vmSales, voAdvancesToBarber) {
     $totalsTmp.querySelector(".total-value").innerText = vnTotalSales.toFixed(2)
     $totalsTmp.querySelector(".total-taxes").innerText = vnTotalTaxes.toFixed(2)
     $totalsTmp.querySelector(".total-taxable-income").innerText = vnTotalTaxableIncome.toFixed(2)
-    $totalsTmp.querySelector(".total-barber-commissions").innerText = vnTotalBarberCommissions.toFixed(2)
+    //$totalsTmp.querySelector(".total-barber-commissions").innerText = vnTotalBarberCommissions.toFixed(2)
     $totalsTmp.querySelector(".total-barber-commissions-tmp").innerText = vnTotalBarberCommissionsTmp.toFixed(2)
     $totalsTmp.querySelector(".total-barber-tips").innerText = vnTotalBarberTips.toFixed(2)
 
@@ -214,14 +224,14 @@ function renderCommissionsPayment(voFilters, vmSales, voAdvancesToBarber) {
       vnTotalBarberDiscounts += vnTotalBarberDrinks
     }
 
-    $totalsTmp.querySelector(".barber-paid-commissions").innerText = vnTotalBarberPaidCommissions.toFixed(2)
+    //$totalsTmp.querySelector(".barber-paid-commissions").innerText = vnTotalBarberPaidCommissions.toFixed(2)
     $totalsTmp.querySelector(".barber-paid-commissions-tmp").innerText = vnTotalBarberPaidCommissions.toFixed(2)
-    $totalsTmp.querySelector(".barber-advance-payments").innerText = vnTotalBarberAdvancePayment.toFixed(2)
+    //$totalsTmp.querySelector(".barber-advance-payments").innerText = vnTotalBarberAdvancePayment.toFixed(2)
     $totalsTmp.querySelector(".barber-advance-payments-tmp").innerText = vnTotalBarberAdvancePayment.toFixed(2)
-    $totalsTmp.querySelector(".barber-drinks").innerText = vnTotalBarberDrinks.toFixed(2)
+    //$totalsTmp.querySelector(".barber-drinks").innerText = vnTotalBarberDrinks.toFixed(2)
     $totalsTmp.querySelector(".barber-drinks-tmp").innerText = vnTotalBarberDrinks.toFixed(2)
     $totalsTmp.querySelector(".barber-paid-tips").innerText = vnTotalBarberPaidTips.toFixed(2)
-    $totalsTmp.querySelector(".barber-pending-payment").innerText = (vnTotalBarberCommissions - vnTotalBarberDiscounts).toFixed(2)
+    //$totalsTmp.querySelector(".barber-pending-payment").innerText = (vnTotalBarberCommissions - vnTotalBarberDiscounts).toFixed(2)
     $totalsTmp.querySelector(".barber-pending-payment-tmp").innerText = (vnTotalBarberCommissionsTmp - vnTotalBarberDiscounts).toFixed(2)
     let $barberPendingTips = $totalsTmp.querySelector(".barber-pending-tips"),
       barberPendingTips = vnTotalBarberTips - vnTotalBarberPaidTips
@@ -238,5 +248,5 @@ function renderCommissionsPayment(voFilters, vmSales, voAdvancesToBarber) {
   d.querySelector(".search-sales").innerText = vnSearchSales.toFixed(2)
   ////d.querySelector(".search-barber-commissions").innerText = vnSearchBarberCommissions.toFixed(2)
   d.querySelector(".search-barber-commissions-tmp").innerText = vnSearchBarberCommissionsTmp.toFixed(2)
-  d.querySelector(".search-sales-result").innerText = "= " + (vnSearchSales - vnSearchBarberCommissionsTmp).toFixed(2)
+  d.querySelector(".search-sales-result").innerText = (vnSearchSales - vnSearchBarberCommissionsTmp).toFixed(2)
 }

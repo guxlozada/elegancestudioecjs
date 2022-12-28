@@ -27,136 +27,22 @@
           <span></span>
         </div>
       </div>
-
       <div id="navMenu" class="navbar-menu is-hidden-desktop">
-        <div class="navbar-start">
-          <div class="navbar-item has-dropdown is-hoverable">
-            <a class="navbar-link is-size-7">BARBERIA </a>
-            <div class="navbar-dropdown is-size-7">
-              <a class="navbar-item" href="sales.html?#clients"
-                onblur="document.querySelector('.client-search-text').focus()">
-                <span class="icon"><i class="fa-solid fa-user-friends"></i></span>&nbsp;Clientes
-              </a>
-              <a class="navbar-item" href="sales.html?#sales">
-                <span class="icon"><i class="fa-solid fa-cash-register"></i></span>&nbsp;Ventas
-              </a>
-              <a class="navbar-item" href="expenses.html" title="Egresos de caja en la barberia">
-                <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span>&nbsp;Egresos
-              </a>
-              <a class="navbar-item" href="bank-transactions-barber.html"
-                title="Depositos y transferencias en la barberia">
-                <span class="icon"><i class="fa-solid fa-building-columns"></i></span>&nbsp;Banco
-              </a>
-              <a class="navbar-item" href="daily-closing.html#summary" title="Cierre diario de caja">
-                <span class="icon"><i class="fa-solid fa-shop-lock"></i></span>&nbsp;Cierre diario
-              </a>
-            </div>
-
-            <a class="navbar-link is-size-7">ADMINISTRACION</a>
-            <div class="navbar-dropdown is-size-7">
-              <a class="navbar-item" href="commissions-payment.html" title="Reporte de comisiones por barbero">
-                <span class="icon"><i class="fa-solid fa-hand-holding-dollar"></i></span> Pago comisiones
-              </a>
-              <a class="navbar-item" href="sales-report.html" title="Consulta de ventas por periodo de tiempo">
-                <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span> Ventas
-              </a>
-              <a class="navbar-item" href="expenses-report.html" title="Consulta de egresos por periodo de tiempo">
-                <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span> Egresos
-              </a>
-              <a class="navbar-item" href="bank-transactions.html"
-                title="Registro de transaccion bancaria fuera de la barberia">
-                <span class="icon"><i class="fa-solid fa-money-bill-transfer"></i></span> Transaccion banco
-              </a>
-              <a class="navbar-item" href="bank-reconciliation.html" title="Conciliación bancaria">
-                <span class="icon"><i class="fa-solid fa-landmark"></i></span> Conciliacion banco
-              </a>
-            </div>
-
-            <a class="navbar-link is-size-7">INVENTARIO</a>
-            <div class="navbar-dropdown is-size-7">
-              <a class="navbar-item" href="catalog-products.html" title="Mantenimiento de productos">
-                <span class="icon"><i class="fa-solid fa-dolly"></i></span>Productos
-              </a>
-              <a class="navbar-item" href="catalog-services.html" title="Mantenimiento de servicios">
-                <span class="icon"><i class="fa-solid fa-scissors"></i></span>Servicios
-              </a>
-            </div>
-          </div>
-
-        </div>
+        <div class="horizontal-menu navbar-start"></div>
       </div>
     </nav>
   </header>
-  <aside class="menu-vertical is-2 is-fullheight has-background-white-bis is-hidden-touch p-4">
-    <p class="menu-label">Barberia</p>
-    <ul class="menu-list is-size-7">
-      <li>
-        <a class="navbar-item" href="sales.html?#clients"
-          onblur="document.querySelector('.client-search-text').focus()">
-          <span class="icon"><i class="fa-solid fa-user-friends"></i></span> Clientes
-        </a>
-      </li>
-      <li>
-        <a class="navbar-item " href="sales.html?#sales">
-          <span class="icon"><i class="fa-solid fa-cash-register"></i></span> Ventas
-        </a>
-      </li>
-      <li><a class="navbar-item " href="expenses.html" title="Egresos de caja en la barberia">
-          <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span> Egresos
-        </a></li>
-      <li><a class="navbar-item " href="bank-transactions-barber.html"
-          title="Depositos y transferencias en la barberia">
-          <span class="icon"><i class="fa-solid fa-building-columns"></i></span> Banco
-        </a></li>
-      <li><a class="navbar-item " href="daily-closing.html#summary" title="Cierre diario de caja">
-          <span class="icon"><i class="fa-solid fa-shop-lock"></i></span> Cierre diario
-        </a></li>
-    </ul>
-    <p class="menu-label">Administracion</p>
-    <ul class="menu-list is-size-7">
-      <li><a class="navbar-item" href="commissions-payment.html" title="Reporte de comisiones por barbero">
-          <span class="icon"><i class="fa-solid fa-hand-holding-dollar"></i></span> Pago comisiones
-        </a>
-      </li>
-      <li><a class="navbar-item" href="sales-report.html" title="Consulta de ventas por periodo de tiempo">
-          <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span> Ventas
-        </a>
-      </li>
-      <li><a class="navbar-item" href="expenses-report.html" title="Consulta de egresos por periodo de tiempo">
-          <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span> Egresos
-        </a>
-      </li>
-      <li><a class="navbar-item" href="bank-transactions.html"
-          title="Registro de transaccion bancaria fuera de la barberia">
-          <span class="icon"><i class="fa-solid fa-money-bill-transfer"></i></span> Transaccion banco
-        </a>
-      </li>
-      <li><a class="navbar-item" href="bank-reconciliation.html" title="Conciliación bancaria">
-          <span class="icon"><i class="fa-solid fa-landmark"></i></span> Conciliacion banco
-        </a>
-      </li>
-    </ul>
-    <p class="menu-label">Inventario</p>
-    <ul class="menu-list is-size-7">
-      <li><a class="navbar-item" href="catalog-products.html" title="Mantenimiento de productos">
-          <span class="icon"><i class="fa-solid fa-dolly"></i></span>Productos
-        </a>
-      </li>
-      <li>
-        <a class="navbar-item" href="catalog-services.html" title="Mantenimiento de servicios">
-          <span class="icon"><i class="fa-solid fa-scissors"></i></span>Servicios
-        </a>
-      </li>
-    </ul>
+  <aside class="vertical-menu is-2 is-fullheight has-background-white-bis is-hidden-touch p-4">
   </aside>
 
   <div class="main-content columns is-multiline">
-    <div class="column is-10-desktop is-offset-2-desktop ">
+    <div class="column is-10-desktop is-9-widescreen is-offset-2-desktop ">
       <div class="tabs is-small is-fullwidth p-2 mb-0">
         <ul>
           <li class="is-active has-text-weight-semibold is-size-5 is-size-6-touch">
-            Administracion de clientes
-            <span class="icon is-small is-hidden-mobile"><i class="fa-solid fa-user-friends"></i></span>
+            <span class="is-hidden-mobile">Administracion de clientes</span>
+            <span class="is-hidden-tablet">Clientes</span>
+            <span class="icon is-small"><i class="fa-solid fa-user-friends"></i></span>
           </li>
           <li class="is-hidden-mobile"></li>
           <li>
@@ -167,9 +53,13 @@
           </li>
           <li>
             <a class="export-excel has-background-link has-text-white is-small" title="Exportar informacion a Excel"
-              data-table="tb-customers" data-filename="clientes">
+              data-table="tb-principal" data-filename="clientes">
               <span class="icon is-small"><i class="fa-solid fa-file-excel"></i></span>
               <span class="is-hidden-mobile">Excel</span></a>
+          </li>
+          <li>
+            <a class="filter-clean has-background-info has-text-white is-small" title="Limpiar filtros">
+              <span class="icon is-small"><i class="fa-solid fa-eraser"></i></span></a>
           </li>
         </ul>
       </div>
@@ -178,15 +68,14 @@
 
         <form id="filters" class="field is-horizontal">
           <div class="field-body">
-            <div class="field is-hidden-mobile">
-              <div class="field has-addons">
-                <p class="control">
-                  <a class="button is-small is-static">
-                    Ordenar por
-                  </a>
-                </p>
-                <p class="control">
-                <div class=" select is-small">
+            <div class="field has-addons">
+              <div class="control">
+                <a class="button is-small is-static">
+                  Ordenar por
+                </a>
+              </div>
+              <div class="control">
+                <div class="select is-small">
                   <select class="filter-order prop-input is-hovered" name="orderBy">
                     <option value="idNumber">Identificacion</option>
                     <option value="surnames">Apellido</option>
@@ -195,9 +84,9 @@
                     <option value="lastService">Fecha ultimo servicio</option>
                   </select>
                 </div>
-                </p>
               </div>
             </div>
+
             <div class="field has-addons has-addons-right">
               <p class="control is-expanded">
                 <input type="text" id="keyword" class="prop-input input is-hovered is-small" name="keyword"
@@ -205,16 +94,11 @@
                   title="Filtrar por palabras claves como la identificacion, nombre o apellido">
               </p>
               <p class="control ">
-                <button type="submit" class="button is-small is-primary " title=" Buscar">
+                <button type="submit" class="button is-small is-primary " title="Buscar">
                   <span class="icon is-small">
                     <i class="fa-solid fa-magnifying-glass"></i>
                   </span>
                   <span class="is-hidden-mobile">Buscar</span>
-                </button>
-                <button class="filter-clean button is-small is-link is-outlined" title="Limpiar filtros">
-                  <span class="icon is-small">
-                    <i class="fa-solid fa-eraser"></i>
-                  </span>
                 </button>
               </p>
             </div>
@@ -223,7 +107,7 @@
 
         <div class="report card ">
           <div class="report-content card-content p-0">
-            <table class="table is-striped is-narrow is-hoverable is-fullwidth" id="tb-customers">
+            <table class="table is-striped is-narrow is-hoverable is-fullwidth" id="tb-principal">
               <thead>
                 <tr>
                   <th><abbr title="Numero de identificacion">Id</abbr></th>
@@ -253,6 +137,7 @@
             </table>
           </div>
         </div>
+      </section>
     </div>
   </div>
 

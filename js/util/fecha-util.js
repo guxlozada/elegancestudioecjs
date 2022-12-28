@@ -46,6 +46,7 @@ export const PATTERN_KEY_DATETIME = "yyyyMMddThhmmss"
 export const PATTERN_KEY_MONTH = "yyyyMM"
 export const PATTERN_INPUT_DATE = "yyyy-MM-dd"
 export const PATTERN_INPUT_MONTH = "yyyy-MM"
+export const PATTERN_PAGE_DATE = "dd/MM/yyyy"
 
 export const ahoraEC = () => { return DateTime.local() }
 
@@ -127,6 +128,16 @@ export function dateTimeToLocalString(vdDateTime) {
 export function dateTimeToInputMonthString(vdDateTime) {
   return vdDateTime.toFormat(PATTERN_INPUT_MONTH)
 }
+
+/**
+ * Convierte un DateTime Luxon a una cadena con formato'dd/MM/yyyy'
+ * @param {DateTime} vdDateTime DateTime Luxon
+ * @returns 
+ */
+export function dateTimeToPageDateString(vdDateTime) {
+  return vdDateTime.toFormat(PATTERN_PAGE_DATE)
+}
+
 
 /**
  * Compara dos DateTime utilizando la operacion solicitada

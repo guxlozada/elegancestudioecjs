@@ -696,18 +696,28 @@ function insertSalesDB(callback, vnLastNumber) {
   // Registrar los detalles de la venta
   //TODO: Promo del sexto corte gratis
   let totalServices = 0,
-    totalFreeSixthCut = 0
+    totalFreeSixthCut = 0,
+    totalServicesTaxableIncome = 0
+
   saleDetails.forEach(item => {
     // Los servicios gratuitos son con valor 0
     if (item.type === "S") {
-      totalServices++
-      if (item.total > 9.99) {
-        totalFreeSixthCut++
+      totalServices += item.numberOfUnits
+      totalServicesTaxableIncome += item.taxableIncome
+      if (item.retailValue > 9.99) {
+        totalFreeSixthCut += item.numberOfUnits
+      } else {
+        totalFreeSixthCut += Math.trunc(item.total / 10)
       }
+
     }
     let detailKey = saleKey + '-' + zeroPad(item.order, 2);
     updates[`${collections.salesDetails}/${detailKey}`] = item
   })
+  //TODO: Promo del sexto corte gratis
+  if (totalFreeSixthCut === 0 && totalServices > 1) {
+    totalFreeSixthCut += Math.trunc(totalServicesTaxableIncome / 10)
+  }
 
   // Actualizar datos del cliente
   if (saleHeader.clientId !== "9999999999999") {
@@ -725,13 +735,17 @@ function insertSalesDB(callback, vnLastNumber) {
     saleHeader.stLastRaffleCupons = stRaffleCupons
 
     if (totalServices > 0) {
+      //TODO: Promo cuando se ha entregado el beneficio de nuevo cliente, no contabiliza para promocion de sexto corte
+      if (saleHeader.stPromoNewCustomer === true) {
+        totalFreeSixthCut--
+      }
       // Verifica si se aplica la promocion del sexto corte gratis
       if (saleHeader.stPromoFreeSixthCut === true && stFreeSixthCut > 5) {
-        stFreeSixthCut = stFreeSixthCut - 7 // Se descuenta los 6 cortes + el corte gratis de la venta actual
+        stFreeSixthCut = stFreeSixthCut - 6 // Se descuenta los 5 cortes + el corte gratis de la venta actual
       }
       // Al saldo de cortes agrega el total de servicios de la venta
       stFreeSixthCut += totalFreeSixthCut
-      updates[`${collections.customers}/${saleHeader.clientUid}/stFreeSixthCut`] = stFreeSixthCut < 0 ? 0 : stFreeSixthCut
+      updates[`${collections.customers}/${saleHeader.clientUid}/stFreeSixthCut`] = stFreeSixthCut < 1 ? 1 : stFreeSixthCut
       updates[`${collections.customers}/${saleHeader.clientUid}/stTotalServices`] = stTotalServices + totalServices
       updates[`${collections.customers}/${saleHeader.clientUid}/stLastService`] = saleHeader.date
 

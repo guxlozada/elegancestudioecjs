@@ -51,7 +51,7 @@ function generateCli() {
         </span>
         <span>Inicio</span>
       </a>
-      <a class="link-item" href="customer-promotions.html">
+      <a class="link-item" href="customer-sales-catalog.html">
         <span class="icon">
         <i class="fa-solid fa-wine-bottle"></i>
         </span>
@@ -62,12 +62,6 @@ function generateCli() {
           <i class="fa-solid fa-star"></i>
         </span>
         <span>Promociones</span>
-      </a>
-      <a class="link-item" href="customer-christmas.html" style="color:#f14668">
-        <span class="icon" style="color:#2cccc4">
-        <i class="fa-solid fa-gift"></i>
-        </span>
-        <span>Sorteo <span style="color:#2cccc4">Navidad</span> 2022</span>
       </a>
     </div>
   `

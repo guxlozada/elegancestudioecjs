@@ -29,7 +29,6 @@ export function renderClients(clientsDB) {
       $trigger.dataset.stFreeSixthCut = c.stFreeSixthCut || 0
       $trigger.dataset.stTotalServices = c.stTotalServices || 0
       if (c.stLastService) $trigger.dataset.stLastService = c.stLastService
-      $trigger.dataset.stRaffleCupons = c.stRaffleCupons || ""
       $template.querySelector(".client-description").textContent = `${c.name} _ ${c.idType}: ${c.idNumber}`
 
       $fragment.appendChild($template)

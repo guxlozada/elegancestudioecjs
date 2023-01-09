@@ -8,7 +8,7 @@ import { localdb } from "../repo-browser.js";
 const d = document,
   ntf = new NotificationBulma(),
   $form = d.getElementById("formPoll"),
-  $linkSorteoNavidad = d.querySelector(".christmas-coupons"),
+  $linkSorteoNavidad = d.querySelector(".coupons-registered"),
   SEND = "send"
 
 //------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ function registerPoll(voPoll, voClient) {
   }
 
   insertPollDB(voPoll,
-    () => generateCupons(voPoll, voClient),
+    () => generateMessage(voPoll, voClient),
     error => {
       console.error("Error al guardar la encuesta", error)
       ntf.error("Houston, tenemos un problema😖", `Al momento no fue posible registrar la información de la encuesta, 
@@ -76,24 +76,28 @@ function registerPoll(voPoll, voClient) {
 
 }
 
-function generateCupons(voPoll, voClient) {
-  if (voPoll.cliente !== 'REGISTRADO' || !voClient || voClient.stPollCupons) {
-    $form.reset()
-    $linkSorteoNavidad.classList.remove("is-hidden")
-    localStorage.setItem(localdb.tmpPollQA, SEND)
-    return
-  }
+function generateMessage(voPoll, voClient) {
 
-  updatePollCupons(voClient,
-    () => {
-      $form.reset()
-      ntf.okey(`Se han asignado dos cupones adicionales para el sorteo de navidad.Mucha suerte😉.`)
-      localStorage.setItem(localdb.tmpPollQA, SEND)
-      setTimeout(function () {
-        $linkSorteoNavidad.classList.remove("is-hidden")
-      }, 5000);
-    },
-    error => ntf.errorAndLog("Existe un problema al guardar los cupones adicionales para el sorteo de navidad.", error)
-  )
+  //if (voPoll.cliente !== 'REGISTRADO' || !voClient || voClient.stPollCupons) {
+  $form.reset()
+  $linkSorteoNavidad.classList.remove("is-hidden")
+  localStorage.setItem(localdb.tmpPollQA, SEND)
+  //  return
+  //}
+
+  /*   
+  TODO: LOGICA PARA SORTEO
+    updatePollCupons(voClient,
+      () => {
+        $form.reset()
+        ntf.okey(`Se han asignado dos cupones adicionales para el sorteo de navidad.Mucha suerte😉.`)
+        localStorage.setItem(localdb.tmpPollQA, SEND)
+        setTimeout(function () {
+          $linkSorteoNavidad.classList.remove("is-hidden")
+        }, 5000);
+      },
+      error => ntf.errorAndLog("Existe un problema al guardar los cupones adicionales para el sorteo de navidad.", error)
+    ) 
+  */
 
 }

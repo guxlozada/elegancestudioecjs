@@ -86,7 +86,7 @@ function renderReport(vaRecords) {
     $rowTmp.querySelector(".total-services").innerText = item.stTotalServices || 0
     $rowTmp.querySelector(".sixth-cut").innerText = item.stFreeSixthCut || 0
     $rowTmp.querySelector(".poll-cupons").innerText = item.stPollCupons || "---"
-    $rowTmp.querySelector(".raffle-cupons").innerText = item.stRaffleCupons || "---"
+    $rowTmp.querySelector(".promo-new-customer").innerText = item.stPromoNewCustomer || "---"
     $rowTmp.querySelector(".edit").dataset.key = item.uid
     $fragment.appendChild($rowTmp)
   })

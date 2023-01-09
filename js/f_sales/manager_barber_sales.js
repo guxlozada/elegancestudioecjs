@@ -13,7 +13,6 @@ import timestampToDatekey, { generateDateProperties } from "../persist/dao_gener
 import { BANCO_PICHINCHA, BANCO_PRODUBANCO, saleToBanktransaction } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
 import { findCatalog } from "../f_catalogs/dao_catalog.js";
-import { findLastRaffleNumber } from "../f_customers/dao_tmp_raffle.js";
 
 const d = document,
   w = window,
@@ -104,8 +103,6 @@ export function changeSaleClient($client) {
     sale.client.stTotalServices = parseFloat($client.dataset.stTotalServices || 0)
     //TODO: Promo del sexto corte gratis
     sale.client.stFreeSixthCut = parseFloat($client.dataset.stFreeSixthCut || 0)
-    //TODO: Promo sorteo navidad 2022
-    sale.client.stRaffleCupons = $client.dataset.stRaffleCupons || ""// Cupones con separador de espacios
     sale.valid = true
     updateSale()
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -545,10 +542,8 @@ d.getElementById("sales").addEventListener("click", e => {
     } else if (sale.items.length === 0) {
       ntf.validation("No ha registrado ningún producto o servicio")
     } else {
-      //TODO: Promo sorteo navidad 2022 temporalmente primero se llama la consulta de numeros de sorteo
       localStorage.setItem(localdb.tmpCustomerId, sale.client.idNumber)
-      findLastRaffleNumber(vnLastNumber => insertSalesDB(resetSale, vnLastNumber),
-        error => ntf.errorAndLog("Existe un problema al guardar la venta con los cupones del sorteo de navidad.", error))
+      insertSalesDB(resetSale)
     }
   }
   // Cancelar la venta
@@ -642,7 +637,7 @@ d.getElementById("sales").addEventListener("focusout", e => {
 // Database operations
 // --------------------------
 
-function insertSalesDB(callback, vnLastNumber) {
+function insertSalesDB(callback) {
 
   // Cabecera de la venta
   let saleHeader = {
@@ -726,13 +721,12 @@ function insertSalesDB(callback, vnLastNumber) {
     // Se almacena  los valores previos de las promociones para restablecer cuando se elimina la venta
     let stFreeSixthCut = saleHeader.client.stFreeSixthCut || 0,
       stTotalServices = saleHeader.client.stTotalServices || 0,
-      stLastService = saleHeader.client.stLastService || 1641013200000,
-      stRaffleCupons = saleHeader.client.stRaffleCupons || ""
+      stLastService = saleHeader.client.stLastService || 1641013200000
 
     saleHeader.stLastFreeSixthCut = stFreeSixthCut
     saleHeader.stLastTotalServices = stTotalServices
     saleHeader.stLastServices = stLastService
-    saleHeader.stLastRaffleCupons = stRaffleCupons
+
 
     if (totalServices > 0) {
       //TODO: Promo cuando se ha entregado el beneficio de nuevo cliente, no contabiliza para promocion de sexto corte
@@ -751,22 +745,10 @@ function insertSalesDB(callback, vnLastNumber) {
 
       // registra si se ha entregado el beneficio para nuevos clientes
       if (saleHeader.stPromoNewCustomer) {
-        updates[`${collections.customers}/${saleHeader.clientUid}/stPromoNewCustomer`] = saleHeader.stPromoNewCustomer
+        updates[`${collections.customers}/${saleHeader.clientUid}/stPromoNewCustomer`] = saleKey
       }
     }
 
-    // TODO: Promo sorteo navidad 2022
-    if (saleHeader.totalSale > 9.99) {
-      let numberCupons = Math.trunc(saleHeader.totalSale / 10)
-      do {
-        stRaffleCupons = stRaffleCupons + " " + vnLastNumber
-        vnLastNumber++
-        numberCupons--
-      } while (numberCupons > 0)
-      updates[`${collections.customers}/${saleHeader.clientUid}/stRaffleCupons`] = stRaffleCupons.trim()
-      updates[`${collections.tmpRaffle}/lastNumber`] = vnLastNumber
-
-    }
   }
 
   // Registrar si existe la transaccion bancaria

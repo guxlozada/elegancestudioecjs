@@ -1,6 +1,10 @@
 import { collections } from "../persist/firebase_collections.js"
 import { dbRef } from "../persist/firebase_conexion.js"
 
+/**
+ * EN DESUSO HASTA NUEVO SORTEO, IMPLEMENTAR UNA LOGICA INDEPENDIENTE DE LAS FUNCIONALIDADES 
+ */
+
 
 /**
  * Ultimo numero del sorteo

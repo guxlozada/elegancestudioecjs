@@ -4,13 +4,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Comisiones</title>
+  <title>Pago de comisiones</title>
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
   <link rel="stylesheet" href="/css/backoffice_main.css" />
   <link rel="stylesheet" href="/css/backoffice_menu.css" />
   <link rel="stylesheet" href="/css/backoffice_report.css" />
   <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
   <style>
+    .report {
+      height: 55vh;
+    }
   </style>
 </head>
 
@@ -19,7 +22,7 @@
     <nav class="navbar is-black is-fixed-top">
       <div class="navbar-brand">
         <a class="navbar-inner p-2" href="#home">
-          <img src="/assets/logo-blanco.png" alt="Elegance Studio EC" width="130">
+          <img id="marca" src="/assets/logo-blanco.png" alt="Elegance Studio EC" width="130">
         </a>
         <div class="navbar-burger burger" data-target="navMenu">
           <span></span>
@@ -27,8 +30,16 @@
           <span></span>
         </div>
       </div>
-      <div id="navMenu" class="navbar-menu is-hidden-desktop">
-        <div class="horizontal-menu navbar-start"></div>
+      <div id="navMenu" class="navbar-menu">
+        <div class="horizontal-menu navbar-start  is-hidden-desktop"></div>
+        <div class="navbar-end">
+          <div class="navbar-item logout">
+            <a class="button is-danger is-small logout" title="Cerrar sesion de trabajo">
+              <strong>Salir</strong>
+              <span class="icon is-small"><i class="fa-solid fa-right-from-bracket"></i></span>
+            </a>
+          </div>
+        </div>
       </div>
     </nav>
   </header>
@@ -40,9 +51,9 @@
       <div class="tabs is-small is-fullwidth p-2 mb-0">
         <ul>
           <li class="is-active has-text-weight-semibold is-size-5 is-size-6-touch">
+            <span class="icon is-small"><i class="fa-solid fa-hand-holding-dollar"></i></span>
             <span class="is-hidden-mobile">Pago de comisiones</span>
             <span class="is-hidden-tablet">Comisiones</span>
-            <span class="icon is-small"><i class="fa-solid fa-hand-holding-dollar"></i></span>
           </li>
           <li class="is-hidden-mobile"></li>
           <li class="is-hidden-mobile"></li>
@@ -52,9 +63,10 @@
               <span class="icon is-small"><i class="fa-solid fa-file-excel"></i></span>
               <span class="is-hidden-mobile">Excel</span></a>
           </li>
-          <li>
+          <li class="is-hidden-mobile">
             <a class="filter-clean has-background-info has-text-white is-small" title="Limpiar filtros">
-              <span class="icon is-small"><i class="fa-solid fa-eraser"></i></span></a>
+              <span class="icon is-small"><i class="fa-solid fa-eraser"></i></span>
+              <span class="has-text-info is-hidden-mobile">.</span></a></a>
           </li>
         </ul>
       </div>
@@ -263,7 +275,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
-  <script src="./js/interceptor/manager_user_rol.js" type="module"></script>
+  <script src="./js/dom/init.js" type="module"></script>
   <script src="./js/f_commissions_payment/manager_payment.js" type="module"></script>
 </body>
 

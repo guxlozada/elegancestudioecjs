@@ -1,8 +1,9 @@
-import { localdb } from "../repo-browser.js"
+import { ADM_PW, FD, localdb } from "../repo-browser.js"
 import { hoyEC } from "../util/fecha-util.js"
 
-const ADMKEY = "0."
-const FD = "MMdd20yyyy02ddMM"
+//////////////////////////////////////////////////////////////
+// VERIFICAR USO Y REORGANIZAR CON ARCHIVOS QUE USAN
+//////////////////////////////////////////////////////////////
 
 export default function validAdminAccess() {
 
@@ -15,7 +16,7 @@ export default function validAdminAccess() {
     keyIn
   do {
     keyIn = prompt("Acceso restringido para administrador, ingrese la clave:")
-    res = keyIn && keyIn.startsWith(ADMKEY)
+    res = keyIn && keyIn.startsWith(ADM_PW)
     if (res) {
       localStorage.setItem(localdb.accesskey, hoyEC().toFormat(FD))
       break
@@ -38,4 +39,9 @@ export const isBarber = () => {
 
 export const cleanAdminAccess = () => {
   localStorage.removeItem(localdb.accesskey)
+}
+
+export const cleanControlAccess = () => {
+  localStorage.removeItem(localdb.accesskey)
+  localStorage.removeItem(localdb.accessBarberkey)
 }

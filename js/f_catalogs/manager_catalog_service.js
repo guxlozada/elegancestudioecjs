@@ -1,5 +1,3 @@
-import validAdminAccess from "../dom/manager_user.js"
-import navbarBurgers from "../dom/navbar_burgers.js"
 import NotificationBulma from '../dom/NotificacionBulma.js'
 import convertFormToObject from "../util/form_util.js"
 import { findCatalogKeyValue, updateActive } from "./dao_catalog.js"
@@ -7,6 +5,7 @@ import { collections } from "../persist/firebase_collections.js"
 import { findServices, insertService } from "./dao_inv_services.js"
 import { localdb } from "../repo-browser.js"
 import { findByUid } from "../persist/dao_generic.js"
+import exportTableToExcel from "../util/excel-util.js"
 
 const d = document,
   w = window,
@@ -21,13 +20,18 @@ const d = document,
 // EVENTO=load RAIZ=window 
 w.addEventListener("load", () => filtersInit())
 
-// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => navbarBurgers())
-
-// EVENTO=reset RAIZ=form#filters ACCION=Realizar busqueda
-d.querySelector("#filters").querySelector(".clean").addEventListener("click", () => {
-  $filtersForm.reset()
-  search()
+// EVENTO=reset RAIZ=tabs ACCION=Operaciones de la funcionalidad
+d.querySelector(".tabs").addEventListener("click", e => {
+  const $el = e.target
+  if ($el.matches(".filter-clean") || $el.closest(".filter-clean")) {
+    $filtersForm.reset()
+    search()
+  }
+  
+  if ($el.matches(".export-excel") || $el.closest(".export-excel")) {
+    const $export = e.target.closest(".export-excel")
+    exportTableToExcel($export.dataset.table, $export.dataset.filename)
+  }
 })
 
 // EVENTO=submit RAIZ=form#filters ACCION=Realizar busqueda
@@ -87,9 +91,6 @@ function filtersInit() {
 }
 
 function search() {
-  // Validar acceso de administrador
-  if (!validAdminAccess()) return
-
   let filters = convertFormToObject($filtersForm)
   if (filters.keyword) filters.keyword.trim()
   // Ejecutar consulta de informacion
@@ -123,9 +124,6 @@ function renderCatalog(vaRecords) {
 }
 
 function saveForm() {
-  // Validar acceso de administrador
-  if (!validAdminAccess()) return
-
   let registration = convertFormToObject($registerForm)
   // Asignar 'active' desde input type=hidden
   registration.active = registration.activeString === "true"

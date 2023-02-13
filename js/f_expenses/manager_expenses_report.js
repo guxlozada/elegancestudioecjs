@@ -1,6 +1,4 @@
 import { calculatePeriod, dateTimeToLocalString, hoyEC } from "../util/fecha-util.js";
-import validAdminAccess from "../dom/manager_user.js";
-import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { findExpensesReport } from "./dao_cash_outflows.js";
 import convertFormToObject from "../util/form_util.js";
@@ -16,9 +14,6 @@ const d = document,
 
 // EVENTO=load RAIZ=window 
 w.addEventListener("load", () => search())
-
-// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
 d.addEventListener("submit", e => {
@@ -66,8 +61,6 @@ d.getElementById("filters").addEventListener("change", e => {
 //------------------------------------------------------------------------------------------------
 
 function search() {
-  // Validar acceso de administrador
-  if (!validAdminAccess()) return
 
   let filters = convertFormToObject($form)
 
@@ -134,7 +127,7 @@ function renderExpense(vmExpenses, voFilters) {
       $rowTmp.querySelector(".type").innerText = type
       $rowTmp.querySelector(".responsable").innerText = exp.responsable
       $rowTmp.querySelector(".value").innerText = exp.value.toFixed(2)
-      $rowTmp.querySelector(".details").innerText = (exp.details || "")+ (exp.voucher ? ", Comprobante Nro." +exp.voucher : "") 
+      $rowTmp.querySelector(".details").innerText = (exp.details || "") + (exp.voucher ? ", Comprobante Nro." + exp.voucher : "")
       $fragment.appendChild($rowTmp)
       vnTotalValueByType += exp.value
     })

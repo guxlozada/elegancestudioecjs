@@ -1,4 +1,4 @@
-import navbarBurgers from "../dom/navbar_burgers.js"
+import { isAdmin } from '../dom/manager_user.js'
 import NotificationBulma from '../dom/NotificacionBulma.js'
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js"
 import { hoyEC } from "../util/fecha-util.js"
@@ -15,11 +15,12 @@ const d = document,
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
 w.addEventListener("load", () => {
   d.querySelector(".expense-date").valueAsDate = hoyEC().toJSDate()
-  addMinMaxPropsWithCashOutflowDates(".expense-date")
-})
 
-// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => { navbarBurgers() })
+  if (!isAdmin()) {
+    addMinMaxPropsWithCashOutflowDates(".expense-date")
+  }
+
+})
 
 // EVENTO=reset RAIZ=document ACCION=inicializar formulario
 d.addEventListener("reset", e => {

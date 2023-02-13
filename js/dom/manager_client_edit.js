@@ -64,7 +64,7 @@ function updateClient() {
   d.getElementById("client-city").value = client.city
   // No se implementa el cumpleanios debido a la conversion de fecha
   d.getElementById("client-cellphone").value = client.cellphone
-  d.getElementById("client-referred").value = client.referred
+  //d.getElementById("client-referred").value = client.referred
   d.getElementsByName("registeredBy").forEach($el => $el.checked = $el.value === client.registeredBy)
   // Almacenar el gastoen el local storage
   localStorage.setItem(localdb.client, JSON.stringify(client))

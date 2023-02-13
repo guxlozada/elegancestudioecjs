@@ -1,4 +1,5 @@
 export const localdb = {
+  attemps: "ATTEMPTS", // Intentos de accesso
   sale: "SALE",
   client: "CLIENT",
   cashOutflowMaxDay: "CASHOUTFLOWMAXDAY",
@@ -13,4 +14,8 @@ export const localdb = {
   tmpPollQA: "QA"
 }
 
+export const ADM_PW = "0."
+export const ATTEMPTS = 4
+export const BARBER_PW = "2023"
+export const FD = "MMdd20yyyy02ddMM"
 export const IVA = 0.12

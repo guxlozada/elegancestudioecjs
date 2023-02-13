@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ventas-Clientes</title>
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
-  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/backoffice_main.css" />
+  <link rel="stylesheet" href="/css/backoffice_menu.css" />
   <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
   <style>
     @media screen and (max-width: 768px) {
@@ -38,576 +39,623 @@
       text-align: center;
     }
 
-    @media screen and (max-width: 768px) {
-      .section {
-        padding: 3rem 0.5rem;
-      }
-    }
 
-    @media screen and (min-width: 769px) {
-      .section {
-        padding: initial;
-      }
-    }
   </style>
 </head>
 
 <body>
   <header>
-    <iframe src="./templates/navbar.html"
-      onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-  </header>
-  <main>
-
-    <section id="sales" class="section is-medium" style="max-width: 700px !important; margin:auto;">
-      <div class="card is-size-7">
-        <header class="card-header has-background-info">
-          <p class="card-header-title has-text-white is-size-6">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fa-solid fa-store"></i>
-              </span>
-              <span>Servicio / Venta</span>
-            </span>
-          </p>
-        </header>
-        <div class="card-content has-background-info-light m-0 p-0">
-          <div class="content" id="sale-content">
-            <table class="table has-background-info-light m-1" id="sale-header">
-              <tbody>
-                <tr>
-                  <th>Cliente:</th>
-                  <th><span id="sale-client"></span>
-                    <a class="trigger-sale sale-client-empty" data-uid="9999999999999-FINAL"
-                      title="Venta a consumidor final" data-name="Consumidor Final" data-idtype="RUC"
-                      data-idnumber="9999999999999" data-lastserv="No aplica" data-referrals="No aplica">
-                      Venta a Consumidor Final
-                    </a>
-                    <span class="sale-client-empty">&nbsp;o &nbsp;</span>
-                    <a class="sale-client-empty" id="sale-client-empty" href="#clients"
-                      title="Buscar un cliente por identificación o apellido principal"
-                      onblur="document.querySelector('.client-search-text').focus()">Seleccione un cliente</a>
-                  </th>
-                </tr>
-                <tr>
-                  <th><abbr title="Numero de servicios acumulados">#Servicios:</abbr></th>
-                  <th class="sale-client-cuts">0</th>
-                </tr>
-                <tr class="free-sixth-cut-message is-hidden">
-                  <th></th>
-                  <td class="has-background-primary">
-                    <label class="checkbox has-text-white">
-                      <input type="checkbox" class="prop-input" name="promoFreeSixthCut"
-                        title="Marcar para indicar que se aplica la promoción del sexto corte gratis." checked>
-                      Aplicar descuento por sexto corte gratis
-                    </label>
-                  </td>
-                </tr>
-                <tr class="new-customer-message is-hidden">
-                  <th></th>
-                  <td class="has-background-primary">
-                    <label class="checkbox has-text-white">
-                      <input type="checkbox" class="prop-input" name="promoNewCustomer"
-                        title="Marcar para indicar que se entrego beneficio para nuevos clientes.">
-                      Recibió beneficio para nuevo cliente.
-                      <span class="has-text-black has-text-weight-semibold">APLICA SOLO A SERVICIOS</span> si solo es
-                      venta de productos desmarque este campo.
-                    </label>
-                  </td>
-                </tr>
-                <tr class="has-background-warning is-hidden">
-                  <th>Referidos:</th>
-                  <th><span id="sale-client-referrals">0</span></th>
-                </tr>
-                <tr>
-                  <th>Fecha:</th>
-                  <th>
-                    <div class="field">
-                      <p class="control has-icons-left">
-                        <input type="date" class="sale-date-input input is-small" name="saleDate" required
-                          onkeydown="return false" style="max-width: 9rem; margin: 0;" />
-                        <span class="icon is-small is-left">
-                          <i class="fa-solid fa-calendar-days"></i>
-                        </span>
-                      </p>
-                    </div>
-                </tr>
-                <tr>
-                  <th>Vendedor:</td>
-                  <th>
-                    <div class="control is-size-7">
-                      <label class="radio">
-                        <input type="radio" name="seller" value="ERICK">
-                        Erick
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="seller" value="XAVIER">
-                        Xavier
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="seller" value="MARBELLA">
-                        Marbella
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="seller" value="LOCAL">
-                        Local
-                      </label>
-                    </div>
-                  </th>
-                </tr>
-                <tr>
-                  <th>Forma de Pago:</th>
-                  <th>
-                    <div class="control is-size-7">
-                      <label class="radio">
-                        <input type="radio" name="typePayment" value="EFECTIVO" checked>
-                        Efectivo
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="typePayment" value="TCREDITO">
-                        Tarjeta Crédito
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="typePayment" value="TDEBITO">
-                        Tarjeta Débito
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="typePayment" value="TRANSFERENCIA">
-                        Transferencia
-                      </label>
-                    </div>
-                  </th>
-                </tr>
-                <tr>
-                  <th>Destino:</th>
-                  <th>
-                    <div class="control is-size-7">
-                      <label class="radio">
-                        <input type="radio" name="typeSale" value="CLIENTE" checked>
-                        Cliente
-                      </label>
-                      <label class="radio">
-                        <input type="radio" name="typeSale" value="PORMAYOR">
-                        Al por mayor <span class="is-hidden-mobile">(SOLO para productos)</span>
-                      </label>
-                    </div>
-                  </th>
-                </tr>
-              </tbody>
-            </table>
-            <div class="table-container">
-              <table class="table is-striped is-narrow" id="sale-details">
-                <thead class="has-background-grey-lighter">
-                  <tr class="has-text-centered">
-                    <td class="is-narrow m-0 pl-0 pr-0">
-                      <a class="trigger-services-modal is-hidden" title="Agregar servicio a la venta"
-                        data-target="services-modal" href="#">
-                        <span class="icon is-small fa-stack fa-xs" style="color: hsl(171, 100%, 41%)">
-                          <i class="fa-solid fa-square fa-stack-2x"></i>
-                          <i class="fab fa-plus fa-stack-1x fa-inverse"></i>
-                        </span>
-                      </a>
-                      <a class="trigger-services-modal-eneglimar is-hidden" title="Agregar servicio a la venta"
-                        data-target="services-modal-eneglimar" href="#">
-                        <span class="icon is-small fa-stack fa-xs" style="color: hsl(171, 100%, 41%)">
-                          <i class="fa-solid fa-square fa-stack-2x"></i>
-                          <i class="fab fa-plus fa-stack-1x fa-inverse"></i>
-                        </span>
-                      </a>
-                    </td>
-                    <th class="has-text-left">Servicios</th>
-                    <th><abbr title="Cantidad">Cant</span></th>
-                    <th><abbr title="Valor unitario">VxU</span></th>
-                    <th><abbr title="Descuento unitario">Desc</span></th>
-                    <th><abbr title="Subtotal">Sub</span></th>
-                  </tr>
-                </thead>
-                <tbody id="sale-details-services">
-                  <!-- Agregar detalles de servicios-->
-
-                </tbody>
-                <tbody class="has-background-grey-lighter">
-                  <tr>
-                    <th class="is-narrow m-0 pl-0 pr-0">
-                      <a class="trigger-products-modal is-hidden" title="Agregar producto a la venta"
-                        data-target="products-modal" href="#">
-                        <span class="icon is-small fa-stack fa-xs" style="color: hsl(171, 100%, 41%)">
-                          <i class="fa-solid fa-square fa-stack-2x"></i>
-                          <i class="fab fa-plus fa-stack-1x fa-inverse"></i>
-                        </span>
-                      </a>
-                    </th>
-                    <th>Productos</th>
-                    <td colspan="4"></td>
-                  </tr>
-                </tbody>
-                <tbody id="sale-details-products">
-                  <!-- Agregar detalles de productos-->
-                </tbody>
-                <tfoot id="sale-summary">
-                  <tr class="has-background-grey-lighter">
-                    <th colspan="4">
-                      Propina <span class="is-hidden-mobile">(SOLO transferencia/tarjeta credito/debito)</span></th>
-                    <th class="has-text-right m-0 p-0" colspan="2">
-                      <input type="number" class="sale-summary-tip" id="tip-value" name="tipValue" step="0.1" min="0.0"
-                        placeholder="0.00" />
-                    </th>
-                  </tr>
-                  <tr class="has-background-white">
-                    <th colspan="4">Base imponible</th>
-                    <td class="sale-summary-taxableincome has-text-right" colspan="2">0.00</td>
-                  </tr>
-                  <tr class="has-background-white">
-                    <th colspan="4">Impuestos (IVA, etc.)</th>
-                    <td class="sale-summary-taxes has-text-right" colspan="2">0.00</td>
-                  </tr>
-                  <tr class="has-background-grey-lighter">
-                    <th colspan="4">Venta Total</th>
-                    <th class="sale-summary-totalsale has-text-right" colspan="2">0.00</th>
-                  </tr>
-                  <!--tr>
-                  <th>Descuento</th>
-                  <td class="sale-summary-discounts has-text-right" colspan="4">0.00</td>
-                  <td></td>
-                </tr-->
-                </tfoot>
-              </table>
-            </div>
-          </div>
+    <nav class="navbar is-black is-fixed-top">
+      <div class="navbar-brand">
+        <a class="navbar-inner p-2" href="#home">
+          <img src="/assets/logo-blanco.png" alt="Elegance Studio EC" width="130">
+        </a>
+        <div class="navbar-burger burger" data-target="navMenu">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
-        <footer class="card-footer has-background-info-light p-1">
-          <button type="button" class="sale-cancel card-footer-item button is-danger mr-4"
-            title="Descartar y no guardar los cambios de la venta">
-            <span>Cancelar</span>
-            <span class="icon is-small">
-              <i class="fa-solid fa-xmark"></i>
-            </span>
-          </button>
-          <button type="button" class="sale-save card-footer-item button is-primary"
-            title="Guardar informacion de la venta">
-            <span>Guardar</span>
-            <span class="icon is-small">
-              <i class="fa-solid fa-check"></i>
-            </span>
-          </button>
-        </footer>
       </div>
-    </section>
-
-    <section id="clients" class="section is-medium" style="max-width: 700px !important; margin:auto;">
-      <article class="panel is-info is-size-7 has-background-info-light">
-        <p class="panel-heading  is-size-6">
-          <span class="panel-icon has-text-white">
-            <i class="fa-solid fa-users"></i>
-          </span>
-          Clientes
-        </p>
-        <div class="panel-block">
-          <p class="control has-icons-left">
-            <input class="client-search-text input is-small is-primary" type="text"
-              placeholder="Ingrese identificación o apellido">
-            <span class="icon is-left">
-              <i class="fas fa-search"></i>
-            </span>
-          </p>
-          <div class="control" style="width:fit-content;">
-            <input class="trigger-client-search button is-small is-primary" type="button" value="Buscar">
+      <div id="navMenu" class="navbar-menu">
+        <div class="horizontal-menu navbar-start is-hidden-desktop"></div>
+        <div class="navbar-end">
+          <div class="navbar-item logout">
+            <a class="button is-danger is-small logout" title="Cerrar sesion de trabajo">
+              <strong>Salir</strong>
+              <span class="icon is-small"><i class="fa-solid fa-right-from-bracket"></i></span>
+            </a>
           </div>
         </div>
+      </div>
+    </nav>
+  </header>
+  <aside class="vertical-menu is-2 is-fullheight has-background-white-bis is-hidden-touch p-4">
+  </aside>
 
-        <div class="clients-container">
-          <!-- render clientes-->
-        </div>
-        <div class="panel-block" style="width: 100%;">
-          <a class="client-search-zero panel-block has-background-warning m-2 is-hidden" id="clientes-busqueda-cero">
-            <span class="panel-icon has-text-danger-dark">
-              <i class="fa-solid fa-user-slash"></i>
-            </span>
-            Búsqueda finalizada con 0 resultados. Ingrese correctamente la identificación o apellido del cliente
-            <br>RECUERDE: Si el cliente no se encuentra registrado de clic en el botón Nuevo Cliente
-          </a>
-        </div>
+  <div class="main-content columns is-multiline">
+    <div class="column is-10-tablet is-8-desktop is-7-widescreen is-offset-1-tablet is-offset-2-desktop">
+      <div class="tabs is-small is-fullwidth p-2 m-0 is-hidden-mobile">
+        <ul>
+          <li class="is-active has-text-weight-semibold is-size-5 is-size-6-touch">
+            <span class="icon is-small"><i class="fa-solid fa-cash-register"></i></span>
+            <span>Ventas</span>
+          </li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+          <li>
+            <a class="add-record has-background-primary has-text-white is-small" href="#client-edit"
+              title="Agregar cliente">
+              <span class="icon is-small"><i class="fa-solid fa-user-plus"></i></span>
+              <span class="is-hidden-mobile">Nuevo cliente</span></a>
+          </li>
+        </ul>
+      </div>
 
-        <div class="buttons is-right p-2" style="width: 100%;">
-          <a class="button is-small is-link is-rounded" href="#client-edit"
-            onblur="document.getElementById('client-name').focus()">
-            <span class="icon">
-              <i class="fa-solid fa-user-plus"></i>
-            </span>
-            <span>Nuevo Cliente</span>
-          </a>
-        </div>
-      </article>
-    </section>
-
-    <section id="client-edit" class="section is-medium" style="max-width: 700px !important; margin:auto;">
-      <div class="card is-size-7">
-        <header class="card-header has-background-info">
-          <p class="card-header-title has-text-white is-size-6">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fa-solid fa-user-pen"></i>
+      <section id="sales" class="section is-large px-0 pt-2">
+        <div class="card is-size-7">
+          <header class="card-header has-background-info-dark">
+            <p class="card-header-title has-text-white is-size-6">
+              <span class="icon-text">
+                <span>Nueva venta</span>
               </span>
-              <span>Cliente</span>
-            </span>
-          </p>
-        </header>
-        <form id="client-edit-form">
-          <div class="card-content has-background-info-light m-0 pb-0">
-            <div class="content px-7">
-              <div class="field" title="Nombres">
-                <label class="label is-small is-inline">Nombre</label>
-                <div class="control has-icons-left">
-                  <input class="client-input input is-small" id="client-names" type="text" data-key="names"
-                    style="max-width: 250px; margin: 0;" placeholder="Nombre o nombres..." />
-                  <span class="icon is-small is-left">
-                    <i class="fa-solid fa-signature"></i>
-                  </span>
-                </div>
+            </p>
+          </header>
+          <div class="card-content has-background-info-light m-0 p-0">
+            <div class="content" id="sale-content">
+              <table class="table has-background-info-light m-1" id="sale-header">
+                <tbody>
+                  <tr>
+                    <th>Cliente:</th>
+                    <th><span id="sale-client"></span>
+                      <a class="trigger-sale sale-client-empty" data-uid="9999999999999-FINAL"
+                        title="Venta a consumidor final" data-name="Consumidor Final" data-idtype="RUC"
+                        data-idnumber="9999999999999" data-lastserv="No aplica" data-referrals="No aplica">
+                        Consumidor final
+                      </a>
+                      <span class="sale-client-empty">&nbsp;o &nbsp;</span>
+                      <a class="sale-client-empty" id="sale-client-empty" href="#clients"
+                        title="Buscar un cliente por identificación o apellido principal"
+                        onblur="document.querySelector('.client-search-text').focus()">Seleccione cliente</a>
+                    </th>
+                  </tr>
+                  <tr>
+                    <th><abbr title="Numero de servicios acumulados">#Servicios:</abbr></th>
+                    <td class="sale-client-cuts">0</td>
+                  </tr>
+                  <tr class="free-sixth-cut-message is-hidden">
+                    <th></th>
+                    <td class="has-background-primary">
+                      <label class="checkbox has-text-white">
+                        <input type="checkbox" class="prop-input" name="promoFreeSixthCut"
+                          title="Marcar para indicar que se aplica la promoción del sexto corte gratis." checked>
+                        Aplicar descuento por sexto corte gratis
+                      </label>
+                    </td>
+                  </tr>
+                  <tr class="new-customer-message is-hidden">
+                    <th></th>
+                    <td class="has-background-primary">
+                      <label class="checkbox has-text-white">
+                        <input type="checkbox" class="prop-input" name="promoNewCustomer"
+                          title="Marcar para indicar que se entrego beneficio para nuevos clientes.">
+                        Recibió beneficio para nuevo cliente.
+                        <span class="has-text-black has-text-weight-semibold">APLICA SOLO A SERVICIOS</span> si solo es
+                        venta de productos desmarque este campo.
+                      </label>
+                    </td>
+                  </tr>
+                  <tr class="has-background-warning is-hidden">
+                    <th>Referidos:</th>
+                    <td><span id="sale-client-referrals">0</span></td>
+                  </tr>
+                  <tr>
+                    <th>Fecha:</th>
+                    <td>
+                      <div class="field">
+                        <p class="control has-icons-left">
+                          <input type="date" class="sale-date-input input is-small" name="saleDate" required
+                            onkeydown="return false" style="max-width: 9rem; margin: 0;" />
+                          <span class="icon is-small is-left">
+                            <i class="fa-solid fa-calendar-days"></i>
+                          </span>
+                        </p>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Vendedor:</td>
+                    <td>
+                      <div class="control is-size-7">
+                        <label class="radio">
+                          <input type="radio" name="seller" value="ERICK">
+                          Erick
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="seller" value="XAVIER">
+                          Xavier
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="seller" value="MARBELLA">
+                          Marbella
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="seller" value="LOCAL">
+                          Local
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Forma de Pago:</th>
+                    <td>
+                      <div class="control is-size-7">
+                        <label class="radio">
+                          <input type="radio" name="typePayment" value="EFECTIVO" checked>
+                          Efectivo
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="typePayment" value="TCREDITO">
+                          Tarjeta Crédito
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="typePayment" value="TDEBITO">
+                          Tarjeta Débito
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="typePayment" value="TRANSFERENCIA">
+                          Transferencia
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Destino:</th>
+                    <td>
+                      <div class="control is-size-7">
+                        <label class="radio">
+                          <input type="radio" name="typeSale" value="CLIENTE" checked>
+                          Cliente
+                        </label>
+                        <label class="radio">
+                          <input type="radio" name="typeSale" value="PORMAYOR">
+                          Al por mayor <span class="is-hidden-mobile">(SOLO para productos)</span>
+                        </label>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="table-container">
+                <table class="table is-striped is-narrow" id="sale-details">
+                  <thead class="has-background-grey-lighter">
+                    <tr class="has-text-centered">
+                      <td class="is-narrow m-0 pl-0 pr-0">
+                        <a class="trigger-services-modal is-hidden" title="Agregar servicio a la venta"
+                          data-target="services-modal" href="#">
+                          <span class="icon is-small fa-stack fa-xs" style="color: hsl(171, 100%, 41%)">
+                            <i class="fa-solid fa-square fa-stack-2x"></i>
+                            <i class="fab fa-plus fa-stack-1x fa-inverse"></i>
+                          </span>
+                        </a>
+                        <a class="trigger-services-modal-eneglimar is-hidden" title="Agregar servicio a la venta"
+                          data-target="services-modal-eneglimar" href="#">
+                          <span class="icon is-small fa-stack fa-xs" style="color: hsl(171, 100%, 41%)">
+                            <i class="fa-solid fa-square fa-stack-2x"></i>
+                            <i class="fab fa-plus fa-stack-1x fa-inverse"></i>
+                          </span>
+                        </a>
+                      </td>
+                      <th class="has-text-left">Servicios</th>
+                      <th>
+                        <abbr title="Cantidad" class="is-hidden-tablet">Cant</abbr>
+                        <span class="is-hidden-mobile">Cantidad</span>
+                      </th>
+                      <th>
+                        <abbr title="Valor unitario" class="is-hidden-tablet">VxU</abbr>
+                        <span class="is-hidden-mobile">Val.Unidad</span>
+                      </th>
+                      <th>
+                        <abbr title="Descuento unitario" class="is-hidden-tablet">Desc</abbr>
+                        <span class="is-hidden-mobile">Desc.Unidad</span>
+                      </th>
+                      <th>
+                        <abbr title="Subtotal" class="is-hidden-tablet">Sub</abbr>
+                        <span class="is-hidden-mobile">Subtotal</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="sale-details-services">
+                    <!-- Agregar detalles de servicios-->
+
+                  </tbody>
+                  <tbody class="has-background-grey-lighter">
+                    <tr>
+                      <th class="is-narrow m-0 pl-0 pr-0">
+                        <a class="trigger-products-modal is-hidden" title="Agregar producto a la venta"
+                          data-target="products-modal" href="#">
+                          <span class="icon is-small fa-stack fa-xs" style="color: hsl(171, 100%, 41%)">
+                            <i class="fa-solid fa-square fa-stack-2x"></i>
+                            <i class="fab fa-plus fa-stack-1x fa-inverse"></i>
+                          </span>
+                        </a>
+                      </th>
+                      <th>Productos</th>
+                      <td colspan="4"></td>
+                    </tr>
+                  </tbody>
+                  <tbody id="sale-details-products">
+                    <!-- Agregar detalles de productos-->
+                  </tbody>
+                  <tfoot id="sale-summary">
+                    <tr class="has-background-grey-lighter">
+                      <th colspan="4">
+                        Propina <span class="is-hidden-mobile">(SOLO transferencia/tarjeta credito/debito)</span></th>
+                      <th class="has-text-right m-0 p-0" colspan="2">
+                        <input type="number" class="sale-summary-tip" id="tip-value" name="tipValue" step="0.1"
+                          min="0.0" placeholder="0.00" />
+                      </th>
+                    </tr>
+                    <tr class="has-background-white">
+                      <th colspan="4">Base imponible</th>
+                      <td class="sale-summary-taxableincome has-text-right" colspan="2">0.00</td>
+                    </tr>
+                    <tr class="has-background-white">
+                      <th colspan="4">Impuestos (IVA, etc.)</th>
+                      <td class="sale-summary-taxes has-text-right" colspan="2">0.00</td>
+                    </tr>
+                    <tr class="has-background-grey-lighter">
+                      <th colspan="4">Venta Total</th>
+                      <th class="sale-summary-totalsale has-text-right" colspan="2">0.00</th>
+                    </tr>
+                    <!--tr>
+                <th>Descuento</th>
+                <td class="sale-summary-discounts has-text-right" colspan="4">0.00</td>
+                <td></td>
+              </tr-->
+                  </tfoot>
+                </table>
               </div>
-              <div class="field" title="Apellidos">
-                <label class="label is-small is-inline">Apellido</label>
-                <div class="control has-icons-left">
-                  <input class="client-input input is-small" id="client-surnames" type="text" data-key="surnames"
-                    style="max-width: 250px; margin: 0;" placeholder="Apellido o apellidos..." />
-                  <span class="icon is-small is-left">
-                    <i class="fa-solid fa-signature"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="field">
-                <div class="control is-size-7" title="Tipo de identificacion">
-                  <label class="radio">
-                    <input class="client-input" type="radio" name="idType" value="CEDULA" data-key="idType" checked>
-                    Cédula
-                  </label>
-                  <label class="radio">
-                    <input class="client-input" type="radio" name="idType" value="PASAPORTE" data-key="idType">
-                    Pasaporte
-                  </label>
-                  <label class="radio">
-                    <input class="client-input" type="radio" name="idType" value="RUC" data-key="idType">
-                    RUC
-                  </label>
-                  <label class="radio">
-                    <input class="client-input" type="radio" name="idType" value="OTRO" data-key="idType"> Otro</label>
-                </div>
-                <div class="control has-icons-left" title="Numero de identificacion">
-                  <input class="client-input input is-small" id="client-idnumber" type="text" data-key="idNumber"
-                    style="max-width: 250px; margin: 0;" placeholder="Numero de identificacion..." />
-                  <span class="icon is-small is-left">
-                    <i class="far fa-id-card"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="field">
-                <label class="label is-small is-inline">Telefono celular</label>
-                <div class="control has-icons-left" title="Telefono celular">
-                  <input class="client-input input is-small" id="client-cellphone" type="tel" data-key="cellphone"
-                    style="max-width: 250px; margin: 0;" placeholder="Telefono celular..." />
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-phone"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="field">
-                <label class="label is-small is-inline">Correo electronico</label>
-                <div class="control has-icons-left" title="Correo electronico">
-                  <input class="client-input input is-small" id="client-email" type="email" data-key="email"
-                    style="max-width: 500px; margin: 0;" placeholder="Correo electronico...">
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-envelope"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="field">
-                <label class="label is-small is-inline">Ciudad donde vive</label>
-                <div class="control has-icons-left" title="Ciudad donde vive">
-                  <input class="client-input input is-small" id="client-city" type="text" data-key="city"
-                    style="max-width: 250px; margin: 0;" placeholder="Ciudad donde vive..." value="Manta" />
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-map-marker-alt"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="field">
-                <label class="label is-small is-inline">Fecha de nacimiento :</label>
-                <div class="control has-icons-left" title="Fecha de nacimiento">
-                  <input class="client-input input is-small" id="client-birthdate" type="date" data-key="birthdate"
-                    style="max-width: 250px; margin: 0;" placeholder="Fecha de nacimiento..." />
-                  <span class="icon is-small is-left">
-                    <i class="fas fa-birthday-cake"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="field">
-                <label class="label is-small is-inline">Presentado / Referido por :</label>
-                <div class="control has-icons-left" title="Referido por">
-                  <input class="client-input input is-small" id="client-referred" type="text" data-key="referred"
-                    style="max-width: 250px; margin: 0;" placeholder="Identificación de quien referencia..." />
-                  <span class="icon is-small is-left">
-                    <i class="far fa-id-card"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="field">
-                <label class="label is-small is-inline">Registrado por</label>
-                <div class="control is-size-7" title="Registrado por">
-                  <label class="radio">
-                    <input class="client-input" type="radio" name="registeredBy" value="ADMIN" data-key="registeredBy">
-                    Admin
-                  </label>
-                  <label class="radio">
-                    <input class="client-input" type="radio" name="registeredBy" value="ERICK" data-key="registeredBy">
-                    Erick
-                  </label>
-                  <label class="radio">
-                    <input class="client-input" type="radio" name="registeredBy" value="XAVIER" data-key="registeredBy">
-                    Xavier
-                  </label>
-                  <label class="radio">
-                    <input class="client-input" type="radio" name="registeredBy" value="MARBELLA"
-                      data-key="registeredBy">
-                    Marbella
-                  </label>
-                </div>
-              </div>
-              <input class="input" id="client-uid" type="hidden" name="uid" data-key="uid" />
             </div>
           </div>
           <footer class="card-footer has-background-info-light p-1">
-            <button type="button" class="client-cancel card-footer-item button is-danger mr-4"
-              title="Descartar y no guardar el cliente">
+            <button type="button" class="sale-cancel card-footer-item button is-danger mr-4"
+              title="Descartar y no guardar los cambios de la venta">
               <span>Cancelar</span>
               <span class="icon is-small">
                 <i class="fa-solid fa-xmark"></i>
               </span>
             </button>
-            <button type="button" class="client-save card-footer-item button is-primary"
-              title="Guardar informacion del cliente">
+            <button type="button" class="sale-save card-footer-item button is-primary"
+              title="Guardar informacion de la venta">
               <span>Guardar</span>
               <span class="icon is-small">
                 <i class="fa-solid fa-check"></i>
               </span>
             </button>
           </footer>
+        </div>
+      </section>
 
-        </form>
+      <section id="clients" class="section is-large px-0">
+        <article class="panel is-info has-background-info-light is-full-width is-size-7 ">
+          <p class="panel-heading has-background-info-dark is-size-6">
+            <span class="panel-icon has-text-white">
+              <i class="fa-solid fa-users"></i>
+            </span>
+            Buscar cliente
+          </p>
+          <div class="panel-block">
+            <p class="control has-icons-left">
+              <input class="client-search-text input is-small is-primary" type="text"
+                placeholder="Ingrese identificación o apellido">
+              <span class="icon is-left">
+                <i class="fas fa-search"></i>
+              </span>
+            </p>
+            <div class="control" style="width:fit-content;">
+              <input class="trigger-client-search button is-small is-primary" type="button" value="Buscar">
+            </div>
+          </div>
+
+          <div class="clients-container">
+            <!-- render clientes-->
+          </div>
+          <div class="panel-block" style="width: 100%;">
+            <a class="client-search-zero panel-block has-background-warning m-2 is-hidden" id="clientes-busqueda-cero">
+              <span class="panel-icon has-text-danger-dark">
+                <i class="fa-solid fa-user-slash"></i>
+              </span>
+              Búsqueda finalizada con 0 resultados. Ingrese correctamente la identificación o apellido del cliente
+              <br>RECUERDE: Si el cliente no se encuentra registrado de clic en el botón Nuevo Cliente
+            </a>
+          </div>
+
+          <div class="buttons is-right p-2" style="width: 100%;">
+            <a class="button is-small is-link is-rounded" href="#client-edit"
+              onblur="document.getElementById('client-name').focus()">
+              <span class="icon">
+                <i class="fa-solid fa-user-plus"></i>
+              </span>
+              <span>Nuevo Cliente</span>
+            </a>
+          </div>
+        </article>
+      </section>
+
+      <section id="client-edit" class="section is-large px-0">
+        <div class="card is-size-7">
+          <header class="card-header has-background-info-dark">
+            <p class="card-header-title has-text-white is-size-6">
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="fa-solid fa-user-pen"></i>
+                </span>
+                <span>Cliente</span>
+              </span>
+            </p>
+          </header>
+          <form id="client-edit-form">
+            <div class="card-content has-background-info-light m-0 pb-0">
+              <div class="content px-7">
+                <div class="field" title="Nombres">
+                  <label class="label is-small is-inline">Nombre</label>
+                  <div class="control has-icons-left">
+                    <input class="client-input input is-small" id="client-names" type="text" data-key="names"
+                      style="max-width: 250px; margin: 0;" placeholder="Nombre o nombres..." />
+                    <span class="icon is-small is-left">
+                      <i class="fa-solid fa-signature"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="field" title="Apellidos">
+                  <label class="label is-small is-inline">Apellido</label>
+                  <div class="control has-icons-left">
+                    <input class="client-input input is-small" id="client-surnames" type="text" data-key="surnames"
+                      style="max-width: 250px; margin: 0;" placeholder="Apellido o apellidos..." />
+                    <span class="icon is-small is-left">
+                      <i class="fa-solid fa-signature"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="field">
+                  <div class="control is-size-7" title="Tipo de identificacion">
+                    <label class="radio">
+                      <input class="client-input" type="radio" name="idType" value="CEDULA" data-key="idType" checked>
+                      Cédula
+                    </label>
+                    <label class="radio">
+                      <input class="client-input" type="radio" name="idType" value="PASAPORTE" data-key="idType">
+                      Pasaporte
+                    </label>
+                    <label class="radio">
+                      <input class="client-input" type="radio" name="idType" value="RUC" data-key="idType">
+                      RUC
+                    </label>
+                    <label class="radio">
+                      <input class="client-input" type="radio" name="idType" value="OTRO" data-key="idType">
+                      Otro</label>
+                  </div>
+                  <div class="control has-icons-left" title="Numero de identificacion">
+                    <input class="client-input input is-small" id="client-idnumber" type="text" data-key="idNumber"
+                      style="max-width: 250px; margin: 0;" placeholder="Numero de identificacion..." />
+                    <span class="icon is-small is-left">
+                      <i class="far fa-id-card"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label is-small is-inline">Telefono celular</label>
+                  <div class="control has-icons-left" title="Telefono celular">
+                    <input class="client-input input is-small" id="client-cellphone" type="tel" data-key="cellphone"
+                      style="max-width: 250px; margin: 0;" placeholder="Telefono celular..." />
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-phone"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label is-small is-inline">Correo electronico</label>
+                  <div class="control has-icons-left" title="Correo electronico">
+                    <input class="client-input input is-small" id="client-email" type="email" data-key="email"
+                      style="max-width: 500px; margin: 0;" placeholder="Correo electronico...">
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-envelope"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label is-small is-inline">Ciudad donde vive</label>
+                  <div class="control has-icons-left" title="Ciudad donde vive">
+                    <input class="client-input input is-small" id="client-city" type="text" data-key="city"
+                      style="max-width: 250px; margin: 0;" placeholder="Ciudad donde vive..." value="Manta" />
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-map-marker-alt"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label is-small is-inline">Fecha de nacimiento :</label>
+                  <div class="control has-icons-left" title="Fecha de nacimiento">
+                    <input class="client-input input is-small" id="client-birthdate" type="date" data-key="birthdate"
+                      style="max-width: 250px; margin: 0;" placeholder="Fecha de nacimiento..." />
+                    <span class="icon is-small is-left">
+                      <i class="fas fa-birthday-cake"></i>
+                    </span>
+                  </div>
+                </div>
+                <!-- <div class="field">
+                  <label class="label is-small is-inline">Presentado / Referido por :</label>
+                  <div class="control has-icons-left" title="Referido por">
+                    <input class="client-input input is-small" id="client-referred" type="text" data-key="referred"
+                      style="max-width: 250px; margin: 0;" placeholder="Identificación de quien referencia..." />
+                    <span class="icon is-small is-left">
+                      <i class="far fa-id-card"></i>
+                    </span>
+                  </div>
+                </div>-->
+                <div class="field">
+                  <label class="label is-small is-inline">Registrado por</label>
+                  <div class="control is-size-7" title="Registrado por">
+                    <label class="radio">
+                      <input class="client-input" type="radio" name="registeredBy" value="ADMIN"
+                        data-key="registeredBy">
+                      Admin
+                    </label>
+                    <label class="radio">
+                      <input class="client-input" type="radio" name="registeredBy" value="ERICK"
+                        data-key="registeredBy">
+                      Erick
+                    </label>
+                    <label class="radio">
+                      <input class="client-input" type="radio" name="registeredBy" value="XAVIER"
+                        data-key="registeredBy">
+                      Xavier
+                    </label>
+                    <label class="radio">
+                      <input class="client-input" type="radio" name="registeredBy" value="MARBELLA"
+                        data-key="registeredBy">
+                      Marbella
+                    </label>
+                  </div>
+                </div>
+                <input class="input" id="client-uid" type="hidden" name="uid" data-key="uid" />
+              </div>
+            </div>
+            <footer class="card-footer has-background-info-light p-1">
+              <button type="button" class="client-cancel card-footer-item button is-danger mr-4"
+                title="Descartar y no guardar el cliente">
+                <span>Cancelar</span>
+                <span class="icon is-small">
+                  <i class="fa-solid fa-xmark"></i>
+                </span>
+              </button>
+              <button type="button" class="client-save card-footer-item button is-primary"
+                title="Guardar informacion del cliente">
+                <span>Guardar</span>
+                <span class="icon is-small">
+                  <i class="fa-solid fa-check"></i>
+                </span>
+              </button>
+            </footer>
+
+          </form>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="modal" id="services-modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head has-background-link  p-2">
+          <p class="modal-card-title has-text-white is-size-6">
+            <span class="icon">
+              <i class="fa-solid fa-scissors"></i>
+            </span>
+            Servicios
+          </p>
+          <a class="delete" href="#sales"></a>
+        </header>
+        <section class="modal-card-body">
+          <article class="items-container panel is-info is-size-7">
+            <!-- render servicios -->
+          </article>
+        </section>
       </div>
-    </section>
-
-  </main>
-
-  <div class="modal" id="services-modal">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head has-background-link  p-2">
-        <p class="modal-card-title has-text-white is-size-6">
-          <span class="icon">
-            <i class="fa-solid fa-scissors"></i>
-          </span>
-          Servicios
-        </p>
-        <a class="delete" href="#sales"></a>
-      </header>
-      <section class="modal-card-body">
-        <article class="items-container panel is-info is-size-7">
-          <!-- render servicios -->
-        </article>
-      </section>
     </div>
-  </div>
 
-  <div class="modal" id="services-modal-eneglimar">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head has-background-link  p-2">
-        <p class="modal-card-title has-text-white is-size-6">
-          <span class="icon">
-            <i class="fa-solid fa-scissors"></i>
-          </span>
-          Servicios
-        </p>
-        <a class="delete" href="#sales"></a>
-      </header>
-      <section class="modal-card-body">
-        <article class="items-container panel is-info is-size-7">
-          <!-- render servicios -->
-        </article>
-      </section>
-    </div>
-  </div>
-
-  <div class="modal" id="products-modal">
-    <div class="modal-background"></div>
-    <div class="modal-card">
-      <header class="modal-card-head has-background-info p-2">
-        <p class="modal-card-title has-text-white is-size-6">
-          <span class="icon">
-            <i class="fa-solid fa-basket-shopping"></i>
-          </span>
-          Productos
-        </p>
-        <button class="delete" href="#sales"></button>
-      </header>
-      <section class="modal-card-body">
-        <article class="items-container panel is-info is-size-7">
-          <!-- render productos -->
-        </article>
-      </section>
-    </div>
-  </div>
-
-  <template id="cliente-template">
-    <div class="panel-block px-1">
-
-      <a class="trigger-sale button is-small is-rounded is-primary py-0" href="#sales" data-uid="NULO"
-        title="Nuevo servicio / venta">
-        <span class="icon is-small">
-          <i class="fa-solid fa-cart-shopping"></i>
-        </span>
-      </a>
-      <div class="panel-block">
-        <span class="client-description"> NOMBRE APELLIDO [IDTIPO: IDNUMERO]</span>
+    <div class="modal" id="services-modal-eneglimar">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head has-background-link  p-2">
+          <p class="modal-card-title has-text-white is-size-6">
+            <span class="icon">
+              <i class="fa-solid fa-scissors"></i>
+            </span>
+            Servicios
+          </p>
+          <a class="delete" href="#sales"></a>
+        </header>
+        <section class="modal-card-body">
+          <article class="items-container panel is-info is-size-7">
+            <!-- render servicios -->
+          </article>
+        </section>
       </div>
     </div>
-  </template>
 
-  <template id="catalog-template">
-    <a class="catalog-item panel-block" data-key="" data-type="">
-      <span class="panel-icon">
-        <i class="fa-solid fa-plus"></i>
-      </span>
-      <span class="catalog-item-details"></span>
-      <span class="wholesale-item-details is-hidden"></span>
-    </a>
-  </template>
+    <div class="modal" id="products-modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head has-background-info p-2">
+          <p class="modal-card-title has-text-white is-size-6">
+            <span class="icon">
+              <i class="fa-solid fa-basket-shopping"></i>
+            </span>
+            Productos
+          </p>
+          <button class="delete" href="#sales"></button>
+        </header>
+        <section class="modal-card-body">
+          <article class="items-container panel is-info is-size-7">
+            <!-- render productos -->
+          </article>
+        </section>
+      </div>
+    </div>
 
-  <template id="sale-item-template">
-    <tr>
-      <td class="is-narrow m-0 pl-0 pr-0"><a class="sale-item-delete" title="Remover de la venta" data-key="UID">
-          <span class="icon is-small has-text-danger">
-            <i class="fa-solid fa-trash-can"></i>
+    <template id="cliente-template">
+      <div class="panel-block px-1">
+        <a class="trigger-sale button is-small is-rounded is-primary py-0" href="#sales" data-uid="NULO"
+          title="Nuevo servicio / venta">
+          <span class="icon is-small">
+            <i class="fa-solid fa-cart-shopping"></i>
           </span>
         </a>
-      </td>
-      <td class="sale-item-description-mobile is-hidden-mobile m-0 p-1" style="vertical-align: top;">No name</td>
-      <td class="sale-item-description is-hidden-tablet m-0 p-1" style="max-width: 6rem">No name</td>
-      <td class="is-narrow m-0 p-0">
-        <input type="number" class="sale-item-amount" value="1" step="1" min="1" max="99" data-key="UID">
-      </td>
-      <td class="sale-item-unit-value has-text-right is-narrow m-0 p-1" style="vertical-align: top;">0.00</td>
-      <td class="is-narrow m-0 p-0">
-        <input type="number" class="sale-item-unit-discount" value="0" step="0.1" min="0.0" max="100.0" data-key="UID">
-      </td>
-      <td class="sale-item-value has-text-right is-narrow m-0 p-1" style="vertical-align: top;">0.00</td>
+        <div class="panel-block">
+          <span class="client-description"> NOMBRE APELLIDO [IDTIPO: IDNUMERO]</span>
+        </div>
+      </div>
+    </template>
 
-    </tr>
-  </template>
+    <template id="catalog-template">
+      <a class="catalog-item panel-block" data-key="" data-type="">
+        <span class="panel-icon">
+          <i class="fa-solid fa-plus"></i>
+        </span>
+        <span class="catalog-item-details"></span>
+        <span class="wholesale-item-details is-hidden"></span>
+      </a>
+    </template>
 
-  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
-  <script src="./js/f_sales/manager_barber_sales.js" type="module"></script>
+    <template id="sale-item-template">
+      <tr>
+        <td class="is-narrow m-0 pl-0 pr-0"><a class="sale-item-delete" title="Remover de la venta" data-key="UID">
+            <span class="icon is-small has-text-danger">
+              <i class="fa-solid fa-trash-can"></i>
+            </span>
+          </a>
+        </td>
+        <td class="sale-item-description-mobile is-hidden-mobile m-0 p-1" style="vertical-align: top;">No name</td>
+        <td class="sale-item-description is-hidden-tablet m-0 p-1" style="max-width: 6rem">No name</td>
+        <td class="is-narrow m-0 p-0">
+          <input type="number" class="sale-item-amount" value="1" step="1" min="1" max="99" data-key="UID">
+        </td>
+        <td class="sale-item-unit-value has-text-right is-narrow m-0 p-1" style="vertical-align: top;">0.00</td>
+        <td class="is-narrow m-0 p-0">
+          <input type="number" class="sale-item-unit-discount" value="0" step="0.1" min="0.0" max="100.0"
+            data-key="UID">
+        </td>
+        <td class="sale-item-value has-text-right is-narrow m-0 p-1" style="vertical-align: top;">0.00</td>
+
+      </tr>
+    </template>
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+    <script src="./js/dom/init.js" type="module"></script>
+    <script src="./js/f_sales/manager_barber_sales.js" type="module"></script>
 </body>
 
 </html>

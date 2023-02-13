@@ -4,14 +4,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Productos</title>
+  <title>Catalogo de productos</title>
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
-  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/backoffice_main.css" />
+  <link rel="stylesheet" href="/css/backoffice_menu.css" />
+  <!-- PENDIENTE MIGRACION DE ESTILOS DE REPORTE-->
   <link rel="stylesheet" href="/css/report.css" />
   <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
   <style>
     article {
-      height: 55vh;
+      height: 70vh;
     }
 
     @media screen and (max-width: 768px) {
@@ -24,291 +26,308 @@
 
 <body>
   <header>
-    <iframe src="./templates/navbar.html"
-      onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
-  </header>
-  <main>
-    <section id="report" class="section" style="max-width: 1000px !important; margin:auto;">
-      <div class="card is-size-7">
-        <header class="card-header has-background-info is-size-6">
-          <p class="card-header-title has-text-white">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fa-solid fa-file-pen"></i>
-              </span>
-              <span>Catalogo de productos</span>
-            </span>
-          </p>
-          <p class="card-header-icon has-text-white">
-            <span class="search-period "></span>
-          </p>
-        </header>
-        <div class="card-content has-background-info-light p-2">
-          <div class="content">
-            <form id="filters" class="p-0 m-0">
-              <div class="field is-grouped p-0 m-0" style="width: 100%;">
-                <p class="control is-size-7 pt-2">
-                  <label class="radio">
-                    <input type="radio" class="prop-input" name="active" value="TODOS">
-                    Todos
-                  </label>
-                  <label class="radio">
-                    <input type="radio" class="prop-input" name="active" value="true" checked>
-                    Activo
-                  </label>
-                  <label class="radio">
-                    <input type="radio" class="prop-input" name="active" value="false">
-                    Inactivo
-                  </label>
-                </p>
-                <p class="control">
-                <div class="select is-small">
-                  <select class="providers prop-input" name="provider" title="Proveedor">
-                    <option value="">Proveedor...</option>
-                  </select>
-                </div>
-                </p>
-                <p class="control">
-                <div class="select is-small">
-                  <select class="categories prop-input" name="category" title="Categoria de producto">
-                    <option value="">Categoria...</option>
-                  </select>
-                </div>
-                </p>
-                <p class="control">
-                <div class="is-small">
-                  <input type="text" id="keyword" class="prop-input input is-small" name="keyword"
-                    placeholder="codigo o description...">
-                </div>
-                </p>
-                <p class="buttons">
-                  <button type="submit" class="button is-small is-primary" title="Buscar">
-                    <span class="icon is-small">
-                      <i class="fa-solid fa-magnifying-glass"></i>
-                    </span>
-                  </button>
-                  <button class="clean button is-small is-link is-outlined" title="Limpiar filtros">
-                    <span class="icon is-small">
-                      <i class="fa-solid fa-eraser"></i>
-                    </span>
-                  </button>
-                  <button class="export-excel button is-small is-link is-outlined" title="Exportar informacion a Excel"
-                    data-table="tb-products" data-filename="productos">
-                    <span class="icon is-small"><i class="fa-solid fa-file-excel"></i></span>
-                    <span class="is-hidden-mobile">Excel</span></button>
-                </p>
-              </div>
-            </form>
-            <article class="pt-2">
-              <section>
-                <table class="table is-striped is-narrow is-hoverable is-fullwidth" id="tb-products">
-                  <thead>
-                    <tr>
-                      <th><abbr title="Proveedor">Proveedor</abbr></th>
-                      <th style="max-width:3rem">Categoria</th>
-                      <th>Codigo</th>
-                      <th>Descripcion</th>
-                      <th><abbr title="Valor unitario de compra">Compra</abbr></th>
-                      <th><abbr title="Valor unitario de venta">Venta</abbr></th>
-                      <th><abbr title="Valor unitario de venta al por mayor">Mayor</abbr></th>
-                      <th><abbr title="Porcentaje de comision de vendedor">%</abbr></th>
-                      <th title="Acciones sobre el registro: activar, editar">
-                        <span class="icon ">
-                          <i class="fa-solid fa-gear"></i>
-                        </span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody id="details">
-                    <!-- render details-->
-                  </tbody>
-                </table>
-              </section>
-            </article>
+    <nav class="navbar is-black is-fixed-top">
+      <div class="navbar-brand">
+        <a class="navbar-inner p-2" href="#home">
+          <img id="marca" src="/assets/logo-blanco.png" alt="Elegance Studio EC" width="130">
+        </a>
+        <div class="navbar-burger burger" data-target="navMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div id="navMenu" class="navbar-menu">
+        <div class="horizontal-menu navbar-start  is-hidden-desktop"></div>
+        <div class="navbar-end">
+          <div class="navbar-item logout">
+            <a class="button is-danger is-small logout" title="Cerrar sesion de trabajo">
+              <strong>Salir</strong>
+              <span class="icon is-small"><i class="fa-solid fa-right-from-bracket"></i></span>
+            </a>
           </div>
         </div>
-        <footer class="card-footer has-background-grey-lighter p-1">
-          <a href="#" class="card-footer-item"></a>
-          <a href="#" class="card-footer-item"></a>
-          <a href="#" class="card-footer-item"></a>
-          <a href="#edition" class="update card-footer-item button is-small is-link" title="Agregar producto"
-            onblur="document.getElementById('code').focus()">
-            <span>Agregar</span>
-            <span class="icon is-small">
-              <i class="fa-solid fa-plus"></i>
-            </span>
-          </a>
-        </footer>
       </div>
-    </section>
+    </nav>
+  </header>
+  <aside class="vertical-menu is-2 is-fullheight has-background-white-bis is-hidden-touch p-4">
+  </aside>
 
+  <div class="main-content columns is-multiline">
+    <div class="column is-9-desktop is-offset-2-desktop ">
 
-    <section id="edition" class="section is-medium" style="max-width: 1000px !important; margin:auto;">
-      <div class="card is-size-7">
-        <header class="card-header has-background-info">
-          <p class="card-header-title has-text-white is-size-6">
-            <span class="icon-text">
-              <span class="icon">
-                <i class="fa-solid fa-box-open"></i>
-              </span>
-              <span>Producto</span>
-            </span>
-          </p>
-        </header>
-        <form id="registration">
-          <div class="card-content has-background-info-light">
-            <div class="content ">
+      <div class="tabs is-small is-fullwidth p-2 m-0">
+        <ul>
+          <li class="is-active has-text-weight-semibold is-size-5 is-size-6-touch">
+            <span class="icon is-small"><i class="fa-solid fa-dolly"></i></span>
+            <span class="is-hidden-mobile">Catalogo de productos</span>
+            <span class="is-hidden-tablet">Productos</span>
+          </li>
+          <li class="is-hidden-mobile"></li>
+          <li>
+            <a href="#edition" class="add-record has-background-primary has-text-white is-small"
+              title="Agregar producto" onblur="document.getElementById('code').focus()">
+              <span class="icon is-small"><i class="fa-solid fa-plus"></i></span>
+              <span class="is-hidden-mobile">Agregar</span>
+            </a>
+          </li>
+          <li>
+            <a class="export-excel has-background-link has-text-white is-small" title="Exportar informacion a Excel"
+              data-table="tb-products" data-filename="productos">
+              <span class="icon is-small"><i class="fa-solid fa-file-excel"></i></span>
+              <span class="is-hidden-mobile">Excel</span></a>
+          </li>
+          <li class="is-hidden-mobile">
+            <a class="filter-clean has-background-info has-text-white is-small" title="Limpiar filtros">
+              <span class="icon is-small"><i class="fa-solid fa-eraser"></i></span>
+              <span class="has-text-info is-hidden-mobile">.</span></a>
+          </li>
+        </ul>
+      </div>
 
-              <div class="field is-horizontal">
-                <div class="field-label is-normal is-hidden-mobile">
-                  <label class="label">Codigo:</label>
-                </div>
-                <div class="field-body">
-                  <div class="field is-narrow">
-                    <p class="control has-icons-left">
-                      <input type="text" id="code" class="code prop-input input is-small" name="code" maxlength="20"
-                        placeholder="Codigo del producto" title="Codigo del producto" style="width: 10rem"
-                        onkeyup="this.value = this.value.toUpperCase();" required />
-                      <span class="icon is-small is-left">
-                        <i class="fa-solid fa-barcode"></i>
+      <section id="report" class="section is-large px-0 pt-2">
+        <div class="card is-size-7">
+          <div class="card-content has-background-info-light p-2">
+            <div class="content">
+              <form id="filters" class="p-0 m-0">
+                <div class="field is-grouped p-0 m-0" style="width: 100%;">
+                  <p class="control is-size-7 pt-2">
+                    <label class="radio">
+                      <input type="radio" class="prop-input" name="active" value="TODOS">
+                      Todos
+                    </label>
+                    <label class="radio">
+                      <input type="radio" class="prop-input" name="active" value="true" checked>
+                      Activo
+                    </label>
+                    <label class="radio">
+                      <input type="radio" class="prop-input" name="active" value="false">
+                      Inactivo
+                    </label>
+                  </p>
+                  <p class="control select is-small is-hidden-mobile">
+                    <select class="providers prop-input" name="provider" title="Proveedor">
+                      <option value="">Proveedor...</option>
+                    </select>
+                  </p>
+                  <p class="control select is-small is-hidden-mobile">
+                    <select class="categories prop-input" name="category" title="Categoria de producto">
+                      <option value="">Categoria...</option>
+                    </select>
+                  </p>
+                  <p class="control">
+                    <input type="text" id="keyword" class="prop-input input is-small" name="keyword"
+                      placeholder="codigo o descripcion...">
+                  </p>
+                  <p class="buttons">
+                    <button type="submit" class="button is-small is-primary" title="Buscar">
+                      <span class="icon is-small">
+                        <i class="fa-solid fa-magnifying-glass"></i>
                       </span>
-                    </p>
-                  </div>
+                    </button>
+                  </p>
                 </div>
-              </div>
-
-              <div class="field is-horizontal">
-                <div class="field-label is-normal is-hidden-mobile">
-                  <label class="label">Descripcion:</label>
-                </div>
-                <div class="field-body">
-                  <div class="field">
-                    <p class="control has-icons-left">
-                      <input type="text" class="description prop-input input is-small" name="description" maxlength="50"
-                        placeholder="Descricion del producto" title="Descricion del producto" required />
-                      <span class="icon is-small is-left">
-                        <i class="fa-solid fa-info"></i>
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field is-horizontal">
-                <div class="field-label is-normal is-hidden-mobile">
-                  <label class="label">Proveedor:</label>
-                </div>
-                <div class="field-body">
-                  <div class="field is-narrow">
-                    <div class="control">
-                      <div class="select is-small">
-                        <select class="providers-edit prop-input" name="provider" title="Proveedor"
-                          style="min-width: 10rem" required>
-                          <option value="">...</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="field">
-                    <div class="control">
-                      <div class="select is-fullwidth is-small">
-                        <select class="categories-edit prop-input" name="category" title="Categoria" required>
-                          <option value="">Categoria...</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field is-horizontal">
-                <div class="field-label is-normal is-hidden-mobile">
-                  <label class="label">Valor:</label>
-                </div>
-                <div class="field-body">
-                  <div class="field is-narrow">
-                    <p class="control has-icons-left">
-                      <input type="number" class="retail-value prop-input input is-small has-text-right"
-                        name="retailValue" step="0.01" min="1" max="100" placeholder="Valor venta"
-                        title="Valor de venta al por menor" style="width: 10rem" required />
-                      <span class="icon is-small is-left">
-                        <i class="fa-solid fa-dollar-sign"></i>
-                      </span>
-                    </p>
-                  </div>
-                  <div class="field is-narrow">
-                    <p class="control has-icons-left">
-                      <input type="number" class="wholesale-value prop-input input is-small has-text-right"
-                        name="wholesaleValue" step="0.01" min="1" max="100" placeholder="Valor por mayor"
-                        title="Valor de venta al por mayor" style="width: 10rem" />
-                      <span class="icon is-small is-left">
-                        <i class="fa-solid fa-dollar-sign"></i>
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field is-horizontal">
-                <div class="field-label is-normal is-hidden-mobile">
-                  <label class="label">Comision:</label>
-                </div>
-                <div class="field-body">
-                  <div class="field is-narrow">
-                    <p class="control has-icons-left">
-                      <input type="number" class="seller-commission prop-input input is-small has-text-right"
-                        name="sellerCommission" step="0.5" min="0.5" max="60" value="10.0"
-                        placeholder="Comision de vendedor" title="Comision de vendedor" style="width: 10rem" required />
-                      <span class="icon is-small is-left">
-                        <i class="fa-solid fa-percent"></i>
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="field is-horizontal">
-                <div class="field-label is-normal is-hidden-mobile">
-                  <label class="label">Precio compra:</label>
-                </div>
-                <div class="field-body">
-                  <div class="field is-narrow">
-                    <p class="control has-icons-left">
-                      <input type="number" class="purchase-price prop-input input is-small has-text-right"
-                        name="purchasePrice" step="0.01" min="0.00" max="100" placeholder="Precio de compra"
-                        title="Precio de compra referencial" style="width: 10rem" required />
-                      <span class="icon is-small is-left">
-                        <i class="fa-solid fa-dollar-sign"></i>
-                      </span>
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <input type="hidden" class="active-string prop-input" name="activeString" value="true" />
+              </form>
+              <article class="pt-2">
+                <section>
+                  <table class="table is-striped is-narrow is-hoverable is-fullwidth" id="tb-products">
+                    <thead>
+                      <tr>
+                        <th><abbr title="Proveedor">Proveedor</abbr></th>
+                        <th style="max-width:3rem">Categoria</th>
+                        <th>Codigo</th>
+                        <th>Descripcion</th>
+                        <th><abbr title="Valor unitario de compra">Compra</abbr></th>
+                        <th><abbr title="Valor unitario de venta">Venta</abbr></th>
+                        <th><abbr title="Valor unitario de venta al por mayor">Mayor</abbr></th>
+                        <th><abbr title="Porcentaje de comision de vendedor">%</abbr></th>
+                        <th title="Acciones sobre el registro: activar, editar">
+                          <span class="icon ">
+                            <i class="fa-solid fa-gear"></i>
+                          </span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody id="details">
+                      <!-- render details-->
+                    </tbody>
+                  </table>
+                </section>
+              </article>
             </div>
           </div>
-          <footer class="card-footer has-background-info-light p-1">
-            <button type="reset" class="reset card-footer-item button is-danger mr-4"
-              title="Descartar y no guardar los cambios del producto">
-              <span class="is-hidden-mobile">Cancelar</span>
-              <span class="icon is-small">
-                <i class="fa-solid fa-xmark"></i>
-              </span>
-            </button>
-            <button type="submit" class="save card-footer-item button is-primary"
-              title="Guardar informacion del producto">
-              <span class="is-hidden-mobile">Guardar</span>
-              <span class="icon is-small">
-                <i class="fa-solid fa-check"></i>
-              </span>
-            </button>
-          </footer>
-        </form>
-      </div>
-    </section>
+        </div>
+      </section>
 
-  </main>
+      <section id="edition" class="section is-large px-0 pt-2">
+        <div class="card is-size-7">
+          <header class="card-header has-background-info">
+            <p class="card-header-title has-text-white is-size-6">
+              <span class="icon-text">
+                <span class="icon">
+                  <i class="fa-solid fa-box-open"></i>
+                </span>
+                <span>Nuevo producto</span>
+              </span>
+            </p>
+          </header>
+          <form id="registration">
+            <div class="card-content has-background-info-light">
+              <div class="content ">
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal is-hidden-mobile">
+                    <label class="label">Codigo:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-narrow">
+                      <p class="control has-icons-left">
+                        <input type="text" id="code" class="code prop-input input is-small" name="code" maxlength="20"
+                          placeholder="Codigo del producto" title="Codigo del producto" style="width: 10rem"
+                          onkeyup="this.value = this.value.toUpperCase();" required />
+                        <span class="icon is-small is-left">
+                          <i class="fa-solid fa-barcode"></i>
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal is-hidden-mobile">
+                    <label class="label">Descripcion:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field">
+                      <p class="control has-icons-left">
+                        <input type="text" class="description prop-input input is-small" name="description"
+                          maxlength="50" placeholder="Descricion del producto" title="Descricion del producto"
+                          required />
+                        <span class="icon is-small is-left">
+                          <i class="fa-solid fa-info"></i>
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal is-hidden-mobile">
+                    <label class="label">Proveedor:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-narrow">
+                      <div class="control">
+                        <div class="select is-small">
+                          <select class="providers-edit prop-input" name="provider" title="Proveedor"
+                            style="min-width: 10rem" required>
+                            <option value="">...</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="field">
+                      <div class="control">
+                        <div class="select is-fullwidth is-small">
+                          <select class="categories-edit prop-input" name="category" title="Categoria" required>
+                            <option value="">Categoria...</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal is-hidden-mobile">
+                    <label class="label">Valor:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-narrow">
+                      <p class="control has-icons-left">
+                        <input type="number" class="retail-value prop-input input is-small has-text-right"
+                          name="retailValue" step="0.01" min="1" max="100" placeholder="Valor venta"
+                          title="Valor de venta al por menor" style="width: 10rem" required />
+                        <span class="icon is-small is-left">
+                          <i class="fa-solid fa-dollar-sign"></i>
+                        </span>
+                      </p>
+                    </div>
+                    <div class="field is-narrow">
+                      <p class="control has-icons-left">
+                        <input type="number" class="wholesale-value prop-input input is-small has-text-right"
+                          name="wholesaleValue" step="0.01" min="1" max="100" placeholder="Valor por mayor"
+                          title="Valor de venta al por mayor" style="width: 10rem" />
+                        <span class="icon is-small is-left">
+                          <i class="fa-solid fa-dollar-sign"></i>
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal is-hidden-mobile">
+                    <label class="label">Comision:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-narrow">
+                      <p class="control has-icons-left">
+                        <input type="number" class="seller-commission prop-input input is-small has-text-right"
+                          name="sellerCommission" step="0.5" min="0.5" max="60" value="10.0"
+                          placeholder="Comision de vendedor" title="Comision de vendedor" style="width: 10rem"
+                          required />
+                        <span class="icon is-small is-left">
+                          <i class="fa-solid fa-percent"></i>
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="field is-horizontal">
+                  <div class="field-label is-normal is-hidden-mobile">
+                    <label class="label">Precio compra:</label>
+                  </div>
+                  <div class="field-body">
+                    <div class="field is-narrow">
+                      <p class="control has-icons-left">
+                        <input type="number" class="purchase-price prop-input input is-small has-text-right"
+                          name="purchasePrice" step="0.01" min="0.00" max="100" placeholder="Precio de compra"
+                          title="Precio de compra referencial" style="width: 10rem" required />
+                        <span class="icon is-small is-left">
+                          <i class="fa-solid fa-dollar-sign"></i>
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <input type="hidden" class="active-string prop-input" name="activeString" value="true" />
+              </div>
+            </div>
+            <footer class="card-footer has-background-info-light p-1">
+              <button type="reset" class="reset card-footer-item button is-danger mr-4"
+                title="Descartar y no guardar los cambios del producto">
+                <span class="is-hidden-mobile">Cancelar</span>
+                <span class="icon is-small">
+                  <i class="fa-solid fa-xmark"></i>
+                </span>
+              </button>
+              <button type="submit" class="save card-footer-item button is-primary"
+                title="Guardar informacion del producto">
+                <span class="is-hidden-mobile">Guardar</span>
+                <span class="icon is-small">
+                  <i class="fa-solid fa-check"></i>
+                </span>
+              </button>
+            </footer>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </div>
 
   <template id="row">
     <tr>
@@ -341,6 +360,7 @@
 
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/dom/init.js" type="module"></script>
   <script src="./js/f_catalogs/manager_catalog_product.js" type="module"></script>
 </body>
 

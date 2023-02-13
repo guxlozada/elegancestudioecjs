@@ -1,8 +1,5 @@
 import { ahoraEC, calculatePeriod, dateTimeToInputMonthString, dateTimeToLocalString, hoyEC } from "../util/fecha-util.js";
-import validAdminAccess from "../dom/manager_user.js";
-import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
-import { findExpensesReport } from "../f_expenses/dao_cash_outflows.js";
 import convertFormToObject from "../util/form_util.js";
 import { findSalesReport } from "./dao_selller_sales.js";
 import { roundTwo } from "../util/numbers-util.js";
@@ -21,9 +18,6 @@ w.addEventListener("load", () => {
   d.getElementById("period-month").value = dateTimeToInputMonthString(ahoraEC())
   search()
 })
-
-// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
 d.addEventListener("submit", e => {
@@ -55,8 +49,6 @@ d.getElementById("filters").addEventListener("change", e => {
 //------------------------------------------------------------------------------------------------
 
 function search() {
-  // Validar acceso de administrador
-  if (!validAdminAccess()) return
 
   let filters = convertFormToObject($form)
 

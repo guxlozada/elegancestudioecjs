@@ -1,5 +1,4 @@
 import { compareTruncDay, dateIsValid, hoyEC, inputDateToDateTime, localStringToDateTime } from "../util/fecha-util.js";
-import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { roundFour, roundTwo } from "../util/numbers-util.js";
 import { deleteSaleByUid } from "../f_sales/dao_selller_sales.js";
@@ -7,7 +6,7 @@ import { deleteExpenseByUid } from "../f_expenses/dao_cash_outflows.js";
 import { deleteDepositByUid } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
 import validAdminAccess, { isAdmin } from "../dom/manager_user.js";
-import { addMinMaxPropsWithCashOutflowDates, inyectDailyData, updateDailyData } from "../util/daily-data-cache.js";
+import { updateDailyData } from "../util/daily-data-cache.js";
 import { findSalesExpensesBankTxsByDay, inyectBeforeAfterDailyCashClosing, insertDailyClosing, deleteDailyClosing } from "./dao_seller_daily_closing.js";
 
 const d = document,
@@ -41,13 +40,9 @@ let dailyClosing
 
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
 w.addEventListener("load", () => {
-  inyectDailyData()
   enabledChangeDate()
   changeDailyClosing(hoyEC())
 })
-
-// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => { navbarBurgers() })
 
 // EVENTO=change RAIZ=document ACCION=cambio de fecha de operacion, y responsable de cierre de caja
 d.addEventListener("click", e => {
@@ -202,7 +197,7 @@ function renderSummary(salesData, deletedEnabled) {
       $saleRow.querySelector(".index").innerText = index + 1
       $saleRow.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
       $saleRow.querySelector(".seller").innerText = sale.seller
-      $saleRow.querySelector(".payment").innerText = sale.typePayment.toLowerCase().slice(0,8)
+      $saleRow.querySelector(".payment").innerText = sale.typePayment.toLowerCase().slice(0, 8)
       $saleRow.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
       $saleRow.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
       if (sale.tmpTipByBank > 0) $saleRow.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank.toFixed(2)
@@ -294,7 +289,7 @@ function renderSummaryBySeller(salesData) {
     $rowTmp.querySelector(".index").innerText = index
     $rowTmp.querySelector(".time").innerText = sale.searchDateTime.slice(-8)
     $rowTmp.querySelector(".seller").innerText = sale.seller
-    $rowTmp.querySelector(".customer").innerText = sale.clientId==="9999999999999"? "Cons Final": sale.clientId
+    $rowTmp.querySelector(".customer").innerText = sale.clientId === "9999999999999" ? "Cons Final" : sale.clientId
     $rowTmp.querySelector(".taxable-income").innerText = vnTaxableIncome.toFixed(2)
     $rowTmp.querySelector(".taxes").innerText = vnTaxes.toFixed(2)
     if (sale.tmpTipByBank > 0) $rowTmp.querySelector(".tips-by-bank").innerText = sale.tmpTipByBank.toFixed(2)

@@ -1,5 +1,4 @@
-import validAdminAccess from "../dom/manager_user.js"
-import navbarBurgers from "../dom/navbar_burgers.js"
+import { isAdmin } from "../dom/manager_user.js"
 import NotificationBulma from "../dom/NotificacionBulma.js"
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js"
 import { hoyEC } from "../util/fecha-util.js"
@@ -13,8 +12,6 @@ const d = document,
 // ------------------------------------------------------------------------------------------------
 // Delegation of events
 // ------------------------------------------------------------------------------------------------
-// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 
 // EVENTO=load RAIZ=window ACCION= Terminar de cargar la ventana
 w.addEventListener("load", () => {
@@ -22,9 +19,7 @@ w.addEventListener("load", () => {
     $el.valueAsDate = hoyEC().toJSDate()
   })
 
-  if (d.getElementById("form-bank-tx") && validAdminAccess()) {
-    d.querySelector(".save-bank-tx").removeAttribute("disabled")
-  } else {
+  if (!isAdmin()) {
     addMinMaxPropsWithCashOutflowDates(".transaction-date")
   }
 
@@ -65,17 +60,6 @@ d.addEventListener("submit", e => {
         ntf.error("Informacion requerida", "Ingrese el numero de venta relacionado o describa brevemente el motivo de la transferencia en el campo detalles")
       }
       break
-    case "form-bank-tx":
-      if (!bankTx.responsable) {
-        ntf.error("Informacion requerida", "Seleccione el responsable")
-      } else if (bankTx.type === "DEBITO_TRANSFERENCIA" && !bankTx.rubro) {
-        ntf.error("Informacion requerida", "Seleccione un rubro que respalde el debito bancario")
-      } else if (bankTx.type !== "DEBITO_TRANSFERENCIA" && bankTx.type !== "TRANSFERENCIA" && bankTx.rubro) {
-        ntf.error("Informacion con error", "Solo debe seleccionar el rubro para transferencias bancarios. Para continuar elimine el rubro seleccionado.")
-      } else if (!bankTx.rubro && !bankTx.details && !bankTx.voucher) {
-        ntf.error("Informacion requerida", "Ingrese el numero de comprobante o describa brevemente el motivo de la transaccion bancaria en el campo detalles")
-      }
-      break
   }
 
   if (ntf.enabled) return
@@ -88,6 +72,5 @@ d.addEventListener("submit", e => {
     (error) => ntf.errorAndLog("Transaccion bancaria NO registrada", error),
     (msjError) => { ntf.error("Transaccion bancaria NO registrada", msjError, 10000) }
   )
-
 
 })

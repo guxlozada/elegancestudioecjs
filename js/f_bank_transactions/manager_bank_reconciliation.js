@@ -1,6 +1,4 @@
 import { calculatePeriod, dateTimeToLocalString, hoyEC } from "../util/fecha-util.js";
-import validAdminAccess from "../dom/manager_user.js";
-import navbarBurgers from "../dom/navbar_burgers.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { findBankTxs, updateBankTxVerified } from "./dao_banking_transactions.js";
 import { roundFour, roundTwo } from "../util/numbers-util.js";
@@ -28,8 +26,6 @@ w.addEventListener("load", () => search())
 // EVENTO=unload RAIZ=window 
 w.addEventListener("unload", () => tmpDataCleaning())
 
-// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => navbarBurgers())
 
 // EVENTO=reset RAIZ=form#filters ACCION=Realizar busqueda
 d.querySelector(".clean").addEventListener("click", () => {
@@ -143,9 +139,6 @@ function search() {
   // Borrar la conciliacion mensual previamente generada
   localStorage.removeItem(localdb.tmpBankReconciliation)
 
-  // Validar acceso de administrador
-  if (!validAdminAccess()) return
-
   let filters = convertFormToObject($form)
 
   // Se ha seleccionado al menos una fecha
@@ -245,12 +238,12 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
     vnBankBalance += vnVerifiedTxValue
 
     $rowTmp.querySelector(".date").innerText = tx.searchDateTime.slice(0, -10)
-    $rowTmp.querySelector(".responsable").innerText = tx.responsable.replace("ADM_","").slice(0, 5)
+    $rowTmp.querySelector(".responsable").innerText = tx.responsable.replace("ADM_", "").slice(0, 5)
     $rowTmp.querySelector(".bank").innerText = tx.bank
     let $typeAndVoucher = $rowTmp.querySelector(".type-payment"),
       docRelacionado = tx.saleUid ? "Vta:" + tx.saleUid : (tx.rubro ? "Rub:" + tx.rubro : (tx.voucher ? "Comp:" + tx.voucher : ""))
 
-    $typeAndVoucher.innerText = tx.type + (docRelacionado ? " [" + docRelacionado + "] " : " ")  
+    $typeAndVoucher.innerText = tx.type + (docRelacionado ? " [" + docRelacionado + "] " : " ")
     $typeAndVoucher.title = tx.details || "Sin detalles"
     if (tx.saleUid && tx.saleValue) $rowTmp.querySelector(".sale-value").innerText = tx.saleValue.toFixed(2)
 

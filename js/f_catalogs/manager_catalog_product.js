@@ -1,5 +1,3 @@
-import validAdminAccess from "../dom/manager_user.js"
-import navbarBurgers from "../dom/navbar_burgers.js"
 import NotificationBulma from '../dom/NotificacionBulma.js'
 import convertFormToObject from "../util/form_util.js"
 import { findCatalogKeyValue, updateActive } from "./dao_catalog.js"
@@ -22,13 +20,10 @@ const d = document,
 // EVENTO=load RAIZ=window 
 w.addEventListener("load", () => filtersInit())
 
-// EVENTO=DOMContentLoaded RAIZ=document ACCION: Termina de cargar el DOM
-d.addEventListener("DOMContentLoaded", () => navbarBurgers())
-
-// EVENTO=reset RAIZ=form#filters ACCION=Realizar busqueda
-d.querySelector("#filters").addEventListener("click", e => {
+// EVENTO=reset RAIZ=tabs ACCION=Operaciones de la funcionalidad
+d.querySelector(".tabs").addEventListener("click", e => {
   const $el = e.target
-  if ($el.matches(".clean") || $el.closest(".clean")) {
+  if ($el.matches(".filter-clean") || $el.closest(".filter-clean")) {
     $filtersForm.reset()
     search()
   }
@@ -105,9 +100,6 @@ function filtersInit() {
 }
 
 function search() {
-  // Validar acceso de administrador
-  if (!validAdminAccess()) return
-
   let filters = convertFormToObject($filtersForm)
   if (filters.keyword) filters.keyword.trim()
   // Ejecutar consulta de informacion
@@ -143,9 +135,6 @@ function renderCatalog(vaRecords) {
 }
 
 function saveForm() {
-  // Validar acceso de administrador
-  if (!validAdminAccess()) return
-
   let registration = convertFormToObject($registerForm)
   // Asignar 'active' desde input type=hidden
   registration.active = registration.activeString === "true"

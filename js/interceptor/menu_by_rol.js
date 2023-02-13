@@ -6,7 +6,7 @@ export const NAV_BARBERSHOP = `
         onblur="document.querySelector('.client-search-text').focus()">
         <span class="icon"><i class="fa-solid fa-user-friends"></i></span>&nbsp;Clientes
       </a>
-      <a class="navbar-item" href="sales.html?#sales">
+      <a class="navbar-item" href="sales.html">
         <span class="icon"><i class="fa-solid fa-cash-register"></i></span>&nbsp;Ventas
       </a>
       <a class="navbar-item" href="expenses.html" title="Egresos de caja en la barberia">
@@ -31,7 +31,7 @@ export const ASIDE_BARBERSHOP = `
       </a>
     </li>
     <li>
-      <a class="navbar-item " href="sales.html?#sales">
+      <a class="navbar-item " href="sales.html">
         <span class="icon"><i class="fa-solid fa-cash-register"></i></span> Ventas
       </a>
     </li>

@@ -5,6 +5,10 @@ body {
   font-size: 11px;
 }
 
+/************************************/
+/***** VERIFICAR USO Y ELIMINAR *****/
+/************************************/
+
 /***** Notificaciones - Inicio - BulmaNotification.js *****/
 .note {
   visibility: hidden;

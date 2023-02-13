@@ -6,7 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Transaccion bancaria</title>
   <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
-  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/backoffice_main.css" />
+  <link rel="stylesheet" href="/css/backoffice_menu.css" />
+  <link rel="stylesheet" href="/css/backoffice_report.css" />
   <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
   <style>
     @media screen and (max-width: 768px) {
@@ -26,20 +28,54 @@
 
 <body>
   <header>
-    <iframe src="./templates/navbar.html"
-      onload="this.before((this.contentDocument.body||this.contentDocument).children[0]);this.remove()"></iframe>
+    <nav class="navbar is-black is-fixed-top">
+      <div class="navbar-brand">
+        <a class="navbar-inner p-2" href="#home">
+          <img id="marca" src="/assets/logo-blanco.png" alt="Elegance Studio EC" width="130">
+        </a>
+        <div class="navbar-burger burger" data-target="navMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div id="navMenu" class="navbar-menu">
+        <div class="horizontal-menu navbar-start  is-hidden-desktop"></div>
+        <div class="navbar-end">
+          <div class="navbar-item logout">
+            <a class="button is-danger is-small logout" title="Cerrar sesion de trabajo">
+              <strong>Salir</strong>
+              <span class="icon is-small"><i class="fa-solid fa-right-from-bracket"></i></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
   </header>
-  <main>
+  <aside class="vertical-menu is-2 is-fullheight has-background-white-bis is-hidden-touch p-4">
+  </aside>
 
-    <section id="transactions" class="section" style="max-width: 800px !important; margin:auto;">
-      <div class="card is-size-7">
-        <header class="card-header has-background-info">
+  <div class="main-content columns is-multiline">
+    <div class="column column is-10-tablet is-8-desktop is-7-widescreen is-offset-1-tablet is-offset-2-desktop">
+
+      <div class="tabs is-small is-fullwidth p-2 m-0 is-hidden-mobile">
+        <ul>
+          <li class="is-active has-text-weight-semibold is-size-5 is-size-6-touch">
+            <span class="icon is-small"><i class="fa-solid fa-money-bill-wave"></i></span>
+            <span>Transaccion bancaria</span>
+          </li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+        </ul>
+      </div>
+
+      <div class="card p-0 pt-2 is-size-7">
+        <header class="card-header has-background-info-dark">
           <p class="card-header-title has-text-white is-size-6">
             <span class="icon-text">
-              <span class="icon">
-                <i class="fa-solid fa-money-bill-transfer"></i>
-              </span>
-              <span>Registro de transaccion bancaria</span>
+              <span>Nueva transaccion</span>
             </span>
           </p>
         </header>
@@ -135,24 +171,25 @@
               <p class="control has-icons-left">
               <div class="select is-small">
                 <select class="prop-input" name="rubro">
-                  <option value="">Rubro de Pago...</option>
+                  <option value="">Seleccione rubro de pago...</option>
+                  <option value="COMISION_BARBERO">Pago de comisiones barbero</option>
+                  <option value="TRANSFERENCIA_FONDO">Transferencia con Fondo de inversión</option>
+                  <option value="MANTENIMIENTO_CTA">Mantenimiento cta bancaria</option>
+                  <option value="TRANSFERENCIA_CTAS">Transferencia entre ctas bancarias</option>
                   <option value="ARRIENDO">Arriendo</option>
                   <option value="ALICUOTA">Alicuota</option>
                   <option value="AGUA">Agua</option>
                   <option value="LUZ">Luz</option>
-                  <option value="COMISION_BARBERO">Pago de comisiones barbero</option>
                   <option value="FACTURA_ELEGANCE">Factura de Elegance</option>
                   <option value="FACTURA_PRODUCTO">Factura de productos</option>
                   <option value="MANTENIMIENTO_LOCAL">Mantenimientos local</option>
-                  <option value="MANTENIMIENTO_CTA">Mantenimiento cta bancaria</option>
-                  <option value="TRANSFERENCIA_CTAS">Transferencia entre ctas bancarias</option>
                   <option value="DIVIDENDO">Dividendo socio</option>
                   <option value="INTERNET">Internet</option>
                   <option value="OTRO">Otro no especificado</option>
                 </select>
                 <!--span class="icon is-small is-left">
-                  <i class="fa-sharp fa-solid fa-cash-register"></i>
-                </span-->
+                      <i class="fa-sharp fa-solid fa-cash-register"></i>
+                    </span-->
               </div>
               </p>
             </div>
@@ -180,15 +217,15 @@
               </button>
             </div>
           </footer>
+        </form>
       </div>
-      </form>
-      </div>
-    </section>
+    </div>
+  </div>
 
-  </main>
 
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/dom/init.js" type="module"></script>
   <script src="./js/f_bank_transactions/manager-transactions.js" type="module"></script>
 </body>
 

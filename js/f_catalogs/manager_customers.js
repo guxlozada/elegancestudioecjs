@@ -1,5 +1,4 @@
 import { DateTime } from "../luxon.min.js"
-import validAdminAccess from "../dom/manager_user.js"
 import NotificationBulma from '../dom/NotificacionBulma.js'
 import convertFormToObject from "../util/form_util.js"
 import { collections } from "../persist/firebase_collections.js"
@@ -57,8 +56,6 @@ d.getElementById("details").addEventListener("click", e => {
 })
 
 function search() {
-  // Validar acceso de administrador
-  if (!validAdminAccess()) return
 
   let filters = convertFormToObject($filters)
   if (filters.keyword) filters.keyword.trim()

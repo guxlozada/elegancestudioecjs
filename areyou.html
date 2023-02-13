@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Control de acceso</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/backoffice_main.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    .radios input[type=radio] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* IMAGE STYLES */
+    .radios input[type=radio]+figure {
+      cursor: pointer;
+      opacity: 0.5;
+      border: 4px solid transparent;
+    }
+
+    /* CHECKED STYLES */
+    .radios input[type=radio]:checked+figure {
+      opacity: 1;
+      border: 4px solid #2cccc4;
+      transition: all 0.2s;
+      -webkit-transition: all 0.2s;
+    }
+  </style>
+</head>
+
+<body class="login">
+  <header>
+    <nav class="navbar is-black is-fixed-top">
+      <div class="navbar-brand">
+        <a class="navbar-inner p-2" href="#home">
+          <img src="/assets/logo-blanco.png" alt="Elegance Studio EC" width="130">
+        </a>
+      </div>
+    </nav>
+  </header>
+  <section class="hero is-black is-fullheight">
+    <h2 class="subtitle">
+      Control de acceso
+    </h2>
+    <div class="hero-body ">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-two-thirds-tablet is-half-desktop is-one-thrid-fullhd">
+            <form class="areyou box">
+              <div class="field">
+                <label for="" class="label">Control de acceso</label>
+                <div class="control radios is-flex is-justify-content-space-evenly">
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="rol" value="barber" checked>
+                    <figure class="image">
+                      <img src="/assets/are_you/barber.png" alt="Barbero">
+                    </figure>
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="rol" value="admin">
+                    <figure class="image">
+                      <img src="/assets/are_you/contador.png" alt="Administrador">
+                    </figure>
+                  </label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="password" class="label">Clave</label>
+                <div class="control has-icons-left">
+                  <input type="password" id="password" name="password" placeholder="*******" class="prop-input input"
+                    required>
+                  <span class="icon is-small is-left">
+                    <i class="fa fa-lock"></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field is-grouped is-grouped-centered">
+                <p class="control">
+                  <button type="submit" class="button is-primary">
+                    Continuar
+                  </button>
+                </p>
+                <p class="control">
+                  <a href="main.html" class="button is-info is-outlined">
+                    <span>Cancelar</span>
+                  </a>
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/dom/are_you.js" type="module"></script>
+</body>
+
+</html>

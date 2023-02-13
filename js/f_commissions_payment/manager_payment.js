@@ -1,5 +1,4 @@
 import { calculatePeriod, dateTimeToPageDateString, hoyEC } from "../util/fecha-util.js";
-import validAdminAccess from "../dom/manager_user.js";
 import NotificationBulma from '../dom/NotificacionBulma.js';
 import { roundFour, roundTwo } from "../util/numbers-util.js";
 import convertFormToObject from "../util/form_util.js";
@@ -69,8 +68,6 @@ d.getElementById("filters").addEventListener("change", e => {
 //------------------------------------------------------------------------------------------------
 
 function search() {
-  // Validar acceso de administrador
-  if (!validAdminAccess()) return
 
   let filters = convertFormToObject($filters)
 

@@ -30,6 +30,7 @@ const d = document,
     seller: null,
     typePayment: "EFECTIVO",//[EFECTIVO,TCREDITO,TDEBITO, TRANSFERENCIA]
     type: "CLIENTE",//[CLIENTE, PORMAYOR]
+    ticket: null,
     items: [],
     taxableIncome: 0,
     discounts: 0,
@@ -198,6 +199,7 @@ function renderSaleHeader() {
   }
   d.getElementById("sale-client-referrals").innerText = cli.referrals
   d.querySelector(".sale-date-input").valueAsDate = hoyEC().toJSDate()
+  d.querySelector(".ticket-input").value = sale.ticket
   // Control de fechas minimo y maximo para ing/egr caja
   addMinMaxPropsWithCashOutflowDates(".sale-date-input")
   d.getElementsByName("seller").forEach($el => $el.checked = $el.value === sale.seller)
@@ -621,6 +623,8 @@ d.getElementById("sales").addEventListener("change", e => {
     // Cambio valor de propina bancaria
     sale.tipByBank = $input.valueAsNumber || 0
     sale.update = true
+  } else if ($input.name === "ticket") {
+    sale.ticket = $input.value
   }
   localStorage.setItem(localdb.sale, JSON.stringify(sale))
 })

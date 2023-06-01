@@ -6,7 +6,7 @@ import { deleteExpenseByUid } from "../f_expenses/dao_cash_outflows.js";
 import { deleteDepositByUid } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
 import { getShop, isAdmin } from "../dom/manager_user.js";
-import { updateDailyData } from "../util/daily-data-cache.js";
+import { addMinMaxPropsWithCashOutflowDates, updateDailyData } from "../util/daily-data-cache.js";
 import { findSalesExpensesBankTxsByDay, inyectBeforeAfterDailyCashClosing, insertDailyClosing, deleteDailyClosing } from "./dao_seller_daily_closing.js";
 import { addOperators } from "../dom/manager_operators.js";
 
@@ -44,6 +44,9 @@ let dailyClosing
 w.addEventListener("load", () => {
   enabledChangeDate()
   changeDailyClosing(hoyEC())
+  if (!isAdmin()) {
+    addMinMaxPropsWithCashOutflowDates(".summary-day")
+  }
 })
 
 // EVENTO=DOMContentLoaded RAIZ=document 

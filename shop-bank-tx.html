@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Transaccion bancaria</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/backoffice_main.css" />
+  <link rel="stylesheet" href="/css/backoffice_menu.css" />
+  <link rel="stylesheet" href="/css/backoffice_report.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    @media screen and (max-width: 768px) {
+      ::placeholder {
+        color: #47b6af !important;
+      }
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      max-width: 220px !important;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar is-black is-fixed-top">
+      <div class="navbar-brand">
+        <a class="navbar-inner p-2" href="#home">
+          <img id="marca" src="/assets/logo-blanco.png" alt="Elegance Studio EC" width="130">
+        </a>
+        <span class="navbar-item icon-text is-small">
+          <span class="icon">
+            <i class="fa-solid fa-location-dot"></i>
+          </span>
+          <span id="shop-location"></span>
+        </span>
+        <div class="navbar-burger burger" data-target="navMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div id="navMenu" class="navbar-menu">
+        <div class="horizontal-menu navbar-start  is-hidden-desktop"></div>
+        <div class="navbar-end">
+          <div class="navbar-item logout">
+            <a class="button is-danger is-small logout" title="Cerrar sesion de trabajo">
+              <strong>Salir</strong>
+              <span class="icon is-small"><i class="fa-solid fa-right-from-bracket"></i></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <aside class="vertical-menu is-2 is-fullheight has-background-white-bis is-hidden-touch p-4">
+  </aside>
+
+  <div class="main-content columns is-multiline">
+    <div class="column column is-10-tablet is-8-desktop is-7-widescreen is-offset-1-tablet is-offset-2-desktop">
+
+      <div class="tabs is-small is-fullwidth p-2 m-0 is-hidden-mobile">
+        <ul>
+          <li class="is-active has-text-weight-semibold is-size-5 is-size-6-touch">
+            <span class="icon is-small"><i class="fa-solid fa-money-bill-wave"></i></span>
+            <span>Transaccion bancaria</span>
+          </li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+        </ul>
+      </div>
+
+      <div class="card p-0 pt-2 is-size-7">
+        <header class="card-header has-background-info-dark">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span>Nueva transaccion</span>
+            </span>
+          </p>
+        </header>
+        <form id="form-bank-tx">
+          <div class="card-content has-background-info-light">
+            <div class="content px-7">
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Fecha</label>
+                <p class="control has-icons-left">
+                  <input type="date" class="transaction-date prop-input input is-small" name="date"
+                    data-type="timestamp" required />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-calendar-days"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Tipo de transaccion</label>
+                <div class="control is-size-7">
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="type" value="DEPOSITO" checked>
+                    Depósito
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="type" value="TRANSFERENCIA">
+                    Transferencia (Credito)
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="type" value="DEBITO_TRANSFERENCIA">
+                    Transferencia (Debito)
+                  </label>
+                </div>
+              </div>
+              <label class="label is-small is-hidden-mobile is-inline">Banco</label>
+              <div class="control is-size-7">
+                <label class="radio">
+                  <input type="radio" class="prop-input" name="bank" value="PICH" autofocus>
+                  Pichincha
+                </label>
+                <label class="radio">
+                  <input type="radio" class="prop-input" name="bank" value="PROD">
+                  Produbanco
+                </label>
+                <label class="radio">
+                  <input type="radio" class="prop-input" name="bank" value="FREPO">
+                  Fondo Repo
+                </label>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label is-small is-hidden-mobile is-inline">Responsable</label>
+              <div class="responsables-container control is-size-7">
+                <!-- render responsables -->
+              </div>
+            </div>
+            <div class="field">
+              <label class="label is-small is-hidden-mobile is-inline">Valor</label>
+              <p class="control has-icons-left">
+                <input type="number" class="prop-input input is-small" name="value" step="0.01" min="0"
+                  placeholder="00.00" required />
+                <span class="icon is-small is-left">
+                  <i class="fa-solid fa-money-check-dollar"></i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <label class="label is-small is-hidden-mobile is-inline">Nro.Comprobante</label>
+              <p class="control has-icons-left">
+                <input type="text" class="prop-input input is-small" name="voucher"
+                  placeholder="# Comprobante o Factura..." />
+                <span class="icon is-small is-left">
+                  <i class="fa-solid fa-receipt"></i>
+                </span>
+              </p>
+            </div>
+            <div class="field">
+              <label class="label is-small is-hidden-mobile is-inline">Rubro de pago (Solo debitos)</label>
+              <p class="control has-icons-left">
+              <div class="select is-small">
+                <select class="prop-input" name="rubro">
+                  <option value="">Seleccione rubro de pago...</option>
+                  <option value="COMISION_BARBERO">Pago de comisiones barbero</option>
+                  <option value="TRANSFERENCIA_FONDO">Transferencia con Fondo de inversión</option>
+                  <option value="MANTENIMIENTO_CTA">Mantenimiento cta bancaria</option>
+                  <option value="TRANSFERENCIA_CTAS">Transferencia entre ctas bancarias</option>
+                  <option value="ARRIENDO">Arriendo</option>
+                  <option value="ALICUOTA">Alicuota</option>
+                  <option value="AGUA">Agua</option>
+                  <option value="LUZ">Luz</option>
+                  <option value="INTERNET">Internet</option>
+                  <option value="PRESTAMO_BARBERIA_PONCEANO">Prestamo barbería ponceano</option>
+                  <option value="PRESTAMO_BARBERIA_GRANADOS">Prestamo barbería granados</option>
+                  <option value="INTERNET">Internet</option>
+                  <option value="FACTURA_ELEGANCE">Factura de Elegance</option>
+                  <option value="FACTURA_PRODUCTO">Factura de productos</option>
+                  <option value="MANTENIMIENTO_LOCAL">Mantenimientos local</option>
+                  <option value="DIVIDENDO">Dividendo socio</option>
+                  <option value="OTRO">Otro no especificado</option>
+                </select>
+                <!--span class="icon is-small is-left">
+                      <i class="fa-sharp fa-solid fa-cash-register"></i>
+                    </span-->
+              </div>
+              </p>
+            </div>
+            <div class="field">
+              <label class="label is-small is-hidden-mobile is-inline">Detalles</label>
+              <div class="control">
+                <textarea class="prop-input textarea is-small" name="details" rows="2"
+                  placeholder="Breve detalle del egreso..."></textarea>
+              </div>
+            </div>
+          </div>
+          <footer class="card-footer">
+            <div class="buttons is-right" style="width: 100%;">
+              <button type="submit" class="save-bank-tx card-footer-item button is-primary">
+                <span class="icon">
+                  <i class="fa-solid fa-check"></i>
+                </span>
+                <span>Guardar</span>
+              </button>
+              <button type="reset" class="card-footer-item button is-danger">
+                <span class="icon">
+                  <i class="fa-solid fa-xmark"></i>
+                </span>
+                <span>Cancelar</span>
+              </button>
+            </div>
+          </footer>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <template id="operator-template">
+    <label class="radio">
+      <input type="radio" class="operator-code prop-input" name="responsable" value="NORESPONSABLE">
+      <span class="operator-alias">NORESPONSABLE</span>
+    </label>
+  </template>
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/dom/init.js" type="module"></script>
+  <script src="./js/f_bank_transactions/manager_shop_bank_tx.js" type="module"></script>
+</body>
+
+</html>

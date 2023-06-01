@@ -1,4 +1,5 @@
 
+import { getShop } from "../dom/manager_user.js";
 import { collections } from "../persist/firebase_collections.js";
 import { db, dbRef } from "../persist/firebase_conexion.js";
 import { IVA } from "../repo-browser.js";
@@ -43,6 +44,7 @@ export function insertService(voService, callback, callbackError) {
     retentionIVA: true,
     type: "S",
     promo: { cash: 12, discountDay: 0 },
+    shop: getShop().code,
     ...voService
   }
 

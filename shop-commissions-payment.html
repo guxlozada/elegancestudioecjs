@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pago de comisiones</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/backoffice_main.css" />
+  <link rel="stylesheet" href="/css/backoffice_menu.css" />
+  <link rel="stylesheet" href="/css/backoffice_report.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    .report {
+      height: 55vh;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar is-black is-fixed-top">
+      <div class="navbar-brand">
+        <a class="navbar-inner p-2" href="#home">
+          <img id="marca" src="/assets/logo-blanco.png" alt="Elegance Studio EC" width="130">
+        </a>
+        <span class="navbar-item icon-text is-small">
+          <span class="icon">
+            <i class="fa-solid fa-location-dot"></i>
+          </span>
+          <span id="shop-location"></span>
+        </span>
+        <div class="navbar-burger burger" data-target="navMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div id="navMenu" class="navbar-menu">
+        <div class="horizontal-menu navbar-start  is-hidden-desktop"></div>
+        <div class="navbar-end">
+          <div class="navbar-item logout">
+            <a class="button is-danger is-small logout" title="Cerrar sesion de trabajo">
+              <strong>Salir</strong>
+              <span class="icon is-small"><i class="fa-solid fa-right-from-bracket"></i></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <aside class="vertical-menu is-2 is-fullheight has-background-white-bis is-hidden-touch p-4">
+  </aside>
+
+  <div class="main-content columns is-multiline">
+    <div class="column is-9-desktop is-offset-2-desktop ">
+      <div class="tabs is-small is-fullwidth p-2 mb-0">
+        <ul>
+          <li class="is-active has-text-weight-semibold is-size-5 is-size-6-touch">
+            <span class="icon is-small"><i class="fa-solid fa-hand-holding-dollar"></i></span>
+            <span class="is-hidden-mobile">Pago de comisiones</span>
+            <span class="is-hidden-tablet">Comisiones</span>
+          </li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+          <li>
+            <a class="export-excel has-background-link has-text-white is-small" title="Exportar informacion a Excel"
+              data-table="tb-principal" data-filename="pago_comisiones">
+              <span class="icon is-small"><i class="fa-solid fa-file-excel"></i></span>
+              <span class="is-hidden-mobile">Excel</span></a>
+          </li>
+          <li class="is-hidden-mobile">
+            <a class="filter-clean has-background-info has-text-white is-small" title="Limpiar filtros">
+              <span class="icon is-small"><i class="fa-solid fa-eraser"></i></span>
+              <span class="has-text-info is-hidden-mobile">.</span></a></a>
+          </li>
+        </ul>
+      </div>
+      <nav class="level is-hidden-mobile">
+        <div class="level-item has-text-centered has-background-warning-light">
+          <div>
+            <p class="heading">Ventas bruto</p>
+            <p class="subtitle search-sales">3,456</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered has-background-link-light">
+          <div>
+            <p class="heading">Comisiones</p>
+            <p class="subtitle search-barber-commissions-tmp">123</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered has-background-primary-light">
+          <div>
+            <p class="heading">Ventas neto</p>
+            <p class="subtitle search-sales-result">456K</p>
+          </div>
+        </div>
+      </nav>
+
+      <section id="report" class="section p-2">
+        <form id="filters" class="has-background-white-ter p-2">
+          <div class="field is-horizontal">
+            <div class="field-body">
+              <div class="field">
+                <p class="sellers-container control is-size-7">
+                  <!-- importante se requiere incluir la opcion 'TODOS'-->
+                  <!-- render sellers -->
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="field is-horizontal">
+            <div class="field-body">
+              <div class="field">
+                <p class="control is-size-7">
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="period" value="LASTWEEK">
+                    Semana anterior
+                  </label>
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="period" value="CURRENTWEEK" checked>
+                    Semana actual
+                  </label>
+                </p>
+              </div>
+              <div class="field">
+                <p class="control">
+                  <input type="month" class="prop-input input is-small" id="period-month" name="periodMonth"
+                    min="2022-08" data-type="datetime" style="max-width: 9rem" />
+                </p>
+              </div>
+              <div class="field is-grouped is-grouped-right">
+                <p class="control is-expanded">
+                  <input type="date" class="prop-input input is-small" id="period-start" name="periodStart"
+                    data-type="datetime" required />
+                </p>
+                <p class="control is-expanded">
+                  <input type="date" class="prop-input input is-small" id="period-end" name="periodEnd"
+                    data-type="datetime" />
+                </p>
+                <p class="control">
+                  <button type="submit" class="button is-small is-primary " title="Buscar">
+                    <span class="icon is-small">
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <span class="is-hidden-mobile">Buscar</span>
+                  </button>
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </form>
+        <div class="report card ">
+          <div class="report-content card-content p-0">
+            <table class="table is-striped is-narrow is-hoverable is-fullwidth" id="tb-principal">
+              <thead>
+                <tr>
+                  <th class="is-hidden-mobile">#</th>
+                  <th>Fecha-hora</th>
+                  <th>
+                    <abbr title="Forma de pago" class="is-hidden-tablet">Pago</abbr>
+                    <span class="is-hidden-mobile">Forma pago</span>
+                  </th>
+                  <th>
+                    <abbr title="Ventas" class="is-hidden-tablet">Vts</abbr>
+                    <span class="is-hidden-mobile">Ventas</span>
+                  </th>
+                  <th>
+                    <abbr title="Impuestos" class="is-hidden-tablet">Imp</abbr>
+                    <span class="is-hidden-mobile">Impuestos</span>
+                  </th>
+                  <th>
+                    <abbr title="Base Imponible para impuestos" class="is-hidden-tablet">Base</abbr>
+                    <span class="is-hidden-mobile">Base Imponible</span>
+                  </th>
+                  <th>
+                    <abbr title="Comision sobre valor de venta bruto" class="is-hidden-tablet">%</abbr>
+                    <span class="is-hidden-mobile">Comision</span>
+                  </th>
+                  <th>
+                    <abbr title="Propina por pagar" class="is-hidden-tablet">Pr</abbr>
+                    <span class="is-hidden-mobile">Propina</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="payments-details">
+                <!-- render summary-->
+              </tbody>
+              <tfoot>
+                <th class="is-hidden-mobile"></th>
+                <th class="search-period has-text-centered" colspan="7"></th>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+  <template id="operator-template">
+    <label class="radio">
+      <input type="radio" class="operator-code prop-input" name="seller" value="NOOPERATOR">
+      <span class="operator-alias">NOOPERATOR</span>
+    </label>
+  </template>
+
+  <template id="sale-row-header">
+    <tr class="has-background-grey-dark has-text-weight-semibold">
+      <td class="barber has-text-white has-text-centered" colspan="8"></td>
+    </tr>
+  </template>
+
+  <template id="sale-row">
+    <tr class="has-text-right">
+      <td class="index  has-text-centered is-hidden-mobile"></td>
+      <td class="date text-ellipsis has-text-centered"></td>
+      <td class="payment text-ellipsis has-text-centered"></td>
+      <td class="value"></td>
+      <td class="taxes"></td>
+      <td class="taxable-income"></td>
+      <td class="barber-commission-tmp"></td>
+      <td class="barber-tip"></td>
+    </tr>
+  </template>
+
+  <template id="sale-row-summary">
+    <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
+      <td class="is-hidden-mobile"></td>
+      <td colspan="2">Total por Barbero</td>
+      <td class="total-value"></td>
+      <td class="total-taxes"></td>
+      <td class="total-taxable-income"></td>
+      <td class="total-barber-commissions-tmp"></td>
+      <td class="total-barber-tips"></td>
+    </tr>
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <td class="is-hidden-mobile"></td>
+      <td colspan="5">Propinas pagadas ( - )</td>
+      <td></td>
+      <td class="barber-paid-tips"></td>
+    </tr>
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <td class="is-hidden-mobile"></td>
+      <td colspan="5">Comisiones pagadas ( - )</td>
+      <td class="barber-paid-commissions-tmp"></td>
+      <td></td>
+    </tr>
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <td class="is-hidden-mobile"></td>
+      <td colspan="5">Adelantos ( - )</td>
+      <td class="barber-advance-payments-tmp"></td>
+      <td></td>
+    </tr>
+    <tr class="has-background-grey-lighter has-text-weight-semibold has-text-right">
+      <td class="is-hidden-mobile"></td>
+      <td colspan="5">Bebidas consumidas ( - )</td>
+      <td class="barber-drinks-tmp"></td>
+      <td></td>
+    </tr>
+    <tr class="has-background-grey-light has-text-weight-semibold has-text-right">
+      <td class="is-hidden-mobile"></td>
+      <td colspan="5">Saldos pendiente de <span class="barber"></span></td>
+      <td class="barber-pending-payment-tmp has-background-warning"></td>
+      <td class="barber-pending-tips"></td>
+    </tr>
+    <tr class="has-background-white">
+      <td class="is-hidden-mobile"></td>
+      <td colspan="6"></td>
+    </tr>
+  </template>
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/dom/init.js" type="module"></script>
+  <script src="./js/f_commissions_payment/manager_shop_payment.js" type="module"></script>
+</body>
+
+</html>

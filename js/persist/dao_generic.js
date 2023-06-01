@@ -1,4 +1,5 @@
 
+import { getShop } from "../dom/manager_user.js"
 import { DateTime } from "../luxon.min.js"
 import { ahoraEC, dateIsValid } from "../util/fecha-util.js"
 import { dbRef } from "./firebase_conexion.js"
@@ -25,7 +26,8 @@ export function generateDateProperties(register) {
     ...register,
     date: audDate.toMillis(),
     searchDate: audDate.startOf('day').toLocaleString(DateTime.DATE_SHORT),
-    searchDateTime: audDate.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS)
+    searchDateTime: audDate.toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS),
+    shop: getShop().code
   }
   return res
 }

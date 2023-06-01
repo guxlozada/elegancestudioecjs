@@ -7,6 +7,9 @@ export const localdb = {
   operativeDay: "OPERATIVEDAY",
   accesskey: "ACCESSTOKEN",
   accessBarberkey: "ACCESSBARTOKEN",
+  accessShopkey: "ACCESSSHOPTOKEN",
+  catalogBankAccounts: "ACNTS",
+  catalogOperators: "OPERS",
   catalogProducts: "PRODS",
   catalogServices: "SERVS",
   tmpBankReconciliation: "TMPBR",
@@ -16,6 +19,5 @@ export const localdb = {
 
 export const ADM_PW = "0."
 export const ATTEMPTS = 4
-export const BARBER_PW = "2023"
 export const FD = "MMdd20yyyy02ddMM"
 export const IVA = 0.12

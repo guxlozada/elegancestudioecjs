@@ -5,9 +5,10 @@ import { deleteSaleByUid } from "../f_sales/dao_selller_sales.js";
 import { deleteExpenseByUid } from "../f_expenses/dao_cash_outflows.js";
 import { deleteDepositByUid } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
-import { isAdmin } from "../dom/manager_user.js";
+import { getShop, isAdmin } from "../dom/manager_user.js";
 import { updateDailyData } from "../util/daily-data-cache.js";
 import { findSalesExpensesBankTxsByDay, inyectBeforeAfterDailyCashClosing, insertDailyClosing, deleteDailyClosing } from "./dao_seller_daily_closing.js";
+import { addOperators } from "../dom/manager_operators.js";
 
 const d = document,
   w = window,
@@ -29,7 +30,8 @@ const dailyClosingInit = {
   tipsByBank: 0,
   fit: 0,
   finalBalance: 0,
-  update: false
+  update: false,
+  shop: getShop().code
 }
 let dailyClosing
 
@@ -42,6 +44,16 @@ let dailyClosing
 w.addEventListener("load", () => {
   enabledChangeDate()
   changeDailyClosing(hoyEC())
+})
+
+// EVENTO=DOMContentLoaded RAIZ=document 
+d.addEventListener("DOMContentLoaded", () => {
+  // Agregar vendedores
+  addOperators(".responsables-container", null,
+    () => { },
+    () => ntf.errorAndLog(`No se pudo obtener la informacion de los responsables, 
+  por favor intente nuevamente ingresando al sistema;
+  si el problema continua, comuniquelo a Carlos Quinteros`))
 })
 
 // EVENTO=change RAIZ=document ACCION=cambio de fecha de operacion, y responsable de cierre de caja

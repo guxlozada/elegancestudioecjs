@@ -1,6 +1,6 @@
 import { ASIDE_ADMINISTRATION, ASIDE_BARBERSHOP, ASIDE_INVENTORY, ASIDE_OPERATIONS, NAV_ADMINISTRATION, NAV_BARBERSHOP, NAV_INVENTORY, NAV_OPERATIONS } from "../interceptor/menu_by_rol.js";
 import { inyectDailyData } from "../util/daily-data-cache.js";
-import { cleanControlAccess, isAdmin, isBarber } from "./manager_user.js";
+import { cleanControlAccess, getShop, isAdmin, isBarber } from "./manager_user.js";
 import navbarBurgers from "./navbar_burgers.js";
 
 const d = document,
@@ -25,21 +25,26 @@ function validateAuth() {
   d.querySelector("body").style.display = "none"
 
   let admin = isAdmin() || false,
-    barber = isBarber() || false
+    barber = isBarber() || false,
+    shop = getShop()
 
-  if (!admin && (!barber || d.querySelector("#marca"))) {
+  if (shop === null || !(admin || barber)) {
     logOut()
     return
   }
 
   d.querySelector("body").style.display = "block"
+
   if ($navMenu || $asideMenu) generateMenu()
+
+  // Colocar nombre de la sucursal
+  d.getElementById("shop-location").innerText = shop.name
 }
 
 // Cerrar sesion autenticada
-function logOut() {
+export function logOut() {
   cleanControlAccess()
-  w.location.replace("/areyou.html")
+  w.location.replace("/shop-areyou.html")
 }
 
 function generateMenu() {

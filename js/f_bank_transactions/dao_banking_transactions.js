@@ -3,10 +3,12 @@ import timestampToDatekey, { generateDateProperties } from "../persist/dao_gener
 import { db, dbRef } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
 import { dateTimeToKeyDateString, dateTimeToKeyMonthString } from "../util/fecha-util.js";
+import { getShop } from "../dom/manager_user.js";
 
 export const BANCO_PRODUBANCO = "PROD"
 export const BANCO_PICHINCHA = "PICH"
-
+export const DATAFAST_PAYMENTS = ["TCREDITO", "TDEBITO"]
+export const BANK_PAYMENTS = ["TRANSFERENCIA", ...DATAFAST_PAYMENTS]
 
 const TDEBIT_COMISSION = 0.0225,
   TCREDIT_COMISSION = 0.0448,
@@ -18,9 +20,7 @@ const TDEBIT_COMISSION = 0.0225,
  * @param {Object} voSale Informacion de la venta
  */
 export function saleToBanktransaction(voSale, vsBank) {
-  const datafastPayments = ["TCREDITO", "TDEBITO"]
-  const typePayments = ["TRANSFERENCIA", ...datafastPayments]
-  if (!typePayments.includes(voSale.typePayment)) {
+  if (!BANK_PAYMENTS.includes(voSale.typePayment)) {
     return
   }
   let tx = {
@@ -31,11 +31,12 @@ export function saleToBanktransaction(voSale, vsBank) {
     responsable: voSale.seller,
     type: voSale.typePayment,
     value: voSale.totalSale,
-    bank: vsBank || BANCO_PRODUBANCO,
-    verified: false
+    bank: vsBank || BANCO_PICHINCHA,
+    verified: false,
+    shop: getShop().code
   }
   // Calcular el valor acreditado aproximado para datafast
-  if (datafastPayments.includes(voSale.typePayment)) {
+  if (DATAFAST_PAYMENTS.includes(voSale.typePayment)) {
     const DATAFAST_COMMISSION = voSale.typePayment === "TCREDITO" ? TCREDIT_COMISSION : TDEBIT_COMISSION
     tx.percentCommission = DATAFAST_COMMISSION
     tx.percentTaxWithholdingIVA = TAX_WITHHOLDING_IVA

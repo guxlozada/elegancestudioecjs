@@ -7,7 +7,7 @@ app.use(express.static(path.join(__dirname)));
 
 //where we set our routes
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'sales.html'));
+  res.sendFile(path.join(__dirname, 'shop-areyou.html'));
 });
 
 app.listen(process.env.PORT || 3000);

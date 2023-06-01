@@ -4,6 +4,7 @@ import { collections } from "../persist/firebase_collections.js";
 import { renderClients } from "./manager_clients.js";
 import { localdb } from "../repo-browser.js";
 import NotificationBulma from "./NotificacionBulma.js";
+import { getShop } from "./manager_user.js";
 
 const d = document,
   ntf = new NotificationBulma()
@@ -14,11 +15,10 @@ const clientInit = {
   idType: "CEDULA",// [CEDULA,PASAPORTE,RUC,OTRO]
   idNumber: null,
   email: null,
-  city: "Manta",
+  city: null,
   birthdate: null,
   cellphone: null,
   referred: null,
-  registeredBy: "ADMIN",
   valid: false
 }
 
@@ -122,6 +122,12 @@ export default function handlerClientEdit() {
         return
       }
     }
+
+    // Registrar la ciudad de la sucursal por omision
+    if (!client.city) {
+      client.city = getShop().city
+    }
+
     if (ntf.enabled) return
 
     let clientData = JSON.parse(JSON.stringify(client))

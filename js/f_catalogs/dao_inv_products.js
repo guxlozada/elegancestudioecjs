@@ -1,4 +1,5 @@
 
+import { getShop } from "../dom/manager_user.js";
 import { collections } from "../persist/firebase_collections.js";
 import { db, dbRef } from "../persist/firebase_conexion.js";
 import { IVA } from "../repo-browser.js";
@@ -42,6 +43,7 @@ export function insertProduct(voProduct, callback, callbackError) {
     date: voProduct.date || ahoraEC().toMillis(),
     retentionIVA: true,
     type: "P",
+    shop: getShop().code,
     ...voProduct
   }
 

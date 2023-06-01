@@ -2,21 +2,21 @@ export const NAV_BARBERSHOP = `
   <div class="nav-barbershop navbar-item has-dropdown is-hoverable">
     <a class="navbar-link is-size-7">BARBERIA </a>
     <div class="navbar-dropdown is-size-7">
-      <a class="navbar-item" href="sales.html?#clients"
+      <a class="navbar-item" href="shop-sales.html?#clients"
         onblur="document.querySelector('.client-search-text').focus()">
         <span class="icon"><i class="fa-solid fa-user-friends"></i></span>&nbsp;Clientes
       </a>
-      <a class="navbar-item" href="sales.html">
+      <a class="navbar-item" href="shop-sales.html">
         <span class="icon"><i class="fa-solid fa-cash-register"></i></span>&nbsp;Ventas
       </a>
-      <a class="navbar-item" href="expenses.html" title="Egresos de caja en la barberia">
+      <a class="navbar-item" href="shop-expenses.html" title="Egresos de caja en la barberia">
         <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span>&nbsp;Egresos
       </a>
-      <a class="navbar-item" href="bank-transactions-barber.html"
+      <a class="navbar-item" href="shop-bank-tx-barber.html"
         title="Depositos y transferencias en la barberia">
         <span class="icon"><i class="fa-solid fa-building-columns"></i></span>&nbsp;Banco
       </a>
-      <a class="navbar-item" href="daily-closing.html#summary" title="Cierre diario de caja">
+      <a class="navbar-item" href="shop-daily-closing.html#summary" title="Cierre diario de caja">
         <span class="icon"><i class="fa-solid fa-shop-lock"></i></span>&nbsp;Cierre diario
       </a>
     </div>
@@ -25,24 +25,24 @@ export const ASIDE_BARBERSHOP = `
   <p class="menu-label">Barberia</p>
   <ul class="menu-list is-size-7">
     <li>
-      <a class="navbar-item" href="sales.html?#clients"
+      <a class="navbar-item" href="shop-sales.html?#clients"
         onblur="document.querySelector('.client-search-text').focus()">
         <span class="icon"><i class="fa-solid fa-user-friends"></i></span> Clientes
       </a>
     </li>
     <li>
-      <a class="navbar-item " href="sales.html">
+      <a class="navbar-item " href="shop-sales.html">
         <span class="icon"><i class="fa-solid fa-cash-register"></i></span> Ventas
       </a>
     </li>
-    <li><a class="navbar-item " href="expenses.html" title="Egresos de caja en la barberia">
+    <li><a class="navbar-item " href="shop-expenses.html" title="Egresos de caja en la barberia">
         <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span> Egresos
       </a></li>
-    <li><a class="navbar-item " href="bank-transactions-barber.html"
+    <li><a class="navbar-item " href="shop-bank-tx-barber.html"
         title="Depositos y transferencias en la barberia">
         <span class="icon"><i class="fa-solid fa-building-columns"></i></span> Banco
       </a></li>
-    <li><a class="navbar-item " href="daily-closing.html#summary" title="Cierre diario de caja">
+    <li><a class="navbar-item " href="shop-daily-closing.html#summary" title="Cierre diario de caja">
         <span class="icon"><i class="fa-solid fa-shop-lock"></i></span> Cierre diario
       </a></li>
   </ul>`
@@ -51,10 +51,10 @@ export const NAV_OPERATIONS = `
   <div class="nav-operations navbar-item has-dropdown is-hoverable">
     <a class="navbar-link is-size-7">OPERACIONES</a>
     <div class="navbar-dropdown is-size-7">
-      <a class="navbar-item" href="commissions-payment.html" title="Reporte de comisiones por barbero">
+      <a class="navbar-item" href="shop-commissions-payment.html" title="Reporte de comisiones por barbero">
         <span class="icon"><i class="fa-solid fa-hand-holding-dollar"></i></span> Pago comisiones
       </a>
-      <a class="navbar-item" href="bank-transactions.html"
+      <a class="navbar-item" href="shop-bank-tx.html"
         title="Registro de transaccion bancaria fuera de la barberia">
         <span class="icon"><i class="fa-solid fa-money-bill-transfer"></i></span> Transaccion banco
       </a>
@@ -67,11 +67,11 @@ export const NAV_OPERATIONS = `
 export const ASIDE_OPERATIONS = `
   <p class="menu-label">Operaciones</p>
   <ul class="menu-list is-size-7">
-    <li><a class="navbar-item" href="commissions-payment.html" title="Reporte de comisiones por barbero">
+    <li><a class="navbar-item" href="shop-commissions-payment.html" title="Reporte de comisiones por barbero">
         <span class="icon"><i class="fa-solid fa-hand-holding-dollar"></i></span> Pago comisiones
       </a>
     </li>
-    <li><a class="navbar-item" href="bank-transactions.html"
+    <li><a class="navbar-item" href="shop-bank-tx.html"
         title="Registro de transaccion bancaria fuera de la barberia">
         <span class="icon"><i class="fa-solid fa-money-bill-transfer"></i></span> Transaccion banco
       </a>
@@ -89,7 +89,7 @@ export const NAV_ADMINISTRATION = `
       <a class="navbar-item" href="sales-report.html" title="Consulta de ventas por periodo de tiempo">
         <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span> Ventas
       </a>
-      <a class="navbar-item" href="expenses-report.html" title="Consulta de egresos por periodo de tiempo">
+      <a class="navbar-item" href="shop-expenses-report.html" title="Consulta de egresos por periodo de tiempo">
         <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span> Egresos
       </a>
       <a class="navbar-item" href="customers.html" title="Administracion de clientes">
@@ -105,7 +105,7 @@ export const ASIDE_ADMINISTRATION = `
         <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span> Ventas
       </a>
     </li>
-    <li><a class="navbar-item" href="expenses-report.html" title="Consulta de egresos por periodo de tiempo">
+    <li><a class="navbar-item" href="shop-expenses-report.html" title="Consulta de egresos por periodo de tiempo">
         <span class="icon"><i class="fa-solid fa-money-bill-wave"></i></span> Egresos
       </a>
     </li>

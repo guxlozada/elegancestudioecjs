@@ -1,20 +1,68 @@
+import { getShop } from "../dom/manager_user.js"
+
+export const SHOPS = {
+  mmp: {
+    code: "MMP",
+    name: "Mall del Pacífico",
+    city: "Manta",
+  },
+  qpa: {
+    code: "QPA",
+    name: "Ponceano",
+    city: "Quito"
+  },
+  qgr: {
+    code: "QGR",
+    name: "Granados",
+    city: "Quito"
+  }
+}
+
 export const collections = {
-  catalogProducts: "inv-products",
-  catalogProductsCategory: "inv-products-category",
+  catalogOperators: "adm-operators",
+  get catalogBankAccounts() {
+    return this.groupPrefix() + "adm-bank-accounts"
+  },
+  get catalogProducts() {
+    return this.groupPrefix() + "inv-products"
+  },
+  get catalogProductsCategory() {
+    return this.groupPrefix() + "inv-products-category"
+  },
   catalogProviders: "inv-providers",
-  catalogServices: "inv-services",
-  catalogServicesCategory: "inv-services-category",
-  bankingTransactions: "prod-banking-transaction",
-  bankReconciliation: "prod-bank-reconciliation",
+  get catalogServices() {
+    return this.groupPrefix() + "inv-services"
+  },
+  get catalogServicesCategory() {
+    return this.groupPrefix() + "inv-services-category"
+  },
+  get bankingTransactions() {
+    return this.groupPrefix() + "prod-banking-transaction"
+  },
+  get bankReconciliation() {
+    return this.groupPrefix() + "prod-bank-reconciliation"
+  },
   customers: "prodseller-clients",
   qualityAssurance: "statistics-qa-poll",
-  dailyClosing: "prod-daily-closing",
-  expenses: "prod-cash-outflows",
-  sales: "prod-sales",
-  salesDetails: "prod-sales-details",
+  get dailyClosing() {
+    return this.groupPrefix() + "prod-daily-closing"
+  },
+  get expenses() {
+    return this.groupPrefix() + "prod-cash-outflows"
+  },
+  get sales() {
+    return this.groupPrefix() + "prod-sales"
+  },
+  get salesDetails() {
+    return this.groupPrefix() + "prod-sales-details"
+  },
   tmpRaffle: "tmp-raffle",
   deletedBankTx: "removed-from-banking-transaction",
   deletedExpense: "removed-from-cash-outflows",
   deletedSales: "removed-from-sales",
-  deletedSalesDetails: "removed-from-sales-details"
+  deletedSalesDetails: "removed-from-sales-details",
+  groupPrefix() {
+    const shop = getShop()
+    return shop.code === SHOPS.mmp.code ? "" : shop.code + "-"
+  }
 }

@@ -1,6 +1,6 @@
 import { db } from "../persist/firebase_conexion.js";
 import { collections } from "../persist/firebase_collections.js";
-import { changeSaleClient } from "../f_sales/manager_barber_sales.js";
+import { changeSaleClient } from "../f_sales/manager_shop_sales.js";
 import NotificationBulma from "./NotificacionBulma.js";
 
 const d = document,

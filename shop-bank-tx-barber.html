@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es" class="has-navbar-fixed-top">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Banco</title>
+  <link rel="shortcut icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="stylesheet" href="/css/backoffice_main.css" />
+  <link rel="stylesheet" href="/css/backoffice_menu.css" />
+  <link rel="stylesheet" href="/css/backoffice_report.css" />
+  <script src="https://kit.fontawesome.com/3ceab47e69.js" crossorigin="anonymous"></script>
+  <style>
+    @media screen and (max-width: 768px) {
+      ::placeholder {
+        color: #47b6af !important;
+      }
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      max-width: 220px !important;
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar is-black is-fixed-top">
+      <div class="navbar-brand">
+        <a class="navbar-inner p-2" href="#home">
+          <img src="/assets/logo-blanco.png" alt="Elegance Studio EC" width="130">
+        </a>
+        <span class="navbar-item icon-text is-small">
+          <span class="icon">
+            <i class="fa-solid fa-location-dot"></i>
+          </span>
+          <span id="shop-location"></span>
+        </span>
+        <div class="navbar-burger burger" data-target="navMenu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+      <div id="navMenu" class="navbar-menu">
+        <div class="horizontal-menu navbar-start  is-hidden-desktop"></div>
+        <div class="navbar-end">
+          <div class="navbar-item logout">
+            <a class="button is-danger is-small logout" title="Cerrar sesion de trabajo">
+              <strong>Salir</strong>
+              <span class="icon is-small"><i class="fa-solid fa-right-from-bracket"></i></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <aside class="vertical-menu is-2 is-fullheight has-background-white-bis is-hidden-touch p-4">
+  </aside>
+
+  <div class="main-content columns is-multiline">
+    <div class="column column is-10-tablet is-8-desktop is-7-widescreen is-offset-1-tablet is-offset-2-desktop">
+
+      <div class="tabs is-small is-fullwidth p-2 m-0 is-hidden-mobile">
+        <ul>
+          <li class="is-active has-text-weight-semibold is-size-5 is-size-6-touch">
+            <span class="icon is-small"><i class="fa-solid fa-building-columns"></i></span>
+            <span>Transacciones bancarias</span>
+          </li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+          <li class="is-hidden-mobile"></li>
+        </ul>
+      </div>
+
+      <div class="card p-0 pt-2 is-size-7">
+        <header class="card-header has-background-info-dark">
+          <p class="card-header-title has-text-white is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-coins"></i>
+              </span>
+              <span>Deposito bancario</span>
+            </span>
+          </p>
+        </header>
+        <form id="form-deposit">
+          <div class="card-content has-background-info-light m-0">
+            <div class="content px-7">
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Fecha</label>
+                <p class="control has-icons-left" title="Fecha">
+                  <input type="date" class="transaction-date prop-input input is-small" name="date"
+                    data-type="timestamp" required />
+                  <input type="hidden" class="prop-input" name="type" value="DEPOSITO" required />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-calendar-days"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Responsable</label>
+                <div class="responsables-container control is-size-7" title="Responsable">
+                  <!-- render responsables-->
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Cuenta bancaria</label>
+                <div class="control is-size-7" title="Cuenta Bancaria">
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="bank" value="PICH" checked>
+                    Pichincha
+                  </label>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Valor</label>
+                <p class="control has-icons-left" title="Valor">
+                  <input type="number" class="prop-input input is-small" name="value" step="0.01" min="0"
+                    placeholder="00.00" required />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-money-check-dollar"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Nro.Comprobante</label>
+                <p class="control has-icons-left" title="# Comprobante del deposito">
+                  <input type="text" class="prop-input input is-small" name="voucher"
+                    placeholder="# Comprobante del deposito..." />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-receipt"></i>
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <footer class="card-footer has-background-info-light p-1">
+            <button type="reset" class="card-footer-item button is-danger mr-4">
+              <span>Cancelar</span>
+              <span class="icon is-small">
+                <i class="fa-solid fa-xmark"></i>
+              </span>
+            </button>
+            <button type="submit" class="card-footer-item button is-primary">
+              <span>Guardar</span>
+              <span class="icon is-small">
+                <i class="fa-solid fa-check"></i>
+              </span>
+            </button>
+          </footer>
+
+        </form>
+      </div>
+      <br><br><br><br>
+      <div class="card p-0 is-size-7">
+        <header class="card-header has-background-info-dark">
+          <p class="card-header-title has-text-white  is-size-6">
+            <span class="icon-text">
+              <span class="icon">
+                <i class="fa-solid fa-money-bill-transfer"></i>
+              </span>
+              <span>Transferencia para barbero</span>
+            </span>
+          </p>
+        </header>
+        <form id="form-transfer">
+          <div class="card-content has-background-info-light m-0">
+            <div class="content px-7">
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Fecha</label>
+                <p class="control has-icons-left" title="Fecha">
+                  <input type="date" class="transaction-date prop-input input is-small" name="date"
+                    data-type="timestamp" required />
+                  <input type="hidden" class="prop-input" name="type" value="TRANSFERENCIA" required />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-calendar-days"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Beneficiario</label>
+                <div class="beneficiaries-container control is-size-7" title="Beneficiario">
+                  <!-- render responsables-->
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Cuenta bancaria</label>
+                <div class="control is-size-7" title="Cuenta Bancaria">
+                  <label class="radio">
+                    <input type="radio" class="prop-input" name="bank" value="PICH" checked>
+                    Pichincha
+                  </label>
+                </div>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Valor</label>
+                <p class="control has-icons-left">
+                  <input type="number" class="prop-input input is-small" name="value" step="0.1" min="0"
+                    placeholder="00.00" required />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-money-check-dollar"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Relacionado a la Venta Nro.</label>
+                <p class="control has-icons-left" title="Relacionado a la Venta Nro.">
+                  <input type="text" class="prop-input input is-small" name="saleUid"
+                    placeholder="Ingrese Id venta: Ejemplo: 20221231T210059..." />
+                  <span class="icon is-small is-left">
+                    <i class="fa-solid fa-receipt"></i>
+                  </span>
+                </p>
+              </div>
+              <div class="field">
+                <label class="label is-small is-hidden-mobile is-inline">Detalles</label>
+                <div class="control" title="Breve detalle del movimiento bancario">
+                  <textarea class="prop-input textarea is-small" name="details" rows="2"
+                    placeholder="Breve detalle del movimiento bancario..."></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="card-footer has-background-info-light p-1">
+            <button type="reset" class="card-footer-item button is-danger mr-4">
+              <span>Cancelar</span>
+              <span class="icon is-small">
+                <i class="fa-solid fa-xmark"></i>
+              </span>
+            </button>
+            <button type="submit" class="card-footer-item button is-primary">
+              <span>Guardar</span>
+              <span class="icon is-small">
+                <i class="fa-solid fa-check"></i>
+              </span>
+            </button>
+          </footer>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <template id="operator-template">
+    <label class="radio">
+      <input type="radio" class="operator-code prop-input" name="responsable" value="NORESPONSABLE">
+      <span class="operator-alias">NORESPONSABLE</span>
+    </label>
+  </template>
+
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase-database.js"></script>
+  <script src="./js/dom/init.js" type="module"></script>
+  <script src="./js/f_bank_transactions/manager_shop_bank_tx.js" type="module"></script>
+</body>
+
+</html>

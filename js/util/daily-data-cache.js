@@ -4,7 +4,7 @@ import { DateTime } from "../luxon.min.js"
 import { localdb } from "../repo-browser.js"
 import { hoyEC } from "./fecha-util.js"
 
-const dailyData = [localdb.cashOutflowMaxDay, localdb.cashOutflowMinDay, localdb.operativeDay, localdb.accesskey, localdb.accessBarberkey, localdb.catalogBankAccounts, localdb.catalogOperators, localdb.catalogProducts, localdb.catalogServices, localdb.tmpPollQA, localdb.tmpCustomerId],
+const dailyData = [localdb.cashOutflowMaxDay, localdb.cashOutflowMinDay, localdb.operativeDay, localdb.catalogBankAccounts, localdb.catalogOperators, localdb.catalogProducts, localdb.catalogServices, localdb.tmpPollQA, localdb.tmpCustomerId],
   tmpData = [localdb.tmpBankReconciliation]
 
 /** Eliminar la informacion de ayuda diaria. */

@@ -37,4 +37,6 @@ export const cleanControlAccess = () => {
   localStorage.removeItem(localdb.accessBarberkey)
   localStorage.removeItem(localdb.catalogBankAccounts)
   localStorage.removeItem(localdb.catalogOperators)
+  localStorage.removeItem(localdb.catalogProducts)
+  localStorage.removeItem(localdb.catalogServices)
 }

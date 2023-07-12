@@ -32,6 +32,7 @@ const d = document,
     typePayment: "EFECTIVO",//[EFECTIVO,TCREDITO,TDEBITO, TRANSFERENCIA]
     type: "CLIENTE",//[CLIENTE, PORMAYOR]
     ticket: null,
+    notes: null,
     items: [],
     taxableIncome: 0,
     discounts: 0,
@@ -643,6 +644,8 @@ d.getElementById("sales").addEventListener("change", e => {
     sale.update = true
   } else if ($input.name === "ticket") {
     sale.ticket = $input.value
+  } else if ($input.name === "notes") {
+    sale.notes = $input.value
   }
   localStorage.setItem(localdb.sale, JSON.stringify(sale))
 })

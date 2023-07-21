@@ -237,6 +237,7 @@ function renderBankTransactions(voFilters, vaTransactions, voLastBalance, voCurr
     vnVerifiedTotalTx += vnVerifiedTxValue
     vnBankBalance += vnVerifiedTxValue
 
+    $rowTmp.querySelector(".uid").innerText = tx.tmpUid
     $rowTmp.querySelector(".date").innerText = tx.searchDateTime.slice(0, -10)
     $rowTmp.querySelector(".responsable").innerText = tx.responsable.replace("ADM_", "").slice(0, 5)
     $rowTmp.querySelector(".bank").innerText = tx.bank

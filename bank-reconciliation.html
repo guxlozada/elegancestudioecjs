@@ -221,6 +221,7 @@
                 <table class="table is-narrow is-hoverable is-fullwidth">
                   <thead>
                     <tr class="has-text-centered">
+                      <th class="is-hidden-mobile"><abbr title="Identificador unico">ID</abbr></th>
                       <th>Fecha</th>
                       <th><abbr title="Responsable  del registro o beneficiario de la transaccion">R/B</abbr></th>
                       <th>Banco</th>
@@ -252,6 +253,7 @@
                   </tbody>
                   <tfoot>
                     <tr class=" has-text-right">
+                      <th class="is-hidden-mobile"></th>
                       <th colspan="4"></th>
                       <th class="total-sale is-hidden-mobile"></th>
                       <th class="total-datafast is-hidden-mobile" colspan="4"></th>
@@ -287,6 +289,7 @@
 
   <template id="bank-initial-balance">
     <tr>
+      <td class="is-hidden-mobile is-narrow"></td>
       <td class="date is-narrow"></td>
       <td class="is-narrow"></td>
       <td class="bank is-narrow"></td>
@@ -299,15 +302,16 @@
 
   <template id="bank-tx-row">
     <tr class="tx-row  has-text-right">
+      <td class="uid has-text-left is-narrow is-hidden-mobile" style="font-size: 0.5rem !important;"></td>
       <td class="date has-text-left is-narrow"></td>
       <td class="responsable has-text-left is-narrow"></td>
       <td class="bank has-text-left is-narrow"></td>
       <td class="type-payment has-text-left"></td>
       <td class="sale-value is-narrow is-hidden-mobile"></td>
       <td class="datafast-commission is-narrow  is-hidden-mobile"></td>
-      <td class="datafast-iva is-narrow  is-hidden-mobile"></td>
-      <td class="datafast-renta is-narrow  is-hidden-mobile"></td>
-      <td class="original-value is-narrow  is-hidden-mobile"></td>
+      <td class="datafast-iva is-narrow is-hidden-mobile"></td>
+      <td class="datafast-renta is-narrow is-hidden-mobile"></td>
+      <td class="original-value is-narrow is-hidden-mobile"></td>
       <td class="type-bank-transaction is-narrow" title="C=Credito o D=Debito">C</td>
       <td class="has-text-right is-narrow">
         <input type="number" class="verified-value is-size-7 has-text-right m-0 p-0 is-hidden" style="width:3.4rem"

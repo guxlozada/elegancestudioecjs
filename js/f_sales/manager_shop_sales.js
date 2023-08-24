@@ -21,7 +21,7 @@ const d = document,
   $productsModalContainer = d.querySelector("#products-modal .items-container"),
   $servicesModalContainer = d.querySelector("#services-modal .items-container"),
   $servicesModalEneglimarContainer = d.querySelector("#services-modal-eneglimar .items-container"),
-const freeSixthCutBase = getShop().freeSixthCutBase
+  freeSixthCutBase = getShop().freeSixthCutBase
 saleInit = {
   client: {
     uid: "",

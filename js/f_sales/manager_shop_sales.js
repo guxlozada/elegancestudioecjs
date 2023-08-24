@@ -21,29 +21,29 @@ const d = document,
   $productsModalContainer = d.querySelector("#products-modal .items-container"),
   $servicesModalContainer = d.querySelector("#services-modal .items-container"),
   $servicesModalEneglimarContainer = d.querySelector("#services-modal-eneglimar .items-container"),
-  freeSixthCutBase = getShop().freeSixthCutBase
-saleInit = {
-  client: {
-    uid: "",
-    description: "",
-    lastService: null,//TODO: Cuando se guarde la factura hay que actualizar esta fecha
-    stFreeSixthCut: null
-  },
-  seller: null,
-  typePayment: "EFECTIVO",//[EFECTIVO,TCREDITO,TDEBITO, TRANSFERENCIA]
-  type: "CLIENTE",//[CLIENTE, PORMAYOR]
-  ticket: null,
-  notes: null,
-  items: [],
-  taxableIncome: 0,
-  discounts: 0,
-  taxes: 0,
-  tipByBank: 0,
-  totalSale: 0,
-  barberCommission: 0,
-  valid: false,
-  shop: getShop().code
-}
+  freeSixthCutBase = getShop().freeSixthCutBase,
+  saleInit = {
+    client: {
+      uid: "",
+      description: "",
+      lastService: null,//TODO: Cuando se guarde la factura hay que actualizar esta fecha
+      stFreeSixthCut: null
+    },
+    seller: null,
+    typePayment: "EFECTIVO",//[EFECTIVO,TCREDITO,TDEBITO, TRANSFERENCIA]
+    type: "CLIENTE",//[CLIENTE, PORMAYOR]
+    ticket: null,
+    notes: null,
+    items: [],
+    taxableIncome: 0,
+    discounts: 0,
+    taxes: 0,
+    tipByBank: 0,
+    totalSale: 0,
+    barberCommission: 0,
+    valid: false,
+    shop: getShop().code
+  }
 
 // Variable global para manejo de la venta en proceso
 let services, products, sale

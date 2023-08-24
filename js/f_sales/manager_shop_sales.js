@@ -21,28 +21,29 @@ const d = document,
   $productsModalContainer = d.querySelector("#products-modal .items-container"),
   $servicesModalContainer = d.querySelector("#services-modal .items-container"),
   $servicesModalEneglimarContainer = d.querySelector("#services-modal-eneglimar .items-container"),
-  saleInit = {
-    client: {
-      uid: "",
-      description: "",
-      lastService: null,//TODO: Cuando se guarde la factura hay que actualizar esta fecha
-      stFreeSixthCut: null
-    },
-    seller: null,
-    typePayment: "EFECTIVO",//[EFECTIVO,TCREDITO,TDEBITO, TRANSFERENCIA]
-    type: "CLIENTE",//[CLIENTE, PORMAYOR]
-    ticket: null,
-    notes: null,
-    items: [],
-    taxableIncome: 0,
-    discounts: 0,
-    taxes: 0,
-    tipByBank: 0,
-    totalSale: 0,
-    barberCommission: 0,
-    valid: false,
-    shop: getShop().code
-  }
+const freeSixthCutBase = getShop().freeSixthCutBase
+saleInit = {
+  client: {
+    uid: "",
+    description: "",
+    lastService: null,//TODO: Cuando se guarde la factura hay que actualizar esta fecha
+    stFreeSixthCut: null
+  },
+  seller: null,
+  typePayment: "EFECTIVO",//[EFECTIVO,TCREDITO,TDEBITO, TRANSFERENCIA]
+  type: "CLIENTE",//[CLIENTE, PORMAYOR]
+  ticket: null,
+  notes: null,
+  items: [],
+  taxableIncome: 0,
+  discounts: 0,
+  taxes: 0,
+  tipByBank: 0,
+  totalSale: 0,
+  barberCommission: 0,
+  valid: false,
+  shop: getShop().code
+}
 
 // Variable global para manejo de la venta en proceso
 let services, products, sale
@@ -247,7 +248,7 @@ function renderSaleItems(changeTypePayment) {
     let vnUnitDiscount,
       vnBaseDiscount,
       vnTaxDiscount,
-      vnPromoFreeSixthCut = 0
+      vnUniqueServiceDiscount = 0
 
     sale.items.forEach(item => {
       ////console.log("Agregando item a la venta=", item.tmpUid)
@@ -276,17 +277,14 @@ function renderSaleItems(changeTypePayment) {
         }
 
         if (item.type === "S") {
-          // ELIMINADO DESCUENTO DE MARTES
-          ////if (item.promo.discountDay && todayEc().getDay() === 2)// Dia de descuento MARTES (2)
-          ////  vnUnitDiscount += roundFour(item.promo.discountDay * baseValue / 100)
           // PROMO SEXTO CORTE aplica para el primer servicio registrado
-          if (vnPromoFreeSixthCut === 0 && sale.stPromoFreeSixthCut === true) {
-            if (baseValue <= 10) {
-              vnUnitDiscount += baseValue
+          if (vnUniqueServiceDiscount === 0 && (sale.stPromoFreeSixthCut === true || sale.typePayment === "CORTESIA")) {
+            if (baseValue > freeSixthCutBase) {
+              vnUnitDiscount += freeSixthCutBase
             } else {
-              vnUnitDiscount += 10
+              vnUnitDiscount += baseValue
             }
-            vnPromoFreeSixthCut++
+            vnUniqueServiceDiscount++
           }
         }
         item.unitDiscount = vnUnitDiscount
@@ -451,15 +449,16 @@ d.addEventListener("DOMContentLoaded", e => {
   if (products === null) {
     findCatalog(collections.catalogProducts, "baseValue",
       res => {
-        products = [...res]
+        products = res
         localStorage.setItem(localdb.catalogProducts, JSON.stringify(products))
+
       },
       error => ntf.errorAndLog("Cache de catalogo de productos con error", error))
   }
   if (services === null) {
     findCatalog(collections.catalogServices, "baseValue",
       res => {
-        services = [...res]
+        services = res
         localStorage.setItem(localdb.catalogServices, JSON.stringify(services))
       },
       error => ntf.errorAndLog("Cache de catalogo de servicios con error", error))
@@ -730,10 +729,10 @@ function insertSalesDB(callback) {
     if (item.type === "S") {
       totalServices += item.numberOfUnits
       totalServicesTaxableIncome += item.taxableIncome
-      if (item.retailValue > 9.99) {
-        totalFreeSixthCut += item.numberOfUnits
+      if (item.retailValue < freeSixthCutBase) {
+        totalFreeSixthCut += Math.trunc(item.total / freeSixthCutBase)
       } else {
-        totalFreeSixthCut += Math.trunc(item.total / 10)
+        totalFreeSixthCut += item.numberOfUnits
       }
 
     }
@@ -742,7 +741,7 @@ function insertSalesDB(callback) {
   })
   //TODO: Promo del sexto corte gratis
   if (totalFreeSixthCut === 0 && totalServices > 1) {
-    totalFreeSixthCut += Math.trunc(totalServicesTaxableIncome / 10)
+    totalFreeSixthCut += Math.trunc(totalServicesTaxableIncome / freeSixthCutBase)
   }
 
   // Actualizar datos del cliente

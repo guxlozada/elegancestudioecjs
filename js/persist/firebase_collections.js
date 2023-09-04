@@ -12,7 +12,7 @@ export const SHOPS = {
     code: "QPA",
     name: "Ponceano",
     city: "Quito",
-    freeSixthCutBase: 7,
+    freeSixthCutBase: 8,
     iva: false
   },
   qgr: {

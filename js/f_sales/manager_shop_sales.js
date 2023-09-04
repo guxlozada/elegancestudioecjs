@@ -271,8 +271,8 @@ function renderSaleItems(changeTypePayment) {
       // SOLO para servicios, se aplica los descuentos automaticos la primera vez o cuando cambia el metodo de pago
       if (!item.unitDiscount || changeTypePayment || sale.stPromoFreeSixthCut === true) {
         vnUnitDiscount = 0
-        // descuento IVA solo pagos en efectivo y transferencias
-        if (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA") {
+        // descuento IVA solo pagos en efectivo, transferencias y cortesia
+        if (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA" || sale.typePayment === "CORTESIA") {
           vnUnitDiscount += taxIVA
         }
 

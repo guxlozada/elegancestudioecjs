@@ -728,13 +728,8 @@ function insertSalesDB(callback) {
     // Los servicios gratuitos son con valor 0
     if (item.type === "S") {
       totalServices += item.numberOfUnits
-      totalServicesTaxableIncome += item.taxableIncome
-      if (item.retailValue < freeSixthCutBase) {
-        totalFreeSixthCut += Math.trunc(item.total / freeSixthCutBase)
-      } else {
-        totalFreeSixthCut += item.numberOfUnits
-      }
-
+      totalServicesTaxableIncome += item.total
+      totalFreeSixthCut += Math.trunc(item.total / freeSixthCutBase)
     }
     let detailKey = saleKey + '-' + zeroPad(item.order, 2);
     updates[`${collections.salesDetails}/${detailKey}`] = item

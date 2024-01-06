@@ -9,7 +9,7 @@ import { roundFour, roundTwo, truncFour } from "../util/numbers-util.js";
 import { zeroPad } from "../util/text-util.js";
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js";
 import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
-import { BANCO_PRODUBANCO, DATAFAST_PAYMENTS, saleToBanktransaction } from "../f_bank_transactions/dao_banking_transactions.js";
+import { BANCO_PRODUBANCO, DATAFAST_PAYMENTS, DEUNA_PICHINCHA, saleToBanktransaction } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
 import { findCatalog } from "../f_catalogs/dao_catalog.js";
 import { addOperators } from "../dom/manager_operators.js";
@@ -272,7 +272,7 @@ function renderSaleItems(changeTypePayment) {
       if (!item.unitDiscount || changeTypePayment || sale.stPromoFreeSixthCut === true) {
         vnUnitDiscount = 0
         // descuento IVA solo pagos en efectivo, transferencias y cortesia
-        if (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA" || sale.typePayment === "CORTESIA") {
+        if (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA" || sale.typePayment === "TRANSFDEUNA" ||sale.typePayment === "CORTESIA") {
           vnUnitDiscount += taxIVA
         }
 
@@ -367,6 +367,7 @@ function renderSaleSummary() {
   if (sale.tipByBank && sale.tipByBank > 0) {
     switch (sale.typePayment) {
       case "TRANSFERENCIA":
+      case "TRANSFDEUNA":
         sale.totalSale = roundTwo(sale.totalSale + sale.tipByBank)
         break;
       case "TCREDITO":
@@ -681,6 +682,10 @@ function insertSalesDB(callback) {
   let bancoTmp
   if (saleHeader.shop === SHOPS.mmp.code && DATAFAST_PAYMENTS.includes(saleHeader.typePayment)) {
     bancoTmp = BANCO_PRODUBANCO
+  }
+  if(saleHeader.typePayment === "TRANSFDEUNA"){
+    saleHeader.typePayment= "TRANSFERENCIA"
+    bancoTmp = DEUNA_PICHINCHA
   }
 
   let tx = saleToBanktransaction(saleHeader, bancoTmp),

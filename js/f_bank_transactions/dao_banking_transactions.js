@@ -7,8 +7,9 @@ import { getShop } from "../dom/manager_user.js";
 
 export const BANCO_PRODUBANCO = "PROD"
 export const BANCO_PICHINCHA = "PICH"
+export const DEUNA_PICHINCHA = "DEUNA"
 export const DATAFAST_PAYMENTS = ["TCREDITO", "TDEBITO"]
-export const BANK_PAYMENTS = ["TRANSFERENCIA", ...DATAFAST_PAYMENTS]
+export const BANK_PAYMENTS = ["TRANSFERENCIA", "TRANSFDEUNA", ...DATAFAST_PAYMENTS]
 
 const TDEBIT_COMISSION = 0.0225,
   TCREDIT_COMISSION = 0.0448,

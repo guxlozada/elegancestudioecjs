@@ -168,6 +168,13 @@ function validateBarberTipActive() {
   }
 }
 
+function validateDiscountActive() {
+  // Control de descuentos a Consumidor final en Servicios
+  if (sale.client.idNumber == "9999999999999") {
+    d.querySelectorAll(".sale-item-unit-discount-service").forEach($el => $el.setAttribute("disabled", false))
+  }
+}
+
 // Actualizar cabecera de la venta
 function renderSaleHeader() {
   const cli = sale.client
@@ -272,7 +279,7 @@ function renderSaleItems(changeTypePayment) {
       if (!item.unitDiscount || changeTypePayment || sale.stPromoFreeSixthCut === true) {
         vnUnitDiscount = 0
         // descuento IVA solo pagos en efectivo, transferencias y cortesia
-        if (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA" || sale.typePayment === "TRANSFDEUNA" ||sale.typePayment === "CORTESIA") {
+        if (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA" || sale.typePayment === "TRANSFDEUNA" || sale.typePayment === "CORTESIA") {
           vnUnitDiscount += taxIVA
         }
 
@@ -317,6 +324,11 @@ function renderSaleItems(changeTypePayment) {
       $unitDiscount.value = vnUnitDiscount.toFixed(2)
       $unitDiscount.max = finalValue.toFixed(2)
       $unitDiscount.dataset.key = item.tmpUid
+      if (item.type === "S") {
+        $unitDiscount.classList.add("sale-item-unit-discount-service")// Control de descuentos en servicios Consumidor final
+      }else{
+        $unitDiscount.classList.remove("sale-item-unit-discount-service")
+      }
       $value.innerText = ((finalValue - vnUnitDiscount) * item.numberOfUnits).toFixed(2)
       $delete.dataset.key = item.tmpUid
       let $clone = d.importNode($template, true)
@@ -363,6 +375,8 @@ function renderSaleSummary() {
   // Activar/inactivar propina por pago bancario, debe colocarse primero para validar si 
   // setea el valor de efectivo=0
   validateBarberTipActive()
+  // Activar/inactivar descuentos para 'Consumidor final'
+  validateDiscountActive()
   // Agregar la propina a la venta
   if (sale.tipByBank && sale.tipByBank > 0) {
     switch (sale.typePayment) {
@@ -683,8 +697,8 @@ function insertSalesDB(callback) {
   if (saleHeader.shop === SHOPS.mmp.code && DATAFAST_PAYMENTS.includes(saleHeader.typePayment)) {
     bancoTmp = BANCO_PRODUBANCO
   }
-  if(saleHeader.typePayment === "TRANSFDEUNA"){
-    saleHeader.typePayment= "TRANSFERENCIA"
+  if (saleHeader.typePayment === "TRANSFDEUNA") {
+    saleHeader.typePayment = "TRANSFERENCIA"
     bancoTmp = DEUNA_PICHINCHA
   }
 

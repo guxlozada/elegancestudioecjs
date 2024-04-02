@@ -43,8 +43,9 @@ export function insertService(voService, callback, callbackError) {
     date: voService.date || ahoraEC().toMillis(),
     retentionIVA: true,
     type: "S",
-    promo: { cash: 12, discountDay: 0 },
+    promo: { cash: (100 * IVA), discountDay: 0 },
     shop: getShop().code,
+    iva: IVA,
     ...voService
   }
 

@@ -20,4 +20,4 @@ export const localdb = {
 export const ADM_PW = "0."
 export const ATTEMPTS = 4
 export const FD = "MMdd20yyyy02ddMM"
-export const IVA = 0.12
+export const IVA = 0.15

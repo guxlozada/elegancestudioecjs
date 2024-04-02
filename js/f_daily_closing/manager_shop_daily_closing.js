@@ -201,7 +201,7 @@ function renderSummary(salesData, deletedEnabled) {
         sale.tmpBarberCommissionTmp = sale.tmpBarberCommission
       } else {
         // MANEJO IVA
-        sale.tmpBarberCommissionTmp = roundFour(sale.barberCommission * 1.15)
+        sale.tmpBarberCommissionTmp = roundFour(sale.barberCommission * (1 + (sale.iva || 0.12)))
       }
       vnTotalTaxableIncome += vnTaxableIncome
       vnTotalTaxes += vnTaxes

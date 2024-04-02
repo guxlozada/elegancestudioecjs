@@ -14,6 +14,7 @@ import { localdb } from "../repo-browser.js";
 import { findCatalog } from "../f_catalogs/dao_catalog.js";
 import { addOperators } from "../dom/manager_operators.js";
 import { getShop } from "../dom/manager_user.js";
+import { IVA } from "../repo-browser.js";
 
 const d = document,
   w = window,
@@ -300,7 +301,7 @@ function renderSaleItems(changeTypePayment) {
       // Recalculo de impuestos por descuentos
       if (vnUnitDiscount > 0) {
         // Se considera que todos los servicios y productos estan gravados solo con MANEJO IVA
-        vnBaseDiscount = roundFour(vnUnitDiscount / 1.15)
+        vnBaseDiscount = roundFour(vnUnitDiscount / (1 + IVA))
         vnTaxDiscount = vnUnitDiscount - vnBaseDiscount
       }
 
@@ -388,7 +389,7 @@ function renderSaleSummary() {
       case "TDEBITO":
         sale.taxableIncome = roundTwo(sale.taxableIncome + sale.tipByBank)
         // MANEJO IVA
-        sale.taxes = roundTwo(sale.taxes + (sale.tipByBank * 0.15))
+        sale.taxes = roundTwo(sale.taxes + (sale.tipByBank * IVA))
         sale.totalSale = roundTwo(sale.taxableIncome + sale.taxes)
         break;
     }
@@ -680,11 +681,12 @@ d.getElementById("sales").addEventListener("focusout", e => {
 
 function insertSalesDB(callback) {
 
-  // Cabecera de la venta
+  // Cabecera de la venta MANEJO IVA
   let saleHeader = {
     ...JSON.parse(JSON.stringify(sale)),
     clientId: sale.client.idNumber,
-    clientUid: sale.client.uid
+    clientUid: sale.client.uid,
+    iva: IVA
   }
 
   // Agregar las propiedades de fechas

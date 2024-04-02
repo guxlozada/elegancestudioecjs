@@ -44,6 +44,7 @@ export function insertProduct(voProduct, callback, callbackError) {
     retentionIVA: true,
     type: "P",
     shop: getShop().code,
+    iva: IVA,
     ...voProduct
   }
 

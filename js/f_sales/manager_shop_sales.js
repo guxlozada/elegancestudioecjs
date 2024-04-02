@@ -299,8 +299,8 @@ function renderSaleItems(changeTypePayment) {
 
       // Recalculo de impuestos por descuentos
       if (vnUnitDiscount > 0) {
-        // Se considera que todos los servicios y productos estan gravados solo con IVA
-        vnBaseDiscount = roundFour(vnUnitDiscount / 1.12)
+        // Se considera que todos los servicios y productos estan gravados solo con MANEJO IVA
+        vnBaseDiscount = roundFour(vnUnitDiscount / 1.15)
         vnTaxDiscount = vnUnitDiscount - vnBaseDiscount
       }
 
@@ -326,7 +326,7 @@ function renderSaleItems(changeTypePayment) {
       $unitDiscount.dataset.key = item.tmpUid
       if (item.type === "S") {
         $unitDiscount.classList.add("sale-item-unit-discount-service")// Control de descuentos en servicios Consumidor final
-      }else{
+      } else {
         $unitDiscount.classList.remove("sale-item-unit-discount-service")
       }
       $value.innerText = ((finalValue - vnUnitDiscount) * item.numberOfUnits).toFixed(2)
@@ -387,7 +387,8 @@ function renderSaleSummary() {
       case "TCREDITO":
       case "TDEBITO":
         sale.taxableIncome = roundTwo(sale.taxableIncome + sale.tipByBank)
-        sale.taxes = roundTwo(sale.taxes + (sale.tipByBank * 0.12))
+        // MANEJO IVA
+        sale.taxes = roundTwo(sale.taxes + (sale.tipByBank * 0.15))
         sale.totalSale = roundTwo(sale.taxableIncome + sale.taxes)
         break;
     }

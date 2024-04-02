@@ -200,7 +200,8 @@ function renderSummary(salesData, deletedEnabled) {
       if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
         sale.tmpBarberCommissionTmp = sale.tmpBarberCommission
       } else {
-        sale.tmpBarberCommissionTmp = roundFour(sale.barberCommission * 1.12)
+        // MANEJO IVA
+        sale.tmpBarberCommissionTmp = roundFour(sale.barberCommission * 1.15)
       }
       vnTotalTaxableIncome += vnTaxableIncome
       vnTotalTaxes += vnTaxes

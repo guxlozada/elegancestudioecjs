@@ -34,12 +34,12 @@ d.querySelector(".tabs").addEventListener("click", e => {
 // EVENTO=DOMContentLoaded RAIZ=document 
 d.addEventListener("DOMContentLoaded", () => {
   // Agregar vendedores
-  addOperators(".sellers-container",null,
+  addOperators(".sellers-container", null,
     () => { },
     () => ntf.errorAndLog(`No se pudo obtener la informacion de los vendedores, 
   por favor intente nuevamente ingresando al sistema;
   si el problema continua, comuniquelo a Carlos Quinteros`),
-  true)
+    true)
 })
 
 // EVENTO=change RAIZ=button<search> ACCION=Realizar busqueda
@@ -167,7 +167,7 @@ function renderCommissionsPayment(voFilters, vmSales, voAdvancesToBarber) {
       if (sale.typePayment === 'TCREDITO' || sale.typePayment === 'TDEBITO') {
         vnBarberCommissionTmp = vnBarberCommission
       } else {
-        vnBarberCommissionTmp = roundFour(sale.barberCommission * 1.12)
+        vnBarberCommissionTmp = roundFour(sale.barberCommission * (1 + (sale.iva || 0.12)))
       }
       // Tiene precedencia la propina con descuento datafast (paymentTip), luego la propina
       // relacionada a una tx bancaria registrada solo para propina (bankTxValue) y por ultimo

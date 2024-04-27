@@ -1,13 +1,14 @@
 import { roundFour, roundTwo } from "../util/numbers-util.js";
 import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
 import { db, dbRef } from "../persist/firebase_conexion.js";
-import { collections } from "../persist/firebase_collections.js";
+import { SHOPS, collections } from "../persist/firebase_collections.js";
 import { dateTimeToKeyDateString, dateTimeToKeyMonthString } from "../util/fecha-util.js";
 import { getShop } from "../dom/manager_user.js";
 
 export const BANCO_PRODUBANCO = "PROD"
 export const BANCO_PICHINCHA = "PICH"
 export const DEUNA_PICHINCHA = "DEUNA"
+export const BANCO_DATAFAST = "DATAFAST"
 export const DATAFAST_PAYMENTS = ["TCREDITO", "TDEBITO"]
 export const BANK_PAYMENTS = ["TRANSFERENCIA", "TRANSFDEUNA", ...DATAFAST_PAYMENTS]
 
@@ -43,16 +44,23 @@ export function saleToBanktransaction(voSale, vsBank) {
     tx.percentTaxWithholdingIVA = TAX_WITHHOLDING_IVA
     tx.percentTaxWithholdingRENTA = TAX_WITHHOLDING_RENTA
     tx.saleValue = roundTwo(voSale.totalSale)
-    tx.saleTaxes = roundFour(voSale.totalSale / 112 * 12)
+    if (tx.shop === SHOPS.mmp.code) {
+      tx.saleTaxes = roundFour(voSale.totalSale / 112 * 12)
+    } else {
+      tx.saleTaxes = roundFour(0.0)
+    }
+
     tx.saleTaxableIncome = roundFour(tx.saleValue - tx.saleTaxes)
     tx.dfCommission = roundFour(tx.saleValue * DATAFAST_COMMISSION)
     tx.dfTaxWithholdingIVA = roundFour(tx.saleTaxes * TAX_WITHHOLDING_IVA)
     tx.dfTaxWithholdingRENTA = roundFour(tx.saleTaxableIncome * TAX_WITHHOLDING_RENTA)
     tx.value = roundFour(tx.saleValue - tx.dfCommission - tx.dfTaxWithholdingIVA - tx.dfTaxWithholdingRENTA)
     if (voSale.tipByBank && voSale.tipByBank > 0) {
-      const dfTipCommission = roundFour(voSale.tipByBank * DATAFAST_COMMISSION),
-        dfTipTaxWithholdingRENTA = roundFour(voSale.tipByBank * TAX_WITHHOLDING_RENTA)
-      tx.tipByBank = roundFour(voSale.tipByBank - dfTipCommission - dfTipTaxWithholdingRENTA)
+      // 20240426 ELIMINO IVA PROPINA
+      //const dfTipCommission = roundFour(voSale.tipByBank * DATAFAST_COMMISSION),
+      //  dfTipTaxWithholdingRENTA = roundFour(voSale.tipByBank * TAX_WITHHOLDING_RENTA)
+      // tx.tipByBank = roundFour(voSale.tipByBank - dfTipCommission - dfTipTaxWithholdingRENTA)
+      tx.tipByBank = roundFour(voSale.tipByBank)
     }
   }
   return tx

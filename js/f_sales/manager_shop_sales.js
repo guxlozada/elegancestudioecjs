@@ -9,7 +9,7 @@ import { roundFour, roundTwo, truncFour } from "../util/numbers-util.js";
 import { zeroPad } from "../util/text-util.js";
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js";
 import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
-import { BANCO_PRODUBANCO, DATAFAST_PAYMENTS, DEUNA_PICHINCHA, saleToBanktransaction } from "../f_bank_transactions/dao_banking_transactions.js";
+import { BANCO_DATAFAST, BANCO_PRODUBANCO, DATAFAST_PAYMENTS, DEUNA_PICHINCHA, saleToBanktransaction } from "../f_bank_transactions/dao_banking_transactions.js";
 import { localdb } from "../repo-browser.js";
 import { findCatalog } from "../f_catalogs/dao_catalog.js";
 import { addOperators } from "../dom/manager_operators.js";
@@ -161,7 +161,7 @@ function updateSaleDetails(changeTypePayment) {
 
 function validateBarberTipActive() {
   let $tip = d.querySelector(".sale-summary-tip")
-  if (sale.typePayment === "EFECTIVO") {
+  if (sale.typePayment === "EFECTIVO" || sale.typePayment === "CORTESIA") {
     sale.tipByBank = 0
     $tip.setAttribute("disabled", false)
   } else {
@@ -263,12 +263,13 @@ function renderSaleItems(changeTypePayment) {
       let baseValue = item.baseValue,
         finalValue = item.finalValue,
         taxIVA = item.taxIVA
+
       // Cambio de valores para productos al por mayor
-      if (item.type === "P" && sale.type === "PORMAYOR") {
-        baseValue = item.wholesaleValue
-        finalValue = item.wholesaleFinalValue
-        taxIVA = item.wholesaleTaxIVA
-      }
+      //if (item.type === "P" && sale.type === "PORMAYOR") {
+      //  baseValue = item.wholesaleValue
+      //  finalValue = item.wholesaleFinalValue
+      //  taxIVA = item.wholesaleTaxIVA
+      //}
 
       // Calculos para totalizadores
       vnBaseDiscount = 0
@@ -281,6 +282,9 @@ function renderSaleItems(changeTypePayment) {
         vnUnitDiscount = 0
         // descuento IVA solo pagos en efectivo, transferencias y cortesia
         if (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA" || sale.typePayment === "TRANSFDEUNA" || sale.typePayment === "CORTESIA") {
+          vnUnitDiscount += taxIVA
+        } else if (sale.shop !== SHOPS.mmp.code && DATAFAST_PAYMENTS.includes(sale.typePayment)) {
+          // 20240426 PARA LAS BARBERIAS A EXCEPCION DE MANTA se descuenta el IVA para tarjetas 
           vnUnitDiscount += taxIVA
         }
 
@@ -388,18 +392,27 @@ function renderSaleSummary() {
       case "TCREDITO":
       case "TDEBITO":
         sale.taxableIncome = roundTwo(sale.taxableIncome + sale.tipByBank)
-        // MANEJO IVA
-        sale.taxes = roundTwo(sale.taxes + (sale.tipByBank * IVA))
+        // MANEJO IVA 20240426 ELIMINO IVA PROPINA
+        sale.taxes = roundTwo(sale.taxes)
         sale.totalSale = roundTwo(sale.taxableIncome + sale.taxes)
         break;
     }
   }
 
   d.querySelector(".sale-summary-tip").value = sale.tipByBank.toFixed(2)
-  d.querySelector(".sale-summary-taxableincome").innerText = sale.taxableIncome.toFixed(2)
-  d.querySelector(".sale-summary-taxes").innerText = sale.taxes.toFixed(2)
+  ////d.querySelector(".sale-summary-taxableincome").innerText = sale.taxableIncome.toFixed(2)
+  ////d.querySelector(".sale-summary-taxes").innerText = sale.taxes.toFixed(2)
   d.querySelector(".sale-summary-totalsale").innerText = sale.totalSale.toFixed(2)
   //d.querySelector(".sale-summary-discounts").innerText = sale.discounts.toFixed(2)
+
+  // 20240426 PARA LAS BARBERIAS A EXCEPCION DE MANTA se cambia valores a presentar 
+  if (sale.shop === SHOPS.mmp.code && DATAFAST_PAYMENTS.includes(sale.typePayment)) {
+    d.querySelector(".sale-summary-taxableincome").innerText = sale.taxableIncome.toFixed(2)
+    d.querySelector(".sale-summary-taxes").innerText = sale.taxes.toFixed(2)
+  } else {
+    d.querySelector(".sale-summary-taxableincome").innerText = sale.totalSale.toFixed(2)
+    d.querySelector(".sale-summary-taxes").innerText = roundTwo(0.0)
+  }
 
   // Deshabilitar el boton Guardar cuando la venta es cero
   if (sale.valid && sale.items.length > 0) {
@@ -699,6 +712,9 @@ function insertSalesDB(callback) {
   let bancoTmp
   if (saleHeader.shop === SHOPS.mmp.code && DATAFAST_PAYMENTS.includes(saleHeader.typePayment)) {
     bancoTmp = BANCO_PRODUBANCO
+  }
+  if (saleHeader.shop !== SHOPS.mmp.code && DATAFAST_PAYMENTS.includes(saleHeader.typePayment)) {
+    bancoTmp = BANCO_DATAFAST
   }
   if (saleHeader.typePayment === "TRANSFDEUNA") {
     saleHeader.typePayment = "TRANSFERENCIA"

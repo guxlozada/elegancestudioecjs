@@ -201,13 +201,14 @@ function renderSaleHeader() {
     $numberCuts.classList.remove("has-text-white")
     $freeSixthCutMessage.classList.add("is-hidden")
   }
-  if (cli.stTotalServices == 0 && cli.stLastService === null && cli.idNumber !== "9999999999999") {
+  //// 20240429 DESHABILITADO PROMO NEW CUSTOMER/PRIMER SERVICIO
+  /*if (cli.stTotalServices == 0 && cli.stLastService === null && cli.idNumber !== "9999999999999") {
     sale.stPromoNewCustomer = false
     $numberCuts.innerText = "NUEVO CLIENTE"
     $newCustomerMessage.classList.remove("is-hidden")
   } else {
     $newCustomerMessage.classList.add("is-hidden")
-  }
+  }*/
   d.querySelector(".sale-date-input").valueAsDate = hoyEC().toJSDate()
   ///////d.querySelector(".ticket-input").value = sale.ticket
   // Control de fechas minimo y maximo para ing/egr caja
@@ -640,8 +641,9 @@ d.getElementById("sales").addEventListener("change", e => {
   } else if ($input.name === "promoFreeSixthCut") {
     sale.stPromoFreeSixthCut = $input.checked ? true : null
     updateSaleDetails(true)
-  } else if ($input.name === "promoNewCustomer") {
-    sale.stPromoNewCustomer = $input.checked
+    //// 20240429 DESHABILITADO PROMO NEW CUSTOMER/PRIMER SERVICIO
+    //} else if ($input.name === "promoNewCustomer") {
+    //  sale.stPromoNewCustomer = $input.checked
   } else if ($input.name === "seller") {
     sale.seller = $input.value
     updateSaleDetails()
@@ -772,9 +774,14 @@ function insertSalesDB(callback) {
     let detailKey = saleKey + '-' + zeroPad(item.order, 2);
     updates[`${collections.salesDetails}/${detailKey}`] = item
   })
-  //TODO: Promo del sexto corte gratis
+  //TODO: Promo corte gratis
   if (totalFreeSixthCut === 0 && totalServices > 1) {
     totalFreeSixthCut += Math.trunc(totalServicesTaxableIncome / freeSixthCutBase)
+  }
+
+  // Para Granados los pagos con tarjetas de credito y debito no contabilizan para cortes gratis
+  if (saleHeader.shop === SHOPS.qgr.code && DATAFAST_PAYMENTS.includes(saleHeader.typePayment)) {
+    totalFreeSixthCut = 0
   }
 
   // Actualizar datos del cliente
@@ -792,13 +799,14 @@ function insertSalesDB(callback) {
     saleHeader.stLastTotalServices = stTotalServices
     saleHeader.stLastServices = stLastService
 
-
     if (totalServices > 0) {
-      //TODO: Promo cuando se ha entregado el beneficio de nuevo cliente, no contabiliza para promocion de sexto corte
-      if (saleHeader.stPromoNewCustomer === true) {
-        totalFreeSixthCut--
-      }
-      // Verifica si se aplica la promocion del sexto corte gratis
+      //// 20240429 DESHABILITADO PROMO NEW CUSTOMER/PRIMER SERVICIO
+      //Promo cuando se ha entregado el beneficio de nuevo cliente, no contabiliza para promocion de sexto corte
+      //if (saleHeader.stPromoNewCustomer === true) {
+      //  totalFreeSixthCut--
+      //}
+
+      // Verifica si se aplica la promocion del corte gratis
       if (saleHeader.stPromoFreeSixthCut === true && stFreeSixthCut > 5) {
         stFreeSixthCut = stFreeSixthCut - 6 // Se descuenta los 5 cortes + el corte gratis de la venta actual
       }
@@ -808,10 +816,11 @@ function insertSalesDB(callback) {
       updates[`${collections.customers}/${saleHeader.clientUid}/stTotalServices`] = stTotalServices + totalServices
       updates[`${collections.customers}/${saleHeader.clientUid}/stLastService`] = saleHeader.date
 
-      // registra si se ha entregado el beneficio para nuevos clientes
-      if (saleHeader.stPromoNewCustomer) {
-        updates[`${collections.customers}/${saleHeader.clientUid}/stPromoNewCustomer`] = saleKey
-      }
+      //// 20240429 DESHABILITADO PROMO NEW CUSTOMER/PRIMER SERVICIO
+      //// registra si se ha entregado el beneficio para nuevos clientes
+      //if (saleHeader.stPromoNewCustomer) {
+      //  updates[`${collections.customers}/${saleHeader.clientUid}/stPromoNewCustomer`] = saleKey
+      //}
     }
 
   }

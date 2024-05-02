@@ -10,7 +10,7 @@ import { zeroPad } from "../util/text-util.js";
 import { addMinMaxPropsWithCashOutflowDates } from "../util/daily-data-cache.js";
 import timestampToDatekey, { generateDateProperties } from "../persist/dao_generic.js";
 import { BANCO_DATAFAST, BANCO_PRODUBANCO, DATAFAST_PAYMENTS, DEUNA_PICHINCHA, saleToBanktransaction } from "../f_bank_transactions/dao_banking_transactions.js";
-import { localdb } from "../repo-browser.js";
+import { FREE_CUT_COUNTER, localdb } from "../repo-browser.js";
 import { findCatalog } from "../f_catalogs/dao_catalog.js";
 import { addOperators } from "../dom/manager_operators.js";
 import { getShop } from "../dom/manager_user.js";
@@ -22,7 +22,7 @@ const d = document,
   $productsModalContainer = d.querySelector("#products-modal .items-container"),
   $servicesModalContainer = d.querySelector("#services-modal .items-container"),
   $servicesModalEneglimarContainer = d.querySelector("#services-modal-eneglimar .items-container"),
-  freeSixthCutBase = getShop().freeSixthCutBase,
+  freeCutValueBase = getShop().freeCutBase,
   saleInit = {
     client: {
       uid: "",
@@ -105,7 +105,7 @@ export function changeSaleClient($client) {
     sale.client.description = `${$client.dataset.name} _ ${$client.dataset.idtype}: ${$client.dataset.idnumber}`
     sale.client.stLastService = $client.dataset.stLastService || null
     sale.client.stTotalServices = parseFloat($client.dataset.stTotalServices || 0)
-    //TODO: Promo del sexto corte gratis
+    //TODO: Promocion corte gratis
     sale.client.stFreeSixthCut = parseFloat($client.dataset.stFreeSixthCut || 0)
     sale.valid = true
     updateSale()
@@ -187,19 +187,20 @@ function renderSaleHeader() {
 
   d.getElementById("sale-client").innerText = cli.description
   let $numberCuts = d.querySelector(".sale-client-cuts"),
-    $freeSixthCutMessage = d.querySelector(".free-sixth-cut-message"),
-    $newCustomerMessage = d.querySelector(".new-customer-message")
+    $freeCutMessage = d.querySelector(".free-cut-message")
+  //// 20240429 DESHABILITADO PROMO NEW CUSTOMER/PRIMER SERVICIO
+  // ,$newCustomerMessage = d.querySelector(".new-customer-message")
 
   $numberCuts.innerText = cli.stFreeSixthCut
-  if (cli.stFreeSixthCut > 5) {
-    sale.stPromoFreeSixthCut = true
+  if (cli.stFreeSixthCut > FREE_CUT_COUNTER) {
+    sale.stPromoFreeCut = true
     $numberCuts.classList.add("has-background-primary")
     $numberCuts.classList.add("has-text-white")
-    $freeSixthCutMessage.classList.remove("is-hidden")
+    $freeCutMessage.classList.remove("is-hidden")
   } else {
     $numberCuts.classList.remove("has-background-primary")
     $numberCuts.classList.remove("has-text-white")
-    $freeSixthCutMessage.classList.add("is-hidden")
+    $freeCutMessage.classList.add("is-hidden")
   }
   //// 20240429 DESHABILITADO PROMO NEW CUSTOMER/PRIMER SERVICIO
   /*if (cli.stTotalServices == 0 && cli.stLastService === null && cli.idNumber !== "9999999999999") {
@@ -279,7 +280,7 @@ function renderSaleItems(changeTypePayment) {
       vnUnitDiscount = item.unitDiscount
 
       // SOLO para servicios, se aplica los descuentos automaticos la primera vez o cuando cambia el metodo de pago
-      if (!item.unitDiscount || changeTypePayment || sale.stPromoFreeSixthCut === true) {
+      if (!item.unitDiscount || changeTypePayment || sale.stPromoFreeCut === true) {
         vnUnitDiscount = 0
         // descuento IVA solo pagos en efectivo, transferencias y cortesia
         if (sale.typePayment === "EFECTIVO" || sale.typePayment === "TRANSFERENCIA" || sale.typePayment === "TRANSFDEUNA" || sale.typePayment === "CORTESIA") {
@@ -291,9 +292,9 @@ function renderSaleItems(changeTypePayment) {
 
         if (item.type === "S") {
           // PROMO SEXTO CORTE aplica para el primer servicio registrado
-          if (vnUniqueServiceDiscount === 0 && (sale.stPromoFreeSixthCut === true || sale.typePayment === "CORTESIA")) {
-            if (baseValue > freeSixthCutBase) {
-              vnUnitDiscount += freeSixthCutBase
+          if (vnUniqueServiceDiscount === 0 && (sale.stPromoFreeCut === true || sale.typePayment === "CORTESIA")) {
+            if (baseValue > freeCutValueBase) {
+              vnUnitDiscount += freeCutValueBase
             } else {
               vnUnitDiscount += baseValue
             }
@@ -638,8 +639,8 @@ d.getElementById("sales").addEventListener("change", e => {
     }
     changeItemDiscount($input.dataset.key, newValue)
     sale.update = true
-  } else if ($input.name === "promoFreeSixthCut") {
-    sale.stPromoFreeSixthCut = $input.checked ? true : null
+  } else if ($input.name === "promoFreeCut") {
+    sale.stPromoFreeCut = $input.checked ? true : null
     updateSaleDetails(true)
     //// 20240429 DESHABILITADO PROMO NEW CUSTOMER/PRIMER SERVICIO
     //} else if ($input.name === "promoNewCustomer") {
@@ -759,9 +760,9 @@ function insertSalesDB(callback) {
   let updates = {}
 
   // Registrar los detalles de la venta
-  //TODO: Promo del sexto corte gratis
+  //TODO: Promocion corte gratis
   let totalServices = 0,
-    totalFreeSixthCut = 0,
+    totalFreeCut = 0,
     totalServicesTaxableIncome = 0
 
   saleDetails.forEach(item => {
@@ -769,19 +770,19 @@ function insertSalesDB(callback) {
     if (item.type === "S") {
       totalServices += item.numberOfUnits
       totalServicesTaxableIncome += item.total
-      totalFreeSixthCut += Math.trunc(item.total / freeSixthCutBase)
+      totalFreeCut += Math.trunc(item.total / freeCutValueBase)
     }
     let detailKey = saleKey + '-' + zeroPad(item.order, 2);
     updates[`${collections.salesDetails}/${detailKey}`] = item
   })
   //TODO: Promo corte gratis
-  if (totalFreeSixthCut === 0 && totalServices > 1) {
-    totalFreeSixthCut += Math.trunc(totalServicesTaxableIncome / freeSixthCutBase)
+  if (totalFreeCut === 0 && totalServices > 1) {
+    totalFreeCut += Math.trunc(totalServicesTaxableIncome / freeCutValueBase)
   }
 
   // Para Granados los pagos con tarjetas de credito y debito no contabilizan para cortes gratis
   if (saleHeader.shop === SHOPS.qgr.code && DATAFAST_PAYMENTS.includes(saleHeader.typePayment)) {
-    totalFreeSixthCut = 0
+    totalFreeCut = 0
   }
 
   // Actualizar datos del cliente
@@ -803,15 +804,15 @@ function insertSalesDB(callback) {
       //// 20240429 DESHABILITADO PROMO NEW CUSTOMER/PRIMER SERVICIO
       //Promo cuando se ha entregado el beneficio de nuevo cliente, no contabiliza para promocion de sexto corte
       //if (saleHeader.stPromoNewCustomer === true) {
-      //  totalFreeSixthCut--
+      //  totalFreeCut--
       //}
 
       // Verifica si se aplica la promocion del corte gratis
-      if (saleHeader.stPromoFreeSixthCut === true && stFreeSixthCut > 5) {
-        stFreeSixthCut = stFreeSixthCut - 6 // Se descuenta los 5 cortes + el corte gratis de la venta actual
+      if (saleHeader.stPromoFreeCut === true && stFreeSixthCut > FREE_CUT_COUNTER) {
+        stFreeSixthCut = stFreeSixthCut - (FREE_CUT_COUNTER + 1) // Se descuenta los 6 cortes + el corte gratis de la venta actual
       }
       // Al saldo de cortes agrega el total de servicios de la venta
-      stFreeSixthCut += totalFreeSixthCut
+      stFreeSixthCut += totalFreeCut
       updates[`${collections.customers}/${saleHeader.clientUid}/stFreeSixthCut`] = stFreeSixthCut < 1 ? 1 : stFreeSixthCut
       updates[`${collections.customers}/${saleHeader.clientUid}/stTotalServices`] = stTotalServices + totalServices
       updates[`${collections.customers}/${saleHeader.clientUid}/stLastService`] = saleHeader.date

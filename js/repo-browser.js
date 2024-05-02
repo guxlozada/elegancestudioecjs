@@ -21,3 +21,4 @@ export const ADM_PW = "0."
 export const ATTEMPTS = 4
 export const FD = "MMdd20yyyy02ddMM"
 export const IVA = 0.15
+export const FREE_CUT_COUNTER = 6

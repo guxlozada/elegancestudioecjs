@@ -5,21 +5,21 @@ export const SHOPS = {
     code: "MMP",
     name: "Mall del Pacífico",
     city: "Manta",
-    freeSixthCutBase: 10,
+    freeCutBase: 10,
     iva: true
   },
   qpa: {
     code: "QPA",
     name: "Ponceano",
     city: "Quito",
-    freeSixthCutBase: 8,
+    freeCutBase: 8,
     iva: false
   },
   qgr: {
     code: "QGR",
     name: "Granados",
     city: "Quito",
-    freeSixthCutBase: 10,
+    freeCutBase: 10,
     iva: false
   }
 }
